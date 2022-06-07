@@ -1,0 +1,8 @@
+Week1:
+	• Group formation during lab
+	• Joined new teams group on Microsoft teams. Added channel on teams group for discussing project selection, participated in project selection discussion.
+	• Joined Jira, added new issue type of 'acceptance criteria'
+
+
+Week2:
+	• Joined github classroom
