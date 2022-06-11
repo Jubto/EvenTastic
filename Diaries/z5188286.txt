@@ -1,0 +1,11 @@
+Week 1:
+- Read through Project Specifications.
+- Elected as Scrum Master for Project.
+- Set up Jira for the Project.
+- Set up OneDrive for the Project Reports / Documentation.
+
+Week 2:
+- Voted on team project, Event Management Solution was selected.
+- Set up GitHub Repo for the Project.
+- Documented User Stories for 'View Events', 'View Recommendations' and 'Reward Points' functionalities.
+- Created word templates to document Functionality and Project Proposal. Uploaded to OneDrive.
