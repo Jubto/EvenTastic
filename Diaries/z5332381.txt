@@ -1,0 +1,17 @@
+Week 1:
+Participated in group discussion
+Read through project specifications
+Created a list of 3 preferred projects highlighting the pros and cons of each
+Added meeting minutes of the discussion highlighting next action times to be conducted
+Created a when2meet link to figure out preferred timings to schedule meetings throughout the week
+
+Week 2:
+Joined github classroom
+Created user stories for Manage Reviews
+Provided feedback on user stories provided by other teammates and participated in discussion
+
+
+Week 3:
+Modified user stories based on discussion with the tutor
+Shared points noted of tutor's advise on changes to be made for our user stories. Also added key points to remember for project proposal
+Provided wireframe mockups for some pages on draw.io, uploaded to comp9900 folder on OneDrive
