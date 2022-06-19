@@ -9,3 +9,9 @@ Week 2:
 - Set up GitHub Repo for the Project.
 - Documented User Stories for 'View Events', 'View Recommendations' and 'Reward Points' functionalities.
 - Created word templates to document Functionality and Project Proposal. Uploaded to OneDrive.
+
+Week 3:
+- Completed User Stories and Sprints sections of the Proposal.
+- Complted User Interface Mockups for View Events and View Recommendations functionalities.
+- Submitted proposal by deadline.
+- Completed API Specifiction for the Accounts API for Sprint 1.
