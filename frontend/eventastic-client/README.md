@@ -2,6 +2,21 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+## Temp Kento setup note
+
+node version: Latest current LTS (Gallium) v16.15.1
+
+After you first pull, run either `npm install` or `yarn install`
+After installing, start the frontend server with `npm start` or `yarn start`
+
+For docs on mui: https://mui.com/material-ui/getting-started/overview/
+For looking up mui icons: https://mui.com/material-ui/material-icons/
+
+CSS: My current thoughts are
+* Reusable styled components go in /components/styles
+* One off styling for mui components use the sx prop
+* One off styling for normal components use styled components on the same page
+
 ## Available Scripts
 
 In the project directory, you can run:
