@@ -1,3 +1,4 @@
+---
 swagger: "2.0"
 info:
   description: "Accounts API for ZeroWing Event Management System."
@@ -11,10 +12,11 @@ schemes:
 paths:
   /accounts:
     get:
-      summary: "Retrieve a List of Accounts. Filter by email address, first name or last name."
       tags:
-        - Accounts
-      operationId: "listAccounts"
+      - "Accounts"
+      summary: "Retrieve a List of Accounts. Filter by email address, first name or\
+        \ last name."
+      operationId: "list_accounts"
       produces:
       - "application/json"
       parameters:
@@ -35,18 +37,20 @@ paths:
         type: "string"
       responses:
         "200":
-          description: "Returns a list of Accounts. Returns empty array if no Accounts exist."
+          description: "Returns a list of Accounts. Returns empty array if no Accounts\
+            \ exist."
           schema:
             $ref: "#/definitions/AccountList"
         "500":
           description: "Unexpected failure in the service layer."
           schema:
             $ref: "#/definitions/UnexpectedServiceError"
+      x-swagger-router-controller: "swagger_server.controllers.accounts_controller"
     post:
-      summary: "Used to create an Account."
       tags:
-        - Accounts
-      operationId: "createAccount"
+      - "Accounts"
+      summary: "Used to create an Account."
+      operationId: "create_account"
       consumes:
       - "application/json"
       produces:
@@ -70,13 +74,14 @@ paths:
         "500":
           description: "Unexpected failure in the service layer."
           schema:
-            $ref: "#/definitions/UnexpectedServiceError" 
+            $ref: "#/definitions/UnexpectedServiceError"
+      x-swagger-router-controller: "swagger_server.controllers.accounts_controller"
   /accounts/{account_id}:
     get:
-      summary: "Retrieve Account details by Account ID."
       tags:
-        - Accounts
-      operationId: "getAccountDetails"
+      - "Accounts"
+      summary: "Retrieve Account details by Account ID."
+      operationId: "get_account_details"
       produces:
       - "application/json"
       parameters:
@@ -98,12 +103,13 @@ paths:
         "500":
           description: "Unexpected failure in the service layer."
           schema:
-            $ref: "#/definitions/UnexpectedServiceError" 
+            $ref: "#/definitions/UnexpectedServiceError"
+      x-swagger-router-controller: "swagger_server.controllers.accounts_controller"
     put:
-      summary: "Used to update the Account details. Replaces the Account resource."
       tags:
-        - Accounts
-      operationId: "updateAccount"
+      - "Accounts"
+      summary: "Used to update the Account details. Replaces the Account resource."
+      operationId: "update_account"
       consumes:
       - "application/json"
       parameters:
@@ -115,7 +121,8 @@ paths:
         format: "int64"
       - in: "body"
         name: "body"
-        description: "Account object to update. Performs a complete replace of the Account details."
+        description: "Account object to update. Performs a complete replace of the\
+          \ Account details."
         required: true
         schema:
           $ref: "#/definitions/Account"
@@ -123,25 +130,26 @@ paths:
         "200":
           description: "Account successfully updated."
           schema:
-            $ref: "#/definitions/Account"          
-        "404":
-          description: "Account not found." 
-          schema:
-            $ref: "#/definitions/AccountNotFoundError"
+            $ref: "#/definitions/Account"
         "400":
           description: "Invalid input."
           schema:
             $ref: "#/definitions/InvalidInputError"
+        "404":
+          description: "Account not found."
+          schema:
+            $ref: "#/definitions/AccountNotFoundError"
         "500":
           description: "Unexpected failure in the service layer."
           schema:
             $ref: "#/definitions/UnexpectedServiceError"
+      x-swagger-router-controller: "swagger_server.controllers.accounts_controller"
   /accounts/{account_id}/credit_card:
     get:
-      summary: "Used to retrive the Credit Card details for an Account."
       tags:
-        - Accounts
-      operationId: "getCreditCard"
+      - "Accounts"
+      summary: "Used to retrive the Credit Card details for an Account."
+      operationId: "get_credit_card"
       parameters:
       - name: "account_id"
         in: "path"
@@ -155,18 +163,19 @@ paths:
           schema:
             $ref: "#/definitions/CreditCard"
         "404":
-          description: "Account not found." 
+          description: "Account not found."
           schema:
             $ref: "#/definitions/AccountNotFoundError"
         "500":
           description: "Unexpected failure in the service layer."
           schema:
             $ref: "#/definitions/UnexpectedServiceError"
+      x-swagger-router-controller: "swagger_server.controllers.accounts_controller"
     put:
-      summary: "Used to update the Credit Card details for an Account."
       tags:
-        - Accounts
-      operationId: "updateCreditCard"
+      - "Accounts"
+      summary: "Used to update the Credit Card details for an Account."
+      operationId: "update_credit_card"
       parameters:
       - name: "account_id"
         in: "path"
@@ -176,7 +185,8 @@ paths:
         format: "int64"
       - in: "body"
         name: "body"
-        description: "Credit Card object to update. Performs a complete replace of the Credit Card details."
+        description: "Credit Card object to update. Performs a complete replace of\
+          \ the Credit Card details."
         required: true
         schema:
           $ref: "#/definitions/CreditCard"
@@ -184,25 +194,26 @@ paths:
         "200":
           description: "Credit Card successfully updated."
           schema:
-            $ref: "#/definitions/CreditCard"          
-        "404":
-          description: "Account not found." 
-          schema:
-            $ref: "#/definitions/AccountNotFoundError"
+            $ref: "#/definitions/CreditCard"
         "400":
           description: "Invalid input."
           schema:
             $ref: "#/definitions/InvalidInputError"
+        "404":
+          description: "Account not found."
+          schema:
+            $ref: "#/definitions/AccountNotFoundError"
         "500":
           description: "Unexpected failure in the service layer."
           schema:
             $ref: "#/definitions/UnexpectedServiceError"
+      x-swagger-router-controller: "swagger_server.controllers.accounts_controller"
   /accounts/{account_id}/host_details:
     get:
-      summary: "Used to retrive the Host details for an Account."
       tags:
-        - Accounts
-      operationId: "getHostDetails"
+      - "Accounts"
+      summary: "Used to retrive the Host details for an Account."
+      operationId: "get_host_details"
       parameters:
       - name: "account_id"
         in: "path"
@@ -216,18 +227,19 @@ paths:
           schema:
             $ref: "#/definitions/HostDetails"
         "404":
-          description: "Account not found." 
+          description: "Account not found."
           schema:
             $ref: "#/definitions/AccountNotFoundError"
         "500":
           description: "Unexpected failure in the service layer."
           schema:
             $ref: "#/definitions/UnexpectedServiceError"
+      x-swagger-router-controller: "swagger_server.controllers.accounts_controller"
     put:
-      summary: "Used to update the host details for an Account."
       tags:
-        - Accounts
-      operationId: "updateHostDetails"
+      - "Accounts"
+      summary: "Used to update the host details for an Account."
+      operationId: "update_host_details"
       parameters:
       - name: "account_id"
         in: "path"
@@ -237,7 +249,8 @@ paths:
         format: "int64"
       - in: "body"
         name: "body"
-        description: "Host details object to update. Performs a complete replace of the Host details."
+        description: "Host details object to update. Performs a complete replace of\
+          \ the Host details."
         required: true
         schema:
           $ref: "#/definitions/HostDetails"
@@ -245,141 +258,178 @@ paths:
         "200":
           description: "Host details successfully updated."
           schema:
-            $ref: "#/definitions/HostDetails"          
-        "404":
-          description: "Account not found." 
-          schema:
-            $ref: "#/definitions/AccountNotFoundError"
+            $ref: "#/definitions/HostDetails"
         "400":
           description: "Invalid input."
           schema:
             $ref: "#/definitions/InvalidInputError"
+        "404":
+          description: "Account not found."
+          schema:
+            $ref: "#/definitions/AccountNotFoundError"
         "500":
           description: "Unexpected failure in the service layer."
           schema:
             $ref: "#/definitions/UnexpectedServiceError"
+      x-swagger-router-controller: "swagger_server.controllers.accounts_controller"
 definitions:
   AccountList:
-    type: array
+    type: "array"
     items:
       $ref: "#/definitions/Account"
   Account:
-    type: object
+    type: "object"
+    required:
+    - "email"
+    - "first_name"
+    - "last_name"
+    - "password"
     properties:
       account_id:
-        type: integer
-        format: int64
+        type: "integer"
+        format: "int64"
         example: 1
       account_type:
-        type: string
-        enum: ["Customer", "Host", "Admin"]
+        type: "string"
+        enum:
+        - "Customer"
+        - "Host"
+        - "Admin"
       first_name:
-        type: string
+        type: "string"
         example: "Bob"
       last_name:
-        type: string
+        type: "string"
         example: "Smith"
       location:
-        type: string
+        type: "string"
         example: "Neutral Bay, NSW, 2089"
       email:
-        type: string
+        type: "string"
         example: "bob.smith@gmail.com"
       password:
-        type: string
+        type: "string"
         example: "Cartoon-Duck-14-Coffee-Glvs"
       mobile:
-        type: string
+        type: "string"
         example: "+61405123456"
       profile_pic:
-        type: string
-        format: uuid
+        type: "string"
+        format: "uuid"
         example: "1603dfd6-efb6-11ec-8ea0-0242ac120002"
       age:
-        type: integer
-        format: int64
+        type: "integer"
+        format: "int64"
         example: 36
       reward_points:
-        type: string
-        example: 1250.5
+        type: "string"
+        example: "1250.5"
       tags:
-        type: array
+        type: "array"
         items:
           $ref: "#/definitions/Tag"
-    required:
-      - first_name
-      - last_name
-      - email
-      - password
+    example:
+      account_type: "Customer"
+      password: "Cartoon-Duck-14-Coffee-Glvs"
+      account_id: 1
+      mobile: "+61405123456"
+      profile_pic: "1603dfd6-efb6-11ec-8ea0-0242ac120002"
+      last_name: "Smith"
+      location: "Neutral Bay, NSW, 2089"
+      first_name: "Bob"
+      email: "bob.smith@gmail.com"
+      age: 36
+      reward_points: "1250.5"
+      tags:
+      - name: "Jazz"
+      - name: "Jazz"
   Tag:
-    type: object
+    type: "object"
     properties:
       name:
-        type: string
-        example: Jazz
+        type: "string"
+        example: "Jazz"
+    example:
+      name: "Jazz"
   CreditCard:
-    type: object
+    type: "object"
     properties:
       card_name:
-        type: string
-        example: Bob Smith
+        type: "string"
+        example: "Bob Smith"
       card_number:
-        type: string
+        type: "string"
         example: "1111222233334444"
-      card_type: 
-        type: string
-        example: Visa
-      card_expiry: 
-        type: string
+      card_type:
+        type: "string"
+        example: "Visa"
+      card_expiry:
+        type: "string"
         example: "MMYY"
+    example:
+      card_number: "1111222233334444"
+      card_name: "Bob Smith"
+      card_type: "Visa"
+      card_expiry: "MMYY"
   HostDetails:
-    type: object
+    type: "object"
     properties:
       org_name:
-        type: string
-        example: All Star Entertainment
+        type: "string"
+        example: "All Star Entertainment"
       org_desc:
-        type: string
-        example: Blurb describing the organisation
+        type: "string"
+        example: "Blurb describing the organisation"
       host_contact_no:
-        type: string
+        type: "string"
         example: "+61405123456"
       job_title:
-        type: string
+        type: "string"
         example: "Event Manager"
       qualification:
-        type: string
+        type: "string"
         example: "Event Management Certificate IV"
       isVerified:
-        type: boolean
-        example: False
+        type: "boolean"
+        example: false
+    example:
+      qualification: "Event Management Certificate IV"
+      isVerified: false
+      org_desc: "Blurb describing the organisation"
+      host_contact_no: "+61405123456"
+      org_name: "All Star Entertainment"
+      job_title: "Event Manager"
   Error:
-    type: object
+    type: "object"
     properties:
       code:
-        type: string
+        type: "string"
       type:
-        type: string
+        type: "string"
       message:
-        type: string
+        type: "string"
   AccountNotFoundError:
     allOf:
-      - $ref: "#/definitions/Error"
+    - $ref: "#/definitions/Error"
+    - {}
     example:
       code: 404
-      type: AccountNotFoundError
+      type: "AccountNotFoundError"
       message: "The following Account does not exist: %account_id%"
   InvalidInputError:
     allOf:
-      - $ref: "#/definitions/Error"
+    - $ref: "#/definitions/Error"
+    - {}
     example:
       code: 400
-      type: InvalidInputError
-      message: "The following mandatory fields were not provided: %field_name_1%, %field_name_2%"
+      type: "InvalidInputError"
+      message: "The following mandatory fields were not provided: %field_name_1%,\
+        \ %field_name_2%"
   UnexpectedServiceError:
     allOf:
-      - $ref: "#/definitions/Error"
+    - $ref: "#/definitions/Error"
+    - {}
     example:
       code: 500
-      type: UnexpectedServiceError
-      message: "The following unexpected runtime error has occurred: %error%" 
+      type: "UnexpectedServiceError"
+      message: "The following unexpected runtime error has occurred: %error%"
