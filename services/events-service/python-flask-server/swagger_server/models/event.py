@@ -16,11 +16,15 @@ class Event(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, event_id: int=None, event_title: str=None, event_category: str=None, event_short_desc: str=None, event_desc: str=None, event_datetime: str=None, event_location: str=None, event_img: str=None, tags: List[Tag]=None):  # noqa: E501
+    def __init__(self, event_id: int=None, host_id: int=None, venue_id: int=None, event_title: str=None, event_category: str=None, event_short_desc: str=None, event_desc: str=None, event_start_datetime: str=None, event_end_datetime: str=None, event_location: str=None, event_img: str=None, tags: List[Tag]=None):  # noqa: E501
         """Event - a model defined in Swagger
 
         :param event_id: The event_id of this Event.  # noqa: E501
         :type event_id: int
+        :param host_id: The host_id of this Event.  # noqa: E501
+        :type host_id: int
+        :param venue_id: The venue_id of this Event.  # noqa: E501
+        :type venue_id: int
         :param event_title: The event_title of this Event.  # noqa: E501
         :type event_title: str
         :param event_category: The event_category of this Event.  # noqa: E501
@@ -29,8 +33,10 @@ class Event(Model):
         :type event_short_desc: str
         :param event_desc: The event_desc of this Event.  # noqa: E501
         :type event_desc: str
-        :param event_datetime: The event_datetime of this Event.  # noqa: E501
-        :type event_datetime: str
+        :param event_start_datetime: The event_start_datetime of this Event.  # noqa: E501
+        :type event_start_datetime: str
+        :param event_end_datetime: The event_end_datetime of this Event.  # noqa: E501
+        :type event_end_datetime: str
         :param event_location: The event_location of this Event.  # noqa: E501
         :type event_location: str
         :param event_img: The event_img of this Event.  # noqa: E501
@@ -40,11 +46,14 @@ class Event(Model):
         """
         self.swagger_types = {
             'event_id': int,
+            'host_id': int,
+            'venue_id': int,
             'event_title': str,
             'event_category': str,
             'event_short_desc': str,
             'event_desc': str,
-            'event_datetime': str,
+            'event_start_datetime': str,
+            'event_end_datetime': str,
             'event_location': str,
             'event_img': str,
             'tags': List[Tag]
@@ -52,22 +61,28 @@ class Event(Model):
 
         self.attribute_map = {
             'event_id': 'event_id',
+            'host_id': 'host_id',
+            'venue_id': 'venue_id',
             'event_title': 'event_title',
             'event_category': 'event_category',
             'event_short_desc': 'event_short_desc',
             'event_desc': 'event_desc',
-            'event_datetime': 'event_datetime',
+            'event_start_datetime': 'event_start_datetime',
+            'event_end_datetime': 'event_end_datetime',
             'event_location': 'event_location',
             'event_img': 'event_img',
             'tags': 'tags'
         }
 
         self._event_id = event_id
+        self._host_id = host_id
+        self._venue_id = venue_id
         self._event_title = event_title
         self._event_category = event_category
         self._event_short_desc = event_short_desc
         self._event_desc = event_desc
-        self._event_datetime = event_datetime
+        self._event_start_datetime = event_start_datetime
+        self._event_end_datetime = event_end_datetime
         self._event_location = event_location
         self._event_img = event_img
         self._tags = tags
@@ -103,6 +118,48 @@ class Event(Model):
         """
 
         self._event_id = event_id
+
+    @property
+    def host_id(self) -> int:
+        """Gets the host_id of this Event.
+
+
+        :return: The host_id of this Event.
+        :rtype: int
+        """
+        return self._host_id
+
+    @host_id.setter
+    def host_id(self, host_id: int):
+        """Sets the host_id of this Event.
+
+
+        :param host_id: The host_id of this Event.
+        :type host_id: int
+        """
+
+        self._host_id = host_id
+
+    @property
+    def venue_id(self) -> int:
+        """Gets the venue_id of this Event.
+
+
+        :return: The venue_id of this Event.
+        :rtype: int
+        """
+        return self._venue_id
+
+    @venue_id.setter
+    def venue_id(self, venue_id: int):
+        """Sets the venue_id of this Event.
+
+
+        :param venue_id: The venue_id of this Event.
+        :type venue_id: int
+        """
+
+        self._venue_id = venue_id
 
     @property
     def event_title(self) -> str:
@@ -189,25 +246,46 @@ class Event(Model):
         self._event_desc = event_desc
 
     @property
-    def event_datetime(self) -> str:
-        """Gets the event_datetime of this Event.
+    def event_start_datetime(self) -> str:
+        """Gets the event_start_datetime of this Event.
 
 
-        :return: The event_datetime of this Event.
+        :return: The event_start_datetime of this Event.
         :rtype: str
         """
-        return self._event_datetime
+        return self._event_start_datetime
 
-    @event_datetime.setter
-    def event_datetime(self, event_datetime: str):
-        """Sets the event_datetime of this Event.
+    @event_start_datetime.setter
+    def event_start_datetime(self, event_start_datetime: str):
+        """Sets the event_start_datetime of this Event.
 
 
-        :param event_datetime: The event_datetime of this Event.
-        :type event_datetime: str
+        :param event_start_datetime: The event_start_datetime of this Event.
+        :type event_start_datetime: str
         """
 
-        self._event_datetime = event_datetime
+        self._event_start_datetime = event_start_datetime
+
+    @property
+    def event_end_datetime(self) -> str:
+        """Gets the event_end_datetime of this Event.
+
+
+        :return: The event_end_datetime of this Event.
+        :rtype: str
+        """
+        return self._event_end_datetime
+
+    @event_end_datetime.setter
+    def event_end_datetime(self, event_end_datetime: str):
+        """Sets the event_end_datetime of this Event.
+
+
+        :param event_end_datetime: The event_end_datetime of this Event.
+        :type event_end_datetime: str
+        """
+
+        self._event_end_datetime = event_end_datetime
 
     @property
     def event_location(self) -> str:
