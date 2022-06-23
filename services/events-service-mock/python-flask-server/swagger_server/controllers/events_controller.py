@@ -19,9 +19,12 @@ _events_dict = {}
 # lets add some Events to the database ...
 event1 = {
         "event_category": "Music",
-        "event_datetime": "2015-03-25T19:00:00+10:00",
+        "event_start_datetime": "2022-08-25T19:00:00+10:00",
+        "event_end_datetime": "2022-08-25T21:00:00+10:00",
         "event_desc": "STRICTLY KPOP & K-HIPHOP! KPOP ALBUM GIVEAWAYS! LIVE DJS!",
         "event_id": 1,
+        "venue_id": 1,
+        "host_id": 12,
         "event_img": "1603dfd6-efb6-11ec-8ea0-0242ac120002",
         "event_location": "Shark Hotel Sydney, NSW",
         "event_short_desc": "Sydney KPOP Party BTS Special!",
@@ -35,9 +38,12 @@ event1 = {
 
 event2 = {
         "event_category": "Music",
-        "event_datetime": "2015-03-30T19:00:00+10:00",
+        "event_start_datetime": "2022-08-25T19:00:00+10:00",
+        "event_end_datetime": "2022-08-25T21:00:00+10:00",
         "event_desc": "Catch Red Hot Chili Peppers live for the tour of their new album Unlimited Love ...",
         "event_id": 2,
+        "venue_id": 2,
+        "host_id": 8,
         "event_img": "1603dfd6-efb6-11ec-8ea0-0242ac120003",
         "event_location": "Sydney Entertainment Centre",
         "event_short_desc": "RHCP Live ! Don't miss out !",
@@ -110,4 +116,4 @@ def list_events(event_title=None, event_category=None, event_desc=None):
     except Exception as e:
         # catch any unexpected runtime error and return as 500 error 
         error = UnexpectedServiceError(code="500", type="UnexpectedServiceError", message=str(e))
-        return error, 500, {'Access-Control-Allow-Origin': '*'} 
+        return error, 500, {'Access-Control-Allow-Origin': '*'}

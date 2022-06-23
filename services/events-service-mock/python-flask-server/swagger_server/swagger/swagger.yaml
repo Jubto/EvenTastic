@@ -207,6 +207,14 @@ definitions:
         type: "integer"
         format: "int64"
         example: 1
+      host_id:
+        type: "integer"
+        format: "int64"
+        example: 12
+      venue_id:
+        type: "integer"
+        format: "int64"
+        example: 9
       event_title:
         type: "string"
         example: "Sydney KPOP Party"
@@ -219,9 +227,12 @@ definitions:
       event_desc:
         type: "string"
         example: "STRICTLY KPOP & K-HIPHOP! KPOP ALBUM GIVEAWAYS! LIVE DJS!"
-      event_datetime:
+      event_start_datetime:
         type: "string"
         example: "2015-03-25T19:00:00+10:00"
+      event_end_datetime:
+        type: "string"
+        example: "2015-03-25T23:00:00+10:00"
       event_location:
         type: "string"
         example: "Shark Hotel Sydney, NSW"
@@ -236,11 +247,14 @@ definitions:
       event_short_desc: "Sydney KPOP Party BTS Special!"
       event_desc: "STRICTLY KPOP & K-HIPHOP! KPOP ALBUM GIVEAWAYS! LIVE DJS!"
       event_id: 1
-      event_datetime: "2015-03-25T19:00:00+10:00"
+      event_end_datetime: "2015-03-25T23:00:00+10:00"
       event_location: "Shark Hotel Sydney, NSW"
       event_title: "Sydney KPOP Party"
       event_img: "1603dfd6-efb6-11ec-8ea0-0242ac120002"
       event_category: "Music"
+      event_start_datetime: "2015-03-25T19:00:00+10:00"
+      host_id: 12
+      venue_id: 9
       tags:
       - name: "Jazz"
       - name: "Jazz"
