@@ -28,10 +28,9 @@ def create_account(body):  # noqa: E501
         body = Account.from_dict(connexion.request.get_json())  # noqa: E501
 
     try:
-        if (len(body.first_name) == 0 or len(body.last_name) == 0):
-            error = AccountNotFoundError(
-                    code=400, type="InvalidInputError", 
-                    message="The following mandatory fields were not provided: first name or last name")
+        if (len(body.email) == 0 or len(body.first_name) == 0 or len(body.last_name) == 0):
+            error = InvalidInputError(code=400, type="InvalidInputError", 
+                    message="The following mandatory fields were not provided: email or first name or last name")
             return error, 400
 
         tags_string = ""
@@ -51,7 +50,7 @@ def create_account(body):  # noqa: E501
         insert_string = "INSERT INTO accounts VALUES (default, %s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) RETURNING account_id;"
         cur.execute(insert_string, (body.email, body.first_name, body.last_name, body.age, body.mobile, \
             body.location, body.password, body.account_type, body.profile_pic, body.reward_points, tags_string))
-        acc_id = cur.fetchone()[0]
+        body.account_id = cur.fetchone()[0]
 
         cur.close()
         con.close()            
@@ -61,7 +60,7 @@ def create_account(body):  # noqa: E501
         error = UnexpectedServiceError(code="500", type="UnexpectedServiceError", message=str(e))
         return error, 500
 
-    return acc_id, 200
+    return body, 201
 
 
 def get_account_details(account_id):  # noqa: E501
@@ -83,7 +82,7 @@ def get_account_details(account_id):  # noqa: E501
         record = cur.fetchone()
         if record != None:
             account = dict()
-            account['account_id'] = str(record[0])
+            account['account_id'] = int(record[0])
             account['account_type'] = str(record[8])
             account['age'] = int(record[4])
             account['email'] = str(record[1])
@@ -100,8 +99,7 @@ def get_account_details(account_id):  # noqa: E501
                 tags_list.append({"name": str(t)})
             account['tags'] = tags_list
         else:
-            error = AccountNotFoundError(
-                    code=404, type="AccountNotFoundError", 
+            error = AccountNotFoundError(code=404, type="AccountNotFoundError", 
                     message="The following Account ID does not exist: " + str(account_id))
             cur.close()
             con.close()
@@ -112,7 +110,6 @@ def get_account_details(account_id):  # noqa: E501
         cur.close()
         con.close()
         return error, 500
-
 
     cur.close()
     con.close()
@@ -136,12 +133,21 @@ def get_credit_card(account_id):  # noqa: E501
 
         cur.execute('SELECT * FROM accounts where account_id = ' + str(account_id))
         record = cur.fetchone()
+        if record == None:
+            error = AccountNotFoundError(code=404, type="AccountNotFoundError", 
+                    message="The following Account ID does not exist: " + str(account_id))
+            cur.close()
+            con.close()
+            return error, 404
+
+        cur.execute('SELECT * FROM saved_cards where account_id = ' + str(account_id))
+        record = cur.fetchone()
         card = dict()
         if record != None:             
-            card['card_name'] = str(record[0])
-            card['card_number'] = str(record[1])
-            card['card_type'] = str(record[2])
-            card['card_expiry'] = str(record[3])       
+            card['card_name'] = str(record[2])
+            card['card_number'] = str(record[3])
+            card['card_type'] = str(record[4])
+            card['card_expiry'] = str(record[5])       
         else:
             cur.close()
             con.close()
@@ -173,6 +179,15 @@ def get_host_details(account_id):  # noqa: E501
         con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
         cur = con.cursor()
 
+        cur.execute('SELECT * FROM accounts where account_id = ' + str(account_id))
+        record = cur.fetchone()
+        if record == None:
+            error = AccountNotFoundError(code=404, type="AccountNotFoundError", 
+                    message="The following Account ID does not exist: " + str(account_id))
+            cur.close()
+            con.close()
+            return error, 404
+
         cur.execute('SELECT * FROM hosts where account_id = ' + str(account_id))
         record = cur.fetchone()
         if record != None:
@@ -182,8 +197,7 @@ def get_host_details(account_id):  # noqa: E501
             host['host_contact_no'] = str(record[4])
             host['job_title'] = str(record[5])
             host['qualification'] = str(record[6])
-            host['isVerified'] = bool(record[7])
-            
+            host['isVerified'] = bool(record[7])            
         else:
             cur.close()
             con.close()
@@ -194,7 +208,6 @@ def get_host_details(account_id):  # noqa: E501
         cur.close()
         con.close()
         return error, 500
-
 
     cur.close()
     con.close()
@@ -224,7 +237,7 @@ def list_accounts(email=None, first_name=None, last_name=None):  # noqa: E501
         record = cur.fetchone()
         if record != None:
             account = dict()
-            account['account_id'] = str(record[0])
+            account['account_id'] = int(record[0])
             account['account_type'] = str(record[8])
             account['age'] = int(record[4])
             account['email'] = str(record[1])
@@ -241,12 +254,9 @@ def list_accounts(email=None, first_name=None, last_name=None):  # noqa: E501
                 tags_list.append({"name": str(t)})
             account['tags'] = tags_list
         else:
-            error = AccountNotFoundError(
-                    code=404, type="AccountNotFoundError", 
-                    message="Account does not exist with email ID: " + str(email))
             cur.close()
             con.close()
-            return error, 404
+            return [], 200
     except Exception as e:
         # catch any unexpected runtime error and return as 500 error 
         error = UnexpectedServiceError(code="500", type="UnexpectedServiceError", message=str(e))
@@ -275,25 +285,23 @@ def update_account(account_id, body):  # noqa: E501
         body = Account.from_dict(connexion.request.get_json())  # noqa: E501
     
     try:
+        if (len(body.email) == 0 or len(body.first_name) == 0 or len(body.last_name) == 0):
+            error = InvalidInputError(code=400, type="InvalidInputError", 
+                    message="The following mandatory fields were not provided: email or first name or last name")
+            return error, 400
+            
         con = psycopg2.connect(database= 'eventastic', user='postgres', password='postgrespw', port=port)
         con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
         cur = con.cursor()
+
         cur.execute('SELECT * FROM accounts where account_id = ' + str(account_id))
         record = cur.fetchone()
         if record == None:
-            error = AccountNotFoundError(
-                    code=404, type="AccountNotFoundError", 
+            error = AccountNotFoundError(code=404, type="AccountNotFoundError", 
                     message="The following Account ID does not exist: " + str(account_id))
             cur.close()
             con.close()
             return error, 404
-
-
-        if (len(body.first_name) == 0 or len(body.last_name) == 0):
-            error = AccountNotFoundError(
-                    code=400, type="InvalidInputError", 
-                    message="The following mandatory fields were not provided: first name or last name")
-            return error, 400
 
         tags_string = ""
         tag_length = len(body.tags)
@@ -320,7 +328,7 @@ def update_account(account_id, body):  # noqa: E501
         error = UnexpectedServiceError(code="500", type="UnexpectedServiceError", message=str(e))
         return error, 500
         
-    return "Account updated successfully with ID: "+str(acc_id), 200
+    return body, 200
 
 
 def update_credit_card(account_id, body):  # noqa: E501
@@ -340,28 +348,45 @@ def update_credit_card(account_id, body):  # noqa: E501
 
     try:       
         if (len(body.card_name) == 0 or len(body.card_number) == 0 or len(body.card_type) == 0 or len(body.card_expiry) == 0):
-            error = AccountNotFoundError(
-                    code=400, type="InvalidInputError", 
+            error = InvalidInputError(code=400, type="InvalidInputError", 
                     message="The following mandatory fields were not provided: card name or number or type or expiry")
             return error, 400
 
         con = psycopg2.connect(database= 'eventastic', user='postgres', password='postgrespw', port=port)
         con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
         cur = con.cursor()
-        
-        insert_string = "INSERT INTO saved_cards VALUES (default, %s,%s,%s,%s,%s) RETURNING id;"
-        cur.execute(insert_string, (account_id, body.card_name, body.card_number, body.card_type, body.card_expiry))
-        card_id = cur.fetchone()[0]
 
-        cur.close()
-        con.close()            
+        # to check if this account exists in database or not
+        cur.execute('SELECT * FROM accounts where account_id = ' + str(account_id))
+        record = cur.fetchone()
+        if record == None:
+            error = AccountNotFoundError(
+                    code=404, type="AccountNotFoundError", 
+                    message="The following Account ID does not exist: " + str(account_id))
+            cur.close()
+            con.close()
+            return error, 404
+        
+        cur.execute('SELECT * FROM saved_cards where account_id = ' + str(account_id))
+        record = cur.fetchone()
+        if record == None: # to add the card details if it doesn't exists
+            insert_string = "INSERT INTO saved_cards VALUES (default, %s,%s,%s,%s,%s) RETURNING id;"
+            cur.execute(insert_string, (account_id, body.card_name, body.card_number, body.card_type, body.card_expiry))
+            card_id = cur.fetchone()[0]
+        else: # to update the card details if it already  exists
+            update_string = "UPDATE saved_cards set card_name=%s, card_number=%s, card_type=%s, card_expiry=%s \
+            where account_id = %s RETURNING account_id;"
+            cur.execute(update_string, (body.card_name, body.card_number, body.card_type, body.card_expiry, account_id))
+            acc_id = cur.fetchone()[0]
         
     except Exception as e:
         # catch any unexpected runtime error and return as 500 error 
         error = UnexpectedServiceError(code="500", type="UnexpectedServiceError", message=str(e))
         return error, 500
 
-    return "Card updated successfully with id: "+str(card_id), 200
+    cur.close()
+    con.close() 
+    return body, 200
 
 
 def update_host_details(account_id, body):  # noqa: E501
@@ -379,22 +404,44 @@ def update_host_details(account_id, body):  # noqa: E501
     if connexion.request.is_json:
         body = HostDetails.from_dict(connexion.request.get_json())  # noqa: E501
 
-    try:        
+    try:       
+        if (len(body.org_name) == 0 or len(body.host_contact_no) == 0 or len(body.job_title) == 0 or len(body.qualification) == 0):
+            error = InvalidInputError(code=400, type="InvalidInputError", 
+                    message="The following mandatory fields were not provided: organisation name or contact number or title or qualification")
+            return error, 400
+
         con = psycopg2.connect(database= 'eventastic', user='postgres', password='postgrespw', port=port)
         con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
         cur = con.cursor()
-        
-        insert_string = "INSERT INTO hosts VALUES (default, %s,%s,%s,%s,%s,%s,%s) RETURNING id;"
-        cur.execute(insert_string, (account_id, body.org_name, body.org_desc, body.host_contact_no, body.job_title, \
-            body.qualification, body.is_verified))
-        host_id = cur.fetchone()[0]
 
-        cur.close()
-        con.close()            
+        cur.execute('SELECT * FROM accounts where account_id = ' + str(account_id))
+        record = cur.fetchone()
+        if record == None:
+            error = AccountNotFoundError(code=404, type="AccountNotFoundError", 
+                    message="The following Account ID does not exist: " + str(account_id))
+            cur.close()
+            con.close()
+            return error, 404
+        
+        cur.execute('SELECT * FROM hosts where account_id = ' + str(account_id))
+        record = cur.fetchone()
+        if record == None: # to add the host details if it doesn't exists
+            insert_string = "INSERT INTO hosts VALUES (default, %s,%s,%s,%s,%s,%s,%s) RETURNING id;"
+            cur.execute(insert_string, (account_id, body.org_name, body.org_desc, body.host_contact_no, body.job_title, \
+                        body.qualification, body.is_verified))
+            host_id = cur.fetchone()[0]
+        else: # to update the host details if it already  exists
+            update_string = "UPDATE hosts set organisation_name=%s, organisation_desc=%s, host_contact_no=%s, job_title=%s, \
+                qualification=%s, is_verified=%s where account_id = %s RETURNING account_id;"
+            cur.execute(update_string, (body.org_name, body.org_desc, body.host_contact_no, body.job_title, \
+                        body.qualification, body.is_verified, account_id))
+            acc_id = cur.fetchone()[0]
         
     except Exception as e:
         # catch any unexpected runtime error and return as 500 error 
         error = UnexpectedServiceError(code="500", type="UnexpectedServiceError", message=str(e))
         return error, 500
 
-    return "Host details updated successfully with id: "+str(host_id), 200
+    cur.close()
+    con.close()
+    return body, 200
