@@ -1,8 +1,10 @@
-import React from 'react'
+import { PageContainer } from '../components/styles/layouts.styled'
 
 const AdminPage = () => {
   return (
-    <div>AdminPage</div>
+    <PageContainer maxWidth='lg'>
+      <div>AdminPage</div>
+    </PageContainer>
   )
 }
 

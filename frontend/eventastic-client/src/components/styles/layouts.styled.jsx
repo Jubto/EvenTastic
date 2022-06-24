@@ -1,23 +1,15 @@
 import { styled } from '@mui/material/styles';
-import { Container as muiContainer } from '@mui/material';
+import { Container as muiContainer, Box } from '@mui/material';
 
 
-export const FlexBox = styled('div')`
+export const FlexBox = styled(Box)`
   display: flex;
   flex-direction: ${({ direction }) => direction || 'row'};
   justify-content: ${({ justify }) => justify};
   align-items: ${({ align }) => align};
   flex-grow: ${({ grow }) => grow};
   flex-wrap: ${({ wrap }) => wrap};
-`;
-
-
-export const Box = styled('div')`
-  ${({ clickable }) => {
-      if (clickable) {
-        return 'cursor: pointer'
-        }
-  }};
+  gap: ${({ gap }) => gap};
 `;
 
 

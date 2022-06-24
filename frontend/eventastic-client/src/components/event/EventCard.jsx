@@ -1,4 +1,3 @@
-import React from 'react'
 import { styled } from '@mui/material/styles';
 import { Grid, Card, CardHeader, CardMedia, CardContent } from '@mui/material'
 import Typography from '@mui/material/Typography';
@@ -17,7 +16,7 @@ function formatDate(datetime) {
 
 const EventCard = ({ eventName, eventDesc, eventImage, eventStart }) => {
   return (
-    <Grid item xs={12} md={6} lg={4}>
+    <Grid item xs={12} sm={6} md={6} lg={4}>
       <StyledEventCard>
         <CardHeader title={eventName}/>
         <CardMedia
