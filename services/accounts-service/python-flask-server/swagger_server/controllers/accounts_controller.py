@@ -1,5 +1,7 @@
 import connexion
 import six
+import psycopg2
+from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT 
 
 from swagger_server.models.account import Account  # noqa: E501
 from swagger_server.models.account_list import AccountList  # noqa: E501
@@ -10,6 +12,7 @@ from swagger_server.models.invalid_input_error import InvalidInputError  # noqa:
 from swagger_server.models.unexpected_service_error import UnexpectedServiceError  # noqa: E501
 from swagger_server import util
 
+port=49156 # update port of postgres running in Docker here
 
 def create_account(body):  # noqa: E501
     """Used to create an Account.
@@ -23,7 +26,42 @@ def create_account(body):  # noqa: E501
     """
     if connexion.request.is_json:
         body = Account.from_dict(connexion.request.get_json())  # noqa: E501
-    return 'do some magic!'
+
+    try:
+        if (len(body.first_name) == 0 or len(body.last_name) == 0):
+            error = AccountNotFoundError(
+                    code=400, type="InvalidInputError", 
+                    message="The following mandatory fields were not provided: first name or last name")
+            return error, 400
+
+        tags_string = ""
+        tag_length = len(body.tags)
+        i=0
+        for tag in body.tags:
+            if i < tag_length-1:
+                tags_string = tags_string + tag.name + ','
+            else:
+                tags_string = tags_string + tag.name
+            i+=1
+
+        con = psycopg2.connect(database= 'eventastic', user='postgres', password='postgrespw', port=port)
+        con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+        cur = con.cursor()
+        
+        insert_string = "INSERT INTO accounts VALUES (default, %s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) RETURNING account_id;"
+        cur.execute(insert_string, (body.email, body.first_name, body.last_name, body.age, body.mobile, \
+            body.location, body.password, body.account_type, body.profile_pic, body.reward_points, tags_string))
+        acc_id = cur.fetchone()[0]
+
+        cur.close()
+        con.close()            
+        
+    except Exception as e:
+        # catch any unexpected runtime error and return as 500 error 
+        error = UnexpectedServiceError(code="500", type="UnexpectedServiceError", message=str(e))
+        return error, 500
+
+    return acc_id, 200
 
 
 def get_account_details(account_id):  # noqa: E501
@@ -36,7 +74,49 @@ def get_account_details(account_id):  # noqa: E501
 
     :rtype: Account
     """
-    return 'do some magic!'
+    try:
+        con = psycopg2.connect(database= 'eventastic', user='postgres', password='postgrespw', port=port)
+        con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+        cur = con.cursor()
+
+        cur.execute('SELECT * FROM accounts where account_id = ' + str(account_id))
+        record = cur.fetchone()
+        if record != None:
+            account = dict()
+            account['account_id'] = str(record[0])
+            account['account_type'] = str(record[8])
+            account['age'] = int(record[4])
+            account['email'] = str(record[1])
+            account['first_name'] = str(record[2])
+            account['last_name'] = str(record[3])
+            account['location'] = str(record[6])
+            account['mobile'] = str(record[5])
+            account['password'] = str(record[7])
+            account['profile_pic'] = str(record[9])
+            account['reward_points'] = str(record[10])
+            tags = str(record[11]).split(',')
+            tags_list = list()
+            for t in tags:
+                tags_list.append({"name": str(t)})
+            account['tags'] = tags_list
+        else:
+            error = AccountNotFoundError(
+                    code=404, type="AccountNotFoundError", 
+                    message="The following Account ID does not exist: " + str(account_id))
+            cur.close()
+            con.close()
+            return error, 404
+    except Exception as e:
+        # catch any unexpected runtime error and return as 500 error 
+        error = UnexpectedServiceError(code="500", type="UnexpectedServiceError", message=str(e))
+        cur.close()
+        con.close()
+        return error, 500
+
+
+    cur.close()
+    con.close()
+    return account, 200
 
 
 def get_credit_card(account_id):  # noqa: E501
@@ -49,7 +129,33 @@ def get_credit_card(account_id):  # noqa: E501
 
     :rtype: CreditCard
     """
-    return 'do some magic!'
+    try:
+        con = psycopg2.connect(database= 'eventastic', user='postgres', password='postgrespw', port=port)
+        con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+        cur = con.cursor()
+
+        cur.execute('SELECT * FROM accounts where account_id = ' + str(account_id))
+        record = cur.fetchone()
+        card = dict()
+        if record != None:             
+            card['card_name'] = str(record[0])
+            card['card_number'] = str(record[1])
+            card['card_type'] = str(record[2])
+            card['card_expiry'] = str(record[3])       
+        else:
+            cur.close()
+            con.close()
+            return CreditCard(), 200
+    except Exception as e:
+        # catch any unexpected runtime error and return as 500 error 
+        error = UnexpectedServiceError(code="500", type="UnexpectedServiceError", message=str(e))
+        cur.close()
+        con.close()
+        return error, 500
+
+    cur.close()
+    con.close()
+    return card, 200
 
 
 def get_host_details(account_id):  # noqa: E501
@@ -62,7 +168,37 @@ def get_host_details(account_id):  # noqa: E501
 
     :rtype: HostDetails
     """
-    return 'do some magic!'
+    try:
+        con = psycopg2.connect(database= 'eventastic', user='postgres', password='postgrespw', port=port)
+        con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+        cur = con.cursor()
+
+        cur.execute('SELECT * FROM hosts where account_id = ' + str(account_id))
+        record = cur.fetchone()
+        if record != None:
+            host = dict()
+            host['org_name'] = str(record[2])
+            host['org_desc'] = str(record[3])
+            host['host_contact_no'] = str(record[4])
+            host['job_title'] = str(record[5])
+            host['qualification'] = str(record[6])
+            host['isVerified'] = bool(record[7])
+            
+        else:
+            cur.close()
+            con.close()
+            return HostDetails(), 200
+    except Exception as e:
+        # catch any unexpected runtime error and return as 500 error 
+        error = UnexpectedServiceError(code="500", type="UnexpectedServiceError", message=str(e))
+        cur.close()
+        con.close()
+        return error, 500
+
+
+    cur.close()
+    con.close()
+    return host, 200
 
 
 def list_accounts(email=None, first_name=None, last_name=None):  # noqa: E501
@@ -79,7 +215,48 @@ def list_accounts(email=None, first_name=None, last_name=None):  # noqa: E501
 
     :rtype: AccountList
     """
-    return 'do some magic!'
+    try:
+        con = psycopg2.connect(database= 'eventastic', user='postgres', password='postgrespw', port=port)
+        con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+        cur = con.cursor()
+
+        cur.execute("SELECT * FROM accounts where email = '"+str(email)+"';")
+        record = cur.fetchone()
+        if record != None:
+            account = dict()
+            account['account_id'] = str(record[0])
+            account['account_type'] = str(record[8])
+            account['age'] = int(record[4])
+            account['email'] = str(record[1])
+            account['first_name'] = str(record[2])
+            account['last_name'] = str(record[3])
+            account['location'] = str(record[6])
+            account['mobile'] = str(record[5])
+            account['password'] = str(record[7])
+            account['profile_pic'] = str(record[9])
+            account['reward_points'] = str(record[10])
+            tags = str(record[11]).split(',')
+            tags_list = list()
+            for t in tags:
+                tags_list.append({"name": str(t)})
+            account['tags'] = tags_list
+        else:
+            error = AccountNotFoundError(
+                    code=404, type="AccountNotFoundError", 
+                    message="Account does not exist with email ID: " + str(email))
+            cur.close()
+            con.close()
+            return error, 404
+    except Exception as e:
+        # catch any unexpected runtime error and return as 500 error 
+        error = UnexpectedServiceError(code="500", type="UnexpectedServiceError", message=str(e))
+        cur.close()
+        con.close()
+        return error, 500
+
+    cur.close()
+    con.close()
+    return [account], 200
 
 
 def update_account(account_id, body):  # noqa: E501
@@ -96,7 +273,54 @@ def update_account(account_id, body):  # noqa: E501
     """
     if connexion.request.is_json:
         body = Account.from_dict(connexion.request.get_json())  # noqa: E501
-    return 'do some magic!'
+    
+    try:
+        con = psycopg2.connect(database= 'eventastic', user='postgres', password='postgrespw', port=port)
+        con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+        cur = con.cursor()
+        cur.execute('SELECT * FROM accounts where account_id = ' + str(account_id))
+        record = cur.fetchone()
+        if record == None:
+            error = AccountNotFoundError(
+                    code=404, type="AccountNotFoundError", 
+                    message="The following Account ID does not exist: " + str(account_id))
+            cur.close()
+            con.close()
+            return error, 404
+
+
+        if (len(body.first_name) == 0 or len(body.last_name) == 0):
+            error = AccountNotFoundError(
+                    code=400, type="InvalidInputError", 
+                    message="The following mandatory fields were not provided: first name or last name")
+            return error, 400
+
+        tags_string = ""
+        tag_length = len(body.tags)
+        i=0
+        for tag in body.tags:
+            if i < tag_length-1:
+                tags_string = tags_string + tag.name + ','
+            else:
+                tags_string = tags_string + tag.name
+            i+=1
+
+        update_string = "UPDATE accounts set email=%s, first_name=%s, last_name=%s, age=%s, mobile_no=%s, \
+            location=%s, password=%s, account_type=%s, profile_pic=%s, reward_points=%s, tags=%s  \
+            where account_id = %s RETURNING account_id;"
+        cur.execute(update_string, (body.email, body.first_name, body.last_name, body.age, body.mobile, \
+            body.location, body.password, body.account_type, body.profile_pic, body.reward_points, tags_string, account_id))
+        acc_id = cur.fetchone()[0]
+
+        cur.close()
+        con.close()            
+        
+    except Exception as e:
+        # catch any unexpected runtime error and return as 500 error 
+        error = UnexpectedServiceError(code="500", type="UnexpectedServiceError", message=str(e))
+        return error, 500
+        
+    return "Account updated successfully with ID: "+str(acc_id), 200
 
 
 def update_credit_card(account_id, body):  # noqa: E501
@@ -113,7 +337,31 @@ def update_credit_card(account_id, body):  # noqa: E501
     """
     if connexion.request.is_json:
         body = CreditCard.from_dict(connexion.request.get_json())  # noqa: E501
-    return 'do some magic!'
+
+    try:       
+        if (len(body.card_name) == 0 or len(body.card_number) == 0 or len(body.card_type) == 0 or len(body.card_expiry) == 0):
+            error = AccountNotFoundError(
+                    code=400, type="InvalidInputError", 
+                    message="The following mandatory fields were not provided: card name or number or type or expiry")
+            return error, 400
+
+        con = psycopg2.connect(database= 'eventastic', user='postgres', password='postgrespw', port=port)
+        con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+        cur = con.cursor()
+        
+        insert_string = "INSERT INTO saved_cards VALUES (default, %s,%s,%s,%s,%s) RETURNING id;"
+        cur.execute(insert_string, (account_id, body.card_name, body.card_number, body.card_type, body.card_expiry))
+        card_id = cur.fetchone()[0]
+
+        cur.close()
+        con.close()            
+        
+    except Exception as e:
+        # catch any unexpected runtime error and return as 500 error 
+        error = UnexpectedServiceError(code="500", type="UnexpectedServiceError", message=str(e))
+        return error, 500
+
+    return "Card updated successfully with id: "+str(card_id), 200
 
 
 def update_host_details(account_id, body):  # noqa: E501
@@ -130,4 +378,23 @@ def update_host_details(account_id, body):  # noqa: E501
     """
     if connexion.request.is_json:
         body = HostDetails.from_dict(connexion.request.get_json())  # noqa: E501
-    return 'do some magic!'
+
+    try:        
+        con = psycopg2.connect(database= 'eventastic', user='postgres', password='postgrespw', port=port)
+        con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+        cur = con.cursor()
+        
+        insert_string = "INSERT INTO hosts VALUES (default, %s,%s,%s,%s,%s,%s,%s) RETURNING id;"
+        cur.execute(insert_string, (account_id, body.org_name, body.org_desc, body.host_contact_no, body.job_title, \
+            body.qualification, body.is_verified))
+        host_id = cur.fetchone()[0]
+
+        cur.close()
+        con.close()            
+        
+    except Exception as e:
+        # catch any unexpected runtime error and return as 500 error 
+        error = UnexpectedServiceError(code="500", type="UnexpectedServiceError", message=str(e))
+        return error, 500
+
+    return "Host details updated successfully with id: "+str(host_id), 200
