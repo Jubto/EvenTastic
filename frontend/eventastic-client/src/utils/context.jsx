@@ -1,17 +1,21 @@
-import React from 'react';
+import { useState, createContext } from 'react';
 import PropTypes from 'prop-types';
 
-export const StoreContext = React.createContext(null);
+export const StoreContext = createContext(null);
 
 const ContextProvider = ({ children }) => {
-  const [loggedIn, setLoggedIn] = React.useState('');
-  const [email, setEmail] = React.useState('');
-  const [userType, setUserType] = React.useState('');
+  const [loggedIn, setLoggedIn] = useState(null);
+  const [email, setEmail] = useState(null);
+  const [userType, setUserType] = useState(null);
+  const [userDp, setuserDp] = useState(null);
+  const [logInModal, setLogInModal] = useState(null);
 
   const states = {
     login: [loggedIn, setLoggedIn],
     email: [email, setEmail],
-    type: [userType, setUserType]
+    type: [userType, setUserType],
+    dp: [userDp, setuserDp],
+    logInModal: [logInModal, setLogInModal]
   };
 
   return (
@@ -26,4 +30,3 @@ ContextProvider.propTypes = {
 };
 
 export default ContextProvider;
-export const useAppContext = () => React.useContext(StoreContext)

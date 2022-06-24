@@ -1,8 +1,10 @@
-import React from 'react'
+import { PageContainer } from '../components/styles/layouts.styled'
 
 const TagsPage = () => {
   return (
-    <div>TagsPage</div>
+    <PageContainer maxWidth='lg'>
+      <div>TagsPage</div>
+    </PageContainer>
   )
 }
 

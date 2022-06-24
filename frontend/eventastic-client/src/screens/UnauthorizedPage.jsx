@@ -1,8 +1,10 @@
-import React from 'react'
+import { PageContainer } from '../components/styles/layouts.styled'
 
 const UnauthorizedPage = () => {
   return (
-    <div>UnauthorizedPage</div>
+    <PageContainer maxWidth='lg'>
+      <div>UnauthorizedPage</div>
+    </PageContainer>
   )
 }
 

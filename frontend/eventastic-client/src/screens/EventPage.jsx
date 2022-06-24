@@ -1,8 +1,10 @@
-import React from 'react'
+import { PageContainer } from '../components/styles/layouts.styled'
 
 const EventPage = () => {
   return (
-    <div>EventPage</div>
+    <PageContainer maxWidth='lg'>
+      <div>EventPage</div>
+    </PageContainer>
   )
 }
 
