@@ -1,5 +1,6 @@
 import connexion
 import six
+from sqlalchemy import false
 
 from swagger_server.models.invalid_input_error import InvalidInputError  # noqa: E501
 from swagger_server.models.unexpected_service_error import UnexpectedServiceError  # noqa: E501
@@ -101,4 +102,33 @@ def list_venues(venue_name=None):  # noqa: E501
 
     :rtype: VenueList
     """
-    return 'do some magic!'
+    try:
+
+        port = 49157
+        con = psycopg2.connect(database= 'eventastic', user='postgres', password='postgrespw', host="localhost", port=port)
+        con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+        cur = con.cursor()
+        
+        cur.execute("select * from venues")
+        venue_list = cur.fetchall()
+
+        for j in range(len(venue_list)):
+            cur.execute(f"select seating_type, seating_number from venue_seating where venue_id={venue_list[j][0]}")
+            venue_seatings = cur.fetchall()
+            for i in range(len(venue_seatings)):
+                seat_record = venue_seatings[i]
+                venue_seatings[i] = {'seating_type':seat_record[0],'seating_number':seat_record[1]}
+            venue_list[j] = {'seating':venue_seatings,'venue_id':venue_list[j][0], 'venue_name':venue_list[j][1], 'venue_desc':venue_list[j][2], 'venue_img':venue_list[j][3], 'venue_address':venue_list[j][4] }
+
+        # filter the list of venues by venue name
+        if venue_name:
+            filtered = list(filter(lambda venue: venue_name.lower() in venue['venue_name'].lower(), venue_list))
+            return filtered, 200, {'Access-Control-Allow-Origin': '*'}
+
+        # otherwise, just return the unfiltered list of Venues
+        return venue_list, 200, {'Access-Control-Allow-Origin': '*'}
+
+    except Exception as e:
+        # catch any unexpected runtime error and return as 500 error 
+        error = UnexpectedServiceError(code="500", type="UnexpectedServiceError", message=str(e))
+        return error, 500, {'Access-Control-Allow-Origin': '*'}
