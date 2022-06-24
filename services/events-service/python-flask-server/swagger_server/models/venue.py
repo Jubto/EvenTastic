@@ -16,7 +16,7 @@ class Venue(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, venue_id: int=None, venue_name: str=None, venue_desc: str=None, venue_img: str=None, seating: List[Seating]=None):  # noqa: E501
+    def __init__(self, venue_id: int=None, venue_name: str=None, venue_desc: str=None, venue_img: str=None, venue_address: str=None, seating: List[Seating]=None):  # noqa: E501
         """Venue - a model defined in Swagger
 
         :param venue_id: The venue_id of this Venue.  # noqa: E501
@@ -27,6 +27,8 @@ class Venue(Model):
         :type venue_desc: str
         :param venue_img: The venue_img of this Venue.  # noqa: E501
         :type venue_img: str
+        :param venue_address: The venue_address of this Venue.  # noqa: E501
+        :type venue_address: str
         :param seating: The seating of this Venue.  # noqa: E501
         :type seating: List[Seating]
         """
@@ -35,6 +37,7 @@ class Venue(Model):
             'venue_name': str,
             'venue_desc': str,
             'venue_img': str,
+            'venue_address': str,
             'seating': List[Seating]
         }
 
@@ -43,6 +46,7 @@ class Venue(Model):
             'venue_name': 'venue_name',
             'venue_desc': 'venue_desc',
             'venue_img': 'venue_img',
+            'venue_address': 'venue_address',
             'seating': 'seating'
         }
 
@@ -50,6 +54,7 @@ class Venue(Model):
         self._venue_name = venue_name
         self._venue_desc = venue_desc
         self._venue_img = venue_img
+        self._venue_address = venue_address
         self._seating = seating
 
     @classmethod
@@ -146,6 +151,27 @@ class Venue(Model):
         """
 
         self._venue_img = venue_img
+
+    @property
+    def venue_address(self) -> str:
+        """Gets the venue_address of this Venue.
+
+
+        :return: The venue_address of this Venue.
+        :rtype: str
+        """
+        return self._venue_address
+
+    @venue_address.setter
+    def venue_address(self, venue_address: str):
+        """Sets the venue_address of this Venue.
+
+
+        :param venue_address: The venue_address of this Venue.
+        :type venue_address: str
+        """
+
+        self._venue_address = venue_address
 
     @property
     def seating(self) -> List[Seating]:
