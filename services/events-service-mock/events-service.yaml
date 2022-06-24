@@ -170,7 +170,10 @@ definitions:
         example: "The Sydney Opera House is a multi-venue performing arts centre in Sydney."
       venue_img:
         type: string
-        example: "1603dfd6-efb6-11ec-8ea0-0242ac120002"
+        example: "1603dfd6-efb6-11ec-8ea0-0242ac120002.jpeg"
+      venue_address:
+        type: string
+        example: "20 Smith Street, Newtown, NSW, 2000"
       seating:
         type: array
         items:
@@ -217,7 +220,7 @@ definitions:
         example: "Shark Hotel Sydney, NSW"
       event_img:
         type: string
-        example: "1603dfd6-efb6-11ec-8ea0-0242ac120002"
+        example: "1603dfd6-efb6-11ec-8ea0-0242ac120002.jpeg"
       tags:
         type: array
         items:
