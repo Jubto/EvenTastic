@@ -180,14 +180,18 @@ definitions:
           \ Sydney."
       venue_img:
         type: "string"
-        example: "1603dfd6-efb6-11ec-8ea0-0242ac120002"
+        example: "1603dfd6-efb6-11ec-8ea0-0242ac120002.jpeg"
+      venue_address:
+        type: "string"
+        example: "20 Smith Street, Newtown, NSW, 2000"
       seating:
         type: "array"
         items:
           $ref: "#/definitions/Seating"
     example:
       venue_name: "Sydney Opera House"
-      venue_img: "1603dfd6-efb6-11ec-8ea0-0242ac120002"
+      venue_img: "1603dfd6-efb6-11ec-8ea0-0242ac120002.jpeg"
+      venue_address: "20 Smith Street, Newtown, NSW, 2000"
       venue_desc: "The Sydney Opera House is a multi-venue performing arts centre\
         \ in Sydney."
       venue_id: 1
@@ -238,7 +242,7 @@ definitions:
         example: "Shark Hotel Sydney, NSW"
       event_img:
         type: "string"
-        example: "1603dfd6-efb6-11ec-8ea0-0242ac120002"
+        example: "1603dfd6-efb6-11ec-8ea0-0242ac120002.jpeg"
       tags:
         type: "array"
         items:
@@ -250,7 +254,7 @@ definitions:
       event_end_datetime: "2015-03-25T23:00:00+10:00"
       event_location: "Shark Hotel Sydney, NSW"
       event_title: "Sydney KPOP Party"
-      event_img: "1603dfd6-efb6-11ec-8ea0-0242ac120002"
+      event_img: "1603dfd6-efb6-11ec-8ea0-0242ac120002.jpeg"
       event_category: "Music"
       event_start_datetime: "2015-03-25T19:00:00+10:00"
       host_id: 12
