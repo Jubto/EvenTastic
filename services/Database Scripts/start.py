@@ -1,28 +1,29 @@
 import psycopg2
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT 
 
-port=49155 # update port of postgres running in Docker here
+port=49157 # update port of postgres running in Docker here
 
-# Only run create database once
+""" Only run create database once
 con = psycopg2.connect(user='postgres', password='postgrespw', port=port)
 con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
 cur = con.cursor()
 cur.execute('CREATE DATABASE eventastic')
 cur.close()
 con.close()
+"""
 
 con = psycopg2.connect(database= 'eventastic', user='postgres', password='postgrespw', host="localhost", port=port)
 con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
 cur = con.cursor()
 
-"""
+
 cur.execute('drop TABLE hosts cascade;')
 cur.execute('drop TABLE saved_cards cascade;')
 cur.execute('drop TABLE accounts cascade;')
 cur.execute('drop TABLE venues cascade;')
 cur.execute('drop TABLE venue_seating cascade;')
 cur.execute('drop TABLE events cascade;')
-"""
+
 
 # Only run create tables once
 cur.execute('CREATE TABLE accounts (\
@@ -129,6 +130,28 @@ cur.execute("INSERT INTO  venues values(default, 'Establishment Ballroom', 'A st
 cur.execute("INSERT INTO  venues values(default, 'Doltone House Hyde Park', 'Doltone House Hyde Park offers contemporary sophistication opposite Sydney Hyde Park, with floor to ceiling arched windows.', 'uuid', '3/181 Elizabeth St, Sydney NSW 2000');")
 cur.execute("INSERT INTO  venues values(default, 'The Venue Alexandria', 'Sydney Premium Major Event Venue! State of art warehouse conversion with industrial and modern design elements across three diverse event spaces.', 'uuid', '55 Doody St, Alexandria NSW 2015');")
 
+cur.execute("INSERT INTO venue_seating values (default, 1,'front',100);")
+cur.execute("INSERT INTO venue_seating values (default, 1,'middle',100);")
+cur.execute("INSERT INTO venue_seating values (default, 2,'back',100);")
+cur.execute("INSERT INTO venue_seating values (default, 2,'front',100);")
+cur.execute("INSERT INTO venue_seating values (default, 2,'middle',100);")
+cur.execute("INSERT INTO venue_seating values (default, 3,'back',100);")
+cur.execute("INSERT INTO venue_seating values (default, 3,'front',100);")
+cur.execute("INSERT INTO venue_seating values (default, 3,'middle',100);")
+cur.execute("INSERT INTO venue_seating values (default, 4,'back',100);")
+cur.execute("INSERT INTO venue_seating values (default, 4,'front',100);")
+cur.execute("INSERT INTO venue_seating values (default, 4,'middle',100);")
+cur.execute("INSERT INTO venue_seating values (default, 5,'back',100);")
+cur.execute("INSERT INTO venue_seating values (default, 5,'middle',100);")
+cur.execute("INSERT INTO venue_seating values (default, 6,'front',100);")
+cur.execute("INSERT INTO venue_seating values (default, 6,'middle',100);")
+
+cur.execute("INSERT INTO  events values(default, 1, 1,'Musical Event', 'Category1','Short Desc1','Event Full Desc1',TO_DATE('17/12/2022', 'DD/MM/YYYY'),'12:00:00',TO_DATE('17/12/2015', 'DD/MM/YYYY'),'14:00:00','Opera House','uuid','Tag1,Tag2,Tag3');")
+cur.execute("INSERT INTO  events values(default, 1, 2,'Ring Ceremony', 'Category2','Short Desc2', 'Event Full Desc2',TO_DATE('10/12/2022', 'DD/MM/YYYY'),'13:00:00',TO_DATE('10/12/2022', 'DD/MM/YYYY'),'16:00:00','Curzon Hall','uuid','Tag4,Tag5,Tag6');")
+cur.execute("INSERT INTO  events values(default, 2, 3,'Cocktail Party','Category3','Short Desc3','Event Full Desc3',TO_DATE('15/10/2022', 'DD/MM/YYYY'),'14:00:00',TO_DATE('10/12/2022', 'DD/MM/YYYY'),'17:00:00','Dockside','uuid', 'Tag4,Tag5,Tag6');")
+cur.execute("INSERT INTO  events values(default, 2, 4,'Charity Event','Category4','Short Desc4','Event Full Desc4',TO_DATE('11/10/2022', 'DD/MM/YYYY'),'14:00:00',TO_DATE('11/12/2022', 'DD/MM/YYYY'), '18:00:00','Establishment Ballroom','uuid','Tag7,Tag8,Tag9');")
+cur.execute("INSERT INTO  events values(default, 3, 5,'Company X Celebrations','Category5','Short Desc5','Event Full Desc5',TO_DATE('11/9/2022', 'DD/MM/YYYY'),'15:00:00',TO_DATE('11/9/2022', 'DD/MM/YYYY'),'18:00:00','Doltone House Hyde Park','uuid', 'Tag10,Tag11,Tag12');")
+cur.execute("INSERT INTO  events values(default, 3, 6,'Birthday Party','Category6','Short Desc6','Event Full Desc6',TO_DATE('13/10/2022', 'DD/MM/YYYY'),'15:00:00',TO_DATE('13/12/2022', 'DD/MM/YYYY'), '19:00:00', 'The Venue Alexandria','uuid','Tag13,Tag14,Tag15');")
 #"""
 
 cur.execute('SELECT * FROM accounts')
@@ -156,6 +179,29 @@ for row in records:
         print(row[j], end=" ")
     print()
 
+cur.execute('SELECT * FROM venues')
+records = cur.fetchall()
+print("\nSaved venue details")
+for row in records:
+    for j in range(len(row)):
+        print(row[j], end=" ")
+    print()
+
+cur.execute('SELECT * FROM events')
+records = cur.fetchall()
+print("\nSaved event details")
+for row in records:
+    for j in range(len(row)):
+        print(row[j], end=" ")
+    print()
+
+cur.execute('SELECT * FROM venue_seating')
+records = cur.fetchall()
+print("\nVenue_seating details")
+for row in records:
+    for j in range(len(row)):
+        print(row[j], end=" ")
+    print()
 
 cur.close()
 con.close()
