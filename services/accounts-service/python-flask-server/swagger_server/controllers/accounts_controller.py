@@ -299,6 +299,7 @@ def update_account(account_id, body):  # noqa: E501
         con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
         cur = con.cursor()
 
+        # to check if the account id exists or not
         cur.execute('SELECT * FROM accounts where account_id = ' + str(account_id))
         record = cur.fetchone()
         if record == None:
@@ -420,6 +421,7 @@ def update_host_details(account_id, body):  # noqa: E501
         con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
         cur = con.cursor()
 
+        # to check if the account id exists or not
         cur.execute('SELECT * FROM accounts where account_id = ' + str(account_id))
         record = cur.fetchone()
         if record == None:
