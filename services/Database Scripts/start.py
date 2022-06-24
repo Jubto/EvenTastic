@@ -36,7 +36,7 @@ cur.execute('CREATE TABLE accounts (\
             location VARCHAR(50),\
             password VARCHAR(50),\
             account_type VARCHAR(20),\
-            profile_pic VARCHAR(30),\
+            profile_pic VARCHAR(50),\
             reward_points VARCHAR(10),\
             tags TEXT);')
 
@@ -131,6 +131,20 @@ cur.execute("INSERT INTO  venues values(default, 'Doltone House Hyde Park', 'Dol
 cur.execute("INSERT INTO  venues values(default, 'The Venue Alexandria', 'Sydney Premium Major Event Venue! State of art warehouse conversion with industrial and modern design elements across three diverse event spaces.', 'uuid', '55 Doody St, Alexandria NSW 2015');")
 
 cur.execute("INSERT INTO venue_seating values (default, 1,'front',100);")
+cur.execute("INSERT INTO venue_seating values (default, 1,'middle',100);")
+cur.execute("INSERT INTO venue_seating values (default, 2,'back',100);")
+cur.execute("INSERT INTO venue_seating values (default, 2,'front',100);")
+cur.execute("INSERT INTO venue_seating values (default, 2,'middle',100);")
+cur.execute("INSERT INTO venue_seating values (default, 3,'back',100);")
+cur.execute("INSERT INTO venue_seating values (default, 3,'front',100);")
+cur.execute("INSERT INTO venue_seating values (default, 3,'middle',100);")
+cur.execute("INSERT INTO venue_seating values (default, 4,'back',100);")
+cur.execute("INSERT INTO venue_seating values (default, 4,'front',100);")
+cur.execute("INSERT INTO venue_seating values (default, 4,'middle',100);")
+cur.execute("INSERT INTO venue_seating values (default, 5,'back',100);")
+cur.execute("INSERT INTO venue_seating values (default, 5,'middle',100);")
+cur.execute("INSERT INTO venue_seating values (default, 6,'front',100);")
+cur.execute("INSERT INTO venue_seating values (default, 6,'middle',100);")
 
 cur.execute("INSERT INTO  events values(default, 1, 1,'Musical Event', 'Category1','Short Desc1','Event Full Desc1',TO_DATE('17/12/2022', 'DD/MM/YYYY'),'12:00:00',TO_DATE('17/12/2015', 'DD/MM/YYYY'),'14:00:00','Opera House','uuid','Tag1,Tag2,Tag3');")
 cur.execute("INSERT INTO  events values(default, 1, 2,'Ring Ceremony', 'Category2','Short Desc2', 'Event Full Desc2',TO_DATE('10/12/2022', 'DD/MM/YYYY'),'13:00:00',TO_DATE('10/12/2022', 'DD/MM/YYYY'),'16:00:00','Curzon Hall','uuid','Tag4,Tag5,Tag6');")
