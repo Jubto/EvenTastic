@@ -24,14 +24,15 @@ def create_account(body):  # noqa: E501
 
     :rtype: Account
     """
-    if connexion.request.is_json:
-        body = Account.from_dict(connexion.request.get_json())  # noqa: E501
 
     try:
+        if connexion.request.is_json:
+            body = Account.from_dict(connexion.request.get_json())  # noqa: E501
+
         if (len(body.email) == 0 or len(body.first_name) == 0 or len(body.last_name) == 0):
             error = InvalidInputError(code=400, type="InvalidInputError", 
                     message="The following mandatory fields were not provided: email or first name or last name")
-            return error, 400
+            return error, 400, {'Access-Control-Allow-Origin': '*'}
 
         tags_string = ""
         tag_length = len(body.tags)
@@ -54,13 +55,12 @@ def create_account(body):  # noqa: E501
 
         cur.close()
         con.close()            
-        
+        return body, 201, {'Access-Control-Allow-Origin': '*'}
+
     except Exception as e:
         # catch any unexpected runtime error and return as 500 error 
         error = UnexpectedServiceError(code="500", type="UnexpectedServiceError", message=str(e))
-        return error, 500
-
-    return body, 201
+        return error, 500, {'Access-Control-Allow-Origin': '*'}
 
 
 def get_account_details(account_id):  # noqa: E501
@@ -103,17 +103,18 @@ def get_account_details(account_id):  # noqa: E501
                     message="The following Account ID does not exist: " + str(account_id))
             cur.close()
             con.close()
-            return error, 404
+            return error, 404, {'Access-Control-Allow-Origin': '*'}
+        
+        cur.close()
+        con.close()
+        return account, 200, {'Access-Control-Allow-Origin': '*'}
+
     except Exception as e:
         # catch any unexpected runtime error and return as 500 error 
         error = UnexpectedServiceError(code="500", type="UnexpectedServiceError", message=str(e))
         cur.close()
         con.close()
-        return error, 500
-
-    cur.close()
-    con.close()
-    return account, 200
+        return error, 500, {'Access-Control-Allow-Origin': '*'}
 
 
 def get_credit_card(account_id):  # noqa: E501
@@ -138,7 +139,7 @@ def get_credit_card(account_id):  # noqa: E501
                     message="The following Account ID does not exist: " + str(account_id))
             cur.close()
             con.close()
-            return error, 404
+            return error, 404, {'Access-Control-Allow-Origin': '*'}
 
         cur.execute('SELECT * FROM saved_cards where account_id = ' + str(account_id))
         record = cur.fetchone()
@@ -151,17 +152,18 @@ def get_credit_card(account_id):  # noqa: E501
         else:
             cur.close()
             con.close()
-            return CreditCard(), 200
+            return CreditCard(), 200, {'Access-Control-Allow-Origin': '*'}
+
+        cur.close()
+        con.close()
+        return card, 200, {'Access-Control-Allow-Origin': '*'}
+
     except Exception as e:
         # catch any unexpected runtime error and return as 500 error 
         error = UnexpectedServiceError(code="500", type="UnexpectedServiceError", message=str(e))
         cur.close()
         con.close()
-        return error, 500
-
-    cur.close()
-    con.close()
-    return card, 200
+        return error, 500, {'Access-Control-Allow-Origin': '*'}
 
 
 def get_host_details(account_id):  # noqa: E501
@@ -186,7 +188,7 @@ def get_host_details(account_id):  # noqa: E501
                     message="The following Account ID does not exist: " + str(account_id))
             cur.close()
             con.close()
-            return error, 404
+            return error, 404, {'Access-Control-Allow-Origin': '*'}
 
         cur.execute('SELECT * FROM hosts where account_id = ' + str(account_id))
         record = cur.fetchone()
@@ -201,17 +203,18 @@ def get_host_details(account_id):  # noqa: E501
         else:
             cur.close()
             con.close()
-            return HostDetails(), 200
+            return HostDetails(), 200, {'Access-Control-Allow-Origin': '*'}
+
+        cur.close()
+        con.close()
+        return host, 200, {'Access-Control-Allow-Origin': '*'}
+
     except Exception as e:
         # catch any unexpected runtime error and return as 500 error 
         error = UnexpectedServiceError(code="500", type="UnexpectedServiceError", message=str(e))
         cur.close()
         con.close()
-        return error, 500
-
-    cur.close()
-    con.close()
-    return host, 200
+        return error, 500, {'Access-Control-Allow-Origin': '*'}
 
 
 def list_accounts(email=None, first_name=None, last_name=None):  # noqa: E501
@@ -256,17 +259,18 @@ def list_accounts(email=None, first_name=None, last_name=None):  # noqa: E501
         else:
             cur.close()
             con.close()
-            return [], 200
+            return [], 200, {'Access-Control-Allow-Origin': '*'}
+
+        cur.close()
+        con.close()
+        return [account], 200, {'Access-Control-Allow-Origin': '*'}
+
     except Exception as e:
         # catch any unexpected runtime error and return as 500 error 
         error = UnexpectedServiceError(code="500", type="UnexpectedServiceError", message=str(e))
         cur.close()
         con.close()
-        return error, 500
-
-    cur.close()
-    con.close()
-    return [account], 200
+        return error, 500, {'Access-Control-Allow-Origin': '*'}
 
 
 def update_account(account_id, body):  # noqa: E501
@@ -281,14 +285,15 @@ def update_account(account_id, body):  # noqa: E501
 
     :rtype: Account
     """
-    if connexion.request.is_json:
-        body = Account.from_dict(connexion.request.get_json())  # noqa: E501
     
     try:
+        if connexion.request.is_json:
+            body = Account.from_dict(connexion.request.get_json())  # noqa: E501
+
         if (len(body.email) == 0 or len(body.first_name) == 0 or len(body.last_name) == 0):
             error = InvalidInputError(code=400, type="InvalidInputError", 
                     message="The following mandatory fields were not provided: email or first name or last name")
-            return error, 400
+            return error, 400, {'Access-Control-Allow-Origin': '*'}
             
         con = psycopg2.connect(database= 'eventastic', user='postgres', password='postgrespw', port=port)
         con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
@@ -301,7 +306,7 @@ def update_account(account_id, body):  # noqa: E501
                     message="The following Account ID does not exist: " + str(account_id))
             cur.close()
             con.close()
-            return error, 404
+            return error, 404, {'Access-Control-Allow-Origin': '*'}
 
         tags_string = ""
         tag_length = len(body.tags)
@@ -321,14 +326,13 @@ def update_account(account_id, body):  # noqa: E501
         acc_id = cur.fetchone()[0]
 
         cur.close()
-        con.close()            
-        
+        con.close()                    
+        return body, 200, {'Access-Control-Allow-Origin': '*'}
+
     except Exception as e:
         # catch any unexpected runtime error and return as 500 error 
         error = UnexpectedServiceError(code="500", type="UnexpectedServiceError", message=str(e))
-        return error, 500
-        
-    return body, 200
+        return error, 500, {'Access-Control-Allow-Origin': '*'}
 
 
 def update_credit_card(account_id, body):  # noqa: E501
@@ -343,14 +347,15 @@ def update_credit_card(account_id, body):  # noqa: E501
 
     :rtype: CreditCard
     """
-    if connexion.request.is_json:
-        body = CreditCard.from_dict(connexion.request.get_json())  # noqa: E501
 
-    try:       
+    try: 
+        if connexion.request.is_json:
+            body = CreditCard.from_dict(connexion.request.get_json())  # noqa: E501
+
         if (len(body.card_name) == 0 or len(body.card_number) == 0 or len(body.card_type) == 0 or len(body.card_expiry) == 0):
             error = InvalidInputError(code=400, type="InvalidInputError", 
                     message="The following mandatory fields were not provided: card name or number or type or expiry")
-            return error, 400
+            return error, 400, {'Access-Control-Allow-Origin': '*'}
 
         con = psycopg2.connect(database= 'eventastic', user='postgres', password='postgrespw', port=port)
         con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
@@ -365,7 +370,7 @@ def update_credit_card(account_id, body):  # noqa: E501
                     message="The following Account ID does not exist: " + str(account_id))
             cur.close()
             con.close()
-            return error, 404
+            return error, 404, {'Access-Control-Allow-Origin': '*'}
         
         cur.execute('SELECT * FROM saved_cards where account_id = ' + str(account_id))
         record = cur.fetchone()
@@ -379,14 +384,14 @@ def update_credit_card(account_id, body):  # noqa: E501
             cur.execute(update_string, (body.card_name, body.card_number, body.card_type, body.card_expiry, account_id))
             acc_id = cur.fetchone()[0]
         
+        cur.close()
+        con.close() 
+        return body, 200, {'Access-Control-Allow-Origin': '*'}
+
     except Exception as e:
         # catch any unexpected runtime error and return as 500 error 
         error = UnexpectedServiceError(code="500", type="UnexpectedServiceError", message=str(e))
-        return error, 500
-
-    cur.close()
-    con.close() 
-    return body, 200
+        return error, 500, {'Access-Control-Allow-Origin': '*'}
 
 
 def update_host_details(account_id, body):  # noqa: E501
@@ -401,14 +406,15 @@ def update_host_details(account_id, body):  # noqa: E501
 
     :rtype: HostDetails
     """
-    if connexion.request.is_json:
-        body = HostDetails.from_dict(connexion.request.get_json())  # noqa: E501
 
-    try:       
+    try: 
+        if connexion.request.is_json:
+            body = HostDetails.from_dict(connexion.request.get_json())  # noqa: E501
+
         if (len(body.org_name) == 0 or len(body.host_contact_no) == 0 or len(body.job_title) == 0 or len(body.qualification) == 0):
             error = InvalidInputError(code=400, type="InvalidInputError", 
                     message="The following mandatory fields were not provided: organisation name or contact number or title or qualification")
-            return error, 400
+            return error, 400, {'Access-Control-Allow-Origin': '*'}
 
         con = psycopg2.connect(database= 'eventastic', user='postgres', password='postgrespw', port=port)
         con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
@@ -421,7 +427,7 @@ def update_host_details(account_id, body):  # noqa: E501
                     message="The following Account ID does not exist: " + str(account_id))
             cur.close()
             con.close()
-            return error, 404
+            return error, 404, {'Access-Control-Allow-Origin': '*'}
         
         cur.execute('SELECT * FROM hosts where account_id = ' + str(account_id))
         record = cur.fetchone()
@@ -436,12 +442,12 @@ def update_host_details(account_id, body):  # noqa: E501
             cur.execute(update_string, (body.org_name, body.org_desc, body.host_contact_no, body.job_title, \
                         body.qualification, body.is_verified, account_id))
             acc_id = cur.fetchone()[0]
-        
+
+        cur.close()
+        con.close()
+        return body, 200, {'Access-Control-Allow-Origin': '*'}
+
     except Exception as e:
         # catch any unexpected runtime error and return as 500 error 
         error = UnexpectedServiceError(code="500", type="UnexpectedServiceError", message=str(e))
-        return error, 500
-
-    cur.close()
-    con.close()
-    return body, 200
+        return error, 500, {'Access-Control-Allow-Origin': '*'}
