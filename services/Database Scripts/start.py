@@ -53,7 +53,8 @@ cur.execute('CREATE TABLE venues (\
             venue_id SERIAL PRIMARY KEY, \
             venue_name TEXT, \
             venue_desc TEXT, \
-            venue_img TEXT);')
+            venue_img TEXT, \
+            venue_location TEXT);')
 
 cur.execute('CREATE TABLE venue_seating (\
             seating_id SERIAL PRIMARY KEY,\
@@ -110,6 +111,12 @@ cur.execute("INSERT INTO saved_cards values(default, 1, 'Vishal', '9999333366668
 cur.execute("INSERT INTO saved_cards values(default, 2, 'Bond', '7777777777777777', 'Credit', '7777');")
 cur.execute("INSERT INTO saved_cards values(default, 4, 'Neo', '9999999999999999', 'Debit', '9999');")
 
+cur.execute("INSERT INTO  venues values(default, 'Opera House', 'The Sydney Opera House is a multi-venue performing arts centre in Sydney', 'uuid', 'Bennelong Point, Sydney NSW 2000');")
+cur.execute("INSERT INTO  venues values(default, 'Curzon Hall', 'This elegantly appointed room is suitable for intimate style events. This room features ornate chandeliers, original elements and historic architecture', 'uuid', '53 Agincourt Rd, Marsfield NSW 2122');")
+cur.execute("INSERT INTO  venues values(default, 'Dockside', 'Dockside is an outstanding place for weddings, business events, conventions, gala dinners and cocktail parties', 'uuid', '2 Wheat Rd, Sydney NSW 2000');")
+cur.execute("INSERT INTO  venues values(default, 'Establishment Ballroom', 'A stylish and classy space hidden in the heritage Establishment building. Establishment Ballroom is made for elegant weddings and memorable celebrations', 'uuid', '252 George St, Sydney NSW 2000');")
+cur.execute("INSERT INTO  venues values(default, 'Doltone House Hyde Park', 'Doltone House Hyde Park offers contemporary sophistication opposite Sydney Hyde Park, with floor to ceiling arched windows.', 'uuid', '3/181 Elizabeth St, Sydney NSW 2000');")
+cur.execute("INSERT INTO  venues values(default, 'The Venue Alexandria', 'Sydney Premium Major Event Venue! State of art warehouse conversion with industrial and modern design elements across three diverse event spaces.', 'uuid', '55 Doody St, Alexandria NSW 2015');")
 
 #"""
 
