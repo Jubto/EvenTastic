@@ -1,1 +1,23 @@
+Week 1:
+	• Perused the different Project Descriptions, Proposal and Assessment guidelines.
+	• Formed project team during the lab. Voted on 3 Projects and finally a project was chosen by the team.
+	• Joined Microsoft Teams group and engaged in project discussion with the team members.
 
+Week 2:
+	• Joined GitHub and Jira for the project. 
+	• Had a discussion with the team members on the approach and technical architecture of the project.
+	• Created User Stories for functionalities: 'View Event Details','Buy Tickets','Modify Booking','Cancel Booking'.
+	• Added acceptance criterion for the above functionalities.
+	• Had a meeting with the team to discuss and provide feedback on all user stories.
+
+Week 3:
+	• Updated some user stories and acceptance criterion as required.
+	• Created mockups for functionalities: 'View Event Details','Buy Tickets','Cancel Booking','Add Venues','Remove Reviews'.
+	• Added content for 'Background' section and the mockups in the proposal document
+	• Had a meeting with the team to discuss the whole proposal document and advised points for improvement.
+
+Week 4:
+	• Created the schema design for the six database tables required for sprint 1.
+	• Added the code to create and populate tables 'accounts','hosts','saved_cards'.
+	• Created the eight API functions for adding and updating accounts, hosts and cards functionalities.
+	• 
