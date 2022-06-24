@@ -130,6 +130,8 @@ cur.execute("INSERT INTO  venues values(default, 'Establishment Ballroom', 'A st
 cur.execute("INSERT INTO  venues values(default, 'Doltone House Hyde Park', 'Doltone House Hyde Park offers contemporary sophistication opposite Sydney Hyde Park, with floor to ceiling arched windows.', 'uuid', '3/181 Elizabeth St, Sydney NSW 2000');")
 cur.execute("INSERT INTO  venues values(default, 'The Venue Alexandria', 'Sydney Premium Major Event Venue! State of art warehouse conversion with industrial and modern design elements across three diverse event spaces.', 'uuid', '55 Doody St, Alexandria NSW 2015');")
 
+cur.execute("INSERT INTO venue_seating values (default, 1,'front',100);")
+
 cur.execute("INSERT INTO  events values(default, 1, 1,'Musical Event', 'Category1','Short Desc1','Event Full Desc1',TO_DATE('17/12/2022', 'DD/MM/YYYY'),'12:00:00',TO_DATE('17/12/2015', 'DD/MM/YYYY'),'14:00:00','Opera House','uuid','Tag1,Tag2,Tag3');")
 cur.execute("INSERT INTO  events values(default, 1, 2,'Ring Ceremony', 'Category2','Short Desc2', 'Event Full Desc2',TO_DATE('10/12/2022', 'DD/MM/YYYY'),'13:00:00',TO_DATE('10/12/2022', 'DD/MM/YYYY'),'16:00:00','Curzon Hall','uuid','Tag4,Tag5,Tag6');")
 cur.execute("INSERT INTO  events values(default, 2, 3,'Cocktail Party','Category3','Short Desc3','Event Full Desc3',TO_DATE('15/10/2022', 'DD/MM/YYYY'),'14:00:00',TO_DATE('10/12/2022', 'DD/MM/YYYY'),'17:00:00','Dockside','uuid', 'Tag4,Tag5,Tag6');")
@@ -174,6 +176,14 @@ for row in records:
 cur.execute('SELECT * FROM events')
 records = cur.fetchall()
 print("\nSaved event details")
+for row in records:
+    for j in range(len(row)):
+        print(row[j], end=" ")
+    print()
+
+cur.execute('SELECT * FROM venue_seating')
+records = cur.fetchall()
+print("\nVenue_seating details")
 for row in records:
     for j in range(len(row)):
         print(row[j], end=" ")
