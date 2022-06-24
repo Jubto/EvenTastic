@@ -35,7 +35,7 @@ cur.execute('CREATE TABLE accounts (\
             location VARCHAR(50),\
             password VARCHAR(50),\
             account_type VARCHAR(20),\
-            profile_pic VARCHAR(30),\
+            profile_pic VARCHAR(50),\
             reward_points VARCHAR(10),\
             tags TEXT);')
 
