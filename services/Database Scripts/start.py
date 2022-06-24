@@ -1,19 +1,30 @@
 import psycopg2
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT 
 
-con = psycopg2.connect(database= 'eventastic', user='postgres', password='postgrespw', host="localhost", port=49157)
+port=49155 # update port of postgres running in Docker here
+
+# Only run create database once
+con = psycopg2.connect(user='postgres', password='postgrespw', port=port)
+con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+cur = con.cursor()
+cur.execute('CREATE DATABASE eventastic')
+cur.close()
+con.close()
+
+con = psycopg2.connect(database= 'eventastic', user='postgres', password='postgrespw', host="localhost", port=port)
 con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
 cur = con.cursor()
 
-
+"""
 cur.execute('drop TABLE hosts cascade;')
 cur.execute('drop TABLE saved_cards cascade;')
 cur.execute('drop TABLE accounts cascade;')
 cur.execute('drop TABLE venues cascade;')
 cur.execute('drop TABLE venue_seating cascade;')
 cur.execute('drop TABLE events cascade;')
+"""
 
-
+# Only run create tables once
 cur.execute('CREATE TABLE accounts (\
             account_id SERIAL PRIMARY KEY,\
             email VARCHAR(50),\
