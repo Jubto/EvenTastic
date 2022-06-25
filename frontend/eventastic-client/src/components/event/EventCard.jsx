@@ -1,5 +1,6 @@
 import { styled } from '@mui/material/styles';
-import { Grid, Card, CardHeader, CardMedia, CardContent } from '@mui/material'
+import { Link } from 'react-router-dom';
+import { Grid, Card, CardHeader, CardMedia, CardContent, CardActionArea } from '@mui/material'
 import Typography from '@mui/material/Typography';
 
 export const StyledEventCard = styled(Card)`
@@ -14,24 +15,29 @@ function formatDate(datetime) {
   return d.toLocaleDateString("en-US", dateFormat)
 }
 
-const EventCard = ({ eventName, eventDesc, eventImage, eventStart }) => {
+const EventCard = ( {eventData} ) => {
   return (
     <Grid item xs={12} sm={6} md={6} lg={4}>
       <StyledEventCard>
-        <CardHeader title={eventName}/>
-        <CardMedia
-          component="img"
-          height="140"
-          image={process.env.PUBLIC_URL + '/img/event/' + eventImage}
-        />
-        <CardContent>
-          <Typography gutterBottom variant="h6" component="div">
-            {eventDesc}
-          </Typography>
-          <Typography gutterBottom variant="h6" component="div">
-            {formatDate(eventStart)}
-          </Typography>          
-        </CardContent>
+        <CardActionArea 
+          component={Link} 
+          to={"/event/" + eventData.event_id}
+        >
+          <CardHeader title={eventData.event_title} />
+          <CardMedia
+            component="img"
+            height="140"
+            image={process.env.PUBLIC_URL + '/img/event/' + eventData.event_img}
+          />
+          <CardContent>
+            <Typography gutterBottom variant="h6" component="div">
+              {eventData.event_short_desc}
+            </Typography>
+            <Typography gutterBottom variant="h6" component="div">
+              {formatDate(eventData.event_start_datetime)}
+            </Typography>
+          </CardContent>
+        </CardActionArea>
       </StyledEventCard>
     </Grid>
   )

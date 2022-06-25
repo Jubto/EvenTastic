@@ -23,7 +23,7 @@ function App() {
           <Route exact path='/register' element={<RegisterPage/>}/>
           <Route exact path='/account' element={<AccountPage/>}/>
           <Route exact path='/tags' element={<TagsPage/>}/>
-          <Route exact path='/event:id' element={<EventPage/>}/>
+          <Route exact path='/event/:id' element={<EventPage/>}/>
           <Route exact path='/create-event' element={<CreateEventPage/>}/>
           <Route exact path='/admin' element={<AdminPage/>}/>
           <Route exact path='/unauthorized' element={<UnauthorizedPage/>}/>
