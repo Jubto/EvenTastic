@@ -26,5 +26,9 @@ export default class EventAPI {
     return this.init().get("/events");
   };
 
+  getEventDetails = (eventID) => {
+    return this.init().get("/events/" + eventID);
+  };
+
   // Add additional API call here as needed ...
 }
