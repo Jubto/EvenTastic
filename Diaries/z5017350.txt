@@ -13,3 +13,8 @@ Week3:
 	• Completed mock-ups for functionaility Manage Account and Group formation
 	• Worked on background section for proposal
 	• Worked on proposal in general	
+
+Week4:
+	• Made foundation code structure for react frontend client
+	• Implemented account menu drop down
+	• Implemented login modal
