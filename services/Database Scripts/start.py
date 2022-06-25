@@ -1,22 +1,26 @@
 import psycopg2
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT 
 
-port=49157 # update port of postgres running in Docker here
 
-""" Only run create database once
-con = psycopg2.connect(user='postgres', password='postgrespw', port=port)
+port=5432 # update port of postgres running in Docker here
+host="localhost"
+
+#Only run create database once
+'''
+print('\nCreating Database ...')
+con = psycopg2.connect(user='postgres', password='postgrespw', host=host, port=port)
 con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
 cur = con.cursor()
 cur.execute('CREATE DATABASE eventastic')
 cur.close()
 con.close()
-"""
+'''
 
-con = psycopg2.connect(database= 'eventastic', user='postgres', password='postgrespw', host="localhost", port=port)
+con = psycopg2.connect(database='eventastic', user='postgres', password='postgrespw', host=host, port=port)
 con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
 cur = con.cursor()
 
-
+print('\nDropping Tables ...')
 cur.execute('drop TABLE hosts cascade;')
 cur.execute('drop TABLE saved_cards cascade;')
 cur.execute('drop TABLE accounts cascade;')
@@ -26,6 +30,7 @@ cur.execute('drop TABLE events cascade;')
 
 
 # Only run create tables once
+print('\nCreating Tables ...')
 cur.execute('CREATE TABLE accounts (\
             account_id SERIAL PRIMARY KEY,\
             email VARCHAR(50),\
@@ -85,15 +90,14 @@ cur.execute('CREATE TABLE events (\
             event_category TEXT,\
             event_short_desc TEXT,\
             event_desc TEXT,\
-            event_start_date DATE,\
-            event_start_time TIME,\
-            event_end_date DATE,\
-            event_end_time TIME,\
+            event_start_datetime TEXT,\
+            event_end_datetime TEXT,\
             event_location TEXT,\
             event_img TEXT,\
             tags TEXT);')
 
 #""" Enter dummy data here
+print('\nInserting dummy data ...')
 cur.execute("INSERT INTO accounts values(default, 'vishalsingh6475@gmail.com', 'Vishal', 'Singh', 100, \
             '469717341', 'Sydney', 'Vish', 'Customer', 'uuid', '3000', 'Movies,Adventure,Sports' \
             );")
@@ -146,12 +150,12 @@ cur.execute("INSERT INTO venue_seating values (default, 5,'middle',100);")
 cur.execute("INSERT INTO venue_seating values (default, 6,'front',100);")
 cur.execute("INSERT INTO venue_seating values (default, 6,'middle',100);")
 
-cur.execute("INSERT INTO  events values(default, 1, 1,'Musical Event', 'Category1','Short Desc1','Event Full Desc1',TO_DATE('17/12/2022', 'DD/MM/YYYY'),'12:00:00',TO_DATE('17/12/2015', 'DD/MM/YYYY'),'14:00:00','Opera House','uuid','Tag1,Tag2,Tag3');")
-cur.execute("INSERT INTO  events values(default, 1, 2,'Ring Ceremony', 'Category2','Short Desc2', 'Event Full Desc2',TO_DATE('10/12/2022', 'DD/MM/YYYY'),'13:00:00',TO_DATE('10/12/2022', 'DD/MM/YYYY'),'16:00:00','Curzon Hall','uuid','Tag4,Tag5,Tag6');")
-cur.execute("INSERT INTO  events values(default, 2, 3,'Cocktail Party','Category3','Short Desc3','Event Full Desc3',TO_DATE('15/10/2022', 'DD/MM/YYYY'),'14:00:00',TO_DATE('10/12/2022', 'DD/MM/YYYY'),'17:00:00','Dockside','uuid', 'Tag4,Tag5,Tag6');")
-cur.execute("INSERT INTO  events values(default, 2, 4,'Charity Event','Category4','Short Desc4','Event Full Desc4',TO_DATE('11/10/2022', 'DD/MM/YYYY'),'14:00:00',TO_DATE('11/12/2022', 'DD/MM/YYYY'), '18:00:00','Establishment Ballroom','uuid','Tag7,Tag8,Tag9');")
-cur.execute("INSERT INTO  events values(default, 3, 5,'Company X Celebrations','Category5','Short Desc5','Event Full Desc5',TO_DATE('11/9/2022', 'DD/MM/YYYY'),'15:00:00',TO_DATE('11/9/2022', 'DD/MM/YYYY'),'18:00:00','Doltone House Hyde Park','uuid', 'Tag10,Tag11,Tag12');")
-cur.execute("INSERT INTO  events values(default, 3, 6,'Birthday Party','Category6','Short Desc6','Event Full Desc6',TO_DATE('13/10/2022', 'DD/MM/YYYY'),'15:00:00',TO_DATE('13/12/2022', 'DD/MM/YYYY'), '19:00:00', 'The Venue Alexandria','uuid','Tag13,Tag14,Tag15');")
+cur.execute("INSERT INTO  events values(default, 1, 1,'Sydney KPOP Party', 'Music','Sydney KPOP Party BTS Special!','STRICTLY KPOP & K-HIPHOP! KPOP ALBUM GIVEAWAYS! LIVE DJS!','2022-08-25T19:00:00+10:00','2022-08-25T21:00:00+10:00','Shark Hotel Sydney, NSW','1603dfd6-efb6-11ec-8ea0-0242ac120002.jpeg','Pop Music');")
+cur.execute("INSERT INTO  events values(default, 1, 2,'Red Hot Chili Peppers Live', 'Music','RHCP Live ! Don''t miss out !', 'Catch Red Hot Chili Peppers live for the tour of their new album Unlimited Love ...', '2022-08-25T19:00:00+10:00', '2022-08-25T21:00:00+10:00','Sydney Entertainment Centre','1603dfd6-efb6-11ec-8ea0-0242ac120003.jpeg','Rock,Funk');")
+cur.execute("INSERT INTO  events values(default, 2, 3,'Improv Comedy Night','Arts','Lots of laughs ! Don''t miss out !','Four of Sydney''s best improv comedy teams will battle for glory. You - the audience - will decide who wins on the night!','2022-10-10T20:00:00+10:00','2022-10-10T21:00:00+10:00','Potts Point Hotel, Potts Point, NSW','1603dfd6-efb6-11ec-8ea0-0242ac120004.jpeg', 'Dance,Comedy');")
+cur.execute("INSERT INTO  events values(default, 2, 4,'Whisky Live Sydney 2022','Food','Sydney''s Premier Whisky Event.','WHISKY LIVE is Sydney''s premiere whisky sampling event, featuring high quality whiskies and spirits, all open under one roof for your tasting pleasure. Come along and learn while you taste.','2022-09-11T20:00:00+10:00','2022-09-11T22:00:00+10:00','Sydney Cove Passenger Terminal','b51a5319-f9ae-4191-aa95-fdf9a808e0fb.jpeg','Spirits');")
+cur.execute("INSERT INTO  events values(default, 3, 5,'Jump for Joy','Kids Entertainment','Australia''s biggest inflatable park!','Jump for Joy will be back in town at Centennial Park with Australia''s biggest inflatable play-park!','2022-11-01T20:00:00+10:00','2022-11-01T22:00:00+10:00','Centennial Park Brazilian Fields','50407a37-7fce-4a17-97ba-2dbc68446db6.jpeg', 'Family Friendly');")
+cur.execute("INSERT INTO  events values(default, 3, 6,'Venture & Capital 2022','Business','Come and be bored!','Everything we do is about connecting ventures with capital—this is why Wholesale Investor exists. In line with this, our 2022 Venture & Capital Conference focuses on empowering innovation, ambition, and capital.','2022-12-02T20:00:00+10:00','2022-12-02T22:00:00+10:00', 'The Venue Alexandria','39061bdb-9ace-45ed-9ddf-8b40223fc1b2.jpeg','Startups Small Business,Investment');")
 #"""
 
 cur.execute('SELECT * FROM accounts')

@@ -1,16 +1,13 @@
 import connexion
-import six
-from sqlalchemy import false
-
 from swagger_server.models.invalid_input_error import InvalidInputError  # noqa: E501
 from swagger_server.models.unexpected_service_error import UnexpectedServiceError  # noqa: E501
 from swagger_server.models.venue import Venue  # noqa: E501
 from swagger_server.models.venue_list import VenueList  # noqa: E501
 from swagger_server.models.venue_not_found_error import VenueNotFoundError  # noqa: E501
-from swagger_server import util
-
 import psycopg2
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
+
+port=5432
 
 def create_venue(body):  # noqa: E501
     """Used to create a Venue.
@@ -26,7 +23,6 @@ def create_venue(body):  # noqa: E501
         if connexion.request.is_json:
             body = Venue.from_dict(connexion.request.get_json())  # noqa: E501
         
-        port = 49157
         con = psycopg2.connect(database= 'eventastic', user='postgres', password='postgrespw', host="localhost", port=port)
         con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
         cur = con.cursor()
@@ -40,9 +36,9 @@ def create_venue(body):  # noqa: E501
 
         return body, 201, {'Access-Control-Allow-Origin': '*'}
     except Exception as err:
-        error = UnexpectedServiceError(code="500", type="UnexpectedServiceError", message=str(err))
         cur.close()
-        con.close()
+        con.close()        
+        error = UnexpectedServiceError(code="500", type="UnexpectedServiceError", message=str(err))
         return error, 500, {'Access-Control-Allow-Origin': '*'}
 
 def get_venue_details(venue_id):  # noqa: E501
@@ -57,7 +53,6 @@ def get_venue_details(venue_id):  # noqa: E501
     """
     try:
         # attempt to get Venue from the store/database
-        port = 49157
         con = psycopg2.connect(database= 'eventastic', user='postgres', password='postgrespw', host="localhost", port=port)
         con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
         cur = con.cursor()
@@ -85,10 +80,10 @@ def get_venue_details(venue_id):  # noqa: E501
         # If successful, return the Venue object
         return venue, 200, {'Access-Control-Allow-Origin': '*'}
     except Exception as e:
-        # catch any unexpected runtime error and return as 500 error 
-        error = UnexpectedServiceError(code="500", type="UnexpectedServiceError", message=str(e))
         cur.close()
         con.close()
+        # catch any unexpected runtime error and return as 500 error 
+        error = UnexpectedServiceError(code="500", type="UnexpectedServiceError", message=str(e))
         return error, 500, {'Access-Control-Allow-Origin': '*'}
 
 
@@ -103,8 +98,6 @@ def list_venues(venue_name=None):  # noqa: E501
     :rtype: VenueList
     """
     try:
-
-        port = 49157
         con = psycopg2.connect(database= 'eventastic', user='postgres', password='postgrespw', host="localhost", port=port)
         con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
         cur = con.cursor()
@@ -129,6 +122,8 @@ def list_venues(venue_name=None):  # noqa: E501
         return venue_list, 200, {'Access-Control-Allow-Origin': '*'}
 
     except Exception as e:
+        cur.close()
+        con.close()
         # catch any unexpected runtime error and return as 500 error 
         error = UnexpectedServiceError(code="500", type="UnexpectedServiceError", message=str(e))
         return error, 500, {'Access-Control-Allow-Origin': '*'}
