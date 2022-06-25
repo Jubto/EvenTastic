@@ -80,9 +80,75 @@ event3 = {
     "venue_id": 3
     }
 
+event4 = {
+    "event_category": "Food",
+    "event_desc": "WHISKY LIVE is Sydney's premiere whisky sampling event, "\
+        "featuring high quality whiskies and spirits, all open under one roof for your tasting pleasure. "\
+            "Come along and learn while you taste.",
+    "event_end_datetime": "2022-09-11T22:00:00+10:00",
+    "event_id": 4,
+    "event_img": "b51a5319-f9ae-4191-aa95-fdf9a808e0fb.jpeg",
+    "event_location": "Sydney Cove Passenger Terminal",
+    "event_short_desc": "Sydney's Premier Whisky Event.",
+    "event_start_datetime": "2022-09-11T20:00:00+10:00",
+    "event_title": "Whisky Live Sydney 2022",
+    "host_id": 8,
+    "tags": [
+        {
+            "name": "Spirits"
+        }
+    ],
+    "venue_id": 10
+    }
+
+event5 = {
+    "event_category": "Kids Entertainment",
+    "event_desc": "Jump for Joy will be back in town at Centennial Park with Australia's biggest inflatable play-park!",
+    "event_end_datetime": "2022-11-01T22:00:00+10:00",
+    "event_id": 5,
+    "event_img": "50407a37-7fce-4a17-97ba-2dbc68446db6.jpeg",
+    "event_location": "Centennial Park Brazilian Fields",
+    "event_short_desc": "Australia's biggest inflatable park!",
+    "event_start_datetime": "2022-11-01T20:00:00+10:00",
+    "event_title": "Jump for Joy",
+    "host_id": 8,
+    "tags": [
+        {
+            "name": "Family Friendly"
+        }
+    ],
+    "venue_id": 10
+    }
+
+event6 = {
+    "event_category": "Business",
+    "event_desc": "Everything we do is about connecting ventures with capital—this is why Wholesale Investor exists. "\
+        "In line with this, our 2022 Venture & Capital Conference focuses on empowering innovation, ambition, and capital.",
+    "event_end_datetime": "2022-12-02T22:00:00+10:00",
+    "event_id": 6,
+    "event_img": "39061bdb-9ace-45ed-9ddf-8b40223fc1b2.jpeg",
+    "event_location": "Aerial UTS Function Centre",
+    "event_short_desc": "Come and be bored!",
+    "event_start_datetime": "2022-12-02T20:00:00+10:00",
+    "event_title": "Venture & Capital 2022",
+    "host_id": 3,
+    "tags": [
+        {
+            "name": "Startups Small Business"
+        },
+        {
+            "name": "Investment"
+        }
+    ],
+    "venue_id": 2
+    }
+
 _events_dict[1] = Event.from_dict(event1)
 _events_dict[2] = Event.from_dict(event2)
 _events_dict[3] = Event.from_dict(event3)
+_events_dict[4] = Event.from_dict(event4)
+_events_dict[5] = Event.from_dict(event5)
+_events_dict[6] = Event.from_dict(event6)
 
 
 def get_event_details(event_id):
