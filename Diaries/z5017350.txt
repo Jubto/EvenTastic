@@ -3,6 +3,13 @@ Week1:
 	• Joined new teams group on Microsoft teams. Added channel on teams group for discussing project selection, participated in project selection discussion.
 	• Joined Jira, added new issue type of 'acceptance criteria'
 
-
 Week2:
 	• Joined github classroom
+	• Worked with team brain storming functionailities
+	• Worked on user stories and acceptance criteria for functionailities 1 Manage Account, and novel functionailities 7 Group formation
+
+Week3:
+	• Met with team and brain stormed mock-ups
+	• Completed mock-ups for functionaility Manage Account and Group formation
+	• Worked on background section for proposal
+	• Worked on proposal in general	
