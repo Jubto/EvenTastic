@@ -12,7 +12,7 @@ from swagger_server.models.invalid_input_error import InvalidInputError  # noqa:
 from swagger_server.models.unexpected_service_error import UnexpectedServiceError  # noqa: E501
 from swagger_server import util
 
-port=49156 # update port of postgres running in Docker here
+port=5432 # update port of postgres running in Docker here
 
 def create_account(body):  # noqa: E501
     """Used to create an Account.
@@ -47,6 +47,15 @@ def create_account(body):  # noqa: E501
         con = psycopg2.connect(database= 'eventastic', user='postgres', password='postgrespw', port=port)
         con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
         cur = con.cursor()
+
+        cur.execute("SELECT * FROM accounts where email = '"+str(body.email)+"';")
+        record = cur.fetchone()
+        if record != None:
+            error = InvalidInputError(code=409, type="InvalidInputError", 
+                    message="The provided email address already exists in database.")
+            cur.close()
+            con.close()
+            return error, 400, {'Access-Control-Allow-Origin': '*'}
         
         insert_string = "INSERT INTO accounts VALUES (default, %s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) RETURNING account_id;"
         cur.execute(insert_string, (body.email, body.first_name, body.last_name, body.age, body.mobile, \
