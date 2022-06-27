@@ -208,6 +208,24 @@ def get_host_details(account_id):  # noqa: E501
         con = psycopg2.connect(database= 'eventastic', user='postgres', password='postgrespw', host=host, port=port)
         con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
         cur = con.cursor()
+        
+        if (account_id == -1 or int(account_id) == -1):
+            cur.execute('SELECT * FROM hosts where is_verified is false')
+            records = cur.fetchall()
+            host_list = list()
+            for record in records:
+                host_det = dict()
+                host_det['org_name'] = str(record[2])
+                host_det['org_desc'] = str(record[3])
+                host_det['host_contact_no'] = str(record[4])
+                host_det['job_title'] = str(record[5])
+                host_det['qualification'] = str(record[6])
+                host_det['isVerified'] = bool(record[7])
+                host_list.append(host_det)
+                
+            cur.close()
+            con.close()   
+            return host_list, 200, {'Access-Control-Allow-Origin': '*'}
 
         cur.execute('SELECT * FROM accounts where account_id = ' + str(account_id))
         record = cur.fetchone()
@@ -221,13 +239,13 @@ def get_host_details(account_id):  # noqa: E501
         cur.execute('SELECT * FROM hosts where account_id = ' + str(account_id))
         record = cur.fetchone()
         if record != None:
-            host = dict()
-            host['org_name'] = str(record[2])
-            host['org_desc'] = str(record[3])
-            host['host_contact_no'] = str(record[4])
-            host['job_title'] = str(record[5])
-            host['qualification'] = str(record[6])
-            host['isVerified'] = bool(record[7])            
+            host_det = dict()
+            host_det['org_name'] = str(record[2])
+            host_det['org_desc'] = str(record[3])
+            host_det['host_contact_no'] = str(record[4])
+            host_det['job_title'] = str(record[5])
+            host_det['qualification'] = str(record[6])
+            host_det['isVerified'] = bool(record[7])            
         else:
             cur.close()
             con.close()
@@ -235,7 +253,7 @@ def get_host_details(account_id):  # noqa: E501
 
         cur.close()
         con.close()
-        return host, 200, {'Access-Control-Allow-Origin': '*'}
+        return host_det, 200, {'Access-Control-Allow-Origin': '*'}
 
     except Exception as e:
         # catch any unexpected runtime error and return as 500 error 
