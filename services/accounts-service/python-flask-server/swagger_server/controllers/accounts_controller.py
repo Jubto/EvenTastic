@@ -35,16 +35,18 @@ def create_account(body):  # noqa: E501
                     message="The following mandatory fields were not provided: email or first name or last name")
             return error, 400, {'Access-Control-Allow-Origin': '*'}
 
-        tags_string = ""
-        if body.tags:
-            tag_length = len(body.tags)
-            i=0
-            for tag in body.tags:
-                if i < tag_length-1:
-                    tags_string = tags_string + tag.name + ','
-                else:
-                    tags_string = tags_string + tag.name
-                i+=1
+        if body.tags is None: tags_string = ""
+        else:
+            tags_string = "" 
+            if body.tags:
+                tag_length = len(body.tags)
+                i=0
+                for tag in body.tags:
+                    if i < tag_length-1:
+                        tags_string = tags_string + tag.name + ','
+                    else:
+                        tags_string = tags_string + tag.name
+                    i+=1
 
         con = psycopg2.connect(database= 'eventastic', user='postgres', password='postgrespw', host=host, port=port)
         con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
@@ -112,7 +114,11 @@ def get_account_details(account_id):
             account = dict()
             account['account_id'] = int(record[0])
             account['account_type'] = str(record[8])
-            account['age'] = int(record[4])
+
+            if record[4] is None: account['age'] = ''
+            else:
+                account['age'] = int(record[4])
+
             account['email'] = str(record[1])
             account['first_name'] = str(record[2])
             account['last_name'] = str(record[3])
@@ -121,11 +127,20 @@ def get_account_details(account_id):
             account['password'] = str(record[7])
             account['profile_pic'] = str(record[9])
             account['reward_points'] = str(record[10])
-            tags = str(record[11]).split(',')
-            tags_list = list()
-            for t in tags:
-                tags_list.append({"name": str(t)})
-            account['tags'] = tags_list
+
+            for item in account.keys():
+                if account[item] == "None":
+                    account[item] = ""
+
+            #for item in account
+
+            if record[11] is None or record[11] == '': account['tags'] = []
+            else:
+                tags = str(record[11]).split(',')
+                tags_list = list()
+                for t in tags:
+                    tags_list.append({"name": str(t)})
+                account['tags'] = tags_list
         else:
             error = AccountNotFoundError(code=404, type="AccountNotFoundError", 
                     message="The following Account ID does not exist: " + str(account_id))
@@ -222,6 +237,9 @@ def get_host_details(account_id):  # noqa: E501
                 host_det['job_title'] = str(record[5])
                 host_det['qualification'] = str(record[6])
                 host_det['isVerified'] = bool(record[7])
+                for item in host_det.keys():
+                    if host_det[item] == "None":
+                        host_det[item] = ""
                 host_list.append(host_det)
                 
             cur.close()
@@ -247,7 +265,10 @@ def get_host_details(account_id):  # noqa: E501
             host_det['host_contact_no'] = str(record[4])
             host_det['job_title'] = str(record[5])
             host_det['qualification'] = str(record[6])
-            host_det['isVerified'] = bool(record[7])            
+            host_det['isVerified'] = bool(record[7])     
+            for item in host_det.keys():
+                if host_det[item] == "None":
+                    host_det[item] = ""       
         else:
             cur.close()
             con.close()
@@ -284,13 +305,56 @@ def list_accounts(email=None, first_name=None, last_name=None):  # noqa: E501
         con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
         cur = con.cursor()
 
+        if email is None or email == '':
+            cur.execute("SELECT * FROM accounts")
+            records = cur.fetchall()
+            acc_list = []
+            for record in records:
+                account = dict()
+                account['account_id'] = int(record[0])
+                account['account_type'] = str(record[8])
+
+                if record[4] is None: account['age'] = ''
+                else: account['age'] = int(record[4])
+
+                account['email'] = str(record[1])
+                account['first_name'] = str(record[2])
+                account['last_name'] = str(record[3])
+                account['location'] = str(record[6])
+                account['mobile'] = str(record[5])
+                account['password'] = str(record[7])
+                account['profile_pic'] = str(record[9])
+                account['reward_points'] = str(record[10]) 
+
+                for item in account.keys():
+                    if account[item] == "None":
+                        account[item] = ""  
+
+                if record[11] is None or record[11] == '': account['tags'] = []
+                else:
+                    tags = str(record[11]).split(',')
+                    tags_list = list()
+                    for t in tags:
+                        tags_list.append({"name": str(t)})
+                    account['tags'] = tags_list
+
+                acc_list.append(account)
+
+            cur.close()
+            con.close()
+            return acc_list, 200, {'Access-Control-Allow-Origin': '*'}
+
+
         cur.execute("SELECT * FROM accounts where email = '"+str(email)+"';")
         record = cur.fetchone()
         if record != None:
             account = dict()
             account['account_id'] = int(record[0])
             account['account_type'] = str(record[8])
-            account['age'] = int(record[4])
+            
+            if record[4] is None: account['age'] = ''
+            else: account['age'] = int(record[4])
+
             account['email'] = str(record[1])
             account['first_name'] = str(record[2])
             account['last_name'] = str(record[3])
@@ -298,12 +362,19 @@ def list_accounts(email=None, first_name=None, last_name=None):  # noqa: E501
             account['mobile'] = str(record[5])
             account['password'] = str(record[7])
             account['profile_pic'] = str(record[9])
-            account['reward_points'] = str(record[10])
-            tags = str(record[11]).split(',')
-            tags_list = list()
-            for t in tags:
-                tags_list.append({"name": str(t)})
-            account['tags'] = tags_list
+            account['reward_points'] = str(record[10]) 
+
+            for item in account.keys():
+                if account[item] == "None":
+                    account[item] = ""  
+
+            if record[11] is None or record[11] == '': account['tags'] = []
+            else:
+                tags = str(record[11]).split(',')
+                tags_list = list()
+                for t in tags:
+                    tags_list.append({"name": str(t)})
+                account['tags'] = tags_list
         else:
             cur.close()
             con.close()
@@ -357,15 +428,17 @@ def update_account(account_id, body):  # noqa: E501
             con.close()
             return error, 404, {'Access-Control-Allow-Origin': '*'}
 
-        tags_string = ""
-        tag_length = len(body.tags)
-        i=0
-        for tag in body.tags:
-            if i < tag_length-1:
-                tags_string = tags_string + tag.name + ','
-            else:
-                tags_string = tags_string + tag.name
-            i+=1
+        if body.tags is None: tags_string = ""
+        else:
+            tags_string = ""
+            tag_length = len(body.tags)
+            i=0
+            for tag in body.tags:
+                if i < tag_length-1:
+                    tags_string = tags_string + tag.name + ','
+                else:
+                    tags_string = tags_string + tag.name
+                i+=1
 
         update_string = "UPDATE accounts set email=%s, first_name=%s, last_name=%s, age=%s, mobile_no=%s, \
             location=%s, password=%s, account_type=%s, profile_pic=%s, reward_points=%s, tags=%s  \
