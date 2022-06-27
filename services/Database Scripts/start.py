@@ -118,7 +118,7 @@ cur.execute("INSERT INTO hosts values(default, 1, 'Westpac', 'Westpac Banking Co
 cur.execute("INSERT INTO hosts values(default, 2, 'Matrix', 'The Truth', '999999999', \
             'Superhero', 'The One', True \
             );")
-cur.execute("INSERT INTO hosts values(default, 3, 'UNSW', 'NO Good University', '000000000', \
+cur.execute("INSERT INTO hosts values(default, 3, 'UNSW', 'Sydney University', '000000000', \
             'Jobless', 'Useless Masters', False \
             );")
     
