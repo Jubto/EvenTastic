@@ -2,8 +2,8 @@ import { useState, useContext } from 'react';
 import AccountAPI from "../utils/AccountAPIHelper";
 import { StoreContext } from '../utils/context'
 import { FlexBox, PageContainer } from '../components/styles/layouts.styled'
-// import CustomerRegisterModal from '../components/account/CustomerRegisterModal';
-// import HostRegisterModal from '../components/account/HostRegisterModal';
+import CustomerRegisterModal from '../components/account/CustomerRegisterModal';
+import HostRegisterModal from '../components/account/HostRegisterModal';
 import UndoIcon from '@mui/icons-material/Undo';
 import {
   Button,
@@ -41,14 +41,16 @@ const ToggleGrid = styled(Grid)`
 `
 
 const RegisterPage = () => {
-  const context = useContext(StoreContext); // access global states
+  const context = useContext(StoreContext);
+  const [openCustomerModal, setCustomerModal] = useState(null);
+  const [openHostModal, setHostModal] = useState(null);
   const [loggedIn, setLoggedIn] = context.login;
   const [email, setEmail] = context.email;
   const [userType, setUserType] = context.type;
   const [hostInputs, setHostInputs] = useState(null);
   const [toggle, setToggle] = useState(false);
   const [formErrors, setformErrors] = useState({
-    fine: true,
+    error: false,
     firstName: null,
     lastName: null,
     email: null,
@@ -62,7 +64,6 @@ const RegisterPage = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    formErrors.fine = true;
     const data = new FormData(event.currentTarget);
     const firstName = data.get('firstName')
     const lastName = data.get('lastName')
@@ -74,46 +75,48 @@ const RegisterPage = () => {
     const orgPosition = data.get('orgPosition')
     const mobile = data.get('mobile')
 
+    formErrors.error = false;
+
     if (!/\S+/.test(firstName)) {
       setformErrors(prevState => { return { ...prevState, firstName: true } })
-      formErrors.fine = false
+      formErrors.error = true
     }
     if (!/\S+/.test(lastName)) {
       setformErrors(prevState => { return { ...prevState, lastName: true } })
-      formErrors.fine = false
+      formErrors.error = true
     }
     if (!/\S+@\S+\.\S+/.test(email)) {
       setformErrors(prevState => { return { ...prevState, email: true } })
-      formErrors.fine = false
+      formErrors.error = true
     }
     if (!/\S+/.test(password1) || password1.length < 8) {
       setformErrors(prevState => { return { ...prevState, password1: true } })
-      formErrors.fine = false
+      formErrors.error = true
     }
     if (password1 !== password2) {
       setformErrors(prevState => { return { ...prevState, password2: true } })
-      formErrors.fine = false
+      formErrors.error = true
     }
     if (hostInputs) {
       if (!/\S+/.test(organisation)) {
         setformErrors(prevState => { return { ...prevState, organisation: true } })
-        formErrors.fine = false
+        formErrors.error = true
       }
       if (!/\S+/.test(orgLink)) {
         setformErrors(prevState => { return { ...prevState, orgLink: true } })
-        formErrors.fine = false
+        formErrors.error = true
       }
       if (!/\S+/.test(orgPosition)) {
         setformErrors(prevState => { return { ...prevState, orgPosition: true } })
-        formErrors.fine = false
+        formErrors.error = true
       }
       if (!/\S+/.test(mobile)) {
         setformErrors(prevState => { return { ...prevState, mobile: true } })
-        formErrors.fine = false
+        formErrors.error = true
       }
     }
 
-    if (formErrors.fine) {
+    if (!formErrors.error) {
       const body = {
         "account_type": hostInputs ? 'host' : 'customer',
         "first_name": firstName,
@@ -130,8 +133,11 @@ const RegisterPage = () => {
         ]
       }
       api.addAccount(body)
-      .then((response) => console.log(`hey ${response}`))
+      .then((response) => console.log(`success ${response}`))
       .catch((error) => console.log(`error ${error}`))
+      
+      setCustomerModal(true); // TEMP 
+
     }    
 
   };
@@ -329,6 +335,8 @@ const RegisterPage = () => {
         </form>
       </FlexBox>
       <ImageBanner pos='right' ml='3.5'/>
+      <CustomerRegisterModal open={openCustomerModal} setOpen={setCustomerModal}/>
+      <HostRegisterModal open={openHostModal} setOpen={setHostModal}/>
     </PageContainer>
   )
 }

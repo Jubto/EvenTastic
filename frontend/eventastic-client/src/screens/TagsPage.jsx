@@ -4,6 +4,8 @@ const TagsPage = () => {
   return (
     <PageContainer maxWidth='lg'>
       <div>TagsPage</div>
+      <div>TagsPage</div>
+      <div>TagsPage</div>
     </PageContainer>
   )
 }

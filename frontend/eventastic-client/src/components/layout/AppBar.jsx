@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { FlexBox, Container } from '../styles/layouts.styled';
 import AccountMenu from '../account/AccountMenu';
-import SearchBar from './SearchBar';
+import SearchBar from '../search/SearchBar'
 import AppBar from '@mui/material/AppBar';
 import { Typography } from '@mui/material';
 

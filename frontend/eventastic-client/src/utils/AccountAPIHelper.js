@@ -25,4 +25,13 @@ export default class AccountAPI {
   addAccount = (data) => {
     return this.init().post("/accounts", data);
   };
+
+  getAccounts = (params) => {
+    return this.init().get("/accounts", { params: params })
+  };
+
+  getAccount = (id) => {
+    return this.init().get(`/accounts/${id}`)
+  };
+
 }

@@ -19,7 +19,8 @@ const theme = createTheme({
   palette: {
     evenTastic: {
       title: 'lightsalmon',
-      layout: 'lavenderblush'
+      layout: 'lavenderblush',
+      dull: '#b5b5b5'
     }
   }
 })
