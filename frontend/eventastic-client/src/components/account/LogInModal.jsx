@@ -2,7 +2,6 @@ import { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { StoreContext } from '../../utils/context';
 import { FlexBox } from '../styles/layouts.styled';
-import { styled } from '@mui/material/styles';
 import CloseIcon from '@mui/icons-material/Close';
 import {
   Button,
@@ -10,7 +9,8 @@ import {
   Divider,
   IconButton,
   TextField,
-  Typography
+  Typography,
+  styled
 } from '@mui/material';
 
 

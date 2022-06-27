@@ -1,10 +1,10 @@
 import * as axios from "axios";
 
-export default class EventAPI {
+export default class AccountAPI {
   constructor() {
     this.api_token = null;
     this.client = null;
-    this.api_url = `http://127.0.0.1:8081/v1`;
+    this.api_url = 'http://127.0.0.1:8080/v1';
   }
 
   init = () => {
@@ -22,13 +22,7 @@ export default class EventAPI {
     return this.client;
   };
 
-  getEventList = () => {
-    return this.init().get("/events");
+  addAccount = (data) => {
+    return this.init().post("/accounts", data);
   };
-
-  postAccount = (body) => {
-    return this.init().post("/accounts", body);
-  };
-
-  // Add additional API call here as needed ...
 }

@@ -8,7 +8,7 @@ import { Typography } from '@mui/material';
 const EvenTasticAppBar = () => {
 
   return (
-    <AppBar position="static" sx={{ backgroundColor: 'lavenderblush', mb:2 }}>
+    <AppBar position="static" sx={{ backgroundColor: 'evenTastic.layout', mb:2 }}>
       <Container maxWidth='false'>
         <FlexBox justify='space-between'>
           <FlexBox>
@@ -17,7 +17,7 @@ const EvenTasticAppBar = () => {
                 fontFamily: 'monospace',
                 fontWeight: 700,
                 letterSpacing: '.3rem',
-                color: 'lightsalmon',
+                color: 'evenTastic.title',
                 textDecoration: 'none',
                 }}
             >
