@@ -32,6 +32,17 @@ class TestAccountsController(BaseTestCase):
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
 
+    def test_create_account_options(self):
+        """Test case for create_account_options
+
+        Used to respond to browser with Access-Control-Allow-Methods header. Required for POST.
+        """
+        response = self.client.open(
+            '/v1/accounts',
+            method='OPTIONS')
+        self.assert200(response,
+                       'Response body is : ' + response.data.decode('utf-8'))
+
     def test_get_account_details(self):
         """Test case for get_account_details
 
@@ -94,6 +105,17 @@ class TestAccountsController(BaseTestCase):
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
 
+    def test_update_account_options(self):
+        """Test case for update_account_options
+
+        Used to respond to browser with Access-Control-Allow-Methods header. Required for PUT.
+        """
+        response = self.client.open(
+            '/v1/accounts/{account_id}'.format(account_id=789),
+            method='OPTIONS')
+        self.assert200(response,
+                       'Response body is : ' + response.data.decode('utf-8'))
+
     def test_update_credit_card(self):
         """Test case for update_credit_card
 
@@ -108,6 +130,17 @@ class TestAccountsController(BaseTestCase):
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
 
+    def test_update_credit_card_options(self):
+        """Test case for update_credit_card_options
+
+        Used to respond to browser with Access-Control-Allow-Methods header. Required for PUT.
+        """
+        response = self.client.open(
+            '/v1/accounts/{account_id}/credit_card'.format(account_id=789),
+            method='OPTIONS')
+        self.assert200(response,
+                       'Response body is : ' + response.data.decode('utf-8'))
+
     def test_update_host_details(self):
         """Test case for update_host_details
 
@@ -119,6 +152,17 @@ class TestAccountsController(BaseTestCase):
             method='PUT',
             data=json.dumps(body),
             content_type='application/json')
+        self.assert200(response,
+                       'Response body is : ' + response.data.decode('utf-8'))
+
+    def test_update_host_details_options(self):
+        """Test case for update_host_details_options
+
+        Used to respond to browser with Access-Control-Allow-Methods header. Required for PUT.
+        """
+        response = self.client.open(
+            '/v1/accounts/{account_id}/host_details'.format(account_id=789),
+            method='OPTIONS')
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
 

@@ -71,6 +71,14 @@ paths:
           description: "Unexpected failure in the service layer."
           schema:
             $ref: "#/definitions/UnexpectedServiceError" 
+    options:
+      summary: "Used to respond to browser with Access-Control-Allow-Methods header. Required for POST."
+      tags:
+        - Accounts
+      operationId: "createAccountOptions"
+      responses:
+        "200":
+          description: "Response headers will indicate the allowable methods."
   /accounts/{account_id}:
     get:
       summary: "Retrieve Account details by Account ID."
@@ -136,6 +144,21 @@ paths:
           description: "Unexpected failure in the service layer."
           schema:
             $ref: "#/definitions/UnexpectedServiceError"
+    options:
+      summary: "Used to respond to browser with Access-Control-Allow-Methods header. Required for PUT."
+      tags:
+        - Accounts
+      operationId: "updateAccountOptions"
+      parameters:
+      - name: "account_id"
+        in: "path"
+        description: "ID of the Account to be updated."
+        required: true
+        type: "integer"
+        format: "int64"
+      responses:
+        "200":
+          description: "Response headers will indicate the allowable methods."
   /accounts/{account_id}/credit_card:
     get:
       summary: "Used to retrive the Credit Card details for an Account."
@@ -197,6 +220,21 @@ paths:
           description: "Unexpected failure in the service layer."
           schema:
             $ref: "#/definitions/UnexpectedServiceError"
+    options:
+      summary: "Used to respond to browser with Access-Control-Allow-Methods header. Required for PUT."
+      tags:
+        - Accounts
+      operationId: "updateCreditCardOptions"
+      parameters:
+      - name: "account_id"
+        in: "path"
+        description: "ID of the Account to be updated."
+        required: true
+        type: "integer"
+        format: "int64"
+      responses:
+        "200":
+          description: "Response headers will indicate the allowable methods."
   /accounts/{account_id}/host_details:
     get:
       summary: "Used to retrive the Host details for an Account."
@@ -258,6 +296,21 @@ paths:
           description: "Unexpected failure in the service layer."
           schema:
             $ref: "#/definitions/UnexpectedServiceError"
+    options:
+      summary: "Used to respond to browser with Access-Control-Allow-Methods header. Required for PUT."
+      tags:
+        - Accounts
+      operationId: "updateHostDetailsOptions"
+      parameters:
+      - name: "account_id"
+        in: "path"
+        description: "ID of the Account to be updated."
+        required: true
+        type: "integer"
+        format: "int64"
+      responses:
+        "200":
+          description: "Response headers will indicate the allowable methods."
 definitions:
   AccountList:
     type: array
