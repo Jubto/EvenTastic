@@ -8,14 +8,14 @@ const ContextProvider = ({ children }) => {
   const [email, setEmail] = useState(null);
   const [userType, setUserType] = useState(null);
   const [userDp, setuserDp] = useState(null);
-  const [logInModal, setLogInModal] = useState(null);
+  const [openLogInModal, setLogInModal] = useState(null);
 
   const states = {
     login: [loggedIn, setLoggedIn],
     email: [email, setEmail],
     type: [userType, setUserType],
     dp: [userDp, setuserDp],
-    logInModal: [logInModal, setLogInModal]
+    logInModal: [openLogInModal, setLogInModal]
   };
 
   return (
