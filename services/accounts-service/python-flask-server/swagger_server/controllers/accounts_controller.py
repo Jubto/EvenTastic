@@ -74,7 +74,24 @@ def create_account(body):  # noqa: E501
         return error, 500, {'Access-Control-Allow-Origin': '*'}
 
 
-def get_account_details(account_id):  # noqa: E501
+def create_account_options():
+    """Used to respond to browser with Access-Control-Allow-Methods header. Required for POST.
+
+     # noqa: E501
+
+
+    :rtype: None
+    """
+    response_headers = {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': '*',
+        'Access-Control-Allow-Headers': '*',
+        'Access-Control-Max-Age': 86400 
+    }
+    return None, 200, response_headers
+
+
+def get_account_details(account_id):
     """Retrieve Account details by Account ID.
 
      # noqa: E501
@@ -347,6 +364,25 @@ def update_account(account_id, body):  # noqa: E501
         return error, 500, {'Access-Control-Allow-Origin': '*'}
 
 
+def update_account_options(account_id):  # noqa: E501
+    """Used to respond to browser with Access-Control-Allow-Methods header. Required for PUT.
+
+     # noqa: E501
+
+    :param account_id: ID of the Account to be updated.
+    :type account_id: int
+
+    :rtype: None
+    """
+    response_headers = {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': '*',
+        'Access-Control-Allow-Headers': '*',
+        'Access-Control-Max-Age': 86400 
+    }
+    return None, 200, response_headers
+
+
 def update_credit_card(account_id, body):  # noqa: E501
     """Used to update the Credit Card details for an Account.
 
@@ -404,6 +440,25 @@ def update_credit_card(account_id, body):  # noqa: E501
         # catch any unexpected runtime error and return as 500 error 
         error = UnexpectedServiceError(code="500", type="UnexpectedServiceError", message=str(e))
         return error, 500, {'Access-Control-Allow-Origin': '*'}
+
+
+def update_credit_card_options(account_id):  # noqa: E501
+    """Used to respond to browser with Access-Control-Allow-Methods header. Required for PUT.
+
+     # noqa: E501
+
+    :param account_id: ID of the Account to be updated.
+    :type account_id: int
+
+    :rtype: None
+    """
+    response_headers = {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': '*',
+        'Access-Control-Allow-Headers': '*',
+        'Access-Control-Max-Age': 86400 
+    }
+    return None, 200, response_headers
 
 
 def update_host_details(account_id, body):  # noqa: E501
@@ -464,3 +519,22 @@ def update_host_details(account_id, body):  # noqa: E501
         # catch any unexpected runtime error and return as 500 error 
         error = UnexpectedServiceError(code="500", type="UnexpectedServiceError", message=str(e))
         return error, 500, {'Access-Control-Allow-Origin': '*'}
+
+
+def update_host_details_options(account_id):  # noqa: E501
+    """Used to respond to browser with Access-Control-Allow-Methods header. Required for PUT.
+
+     # noqa: E501
+
+    :param account_id: ID of the Account to be updated.
+    :type account_id: int
+
+    :rtype: None
+    """
+    response_headers = {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': '*',
+        'Access-Control-Allow-Headers': '*',
+        'Access-Control-Max-Age': 86400 
+    }
+    return None, 200, response_headers
