@@ -56,7 +56,7 @@ def create_account(body):
         # Store new Account object in the mock database which is just a dictionary
         _account_dict[account.account_id] = account
         # if successful, return the created Account in the response
-        return account, 200, {'Access-Control-Allow-Origin': '*'}
+        return account, 201, {'Access-Control-Allow-Origin': '*'}
     except Exception as err:
         # catch any unexpected runtime error and return as 500 error 
         error = UnexpectedServiceError(code="500", type="UnexpectedServiceError", message=str(err))

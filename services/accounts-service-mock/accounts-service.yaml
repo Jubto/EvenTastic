@@ -79,6 +79,19 @@ paths:
       responses:
         "200":
           description: "Response headers will indicate the allowable methods."
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+              default: '*'
+            Access-Control-Allow-Methods:
+              type: string
+              default: '*'
+            Access-Control-Allow-Headers:
+              type: string
+              default: '*'
+            Access-Control-Max-Age:
+              type: integer
+              default: 86400
   /accounts/{account_id}:
     get:
       summary: "Retrieve Account details by Account ID."
@@ -159,6 +172,19 @@ paths:
       responses:
         "200":
           description: "Response headers will indicate the allowable methods."
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+              default: '*'
+            Access-Control-Allow-Methods:
+              type: string
+              default: '*'
+            Access-Control-Allow-Headers:
+              type: string
+              default: '*'
+            Access-Control-Max-Age:
+              type: integer
+              default: 86400
   /accounts/{account_id}/credit_card:
     get:
       summary: "Used to retrive the Credit Card details for an Account."
@@ -235,6 +261,19 @@ paths:
       responses:
         "200":
           description: "Response headers will indicate the allowable methods."
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+              default: '*'
+            Access-Control-Allow-Methods:
+              type: string
+              default: '*'
+            Access-Control-Allow-Headers:
+              type: string
+              default: '*'
+            Access-Control-Max-Age:
+              type: integer
+              default: 86400
   /accounts/{account_id}/host_details:
     get:
       summary: "Used to retrive the Host details for an Account."
@@ -311,6 +350,19 @@ paths:
       responses:
         "200":
           description: "Response headers will indicate the allowable methods."
+          headers:
+            Access-Control-Allow-Origin:
+              type: string
+              default: '*'
+            Access-Control-Allow-Methods:
+              type: string
+              default: '*'
+            Access-Control-Allow-Headers:
+              type: string
+              default: '*'
+            Access-Control-Max-Age:
+              type: integer
+              default: 86400
 definitions:
   AccountList:
     type: array
