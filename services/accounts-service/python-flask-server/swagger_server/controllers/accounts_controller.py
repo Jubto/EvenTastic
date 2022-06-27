@@ -12,7 +12,8 @@ from swagger_server.models.invalid_input_error import InvalidInputError  # noqa:
 from swagger_server.models.unexpected_service_error import UnexpectedServiceError  # noqa: E501
 from swagger_server import util
 
-port=49156 # update port of postgres running in Docker here
+port=5432 # update port of postgres running in Docker here
+host='localhost'
 
 def create_account(body):  # noqa: E501
     """Used to create an Account.
@@ -35,18 +36,28 @@ def create_account(body):  # noqa: E501
             return error, 400, {'Access-Control-Allow-Origin': '*'}
 
         tags_string = ""
-        tag_length = len(body.tags)
-        i=0
-        for tag in body.tags:
-            if i < tag_length-1:
-                tags_string = tags_string + tag.name + ','
-            else:
-                tags_string = tags_string + tag.name
-            i+=1
+        if body.tags:
+            tag_length = len(body.tags)
+            i=0
+            for tag in body.tags:
+                if i < tag_length-1:
+                    tags_string = tags_string + tag.name + ','
+                else:
+                    tags_string = tags_string + tag.name
+                i+=1
 
-        con = psycopg2.connect(database= 'eventastic', user='postgres', password='postgrespw', port=port)
+        con = psycopg2.connect(database= 'eventastic', user='postgres', password='postgrespw', host=host, port=port)
         con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
         cur = con.cursor()
+
+        cur.execute("SELECT * FROM accounts where email = '"+str(body.email)+"';")
+        record = cur.fetchone()
+        if record != None:
+            error = InvalidInputError(code=409, type="InvalidInputError", 
+                    message="The provided email address already exists in database.")
+            cur.close()
+            con.close()
+            return error, 400, {'Access-Control-Allow-Origin': '*'}
         
         insert_string = "INSERT INTO accounts VALUES (default, %s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) RETURNING account_id;"
         cur.execute(insert_string, (body.email, body.first_name, body.last_name, body.age, body.mobile, \
@@ -74,7 +85,7 @@ def get_account_details(account_id):  # noqa: E501
     :rtype: Account
     """
     try:
-        con = psycopg2.connect(database= 'eventastic', user='postgres', password='postgrespw', port=port)
+        con = psycopg2.connect(database= 'eventastic', user='postgres', password='postgrespw', host=host, port=port)
         con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
         cur = con.cursor()
 
@@ -128,7 +139,7 @@ def get_credit_card(account_id):  # noqa: E501
     :rtype: CreditCard
     """
     try:
-        con = psycopg2.connect(database= 'eventastic', user='postgres', password='postgrespw', port=port)
+        con = psycopg2.connect(database= 'eventastic', user='postgres', password='postgrespw', host=host, port=port)
         con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
         cur = con.cursor()
 
@@ -177,7 +188,7 @@ def get_host_details(account_id):  # noqa: E501
     :rtype: HostDetails
     """
     try:
-        con = psycopg2.connect(database= 'eventastic', user='postgres', password='postgrespw', port=port)
+        con = psycopg2.connect(database= 'eventastic', user='postgres', password='postgrespw', host=host, port=port)
         con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
         cur = con.cursor()
 
@@ -232,7 +243,7 @@ def list_accounts(email=None, first_name=None, last_name=None):  # noqa: E501
     :rtype: AccountList
     """
     try:
-        con = psycopg2.connect(database= 'eventastic', user='postgres', password='postgrespw', port=port)
+        con = psycopg2.connect(database= 'eventastic', user='postgres', password='postgrespw', host=host, port=port)
         con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
         cur = con.cursor()
 
@@ -295,7 +306,7 @@ def update_account(account_id, body):  # noqa: E501
                     message="The following mandatory fields were not provided: email or first name or last name")
             return error, 400, {'Access-Control-Allow-Origin': '*'}
             
-        con = psycopg2.connect(database= 'eventastic', user='postgres', password='postgrespw', port=port)
+        con = psycopg2.connect(database= 'eventastic', user='postgres', password='postgrespw', host=host, port=port)
         con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
         cur = con.cursor()
 
@@ -358,7 +369,7 @@ def update_credit_card(account_id, body):  # noqa: E501
                     message="The following mandatory fields were not provided: card name or number or type or expiry")
             return error, 400, {'Access-Control-Allow-Origin': '*'}
 
-        con = psycopg2.connect(database= 'eventastic', user='postgres', password='postgrespw', port=port)
+        con = psycopg2.connect(database= 'eventastic', user='postgres', password='postgrespw', host=host, port=port)
         con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
         cur = con.cursor()
 
@@ -417,7 +428,7 @@ def update_host_details(account_id, body):  # noqa: E501
                     message="The following mandatory fields were not provided: organisation name or contact number or title or qualification")
             return error, 400, {'Access-Control-Allow-Origin': '*'}
 
-        con = psycopg2.connect(database= 'eventastic', user='postgres', password='postgrespw', port=port)
+        con = psycopg2.connect(database= 'eventastic', user='postgres', password='postgrespw', host=host, port=port)
         con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
         cur = con.cursor()
 
