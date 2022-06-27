@@ -11,12 +11,13 @@ import {
 
 const AccountMenu = () => {
   const context = useContext(StoreContext);
-  const [loggedIn] = context.login;
+  const [loggedIn, setLoggedIn] = context.login;
+  const [, setEmail] = context.email;
+  const [, setUserType] = context.type;
   const [userDp] = context.dp;
   const [, setLogInModal] = context.logInModal;
   const [anchor, setAnchor] = useState(null);
 
-  // TODO: API handling
   // TODO: useHistory
 
   const handleOpenMenu = (event) => {
@@ -33,13 +34,12 @@ const AccountMenu = () => {
   };
 
   const handleLogout = () => {
-    const [, setLoggedIn] = context.login;
-    const [, setEmail] = context.login;
-    const [, setUserType] = context.login;
     setLoggedIn(null);
     setEmail(null);
     setUserType(null);
   };
+
+  console.log(`ACCOUNT MENU ${loggedIn}`)
 
   return (
     <>
@@ -61,10 +61,10 @@ const AccountMenu = () => {
     >
       {loggedIn
         ? <div>
-            <MenuItem component={Link} to={'/create-event'}>
+            <MenuItem component={Link} to={'/create-event'} onClick={handleCloseMenu}>
               Create an Event
             </MenuItem>
-            <MenuItem component={Link} to={'/account'}>
+            <MenuItem component={Link} to={'/account'} onClick={handleCloseMenu}>
               My Account
             </MenuItem>
             <MenuItem component={Link} to={'/'} onClick={handleLogout}>
