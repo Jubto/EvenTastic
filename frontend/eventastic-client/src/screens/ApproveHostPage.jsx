@@ -1,11 +1,12 @@
 import { PageContainer } from '../components/styles/layouts.styled'
 
-const AdminPage = () => {
+const ApproveHostPage = () => {
   return (
     <PageContainer maxWidth='lg'>
+      <AccountSideBar>menu</AccountSideBar>
       <div>AdminPage</div>
     </PageContainer>
   )
 }
 
-export default AdminPage
+export default ApproveHostPage

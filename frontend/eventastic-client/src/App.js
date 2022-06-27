@@ -8,7 +8,8 @@ import AccountPage from './screens/AccountPage';
 import TagsPage from './screens/TagsPage';
 import EventPage from './screens/EventPage';
 import CreateEventPage from './screens/CreateEventPage';
-import AdminPage from './screens/AdminPage';
+import AdminVenuePage from './screens/AdminVenuePage';
+import ApproveHostPage from './screens/AdminVenuePage';
 import UnauthorizedPage from './screens/UnauthorizedPage';
 import Footer from './components/layout/Footer';
 import LogInModal from './components/account/LogInModal';
@@ -25,7 +26,8 @@ function App() {
           <Route exact path='/tags' element={<TagsPage/>}/>
           <Route exact path='/event/:id' element={<EventPage/>}/>
           <Route exact path='/create-event' element={<CreateEventPage/>}/>
-          <Route exact path='/admin' element={<AdminPage/>}/>
+          <Route exact path='/admin/createVenues' element={<AdminVenuePage/>}/>
+          <Route exact path='/admin/approveHosts' element={<ApproveHostPage/>}/>
           <Route exact path='/unauthorized' element={<UnauthorizedPage/>}/>
         </Routes>
       <Footer />
