@@ -9,7 +9,7 @@ import TagsPage from './screens/TagsPage';
 import EventPage from './screens/EventPage';
 import CreateEventPage from './screens/CreateEventPage';
 import AdminVenuePage from './screens/AdminVenuePage';
-import ApproveHostPage from './screens/AdminVenuePage';
+import ApproveHostPage from './screens/ApproveHostPage';
 import UnauthorizedPage from './screens/UnauthorizedPage';
 import Footer from './components/layout/Footer';
 import LogInModal from './components/account/LogInModal';

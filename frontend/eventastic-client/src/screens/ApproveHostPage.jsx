@@ -1,10 +1,12 @@
 import { PageContainer } from '../components/styles/layouts.styled'
+import AccountSideBar from '../components/account/AccountSideBar'
+import AccountMain from '../components/account/AccountMain'
 
 const ApproveHostPage = () => {
   return (
-    <PageContainer maxWidth='lg'>
+    <PageContainer maxWidth='false' direction='row'>
       <AccountSideBar>menu</AccountSideBar>
-      <div>AdminPage</div>
+      <AccountMain>body</AccountMain>
     </PageContainer>
   )
 }
