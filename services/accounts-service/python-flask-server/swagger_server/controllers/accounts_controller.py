@@ -215,24 +215,7 @@ def get_host_details(account_id):  # noqa: E501
             host_list = list()
             for record in records:
                 host_det = dict()
-                host_det['org_name'] = str(record[2])
-                host_det['org_desc'] = str(record[3])
-                host_det['host_contact_no'] = str(record[4])
-                host_det['job_title'] = str(record[5])
-                host_det['qualification'] = str(record[6])
-                host_det['isVerified'] = bool(record[7])
-                host_list.append(host_det)
-                
-            cur.close()
-            con.close()   
-            return host_list, 200, {'Access-Control-Allow-Origin': '*'}
-
-        if (account_id == -1 or int(account_id) == -1):
-            cur.execute('SELECT * FROM hosts where is_verified is false')
-            records = cur.fetchall()
-            host_list = list()
-            for record in records:
-                host_det = dict()
+                host_det['account_id'] = str(record[1])
                 host_det['org_name'] = str(record[2])
                 host_det['org_desc'] = str(record[3])
                 host_det['host_contact_no'] = str(record[4])
@@ -258,6 +241,7 @@ def get_host_details(account_id):  # noqa: E501
         record = cur.fetchone()
         if record != None:
             host_det = dict()
+            host_det['account_id'] = str(record[1])
             host_det['org_name'] = str(record[2])
             host_det['org_desc'] = str(record[3])
             host_det['host_contact_no'] = str(record[4])
@@ -513,6 +497,9 @@ def update_host_details(account_id, body):  # noqa: E501
     try: 
         if connexion.request.is_json:
             body = HostDetails.from_dict(connexion.request.get_json())  # noqa: E501
+
+        print(account_id)
+        print(body)
 
         if (len(body.org_name) == 0 or len(body.host_contact_no) == 0 or len(body.job_title) == 0 or len(body.qualification) == 0):
             error = InvalidInputError(code=400, type="InvalidInputError", 

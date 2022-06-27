@@ -30,12 +30,27 @@ const HostRequestCard = ( {hostData} ) => {
 
   let navigate = useNavigate();
 
-  const ApproveHost = () => {
-    api.putHostRequests(-1)
+  const ApproveHost = (account_id) => {
+
+    let body = {};
+    body["isVerified"] = true;
+    const params = {
+      'account_id': account_id,
+      'body': body
+    }
+    api.putHostRequests(params);
+    console.log("Acc ID:"+account_id);
     navigate("/admin/approveHosts");    
   }
 
-  const DeclineHost = (accountID) => {
+  const DeclineHost = (account_id) => {
+    let body = {};
+    body["isVerified"] = false;
+    const params = {
+      'account_id': account_id,
+      'body': body
+    }
+    api.putHostRequests(params);
     navigate("/admin/approveHosts");  
   }
 
@@ -55,10 +70,10 @@ const HostRequestCard = ( {hostData} ) => {
               Contact No: {hostData.host_contact_no}
             </Typography>
               <div>
-                <Button variant="contained" color="success" onClick={ ApproveHost } >
+                <Button variant="contained" value={hostData.account_id} color="success" onClick={(e) => ApproveHost(e.target.value) } >
                   Approve
                 </Button>
-                <Button variant="contained" color="error" onClick={ DeclineHost } >
+                <Button variant="contained" value={hostData.account_id} color="error" onClick={(e) => DeclineHost(e.target.value) } >
                   Decline
                 </Button>
               </div>
