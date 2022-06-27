@@ -36,7 +36,7 @@ const HostRequestCard = ( {hostData} ) => {
   }
 
   const DeclineHost = (accountID) => {
-    navigate("/event/2");
+    navigate("/admin/approveHosts");  
   }
 
 
