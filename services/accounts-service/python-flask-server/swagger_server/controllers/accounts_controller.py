@@ -237,6 +237,7 @@ def get_host_details(account_id):  # noqa: E501
                 host_det['job_title'] = str(record[5])
                 host_det['qualification'] = str(record[6])
                 host_det['isVerified'] = bool(record[7])
+                host_det['host_status'] = str(record[8])  
                 for item in host_det.keys():
                     if host_det[item] == "None":
                         host_det[item] = ""
@@ -265,7 +266,8 @@ def get_host_details(account_id):  # noqa: E501
             host_det['host_contact_no'] = str(record[4])
             host_det['job_title'] = str(record[5])
             host_det['qualification'] = str(record[6])
-            host_det['isVerified'] = bool(record[7])     
+            host_det['isVerified'] = bool(record[7])  
+            host_det['host_status'] = str(record[8])     
             for item in host_det.keys():
                 if host_det[item] == "None":
                     host_det[item] = ""       
@@ -596,15 +598,15 @@ def update_host_details(account_id, body):  # noqa: E501
         cur.execute('SELECT * FROM hosts where account_id = ' + str(account_id))
         record = cur.fetchone()
         if record == None: # to add the host details if it doesn't exists
-            insert_string = "INSERT INTO hosts VALUES (default, %s,%s,%s,%s,%s,%s,%s) RETURNING id;"
+            insert_string = "INSERT INTO hosts VALUES (default, %s,%s,%s,%s,%s,%s,%s,%s) RETURNING id;"
             cur.execute(insert_string, (account_id, body.org_name, body.org_desc, body.host_contact_no, body.job_title, \
-                        body.qualification, body.is_verified))
+                        body.qualification, body.is_verified, body.host_status))
             host_id = cur.fetchone()[0]
         else: # to update the host details if it already  exists
             update_string = "UPDATE hosts set organisation_name=%s, organisation_desc=%s, host_contact_no=%s, job_title=%s, \
-                qualification=%s, is_verified=%s where account_id = %s RETURNING account_id;"
+                qualification=%s, is_verified=%s, host_status=%s where account_id = %s RETURNING account_id;"
             cur.execute(update_string, (body.org_name, body.org_desc, body.host_contact_no, body.job_title, \
-                        body.qualification, body.is_verified, account_id))
+                        body.qualification, body.is_verified, body.host_status, account_id))
             acc_id = cur.fetchone()[0]
 
         cur.close()
