@@ -42,7 +42,7 @@ const ApproveHostPage = () => {
       <AccountSideBar></AccountSideBar>
       <AdminContainer>
         <div  style={{ margin: '15px'}}>
-          <Grid container spacing={5}>
+          <Grid container spacing={8}>
             {hostRequestsList.map(createCard)}
           </Grid>
         </div>

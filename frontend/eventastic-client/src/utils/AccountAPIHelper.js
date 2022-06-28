@@ -34,12 +34,12 @@ export default class AccountAPI {
     return this.init().get(`/accounts/${id}`)
   };
 
-  getHostRequests = (accountID) => {
-    return this.init().get("/accounts/" + accountID + "/host_details");
+  getHostRequests = (account_id) => {
+    return this.init().get("/accounts/" + account_id + "/host_details");
   };
 
-  putHostRequests = (params) => {
-    return this.init().put("/accounts/" + params.account_id + "/host_details", { params: params });
+  putHostRequests = (account_id, params) => {
+    return this.init().put("/accounts/" + account_id + "/host_details", { params: params });
   }; 
 
 }

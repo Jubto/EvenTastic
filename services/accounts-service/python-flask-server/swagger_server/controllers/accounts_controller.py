@@ -225,7 +225,7 @@ def get_host_details(account_id):  # noqa: E501
         cur = con.cursor()
         
         if (account_id == -1 or int(account_id) == -1):
-            cur.execute('SELECT * FROM hosts where is_verified is false')
+            cur.execute("SELECT * FROM hosts where host_status = 'Pending'")
             records = cur.fetchall()
             host_list = list()
             for record in records:
@@ -442,11 +442,31 @@ def update_account(account_id, body):  # noqa: E501
                     tags_string = tags_string + tag.name
                 i+=1
 
-        update_string = "UPDATE accounts set email=%s, first_name=%s, last_name=%s, age=%s, mobile_no=%s, \
-            location=%s, password=%s, account_type=%s, profile_pic=%s, reward_points=%s, tags=%s  \
-            where account_id = %s RETURNING account_id;"
-        cur.execute(update_string, (body.email, body.first_name, body.last_name, body.age, body.mobile, \
-            body.location, body.password, body.account_type, body.profile_pic, body.reward_points, tags_string, account_id))
+        update_string = "UPDATE accounts set "
+        if body.email != None: update_string += f" email='{body.email}',"
+        if body.first_name != None: update_string += f" first_name='{body.first_name}',"
+        if body.last_name != None: update_string += f" last_name='{body.last_name}',"
+        if body.age != None: update_string += f" age={body.age},"
+        if body.mobile != None: update_string += f" mobile_no='{body.mobile}',"
+        if body.location != None: update_string += f" location='{body.location}',"
+        if body.password != None: update_string += f" password='{body.password}',"
+        if body.account_type != None: update_string += f" account_type='{body.account_type}',"
+        if body.profile_pic != None: update_string += f" profile_pic='{body.profile_pic}',"
+        if body.reward_points != None: update_string += f" reward_points='{body.reward_points}',"
+        if tags_string != "": update_string += f" tags='{tags_string}',"
+
+        update_string = list(update_string)
+        update_string[-1] = " "
+        update_string = "".join(update_string)
+
+        update_string += f" where account_id = {account_id} RETURNING account_id;"
+            
+        cur.execute(update_string)
+
+        """
+        cur.execute(update_string, (body., body., body., body., body., \
+            body., body., body., body., body., , account_id))
+        """
         acc_id = cur.fetchone()[0]
 
         cur.close()
@@ -570,20 +590,45 @@ def update_host_details(account_id, body):  # noqa: E501
     """
 
     try: 
+        host_body = body   
+
         if connexion.request.is_json:
             body = HostDetails.from_dict(connexion.request.get_json())  # noqa: E501
 
-        print(account_id)
-        print(body)
-
-        if (len(body.org_name) == 0 or len(body.host_contact_no) == 0 or len(body.job_title) == 0 or len(body.qualification) == 0):
-            error = InvalidInputError(code=400, type="InvalidInputError", 
-                    message="The following mandatory fields were not provided: organisation name or contact number or title or qualification")
-            return error, 400, {'Access-Control-Allow-Origin': '*'}
+        #if (len(body.org_name) == 0 or len(body.host_contact_no) == 0 or len(body.job_title) == 0 or len(body.qualification) == 0):
+        #    error = InvalidInputError(code=400, type="InvalidInputError", 
+        #            message="The following mandatory fields were not provided: organisation name or contact number or title or qualification")
+        #    return error, 400, {'Access-Control-Allow-Origin': '*'}
 
         con = psycopg2.connect(database= 'eventastic', user='postgres', password='postgrespw', host=host, port=port)
         con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
         cur = con.cursor()
+
+        updateHost = 0
+        new_verified = ''
+        new_status = ''
+
+        if "params" in host_body:
+            if host_body["params"]["body"]["host_status"] != 'Pending':
+                updateHost = 1
+                new_verified = host_body["params"]["body"]["is_verified"]
+                new_status = host_body["params"]["body"]["host_status"]
+        elif "params" in host_body:
+            if host_body["body"]["host_status"] != 'Pending':
+                updateHost = 1
+                new_verified = host_body["body"]["is_verified"]
+                new_status = host_body["body"]["host_status"]
+
+        if updateHost == 1:
+            body.is_verified = bool(new_verified)
+            body.host_status = str(new_status)
+
+            update_string = "UPDATE hosts set is_verified=%s, host_status=%s where account_id = %s RETURNING account_id;"
+            cur.execute(update_string, (body.is_verified, body.host_status, account_id))
+            
+            cur.close()
+            con.close()
+            return body, 200, {'Access-Control-Allow-Origin': '*'}
 
         # to check if the account id exists or not
         cur.execute('SELECT * FROM accounts where account_id = ' + str(account_id))
@@ -603,10 +648,28 @@ def update_host_details(account_id, body):  # noqa: E501
                         body.qualification, body.is_verified, body.host_status))
             host_id = cur.fetchone()[0]
         else: # to update the host details if it already  exists
+            update_string = "UPDATE hosts set "
+            if body.org_name != None: update_string += f" organisation_name='{body.org_name}',"
+            if body.org_desc != None: update_string += f" organisation_desc='{body.org_desc}',"
+            if body.host_contact_no != None: update_string += f" host_contact_no='{body.host_contact_no}',"
+            if body.job_title != None: update_string += f" job_title='{body.job_title}',"
+            if body.qualification != None: update_string += f" qualification='{body.qualification}',"
+            if body.is_verified != None: update_string += f" is_verified={body.is_verified},"
+            if body.host_status != None: update_string += f" host_status='{body.host_status}',"
+
+            update_string = list(update_string)
+            update_string[-1] = " "
+            update_string = "".join(update_string)
+
+            update_string += f" where account_id = {account_id} RETURNING account_id;"
+            
+            cur.execute(update_string)
+            """
             update_string = "UPDATE hosts set organisation_name=%s, organisation_desc=%s, host_contact_no=%s, job_title=%s, \
                 qualification=%s, is_verified=%s, host_status=%s where account_id = %s RETURNING account_id;"
             cur.execute(update_string, (body.org_name, body.org_desc, body.host_contact_no, body.job_title, \
                         body.qualification, body.is_verified, body.host_status, account_id))
+            """
             acc_id = cur.fetchone()[0]
 
         cur.close()
@@ -616,6 +679,7 @@ def update_host_details(account_id, body):  # noqa: E501
     except Exception as e:
         # catch any unexpected runtime error and return as 500 error 
         error = UnexpectedServiceError(code="500", type="UnexpectedServiceError", message=str(e))
+        print(str(e))
         return error, 500, {'Access-Control-Allow-Origin': '*'}
 
 

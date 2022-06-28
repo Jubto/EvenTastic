@@ -9,11 +9,13 @@ import AccountAPI from "../../utils/AccountAPIHelper";
 export const StyledHostCard = styled(Card)`
   border: 1px solid black;
   border-radius: 5px;
+  height: 270px;
+  width: 300px;
 `;
 
 const SaveButtonBox = styled('div')`
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
 `;
 
 const ApproveButton = styled(Button)`
@@ -31,32 +33,34 @@ const HostRequestCard = ( {hostData} ) => {
   let navigate = useNavigate();
 
   const ApproveHost = (account_id) => {
-
     let body = {};
-    body["isVerified"] = true;
+    body["is_verified"] = true;
+    body["host_status"] = 'Approved';
     const params = {
       'account_id': account_id,
       'body': body
     }
-    api.putHostRequests(params);
-    console.log("Acc ID:"+account_id);
-    navigate("/admin/approveHosts");    
+    api.putHostRequests(account_id, params);
+    //navigate("/admin/approveHosts");     
+    window.location.href =  "/admin/approveHosts";
   }
 
   const DeclineHost = (account_id) => {
     let body = {};
-    body["isVerified"] = false;
+    body["is_verified"] = false;
+    body["host_status"] = 'Declined';
     const params = {
       'account_id': account_id,
       'body': body
     }
-    api.putHostRequests(params);
-    navigate("/admin/approveHosts");  
+    api.putHostRequests(account_id, params);
+    //navigate("/admin/approveHosts");     
+    window.location.href =  "/admin/approveHosts";
   }
 
 
   return (
-    <Grid item xs={12} sm={6} md={6} lg={4}>
+    <Grid item>
       <StyledHostCard>
           <CardHeader title={hostData.org_name} />
           <CardContent>
