@@ -140,7 +140,7 @@ const RegisterPage = () => {
             org_desc: orgLink,
             org_name: organisation,
           }
-          api.updateHost(accountID, hostDetails)
+          api.putHost(accountID, hostDetails)
           .then((response) => {
             setHostDetails(response.data)
             setHostModal(true)

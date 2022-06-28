@@ -27,6 +27,7 @@ const SideBar = styled('div')`
   margin-right: 1rem;
   margin-bottom: 1rem;
   max-width: 225px;
+  min-width: 225px;
 `;
 
 const SideBarTitle = styled(Typography)`
