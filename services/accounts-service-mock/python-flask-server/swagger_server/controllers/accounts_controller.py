@@ -44,6 +44,7 @@ def create_account(body):
 
     :rtype: Account
     """
+    print(f'POST /accounts body: {body}')
     try:
         global _account_dict
 
@@ -62,6 +63,19 @@ def create_account(body):
         error = UnexpectedServiceError(code="500", type="UnexpectedServiceError", message=str(err))
         return error, 500, {'Access-Control-Allow-Origin': '*'} 
 
+
+def create_account_options():
+    """Used to respond to browser with Access-Control-Allow-Methods header. Required for POST.
+
+    :rtype: None
+    """
+    response_headers = {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': '*',
+        'Access-Control-Allow-Headers': '*',
+        'Access-Control-Max-Age': 86400 
+    }
+    return None, 200, response_headers
 
 
 def get_account_details(account_id): 
@@ -155,6 +169,7 @@ def get_host_details(account_id):
         error = UnexpectedServiceError(code="500", type="UnexpectedServiceError", message=str(e))
         return error, 500, {'Access-Control-Allow-Origin': '*'}
 
+
 def list_accounts(email=None, first_name=None, last_name=None):
     """Retrieve a List of Accounts. Filter by email address, first name or last name.
 
@@ -224,6 +239,23 @@ def update_account(account_id, body):
         return error, 500, {'Access-Control-Allow-Origin': '*'} 
 
 
+def update_account_options(account_id):
+    """Used to respond to browser with Access-Control-Allow-Methods header. Required for PUT.
+
+    :param account_id: ID of the Account to be updated.
+    :type account_id: int
+
+    :rtype: None
+    """
+    response_headers = {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': '*',
+        'Access-Control-Allow-Headers': '*',
+        'Access-Control-Max-Age': 86400 
+    }
+    return None, 200, response_headers
+
+
 def update_credit_card(account_id, body):
     """Used to update the Credit Card details for an Account.
 
@@ -260,6 +292,23 @@ def update_credit_card(account_id, body):
         return error, 500, {'Access-Control-Allow-Origin': '*'} 
 
 
+def update_credit_card_options(account_id):
+    """Used to respond to browser with Access-Control-Allow-Methods header. Required for PUT.
+
+    :param account_id: ID of the Account to be updated.
+    :type account_id: int
+
+    :rtype: None
+    """
+    response_headers = {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': '*',
+        'Access-Control-Allow-Headers': '*',
+        'Access-Control-Max-Age': 86400 
+    }
+    return None, 200, response_headers
+
+
 def update_host_details(account_id, body):
     """Used to update the host details for an Account.
 
@@ -294,3 +343,21 @@ def update_host_details(account_id, body):
         # catch any unexpected runtime error and retrun as 500 error 
         error = UnexpectedServiceError(code="500", type="UnexpectedServiceError", message=str(e))
         return error, 500, {'Access-Control-Allow-Origin': '*'} 
+    return 'do some magic!'
+
+
+def update_host_details_options(account_id):
+    """Used to respond to browser with Access-Control-Allow-Methods header. Required for PUT.
+
+    :param account_id: ID of the Account to be updated.
+    :type account_id: int
+
+    :rtype: None
+    """
+    response_headers = {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': '*',
+        'Access-Control-Allow-Headers': '*',
+        'Access-Control-Max-Age': 86400 
+    }
+    return None, 200, response_headers

@@ -11,13 +11,13 @@ import {
 
 const AccountMenu = () => {
   const context = useContext(StoreContext);
-  const [loggedIn] = context.login;
-  const [userDp] = context.dp;
+  const [loggedIn, setLoggedIn] = context.login;
+  const [account, setAccount] = context.account;
+  const [, setHostDetails] = context.host;
   const [, setLogInModal] = context.logInModal;
   const [anchor, setAnchor] = useState(null);
 
-  // TODO: API handling
-  // TODO: useHistory
+  // TODO: useHistory - to hide this when on register pageS
 
   const handleOpenMenu = (event) => {
     setAnchor(event.currentTarget);
@@ -27,25 +27,23 @@ const AccountMenu = () => {
     setAnchor(null);
   };
 
-  const handleLogInModal = () => {
+  const handleLogInModal = (event) => {
     handleCloseMenu();
-    setLogInModal(true);
+    setLogInModal(event.target.id);
   };
 
   const handleLogout = () => {
-    const [, setLoggedIn] = context.login;
-    const [, setEmail] = context.login;
-    const [, setUserType] = context.login;
+    handleCloseMenu();
     setLoggedIn(null);
-    setEmail(null);
-    setUserType(null);
+    setAccount(null);
+    setHostDetails(null);
   };
 
   return (
     <>
     <Tooltip title="Open account menu" enterDelay={10}>
       <IconButton onClick={handleOpenMenu} sx={{ p: 0 }}>
-        <Avatar src={loggedIn && userDp}/>
+        <Avatar src={loggedIn && account.profile_pic}/>
       </IconButton>
     </Tooltip>
     <Menu
@@ -61,10 +59,10 @@ const AccountMenu = () => {
     >
       {loggedIn
         ? <div>
-            <MenuItem component={Link} to={'/create-event'}>
+            <MenuItem component={Link} to={'/create-event'} onClick={handleCloseMenu}>
               Create an Event
             </MenuItem>
-            <MenuItem component={Link} to={'/account'}>
+            <MenuItem component={Link} to={'/account'} onClick={handleCloseMenu}>
               My Account
             </MenuItem>
             <MenuItem component={Link} to={'/'} onClick={handleLogout}>
@@ -72,19 +70,19 @@ const AccountMenu = () => {
             </MenuItem>
           </div>
         : <div>
-            <MenuItem onClick={handleLogInModal}>
+            <MenuItem id='logIn' onClick={handleLogInModal}>
               Log in
             </MenuItem>
             <MenuItem component={Link} to={'/register'} onClick={handleCloseMenu}>
               Sign Up
             </MenuItem>
             <Tooltip title="log in to create event" placement="left">
-              <MenuItem onClick={handleLogInModal}>
+              <MenuItem id='createEvent' onClick={handleLogInModal}>
                 Create an Event
               </MenuItem>
             </Tooltip>
             <Tooltip title="log in to access account" placement="left">
-              <MenuItem onClick={handleLogInModal}>
+              <MenuItem id='myAccount' onClick={handleLogInModal}>
                 My Account
               </MenuItem>
             </Tooltip>

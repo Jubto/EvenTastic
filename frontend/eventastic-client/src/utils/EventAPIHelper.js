@@ -4,7 +4,7 @@ export default class EventAPI {
   constructor() {
     this.api_token = null;
     this.client = null;
-    this.api_url = 'http://127.0.0.1:8081/v1';
+    this.api_url = `http://127.0.0.1:8081/v1`;
   }
 
   init = () => {

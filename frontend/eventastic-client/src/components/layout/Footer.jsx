@@ -4,8 +4,8 @@ import CopyrightIcon from '@mui/icons-material/Copyright';
 
 export const StyledFooter = styled('div')`
   display: flex;
-  background-color: lavenderblush;
-  color: lightsalmon;
+  background-color: ${( {theme} ) => theme.palette.evenTastic.layout};
+  color: ${( {theme} ) => theme.palette.evenTastic.title};
   padding-left: 0.5rem;
   padding-right: 0.5rem;
   margin-top: auto;

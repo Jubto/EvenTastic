@@ -15,7 +15,7 @@ class HostDetails(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, org_name: str=None, org_desc: str=None, host_contact_no: str=None, job_title: str=None, qualification: str=None, is_verified: bool=None):  # noqa: E501
+    def __init__(self, org_name: str=None, org_desc: str=None, host_contact_no: str=None, job_title: str=None, qualification: str=None, is_verified: bool=None, host_status: str=None):  # noqa: E501
         """HostDetails - a model defined in Swagger
 
         :param org_name: The org_name of this HostDetails.  # noqa: E501
@@ -30,6 +30,8 @@ class HostDetails(Model):
         :type qualification: str
         :param is_verified: The is_verified of this HostDetails.  # noqa: E501
         :type is_verified: bool
+        :param host_status: The host_status of this HostDetails.  # noqa: E501
+        :type host_status: str
         """
         self.swagger_types = {
             'org_name': str,
@@ -37,7 +39,8 @@ class HostDetails(Model):
             'host_contact_no': str,
             'job_title': str,
             'qualification': str,
-            'is_verified': bool
+            'is_verified': bool,
+            'host_status': str
         }
 
         self.attribute_map = {
@@ -46,7 +49,8 @@ class HostDetails(Model):
             'host_contact_no': 'host_contact_no',
             'job_title': 'job_title',
             'qualification': 'qualification',
-            'is_verified': 'isVerified'
+            'is_verified': 'isVerified',
+            'host_status': 'host_status'
         }
 
         self._org_name = org_name
@@ -55,6 +59,7 @@ class HostDetails(Model):
         self._job_title = job_title
         self._qualification = qualification
         self._is_verified = is_verified
+        self._host_status = host_status
 
     @classmethod
     def from_dict(cls, dikt) -> 'HostDetails':
@@ -192,3 +197,24 @@ class HostDetails(Model):
         """
 
         self._is_verified = is_verified
+
+    @property
+    def host_status(self) -> str:
+        """Gets the host_status of this HostDetails.
+
+
+        :return: The host_status of this HostDetails.
+        :rtype: str
+        """
+        return self._host_status
+
+    @host_status.setter
+    def host_status(self, host_status: str):
+        """Sets the host_status of this HostDetails.
+
+
+        :param host_status: The host_details of this HostDetails.
+        :type host_status: str
+        """
+
+        self._host_status = host_status

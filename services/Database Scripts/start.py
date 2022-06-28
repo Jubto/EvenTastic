@@ -56,7 +56,8 @@ cur.execute('CREATE TABLE hosts(\
             host_contact_no VARCHAR(20),\
             job_title VARCHAR(30),\
             qualification VARCHAR(50),\
-            is_verified BOOLEAN\
+            is_verified BOOLEAN, \
+            host_status VARCHAR(15) \
             );')
 
 cur.execute('CREATE TABLE saved_cards(id SERIAL PRIMARY KEY, \
@@ -115,13 +116,13 @@ cur.execute("INSERT INTO accounts values(default, 'neo@matrix.com', 'Keanu', 'Re
 
 
 cur.execute("INSERT INTO hosts values(default, 1, 'Westpac', 'Westpac Banking Corp', '0469717341', \
-            'Software Engineer', 'Masters', True \
+            'Software Engineer', 'Masters', False, 'Pending' \
             );")
 cur.execute("INSERT INTO hosts values(default, 2, 'Matrix', 'The Truth', '999999999', \
-            'Superhero', 'The One', True \
+            'Superhero', 'The One', False, 'Pending' \
             );")
-cur.execute("INSERT INTO hosts values(default, 3, 'UNSW', 'NO Good University', '000000000', \
-            'Jobless', 'Useless Masters', False \
+cur.execute("INSERT INTO hosts values(default, 3, 'UNSW', 'Sydney University', '000000000', \
+            'Information Technology', 'Masters', False, 'Pending' \
             );")
 
 

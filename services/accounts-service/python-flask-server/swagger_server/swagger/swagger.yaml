@@ -76,6 +76,17 @@ paths:
           schema:
             $ref: "#/definitions/UnexpectedServiceError"
       x-swagger-router-controller: "swagger_server.controllers.accounts_controller"
+    options:
+      tags:
+      - "Accounts"
+      summary: "Used to respond to browser with Access-Control-Allow-Methods header.\
+        \ Required for POST."
+      operationId: "create_account_options"
+      parameters: []
+      responses:
+        "200":
+          description: "Response headers will indicate the allowable methods."
+      x-swagger-router-controller: "swagger_server.controllers.accounts_controller"
   /accounts/{account_id}:
     get:
       tags:
@@ -144,6 +155,23 @@ paths:
           schema:
             $ref: "#/definitions/UnexpectedServiceError"
       x-swagger-router-controller: "swagger_server.controllers.accounts_controller"
+    options:
+      tags:
+      - "Accounts"
+      summary: "Used to respond to browser with Access-Control-Allow-Methods header.\
+        \ Required for PUT."
+      operationId: "update_account_options"
+      parameters:
+      - name: "account_id"
+        in: "path"
+        description: "ID of the Account to be updated."
+        required: true
+        type: "integer"
+        format: "int64"
+      responses:
+        "200":
+          description: "Response headers will indicate the allowable methods."
+      x-swagger-router-controller: "swagger_server.controllers.accounts_controller"
   /accounts/{account_id}/credit_card:
     get:
       tags:
@@ -208,6 +236,23 @@ paths:
           schema:
             $ref: "#/definitions/UnexpectedServiceError"
       x-swagger-router-controller: "swagger_server.controllers.accounts_controller"
+    options:
+      tags:
+      - "Accounts"
+      summary: "Used to respond to browser with Access-Control-Allow-Methods header.\
+        \ Required for PUT."
+      operationId: "update_credit_card_options"
+      parameters:
+      - name: "account_id"
+        in: "path"
+        description: "ID of the Account to be updated."
+        required: true
+        type: "integer"
+        format: "int64"
+      responses:
+        "200":
+          description: "Response headers will indicate the allowable methods."
+      x-swagger-router-controller: "swagger_server.controllers.accounts_controller"
   /accounts/{account_id}/host_details:
     get:
       tags:
@@ -271,6 +316,23 @@ paths:
           description: "Unexpected failure in the service layer."
           schema:
             $ref: "#/definitions/UnexpectedServiceError"
+      x-swagger-router-controller: "swagger_server.controllers.accounts_controller"
+    options:
+      tags:
+      - "Accounts"
+      summary: "Used to respond to browser with Access-Control-Allow-Methods header.\
+        \ Required for PUT."
+      operationId: "update_host_details_options"
+      parameters:
+      - name: "account_id"
+        in: "path"
+        description: "ID of the Account to be updated."
+        required: true
+        type: "integer"
+        format: "int64"
+      responses:
+        "200":
+          description: "Response headers will indicate the allowable methods."
       x-swagger-router-controller: "swagger_server.controllers.accounts_controller"
 definitions:
   AccountList:
@@ -392,6 +454,9 @@ definitions:
       isVerified:
         type: "boolean"
         example: false
+      host_status:
+        type: string
+        enum: ["Pending", "Approved", "Declined"]
     example:
       qualification: "Event Management Certificate IV"
       isVerified: false
@@ -399,6 +464,7 @@ definitions:
       host_contact_no: "+61405123456"
       org_name: "All Star Entertainment"
       job_title: "Event Manager"
+      host_status: "Pending"
   Error:
     type: "object"
     properties:

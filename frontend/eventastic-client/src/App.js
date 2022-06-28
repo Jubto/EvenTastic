@@ -12,10 +12,22 @@ import AdminVenuePage from './screens/AdminVenuePage';
 import ApproveHostPage from './screens/ApproveHostPage';
 import UnauthorizedPage from './screens/UnauthorizedPage';
 import Footer from './components/layout/Footer';
-import LogInModal from './components/account/LogInModal';
+import LogInModal from './components/account/modal/LogInModal';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+
+const theme = createTheme({
+  palette: {
+    evenTastic: {
+      title: 'lightsalmon',
+      layout: 'lavenderblush',
+      dull: '#b5b5b5'
+    }
+  }
+})
 
 function App() {
   return (
+    <ThemeProvider theme={theme}>
     <ContextProvider>
     <Router>
       <EvenTasticAppBar />
@@ -34,6 +46,7 @@ function App() {
       <LogInModal/>
     </Router>
     </ContextProvider>
+    </ThemeProvider>
   );
 }
 

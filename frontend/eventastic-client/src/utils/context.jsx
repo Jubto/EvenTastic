@@ -5,17 +5,15 @@ export const StoreContext = createContext(null);
 
 const ContextProvider = ({ children }) => {
   const [loggedIn, setLoggedIn] = useState(null);
-  const [email, setEmail] = useState(null);
-  const [userType, setUserType] = useState(null);
-  const [userDp, setuserDp] = useState(null);
-  const [logInModal, setLogInModal] = useState(null);
+  const [account, setAccount] = useState(null);
+  const [hostDetails, setHostDetails] = useState(null);
+  const [LogInModal, setLogInModal] = useState(null);
 
   const states = {
     login: [loggedIn, setLoggedIn],
-    email: [email, setEmail],
-    type: [userType, setUserType],
-    dp: [userDp, setuserDp],
-    logInModal: [logInModal, setLogInModal]
+    account: [account, setAccount],
+    host: [hostDetails, setHostDetails],
+    logInModal: [LogInModal, setLogInModal]
   };
 
   return (
