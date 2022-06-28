@@ -18,7 +18,6 @@ export const StyledTitle = styled(FlexBox)`
 
 const ModalTitle = ( {title, close} ) => {
 
-
   return (
     <>
     <StyledTitle justify='space-between'>
@@ -29,7 +28,7 @@ const ModalTitle = ( {title, close} ) => {
         <CloseIcon />
       </IconButton>
     </StyledTitle>
-    <Divider variant="middle" sx={{mb:2}} />
+    <Divider variant="middle" sx={{mb:4}} />
     </>
 
   )

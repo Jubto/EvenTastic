@@ -1,9 +1,10 @@
-import { useState, useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router';
 import AccountAPI from "../utils/AccountAPIHelper";
 import { StoreContext } from '../utils/context'
 import { FlexBox, PageContainer } from '../components/styles/layouts.styled'
-import CustomerRegisterModal from '../components/account/CustomerRegisterModal';
-import HostRegisterModal from '../components/account/HostRegisterModal';
+import CustomerRegisterModal from '../components/account/modal/CustomerRegisterModal';
+import HostRegisterModal from '../components/account/modal/HostRegisterModal';
 import UndoIcon from '@mui/icons-material/Undo';
 import {
   Button,
@@ -37,18 +38,18 @@ const ImageBanner = styled('div')`
 `
 
 const ToggleGrid = styled(Grid)`
-  display: ${( {show} ) => show ? 'initial' : 'none'};
+  display: ${( {show} ) => show === 'Host' ? 'initial' : 'none'};
 `
 
 const RegisterPage = () => {
+  const navigate = useNavigate();
   const context = useContext(StoreContext);
   const [openCustomerModal, setCustomerModal] = useState(null);
   const [openHostModal, setHostModal] = useState(null);
   const [loggedIn, setLoggedIn] = context.login;
-  const [email, setEmail] = context.email;
-  const [userType, setUserType] = context.type;
-  const [hostInputs, setHostInputs] = useState(null);
-  const [toggle, setToggle] = useState(false);
+  const [, setAccount] = context.account;
+  const [, setHostDetails] = context.host;
+  const [hostInputs, setHostInputs] = useState('Customer');
   const [formErrors, setformErrors] = useState({
     error: false,
     firstName: null,
@@ -56,9 +57,9 @@ const RegisterPage = () => {
     email: null,
     password1: null,
     password2: null,
-    org: null,
+    organisation: null,
     orgLink: null,
-    orgPos: null,
+    orgPosition: null,
     mobile: null
   })
 
@@ -77,11 +78,11 @@ const RegisterPage = () => {
 
     formErrors.error = false;
 
-    if (!/\S+/.test(firstName)) {
+    if (!/[a-zA-Z]+/.test(firstName)) {
       setformErrors(prevState => { return { ...prevState, firstName: true } })
       formErrors.error = true
     }
-    if (!/\S+/.test(lastName)) {
+    if (!/[a-zA-Z]+/.test(lastName)) {
       setformErrors(prevState => { return { ...prevState, lastName: true } })
       formErrors.error = true
     }
@@ -97,7 +98,7 @@ const RegisterPage = () => {
       setformErrors(prevState => { return { ...prevState, password2: true } })
       formErrors.error = true
     }
-    if (hostInputs) {
+    if (hostInputs === 'Host') {
       if (!/\S+/.test(organisation)) {
         setformErrors(prevState => { return { ...prevState, organisation: true } })
         formErrors.error = true
@@ -110,7 +111,7 @@ const RegisterPage = () => {
         setformErrors(prevState => { return { ...prevState, orgPosition: true } })
         formErrors.error = true
       }
-      if (!/\S+/.test(mobile)) {
+      if (!/\d+/.test(mobile) || mobile.length < 9) {
         setformErrors(prevState => { return { ...prevState, mobile: true } })
         formErrors.error = true
       }
@@ -118,29 +119,49 @@ const RegisterPage = () => {
 
     if (!formErrors.error) {
       const body = {
-        "account_type": hostInputs ? 'host' : 'customer',
+        "account_type": hostInputs,
         "first_name": firstName,
         "last_name": lastName,
-        "location": "unknown",
         "email": email,
         "password": password1,
         "mobile": mobile,
-        "profile_pic": "None",
-        "age": null,
-        "reward_points": null,
-        "tags": [
-          {}
-        ]
       }
       api.addAccount(body)
-      .then((response) => console.log(`success ${response}`))
-      .catch((error) => console.log(`error ${error}`))
-      
-      setCustomerModal(true); // TEMP 
-
-    }    
-
+      .then((response) => {
+        setLoggedIn(true)
+        setAccount(response.data)
+        if (hostInputs === 'Host') {
+          const accountID = response.data.account_id
+          const hostDetails = {
+            host_contact_no: mobile,
+            isVerified: false,
+            host_status: 'Pending',
+            job_title: orgPosition,
+            org_desc: orgLink,
+            org_name: organisation,
+          }
+          api.updateHost(accountID, hostDetails)
+          .then((response) => {
+            setHostDetails(response.data)
+            setHostModal(true)
+          })
+          .catch((error) => console.log(error))
+        }
+        else {
+          setCustomerModal(true)
+        }
+      })
+      .catch((error) => console.log(error))
+    }
   };
+
+  useEffect(() => {
+    if (loggedIn && (!openCustomerModal && !openHostModal)) {
+      navigate('/'); // send user to home if they close modal without selecting 'tags' or 'skip'
+    }
+  }, [openCustomerModal, openHostModal])
+
+  console.log(hostInputs)
 
   return (
     <PageContainer direction='row' justify='center' maxWidth='xl'>
@@ -170,7 +191,7 @@ const RegisterPage = () => {
                   formErrors.firstName && setformErrors(prevState => { return { ...prevState, firstName: false } })
                 }}
                 error={formErrors.firstName}
-                helperText={formErrors.firstName ? 'Cannot be empty.' : ''}
+                helperText={formErrors.firstName ? 'Must be a valid firstname.' : ''}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -185,7 +206,7 @@ const RegisterPage = () => {
                   formErrors.lastName && setformErrors(prevState => { return { ...prevState, lastName: false } })
                 }}
                 error={formErrors.lastName}
-                helperText={formErrors.lastName ? 'Cannot be empty.' : ''}
+                helperText={formErrors.lastName ? 'Must be a valid lastname.' : ''}
               />
             </Grid>
             <Grid item xs={12}>
@@ -244,7 +265,7 @@ const RegisterPage = () => {
                   Host details:
                 </Typography>
                 <Tooltip title="Nevermind" placement='right'>
-                  <IconButton size='small' sx={{ml:'1rem'}} onClick={() => setHostInputs(false)}>
+                  <IconButton size='small' sx={{ml:'1rem'}} onClick={() => setHostInputs('Customer')}>
                     <UndoIcon/>
                   </IconButton>
                 </Tooltip>
@@ -257,10 +278,10 @@ const RegisterPage = () => {
                 label="Organisation"
                 autoFocus
                 onChange={() => {
-                  formErrors.org && setformErrors(prevState => { return { ...prevState, org: false } })
+                  formErrors.organisation && setformErrors(prevState => { return { ...prevState, organisation: false } })
                 }}
-                error={formErrors.org}
-                helperText={formErrors.org ? 'Cannot be empty.' : ''}
+                error={formErrors.organisation}
+                helperText={formErrors.organisation ? 'Cannot be empty.' : ''}
               />
             </ToggleGrid>
             <ToggleGrid show={hostInputs} item xs={12} sm={6}>
@@ -288,10 +309,10 @@ const RegisterPage = () => {
                 label="Org position"
                 autoFocus
                 onChange={() => {
-                  formErrors.orgPos && setformErrors(prevState => { return { ...prevState, orgPos: false } })
+                  formErrors.orgPosition && setformErrors(prevState => { return { ...prevState, orgPosition: false } })
                 }}
-                error={formErrors.orgPos}
-                helperText={formErrors.orgPos ? 'Cannot be empty.' : ''}
+                error={formErrors.orgPosition}
+                helperText={formErrors.orgPosition ? 'Cannot be empty.' : ''}
               />
             </ToggleGrid>
             <ToggleGrid show={hostInputs} item xs={12} sm={6}>
@@ -301,29 +322,30 @@ const RegisterPage = () => {
                 fullWidth
                 id="mobile"
                 label="Your mobile"
+                type="tel"
                 autoFocus
                 onChange={() => {
                   formErrors.mobile && setformErrors(prevState => { return { ...prevState, mobile: false } })
                 }}
                 error={formErrors.mobile}
-                helperText={formErrors.mobile ? 'Cannot be empty.' : ''}
+                helperText={formErrors.mobile ? 'Must be a valid mobile number.' : ''}
               />
             </ToggleGrid>
 
             {/* Submit button section */}
 
-            {hostInputs
+            {hostInputs === 'Host'
             ? <span/>
             : <FlexBox direction='column' sx={{ ml:3 }}>
                 <Typography variant='subtitle1' sx={{color: 'success.main', fontWeight:1000 }}>
                   Want to host events?
                 </Typography>
-                <Button onClick={() => setHostInputs(true)} variant="contained" color='success'>
+                <Button onClick={() => setHostInputs('Host')} variant="contained" color='success'>
                   Add host details
                 </Button>
               </FlexBox>
             }
-            {hostInputs
+            {hostInputs === 'Host'
             ? <Button type='submit' variant="contained" fullWidth sx={{ml:'1rem', mt:'1rem'}}>
                 Register as host
               </Button>
