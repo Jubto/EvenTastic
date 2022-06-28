@@ -35,16 +35,18 @@ def create_account(body):  # noqa: E501
                     message="The following mandatory fields were not provided: email or first name or last name")
             return error, 400, {'Access-Control-Allow-Origin': '*'}
 
-        tags_string = ""
-        if body.tags:
-            tag_length = len(body.tags)
-            i=0
-            for tag in body.tags:
-                if i < tag_length-1:
-                    tags_string = tags_string + tag.name + ','
-                else:
-                    tags_string = tags_string + tag.name
-                i+=1
+        if body.tags is None: tags_string = ""
+        else:
+            tags_string = "" 
+            if body.tags:
+                tag_length = len(body.tags)
+                i=0
+                for tag in body.tags:
+                    if i < tag_length-1:
+                        tags_string = tags_string + tag.name + ','
+                    else:
+                        tags_string = tags_string + tag.name
+                    i+=1
 
         con = psycopg2.connect(database= 'eventastic', user='postgres', password='postgrespw', host=host, port=port)
         con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
@@ -112,7 +114,11 @@ def get_account_details(account_id):
             account = dict()
             account['account_id'] = int(record[0])
             account['account_type'] = str(record[8])
-            account['age'] = int(record[4])
+
+            if record[4] is None: account['age'] = ''
+            else:
+                account['age'] = int(record[4])
+
             account['email'] = str(record[1])
             account['first_name'] = str(record[2])
             account['last_name'] = str(record[3])
@@ -121,11 +127,20 @@ def get_account_details(account_id):
             account['password'] = str(record[7])
             account['profile_pic'] = str(record[9])
             account['reward_points'] = str(record[10])
-            tags = str(record[11]).split(',')
-            tags_list = list()
-            for t in tags:
-                tags_list.append({"name": str(t)})
-            account['tags'] = tags_list
+
+            for item in account.keys():
+                if account[item] == "None":
+                    account[item] = ""
+
+            #for item in account
+
+            if record[11] is None or record[11] == '': account['tags'] = []
+            else:
+                tags = str(record[11]).split(',')
+                tags_list = list()
+                for t in tags:
+                    tags_list.append({"name": str(t)})
+                account['tags'] = tags_list
         else:
             error = AccountNotFoundError(code=404, type="AccountNotFoundError", 
                     message="The following Account ID does not exist: " + str(account_id))
@@ -208,6 +223,29 @@ def get_host_details(account_id):  # noqa: E501
         con = psycopg2.connect(database= 'eventastic', user='postgres', password='postgrespw', host=host, port=port)
         con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
         cur = con.cursor()
+        
+        if (account_id == -1 or int(account_id) == -1):
+            cur.execute("SELECT * FROM hosts where host_status = 'Pending'")
+            records = cur.fetchall()
+            host_list = list()
+            for record in records:
+                host_det = dict()
+                host_det['account_id'] = str(record[1])
+                host_det['org_name'] = str(record[2])
+                host_det['org_desc'] = str(record[3])
+                host_det['host_contact_no'] = str(record[4])
+                host_det['job_title'] = str(record[5])
+                host_det['qualification'] = str(record[6])
+                host_det['isVerified'] = bool(record[7])
+                host_det['host_status'] = str(record[8])  
+                for item in host_det.keys():
+                    if host_det[item] == "None":
+                        host_det[item] = ""
+                host_list.append(host_det)
+                
+            cur.close()
+            con.close()   
+            return host_list, 200, {'Access-Control-Allow-Origin': '*'}
 
         cur.execute('SELECT * FROM accounts where account_id = ' + str(account_id))
         record = cur.fetchone()
@@ -221,13 +259,18 @@ def get_host_details(account_id):  # noqa: E501
         cur.execute('SELECT * FROM hosts where account_id = ' + str(account_id))
         record = cur.fetchone()
         if record != None:
-            host = dict()
-            host['org_name'] = str(record[2])
-            host['org_desc'] = str(record[3])
-            host['host_contact_no'] = str(record[4])
-            host['job_title'] = str(record[5])
-            host['qualification'] = str(record[6])
-            host['isVerified'] = bool(record[7])            
+            host_det = dict()
+            host_det['account_id'] = str(record[1])
+            host_det['org_name'] = str(record[2])
+            host_det['org_desc'] = str(record[3])
+            host_det['host_contact_no'] = str(record[4])
+            host_det['job_title'] = str(record[5])
+            host_det['qualification'] = str(record[6])
+            host_det['isVerified'] = bool(record[7])  
+            host_det['host_status'] = str(record[8])     
+            for item in host_det.keys():
+                if host_det[item] == "None":
+                    host_det[item] = ""       
         else:
             cur.close()
             con.close()
@@ -235,7 +278,7 @@ def get_host_details(account_id):  # noqa: E501
 
         cur.close()
         con.close()
-        return host, 200, {'Access-Control-Allow-Origin': '*'}
+        return host_det, 200, {'Access-Control-Allow-Origin': '*'}
 
     except Exception as e:
         # catch any unexpected runtime error and return as 500 error 
@@ -264,13 +307,56 @@ def list_accounts(email=None, first_name=None, last_name=None):  # noqa: E501
         con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
         cur = con.cursor()
 
+        if email is None or email == '':
+            cur.execute("SELECT * FROM accounts")
+            records = cur.fetchall()
+            acc_list = []
+            for record in records:
+                account = dict()
+                account['account_id'] = int(record[0])
+                account['account_type'] = str(record[8])
+
+                if record[4] is None: account['age'] = ''
+                else: account['age'] = int(record[4])
+
+                account['email'] = str(record[1])
+                account['first_name'] = str(record[2])
+                account['last_name'] = str(record[3])
+                account['location'] = str(record[6])
+                account['mobile'] = str(record[5])
+                account['password'] = str(record[7])
+                account['profile_pic'] = str(record[9])
+                account['reward_points'] = str(record[10]) 
+
+                for item in account.keys():
+                    if account[item] == "None":
+                        account[item] = ""  
+
+                if record[11] is None or record[11] == '': account['tags'] = []
+                else:
+                    tags = str(record[11]).split(',')
+                    tags_list = list()
+                    for t in tags:
+                        tags_list.append({"name": str(t)})
+                    account['tags'] = tags_list
+
+                acc_list.append(account)
+
+            cur.close()
+            con.close()
+            return acc_list, 200, {'Access-Control-Allow-Origin': '*'}
+
+
         cur.execute("SELECT * FROM accounts where email = '"+str(email)+"';")
         record = cur.fetchone()
         if record != None:
             account = dict()
             account['account_id'] = int(record[0])
             account['account_type'] = str(record[8])
-            account['age'] = int(record[4])
+            
+            if record[4] is None: account['age'] = ''
+            else: account['age'] = int(record[4])
+
             account['email'] = str(record[1])
             account['first_name'] = str(record[2])
             account['last_name'] = str(record[3])
@@ -278,12 +364,19 @@ def list_accounts(email=None, first_name=None, last_name=None):  # noqa: E501
             account['mobile'] = str(record[5])
             account['password'] = str(record[7])
             account['profile_pic'] = str(record[9])
-            account['reward_points'] = str(record[10])
-            tags = str(record[11]).split(',')
-            tags_list = list()
-            for t in tags:
-                tags_list.append({"name": str(t)})
-            account['tags'] = tags_list
+            account['reward_points'] = str(record[10]) 
+
+            for item in account.keys():
+                if account[item] == "None":
+                    account[item] = ""  
+
+            if record[11] is None or record[11] == '': account['tags'] = []
+            else:
+                tags = str(record[11]).split(',')
+                tags_list = list()
+                for t in tags:
+                    tags_list.append({"name": str(t)})
+                account['tags'] = tags_list
         else:
             cur.close()
             con.close()
@@ -337,21 +430,43 @@ def update_account(account_id, body):  # noqa: E501
             con.close()
             return error, 404, {'Access-Control-Allow-Origin': '*'}
 
-        tags_string = ""
-        tag_length = len(body.tags)
-        i=0
-        for tag in body.tags:
-            if i < tag_length-1:
-                tags_string = tags_string + tag.name + ','
-            else:
-                tags_string = tags_string + tag.name
-            i+=1
+        if body.tags is None: tags_string = ""
+        else:
+            tags_string = ""
+            tag_length = len(body.tags)
+            i=0
+            for tag in body.tags:
+                if i < tag_length-1:
+                    tags_string = tags_string + tag.name + ','
+                else:
+                    tags_string = tags_string + tag.name
+                i+=1
 
-        update_string = "UPDATE accounts set email=%s, first_name=%s, last_name=%s, age=%s, mobile_no=%s, \
-            location=%s, password=%s, account_type=%s, profile_pic=%s, reward_points=%s, tags=%s  \
-            where account_id = %s RETURNING account_id;"
-        cur.execute(update_string, (body.email, body.first_name, body.last_name, body.age, body.mobile, \
-            body.location, body.password, body.account_type, body.profile_pic, body.reward_points, tags_string, account_id))
+        update_string = "UPDATE accounts set "
+        if body.email != None: update_string += f" email='{body.email}',"
+        if body.first_name != None: update_string += f" first_name='{body.first_name}',"
+        if body.last_name != None: update_string += f" last_name='{body.last_name}',"
+        if body.age != None: update_string += f" age={body.age},"
+        if body.mobile != None: update_string += f" mobile_no='{body.mobile}',"
+        if body.location != None: update_string += f" location='{body.location}',"
+        if body.password != None: update_string += f" password='{body.password}',"
+        if body.account_type != None: update_string += f" account_type='{body.account_type}',"
+        if body.profile_pic != None: update_string += f" profile_pic='{body.profile_pic}',"
+        if body.reward_points != None: update_string += f" reward_points='{body.reward_points}',"
+        if tags_string != "": update_string += f" tags='{tags_string}',"
+
+        update_string = list(update_string)
+        update_string[-1] = " "
+        update_string = "".join(update_string)
+
+        update_string += f" where account_id = {account_id} RETURNING account_id;"
+            
+        cur.execute(update_string)
+
+        """
+        cur.execute(update_string, (body., body., body., body., body., \
+            body., body., body., body., body., , account_id))
+        """
         acc_id = cur.fetchone()[0]
 
         cur.close()
@@ -475,17 +590,45 @@ def update_host_details(account_id, body):  # noqa: E501
     """
 
     try: 
+        host_body = body   
+
         if connexion.request.is_json:
             body = HostDetails.from_dict(connexion.request.get_json())  # noqa: E501
 
-        if (len(body.org_name) == 0 or len(body.host_contact_no) == 0 or len(body.job_title) == 0 or len(body.qualification) == 0):
-            error = InvalidInputError(code=400, type="InvalidInputError", 
-                    message="The following mandatory fields were not provided: organisation name or contact number or title or qualification")
-            return error, 400, {'Access-Control-Allow-Origin': '*'}
+        #if (len(body.org_name) == 0 or len(body.host_contact_no) == 0 or len(body.job_title) == 0 or len(body.qualification) == 0):
+        #    error = InvalidInputError(code=400, type="InvalidInputError", 
+        #            message="The following mandatory fields were not provided: organisation name or contact number or title or qualification")
+        #    return error, 400, {'Access-Control-Allow-Origin': '*'}
 
         con = psycopg2.connect(database= 'eventastic', user='postgres', password='postgrespw', host=host, port=port)
         con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
         cur = con.cursor()
+
+        updateHost = 0
+        new_verified = ''
+        new_status = ''
+
+        if "params" in host_body:
+            if host_body["params"]["body"]["host_status"] != 'Pending':
+                updateHost = 1
+                new_verified = host_body["params"]["body"]["is_verified"]
+                new_status = host_body["params"]["body"]["host_status"]
+        elif "params" in host_body:
+            if host_body["body"]["host_status"] != 'Pending':
+                updateHost = 1
+                new_verified = host_body["body"]["is_verified"]
+                new_status = host_body["body"]["host_status"]
+
+        if updateHost == 1:
+            body.is_verified = bool(new_verified)
+            body.host_status = str(new_status)
+
+            update_string = "UPDATE hosts set is_verified=%s, host_status=%s where account_id = %s RETURNING account_id;"
+            cur.execute(update_string, (body.is_verified, body.host_status, account_id))
+            
+            cur.close()
+            con.close()
+            return body, 200, {'Access-Control-Allow-Origin': '*'}
 
         # to check if the account id exists or not
         cur.execute('SELECT * FROM accounts where account_id = ' + str(account_id))
@@ -500,15 +643,33 @@ def update_host_details(account_id, body):  # noqa: E501
         cur.execute('SELECT * FROM hosts where account_id = ' + str(account_id))
         record = cur.fetchone()
         if record == None: # to add the host details if it doesn't exists
-            insert_string = "INSERT INTO hosts VALUES (default, %s,%s,%s,%s,%s,%s,%s) RETURNING id;"
+            insert_string = "INSERT INTO hosts VALUES (default, %s,%s,%s,%s,%s,%s,%s,%s) RETURNING id;"
             cur.execute(insert_string, (account_id, body.org_name, body.org_desc, body.host_contact_no, body.job_title, \
-                        body.qualification, body.is_verified))
+                        body.qualification, body.is_verified, body.host_status))
             host_id = cur.fetchone()[0]
         else: # to update the host details if it already  exists
+            update_string = "UPDATE hosts set "
+            if body.org_name != None: update_string += f" organisation_name='{body.org_name}',"
+            if body.org_desc != None: update_string += f" organisation_desc='{body.org_desc}',"
+            if body.host_contact_no != None: update_string += f" host_contact_no='{body.host_contact_no}',"
+            if body.job_title != None: update_string += f" job_title='{body.job_title}',"
+            if body.qualification != None: update_string += f" qualification='{body.qualification}',"
+            if body.is_verified != None: update_string += f" is_verified={body.is_verified},"
+            if body.host_status != None: update_string += f" host_status='{body.host_status}',"
+
+            update_string = list(update_string)
+            update_string[-1] = " "
+            update_string = "".join(update_string)
+
+            update_string += f" where account_id = {account_id} RETURNING account_id;"
+            
+            cur.execute(update_string)
+            """
             update_string = "UPDATE hosts set organisation_name=%s, organisation_desc=%s, host_contact_no=%s, job_title=%s, \
-                qualification=%s, is_verified=%s where account_id = %s RETURNING account_id;"
+                qualification=%s, is_verified=%s, host_status=%s where account_id = %s RETURNING account_id;"
             cur.execute(update_string, (body.org_name, body.org_desc, body.host_contact_no, body.job_title, \
-                        body.qualification, body.is_verified, account_id))
+                        body.qualification, body.is_verified, body.host_status, account_id))
+            """
             acc_id = cur.fetchone()[0]
 
         cur.close()
@@ -518,6 +679,7 @@ def update_host_details(account_id, body):  # noqa: E501
     except Exception as e:
         # catch any unexpected runtime error and return as 500 error 
         error = UnexpectedServiceError(code="500", type="UnexpectedServiceError", message=str(e))
+        print(str(e))
         return error, 500, {'Access-Control-Allow-Origin': '*'}
 
 

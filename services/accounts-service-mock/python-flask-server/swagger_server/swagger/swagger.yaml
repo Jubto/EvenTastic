@@ -86,6 +86,18 @@ paths:
       responses:
         "200":
           description: "Response headers will indicate the allowable methods."
+          headers:
+            Access-Control-Allow-Origin:
+              type: "string"
+              default: "*"
+            Access-Control-Allow-Methods:
+              type: "string"
+              default: "*"
+            Access-Control-Allow-Headers:
+              type: "string"
+              default: "*"
+            Access-Control-Max-Age:
+              type: "integer"
       x-swagger-router-controller: "swagger_server.controllers.accounts_controller"
   /accounts/{account_id}:
     get:
@@ -171,6 +183,18 @@ paths:
       responses:
         "200":
           description: "Response headers will indicate the allowable methods."
+          headers:
+            Access-Control-Allow-Origin:
+              type: "string"
+              default: "*"
+            Access-Control-Allow-Methods:
+              type: "string"
+              default: "*"
+            Access-Control-Allow-Headers:
+              type: "string"
+              default: "*"
+            Access-Control-Max-Age:
+              type: "integer"
       x-swagger-router-controller: "swagger_server.controllers.accounts_controller"
   /accounts/{account_id}/credit_card:
     get:
@@ -252,6 +276,18 @@ paths:
       responses:
         "200":
           description: "Response headers will indicate the allowable methods."
+          headers:
+            Access-Control-Allow-Origin:
+              type: "string"
+              default: "*"
+            Access-Control-Allow-Methods:
+              type: "string"
+              default: "*"
+            Access-Control-Allow-Headers:
+              type: "string"
+              default: "*"
+            Access-Control-Max-Age:
+              type: "integer"
       x-swagger-router-controller: "swagger_server.controllers.accounts_controller"
   /accounts/{account_id}/host_details:
     get:
@@ -333,6 +369,18 @@ paths:
       responses:
         "200":
           description: "Response headers will indicate the allowable methods."
+          headers:
+            Access-Control-Allow-Origin:
+              type: "string"
+              default: "*"
+            Access-Control-Allow-Methods:
+              type: "string"
+              default: "*"
+            Access-Control-Allow-Headers:
+              type: "string"
+              default: "*"
+            Access-Control-Max-Age:
+              type: "integer"
       x-swagger-router-controller: "swagger_server.controllers.accounts_controller"
 definitions:
   AccountList:
@@ -454,6 +502,9 @@ definitions:
       isVerified:
         type: "boolean"
         example: false
+      host_status:
+        type: string
+        enum: ["Pending", "Approved", "Declined"]
     example:
       qualification: "Event Management Certificate IV"
       isVerified: false
@@ -461,6 +512,7 @@ definitions:
       host_contact_no: "+61405123456"
       org_name: "All Star Entertainment"
       job_title: "Event Manager"
+      host_status: "Pending"
   Error:
     type: "object"
     properties:
