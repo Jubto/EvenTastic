@@ -130,7 +130,7 @@ const AdminVenuePage = () => {
       .getVenueList()
       .then((response) => setVenueList(response.data))
       .catch((err) => console.log(err));
-  }, [venueList])
+  }, [])
 
   return (
     <PageContainer maxWidth='false' direction='row'>
