@@ -70,7 +70,7 @@ const AccountMenu = () => {
             </MenuItem>
           </div>
         : <div>
-            <MenuItem onClick={handleLogInModal}>
+            <MenuItem id='logIn' onClick={handleLogInModal}>
               Log in
             </MenuItem>
             <MenuItem component={Link} to={'/register'} onClick={handleCloseMenu}>
