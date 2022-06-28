@@ -502,6 +502,9 @@ definitions:
       isVerified:
         type: "boolean"
         example: false
+      host_status:
+        type: string
+        enum: ["Pending", "Approved", "Declined"]
     example:
       qualification: "Event Management Certificate IV"
       isVerified: false
@@ -509,6 +512,7 @@ definitions:
       host_contact_no: "+61405123456"
       org_name: "All Star Entertainment"
       job_title: "Event Manager"
+      host_status: "Pending"
   Error:
     type: "object"
     properties:

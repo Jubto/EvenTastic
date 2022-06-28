@@ -458,6 +458,9 @@ definitions:
       isVerified:
         type: boolean
         example: False
+      host_status:
+        type: string
+        enum: ["Pending", "Approved", "Declined"]
   Error:
     type: object
     properties:
