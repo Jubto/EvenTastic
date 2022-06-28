@@ -87,22 +87,25 @@ def list_events(event_title=None, event_category=None, event_desc=None):  # noqa
         con = psycopg2.connect(database= 'eventastic', user='postgres', password='postgrespw', host='localhost', port=port)
         con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
         cur = con.cursor()
-        
-        if (event_title != None):
-            cur.execute("SELECT * FROM events where event_title = '"+str(event_title)+"';")
+        if (event_title != None and event_desc != None and event_category != None):
+            cur.execute("SELECT * FROM events where event_title ~* '"+str(event_title)+"' and event_desc ~* '"+str(event_desc)+"' and event_category ~* '"+str(event_category)+"';") #all 3
+        elif (event_title != None and event_desc != None):
+            cur.execute("SELECT * FROM events where event_title ~* '"+str(event_title)+"' and event_desc ~* '"+str(event_desc)+"';") #title and desc
+        elif (event_title != None and event_category != None):
+            cur.execute("SELECT * FROM events where event_title ~* '"+str(event_title)+"' and event_category ~* '"+str(event_category)+"';") #title and category
+        elif (event_desc != None and event_category != None):
+            cur.execute("SELECT * FROM events where event_desc ~* '"+str(event_desc)+"' and event_category ~* '"+str(event_category)+"';") #desc and category
+        elif (event_title != None):
+            cur.execute("SELECT * FROM events where event_title ~* '"+str(event_title)+"';") #only event title
         elif (event_category != None):
-            cur.execute("SELECT * FROM events where event_category = '"+str(event_category)+"';")
+            cur.execute("SELECT * FROM events where event_category ~* '"+str(event_category)+"';") #only event category
         elif (event_desc != None):
-            cur.execute("SELECT * FROM events where event_desc = '"+str(event_desc)+"';")
+            cur.execute("SELECT * FROM events where event_desc ~* '"+str(event_desc)+"';") #only event desc
         else:
-            cur.execute("select * from events")
+            cur.execute("SELECT * FROM events")
 
         records = cur.fetchall()
 
-        #print(len(records))
-        #if len(records) == 0:
-        #    cur.execute("SELECT * FROM events ;") #if nothing matches filter criteria, return unfiltered list of events
-        #    records = cur.fetchall()
         
         events = []
         for record in records:
