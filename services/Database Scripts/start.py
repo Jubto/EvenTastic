@@ -1,14 +1,15 @@
 import psycopg2
-from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT 
+from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
 
-port=5432 # update port of postgres running in Docker here
-host="localhost"
+port = 5432  # update port of postgres running in Docker here
+host = "localhost"
 
-#Only run create database once
+# Only run create database once
 '''
 print('\nCreating Database ...')
-con = psycopg2.connect(user='postgres', password='postgrespw', host=host, port=port)
+con = psycopg2.connect(
+    user='postgres', password='postgrespw', host=host, port=port)
 con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
 cur = con.cursor()
 cur.execute('CREATE DATABASE eventastic')
@@ -16,7 +17,8 @@ cur.close()
 con.close()
 '''
 
-con = psycopg2.connect(database='eventastic', user='postgres', password='postgrespw', host=host, port=port)
+con = psycopg2.connect(database='eventastic', user='postgres',
+                       password='postgrespw', host=host, port=port)
 con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
 cur = con.cursor()
 
@@ -96,7 +98,7 @@ cur.execute('CREATE TABLE events (\
             event_img TEXT,\
             tags TEXT);')
 
-#""" Enter dummy data here
+# """ Enter dummy data here
 print('\nInserting dummy data ...')
 cur.execute("INSERT INTO accounts values(default, 'vishalsingh6475@gmail.com', 'Vishal', 'Singh', 100, \
             '469717341', 'Sydney', 'Vish', 'Customer', 'uuid', '3000', 'Movies,Adventure,Sports' \
@@ -111,7 +113,7 @@ cur.execute("INSERT INTO accounts values(default, 'neo@matrix.com', 'Keanu', 'Re
             '123456789', 'Zion', 'Neo', 'Admin', 'uuid', '999999', 'Killing,Machines' \
             );")
 
-    
+
 cur.execute("INSERT INTO hosts values(default, 1, 'Westpac', 'Westpac Banking Corp', '0469717341', \
             'Software Engineer', 'Masters', True \
             );")
@@ -121,18 +123,21 @@ cur.execute("INSERT INTO hosts values(default, 2, 'Matrix', 'The Truth', '999999
 cur.execute("INSERT INTO hosts values(default, 3, 'UNSW', 'NO Good University', '000000000', \
             'Jobless', 'Useless Masters', False \
             );")
-    
-    
-cur.execute("INSERT INTO saved_cards values(default, 1, 'Vishal', '9999333366668888', 'Credit', '1236');")
-cur.execute("INSERT INTO saved_cards values(default, 2, 'Bond', '7777777777777777', 'Credit', '7777');")
-cur.execute("INSERT INTO saved_cards values(default, 4, 'Neo', '9999999999999999', 'Debit', '9999');")
 
-cur.execute("INSERT INTO  venues values(default, 'Opera House', 'The Sydney Opera House is a multi-venue performing arts centre in Sydney', 'uuid', 'Bennelong Point, Sydney NSW 2000');")
-cur.execute("INSERT INTO  venues values(default, 'Curzon Hall', 'This elegantly appointed room is suitable for intimate style events. This room features ornate chandeliers, original elements and historic architecture', 'uuid', '53 Agincourt Rd, Marsfield NSW 2122');")
-cur.execute("INSERT INTO  venues values(default, 'Dockside', 'Dockside is an outstanding place for weddings, business events, conventions, gala dinners and cocktail parties', 'uuid', '2 Wheat Rd, Sydney NSW 2000');")
-cur.execute("INSERT INTO  venues values(default, 'Establishment Ballroom', 'A stylish and classy space hidden in the heritage Establishment building. Establishment Ballroom is made for elegant weddings and memorable celebrations', 'uuid', '252 George St, Sydney NSW 2000');")
-cur.execute("INSERT INTO  venues values(default, 'Doltone House Hyde Park', 'Doltone House Hyde Park offers contemporary sophistication opposite Sydney Hyde Park, with floor to ceiling arched windows.', 'uuid', '3/181 Elizabeth St, Sydney NSW 2000');")
-cur.execute("INSERT INTO  venues values(default, 'The Venue Alexandria', 'Sydney Premium Major Event Venue! State of art warehouse conversion with industrial and modern design elements across three diverse event spaces.', 'uuid', '55 Doody St, Alexandria NSW 2015');")
+
+cur.execute(
+    "INSERT INTO saved_cards values(default, 1, 'Vishal', '9999333366668888', 'Credit', '1236');")
+cur.execute(
+    "INSERT INTO saved_cards values(default, 2, 'Bond', '7777777777777777', 'Credit', '7777');")
+cur.execute(
+    "INSERT INTO saved_cards values(default, 4, 'Neo', '9999999999999999', 'Debit', '9999');")
+
+cur.execute("INSERT INTO  venues values(default, 'Shark Hotel Sydney, NSW', 'Old-school mainstay featuring classic pub favourites & multiple bars, plus billiards.', '9913d5a2-f628-11ec-b939-0242ac120002.jpg', '127 Liverpool St, Sydney NSW 2000');")
+cur.execute("INSERT INTO  venues values(default, 'Sydney Entertainment Centre', 'It is one of Sydneys larger concert venues, licensed to accommodate over 13,000 people as a conventional theatre or 8,000 as a theatre-in-the-round.', '9913d872-f628-11ec-b939-0242ac120002.jpg', '35 Harbour St; Sydney NSW 2000');")
+cur.execute("INSERT INTO  venues values(default, 'Potts Point Hotel, Potts Point, NSW', 'Potts Point Hotel is a new oasis of delicious in-house smoked meats and seafood, nestled in the bustling metropolitan landscape that is Potts Point.', '9913d9a8-f628-11ec-b939-0242ac120002.jpg', '33-35 Darlinghurst Rd, Potts Point NSW 2011');")
+cur.execute("INSERT INTO  venues values(default, 'Sydney Cove Passenger Terminal', 'The Overseas Passenger Terminal, known officially as the Sydney Cove Passenger Terminal, is a public passenger terminal servicing cruise ships and ocean liners located in Circular Quay, Sydney, Australia.', '9913de26-f628-11ec-b939-0242ac120002.jpg', '130 Argyle St, The Rocks NSW 2000');")
+cur.execute("INSERT INTO  venues values(default, 'Centennial Park Brazilian Fields', 'The Brazilian Fields in Centennial Park feature a beautiful pine forest as their backdrop to the north and Lachlan Reserve to the south.', '9913df7a-f628-11ec-b939-0242ac120002.jpg', 'Centennial Park NSW 2021');")
+cur.execute("INSERT INTO  venues values(default, 'The Venue Alexandria', 'Sydney Premium Major Event Venue! State of art warehouse conversion with industrial and modern design elements across three diverse event spaces.', '9913e0a6-f628-11ec-b939-0242ac120002.jpg', '55 Doody St, Alexandria NSW 2015');")
 
 cur.execute("INSERT INTO venue_seating values (default, 1,'front',100);")
 cur.execute("INSERT INTO venue_seating values (default, 1,'middle',100);")
@@ -156,7 +161,7 @@ cur.execute("INSERT INTO  events values(default, 2, 3,'Improv Comedy Night','Art
 cur.execute("INSERT INTO  events values(default, 2, 4,'Whisky Live Sydney 2022','Food','Sydney''s Premier Whisky Event.','WHISKY LIVE is Sydney''s premiere whisky sampling event, featuring high quality whiskies and spirits, all open under one roof for your tasting pleasure. Come along and learn while you taste.','2022-09-11T20:00:00+10:00','2022-09-11T22:00:00+10:00','Sydney Cove Passenger Terminal','b51a5319-f9ae-4191-aa95-fdf9a808e0fb.jpeg','Spirits');")
 cur.execute("INSERT INTO  events values(default, 3, 5,'Jump for Joy','Kids Entertainment','Australia''s biggest inflatable park!','Jump for Joy will be back in town at Centennial Park with Australia''s biggest inflatable play-park!','2022-11-01T20:00:00+10:00','2022-11-01T22:00:00+10:00','Centennial Park Brazilian Fields','50407a37-7fce-4a17-97ba-2dbc68446db6.jpeg', 'Family Friendly');")
 cur.execute("INSERT INTO  events values(default, 3, 6,'Venture & Capital 2022','Business','Come and be bored!','Everything we do is about connecting ventures with capital—this is why Wholesale Investor exists. In line with this, our 2022 Venture & Capital Conference focuses on empowering innovation, ambition, and capital.','2022-12-02T20:00:00+10:00','2022-12-02T22:00:00+10:00', 'The Venue Alexandria','39061bdb-9ace-45ed-9ddf-8b40223fc1b2.jpeg','Startups Small Business,Investment');")
-#"""
+# """
 
 cur.execute('SELECT * FROM accounts')
 records = cur.fetchall()
@@ -166,7 +171,7 @@ for row in records:
         print(row[j], end=" ")
     print()
 
-    
+
 cur.execute('SELECT * FROM hosts')
 records = cur.fetchall()
 print("\nHost details")
@@ -174,7 +179,7 @@ for row in records:
     for j in range(len(row)):
         print(row[j], end=" ")
     print()
-    
+
 cur.execute('SELECT * FROM saved_cards')
 records = cur.fetchall()
 print("\nSaved card details")
