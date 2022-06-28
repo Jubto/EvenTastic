@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useLocation } from "react-router-dom";
 import { PageContainer } from '../components/styles/layouts.styled'
 import EventCard from '../components/event/EventCard'
 import { Grid } from '@mui/material'
@@ -17,9 +18,33 @@ const createCard = (event) => {
 }
 
 const HomePage = () => {
+
   const [eventsList, setEventsList] = useState([])
+  const [searchResults, setSearchResults] = useState([])
+  const [searchVisible, setSearchVisible] = useState(false)
+
+  const search = useLocation().search;
+  // access the query params to see if search has been performed
+  const event_title = new URLSearchParams(search).get('event_title');
+  const event_desc = new URLSearchParams(search).get('event_desc');
+  const event_category = new URLSearchParams(search).get('event_category');
 
   useEffect(() => {
+    if (event_title != null || event_desc != null || event_category != null) {
+      api
+        .getEventList({
+          event_title: event_title,
+          event_category: event_category,
+          event_desc: event_desc
+        })
+        .then((response) => {
+          setSearchResults(response.data)
+          setSearchVisible(true)
+        })
+        .catch((err) => console.log(err));
+    } else {
+      setSearchVisible(false)
+    }
     api
       .getEventList()
       .then((response) => setEventsList(response.data))
@@ -28,14 +53,27 @@ const HomePage = () => {
 
   return (
     <PageContainer maxWidth='lg' align='center'>
-      <Typography gutterBottom variant="h2" component="div">
-        Upcoming Events
-      </Typography>
+      {searchVisible &&
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <Typography variant="h4" component="div" align='left'>
+              Search Results:
+            </Typography>
+          </Grid>
+          {searchResults.map(createCard)}
+        </Grid>
+      }
       <Grid container spacing={2}>
+        <Grid item xs={12}>
+          <Typography variant="h4" component="div"  align='left'>
+            Upcomming Events:
+          </Typography>
+        </Grid>
         {eventsList.map(createCard)}
       </Grid>
     </PageContainer>
   )
+
 }
 
 export default HomePage

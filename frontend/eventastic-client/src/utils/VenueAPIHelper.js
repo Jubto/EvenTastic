@@ -1,10 +1,10 @@
 import * as axios from "axios";
 
-export default class EventAPI {
+export default class VenueAPI {
   constructor() {
     this.api_token = null;
     this.client = null;
-    this.api_url = `http://127.0.0.1:8081/v1`;
+    this.api_url = 'http://localhost:8081/v1';
   }
 
   init = () => {
@@ -22,17 +22,13 @@ export default class EventAPI {
     return this.client;
   };
 
-  getEventList = () => {
-    return this.init().get("/events");
+  getVenueList = () => {
+    return this.init().get("/venues");
   };
 
-  getEventList = (params) => {
-    return this.init().get("/events", { params: params });
+  addVenue = (data) => {
+    return this.init().post("/venues", data);
   };
 
-  getEventDetails = (eventID) => {
-    return this.init().get("/events/" + eventID);
-  };
-  
   // Add additional API call here as needed ...
 }

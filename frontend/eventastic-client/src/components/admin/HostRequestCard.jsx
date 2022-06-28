@@ -16,14 +16,7 @@ export const StyledHostCard = styled(Card)`
 const SaveButtonBox = styled('div')`
   display: flex;
   justify-content: space-between;
-`;
-
-const ApproveButton = styled(Button)`
-  margin-bottom: 2px;
-`;
-
-const DeclineButton = styled(Button)`
-  margin-bottom: 2px;
+  margin-top: 20px;
 `;
 
 const api = new AccountAPI();
@@ -65,22 +58,22 @@ const HostRequestCard = ( {hostData} ) => {
           <CardHeader title={hostData.org_name} />
           <CardContent>
             <Typography variant="h6" component="div">
-              Title: {hostData.job_title}
+              <b>Title:</b> {hostData.job_title}
             </Typography>
             <Typography variant="h6" component="div">
-              Qualification: {hostData.qualification}
+            <b>Qualification:</b> {hostData.qualification}
             </Typography>
             <Typography variant="h6" component="div">
-              Contact No: {hostData.host_contact_no}
+            <b>Contact No:</b> {hostData.host_contact_no}
             </Typography>
-              <div>
+              <SaveButtonBox>
                 <Button variant="contained" value={hostData.account_id} color="success" onClick={(e) => ApproveHost(e.target.value) } >
                   Approve
                 </Button>
                 <Button variant="contained" value={hostData.account_id} color="error" onClick={(e) => DeclineHost(e.target.value) } >
                   Decline
                 </Button>
-              </div>
+              </SaveButtonBox>
           </CardContent>
       </StyledHostCard>
     </Grid>

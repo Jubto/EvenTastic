@@ -1,5 +1,5 @@
 import { PageContainer } from '../components/styles/layouts.styled'
-import AccountSideBar from '../components/account/AccountSideBar'
+import AdminSideBar from '../components/admin/AdminSideBar'
 
 import { useState, useEffect } from 'react';
 import HostRequestCard from '../components/admin/HostRequestCard'
@@ -39,7 +39,7 @@ const ApproveHostPage = () => {
 
   return (
     <PageContainer maxWidth='false' direction='row'>
-      <AccountSideBar></AccountSideBar>
+      <AdminSideBar></AdminSideBar>
       <AdminContainer>
         <div  style={{ margin: '15px'}}>
           <Grid container spacing={8}>
