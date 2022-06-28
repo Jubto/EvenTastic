@@ -34,4 +34,12 @@ export default class AccountAPI {
     return this.init().get(`/accounts/${id}`)
   };
 
+  getHost = (id) => {
+    return this.init().get(`/accounts/${id}/host_details`)
+  };
+
+  updateHost = (id, body) => {
+    return this.init().put(`/accounts/${id}/host_details`, body)
+  };
+
 }

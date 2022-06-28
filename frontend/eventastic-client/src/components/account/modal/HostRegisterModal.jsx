@@ -1,10 +1,10 @@
 import { Link } from 'react-router-dom';
-import ModalTitle from '../modal/ModalTitle';
-import ModalBody from '../modal/ModalBody';
-import { FlexBox } from '../styles/layouts.styled';
-import { Button, Dialog } from '@mui/material';
+import ModalTitle from '../../modal/ModalTitle';
+import { ModalBody } from '../../modal/ModalBody.styled';
+import { FlexBox } from '../../styles/layouts.styled';
+import { Box, Button, Dialog } from '@mui/material';
 
-const CustomerRegisterModal = ({ open, setOpen }) => {
+const HostRegisterModal = ({ open, setOpen }) => {
 
   const handleClose = () => {
     setOpen(false);
@@ -14,8 +14,13 @@ const CustomerRegisterModal = ({ open, setOpen }) => {
     <Dialog open={open} onClose={handleClose} aria-labelledby="login modal" maxWidth='lg'>
       <ModalTitle title='Account registered!' close={handleClose}/>
       <ModalBody>
-        Welcome! You are now a registered EvenTastic user!
-        Customise your event feed now by adding interest tags to your profile!
+        <Box sx={{mb:'1rem'}}>
+          Welcome! You have registered as a host on EvenTastic! 
+          Host verification will remain pending until our admin team verifies your organisation.
+        </Box>
+        <Box>
+          In the meantime, customise your event feed now by adding interest tags to your profile!
+        </Box>
       </ModalBody>
       <FlexBox justify='space-between'>
         <Button 
@@ -26,7 +31,7 @@ const CustomerRegisterModal = ({ open, setOpen }) => {
           Add tags
         </Button>
         <Button 
-          component={Link} to={'/account'}
+          component={Link} to={'/account?test=yolo'} state={{from:'/register'}}
           variant='contained' size='small'
           sx={{backgroundColor:'evenTastic.dull', m:'1rem'}}
         >
@@ -37,4 +42,4 @@ const CustomerRegisterModal = ({ open, setOpen }) => {
   )
 }
 
-export default CustomerRegisterModal
+export default HostRegisterModal

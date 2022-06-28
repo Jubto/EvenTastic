@@ -44,6 +44,7 @@ def create_account(body):
 
     :rtype: Account
     """
+    print(f'POST /accounts body: {body}')
     try:
         global _account_dict
 

@@ -12,13 +12,12 @@ import {
 const AccountMenu = () => {
   const context = useContext(StoreContext);
   const [loggedIn, setLoggedIn] = context.login;
-  const [, setEmail] = context.email;
-  const [, setUserType] = context.type;
-  const [userDp] = context.dp;
+  const [account, setAccount] = context.account;
+  const [, setHostDetails] = context.host;
   const [, setLogInModal] = context.logInModal;
   const [anchor, setAnchor] = useState(null);
 
-  // TODO: useHistory
+  // TODO: useHistory - to hide this when on register pageS
 
   const handleOpenMenu = (event) => {
     setAnchor(event.currentTarget);
@@ -28,24 +27,23 @@ const AccountMenu = () => {
     setAnchor(null);
   };
 
-  const handleLogInModal = () => {
+  const handleLogInModal = (event) => {
     handleCloseMenu();
-    setLogInModal(true);
+    setLogInModal(event.target.id);
   };
 
   const handleLogout = () => {
+    handleCloseMenu();
     setLoggedIn(null);
-    setEmail(null);
-    setUserType(null);
+    setAccount(null);
+    setHostDetails(null);
   };
-
-  console.log(`ACCOUNT MENU ${loggedIn}`)
 
   return (
     <>
     <Tooltip title="Open account menu" enterDelay={10}>
       <IconButton onClick={handleOpenMenu} sx={{ p: 0 }}>
-        <Avatar src={loggedIn && userDp}/>
+        <Avatar src={loggedIn && account.profile_pic}/>
       </IconButton>
     </Tooltip>
     <Menu
@@ -79,12 +77,12 @@ const AccountMenu = () => {
               Sign Up
             </MenuItem>
             <Tooltip title="log in to create event" placement="left">
-              <MenuItem onClick={handleLogInModal}>
+              <MenuItem id='createEvent' onClick={handleLogInModal}>
                 Create an Event
               </MenuItem>
             </Tooltip>
             <Tooltip title="log in to access account" placement="left">
-              <MenuItem onClick={handleLogInModal}>
+              <MenuItem id='myAccount' onClick={handleLogInModal}>
                 My Account
               </MenuItem>
             </Tooltip>
