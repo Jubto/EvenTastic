@@ -18,7 +18,7 @@ const api = new AccountAPI();
 const LogInModal = () => {
   const navigate = useNavigate();
   const context = useContext(StoreContext);
-  const [, setLoggedIn] = context.login;
+  const [loggedIn, setLoggedIn] = context.login;
   const [, setAccount] = context.account;
   const [, setHostDetails] = context.host;
   const [LogInModal, setLogInModal] = context.logInModal;
@@ -29,14 +29,16 @@ const LogInModal = () => {
     password: null,
   })
 
-  const handleClose = () => {
+  const handleClose = (leave) => {
     const redirect = LogInModal;
     setLogInModal(false);
-    if (redirect === 'createEvent') {
-      navigate('/create-event')
-    }
-    if (redirect === 'myAccount') {
-      navigate('/account')
+    if (leave) {
+      if (redirect === 'createEvent') {
+        navigate('/create-event')
+      }
+      if (redirect === 'myAccount') {
+        navigate('/account')
+      }
     }
   }
 
@@ -70,7 +72,7 @@ const LogInModal = () => {
           else if (account.account_type === 'Customer') {
             setLoggedIn(true);
             setAccount(account)
-            handleClose()
+            handleClose(true)
           }
           else {
             api.getHost(account.account_id)
@@ -78,7 +80,7 @@ const LogInModal = () => {
               setLoggedIn(true);
               setAccount(account);
               setHostDetails(hostResponse.data)
-              handleClose()
+              handleClose(true)
             })
             .catch((error) => console.log(error))
           }

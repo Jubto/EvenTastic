@@ -12,6 +12,7 @@ const AccountPage = () => {
   const [account, setAccount] = context.account;
   const [hostDetails, setHostDetails] = context.host;
   const [openWelcome, setOpenWelcome] = useState(null);
+  const [accountScreen, setAccountScreen] = useState(null);
 
   useEffect(() => {
     if (location.state && location.state.from === '/register') {
@@ -21,8 +22,8 @@ const AccountPage = () => {
 
   return (
     <PageContainer maxWidth='false' direction='row'>
-      <AccountSideBar>menu</AccountSideBar>
-      <AccountMain>body</AccountMain>
+      <AccountSideBar changeScreen={setAccountScreen}/>
+      <AccountMain accountScreen={accountScreen}/>
       <AccountWelcomeModal open={openWelcome} setOpen={setOpenWelcome}/>
     </PageContainer>
   )

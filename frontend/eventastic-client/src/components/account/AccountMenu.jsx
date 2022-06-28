@@ -27,9 +27,9 @@ const AccountMenu = () => {
     setAnchor(null);
   };
 
-  const handleLogInModal = (event) => {
+  const handleLogInModal = (redirect) => {
     handleCloseMenu();
-    setLogInModal(event.target.id);
+    setLogInModal(redirect);
   };
 
   const handleLogout = () => {
@@ -70,19 +70,19 @@ const AccountMenu = () => {
             </MenuItem>
           </div>
         : <div>
-            <MenuItem id='logIn' onClick={handleLogInModal}>
+            <MenuItem id='logIn' onClick={() => handleLogInModal('logIn')}>
               Log in
             </MenuItem>
             <MenuItem component={Link} to={'/register'} onClick={handleCloseMenu}>
               Sign Up
             </MenuItem>
             <Tooltip title="log in to create event" placement="left">
-              <MenuItem id='createEvent' onClick={handleLogInModal}>
+              <MenuItem id='createEvent' onClick={() => handleLogInModal('createEvent')}>
                 Create an Event
               </MenuItem>
             </Tooltip>
             <Tooltip title="log in to access account" placement="left">
-              <MenuItem id='myAccount' onClick={handleLogInModal}>
+              <MenuItem id='myAccount' onClick={() => handleLogInModal('myAccount')}>
                 My Account
               </MenuItem>
             </Tooltip>
