@@ -65,13 +65,13 @@ const HostRequestCard = ( {hostData} ) => {
           <CardHeader title={hostData.org_name} />
           <CardContent>
             <Typography variant="h6" component="div">
-              Title: {hostData.job_title}
+              <b>Title:</b> {hostData.job_title}
             </Typography>
             <Typography variant="h6" component="div">
-              Qualification: {hostData.qualification}
+            <b>Qualification:</b> {hostData.qualification}
             </Typography>
             <Typography variant="h6" component="div">
-              Contact No: {hostData.host_contact_no}
+            <b>Contact No:</b> {hostData.host_contact_no}
             </Typography>
               <div>
                 <Button variant="contained" value={hostData.account_id} color="success" onClick={(e) => ApproveHost(e.target.value) } >
