@@ -15,3 +15,17 @@ Week 3:
 - Complted User Interface Mockups for View Events and View Recommendations functionalities.
 - Submitted proposal by deadline.
 - Completed API Specifiction for the Accounts API for Sprint 1.
+
+Week 4:
+- Completed API Specifiction for the Events API for Sprint 1.
+- API Specifiction updates for Events and Account API during Sprint 1.
+- Completed front end for User Story ZW9900-10, Home Page and integration with Event API. 
+  Event Summaries displaying data from DB via API.
+- Completed front end for User Story ZW9900-12, Event Details Page and integration with Event API. 
+  Event Details displaying data from DB via API.
+
+Week 5:
+- Completed User Story ZW9900-11, Event Search and integration with Event API. 
+  Event search results displaying on Home Page.
+- Debugging CORs issue between React Front End and Flask API layer.
+- End-to-end testing of Event Home, Event Details and Event Search Functionality. 
