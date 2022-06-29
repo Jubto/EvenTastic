@@ -22,10 +22,8 @@ export default class EventAPI {
     return this.client;
   };
 
-  getEventList = () => {
-    return this.init().get("/events");
-  };
 
+  
   getEventList = (params) => {
     return this.init().get("/events", { params: params });
   };

@@ -25,9 +25,9 @@ const HomePage = () => {
 
   const search = useLocation().search;
   // access the query params to see if search has been performed
-  const event_title = new URLSearchParams(search).get('event_title');
-  const event_desc = new URLSearchParams(search).get('event_desc');
-  const event_category = new URLSearchParams(search).get('event_category');
+  let event_title = new URLSearchParams(search).get('event_title');
+  let event_desc = new URLSearchParams(search).get('event_desc');
+  let event_category = new URLSearchParams(search).get('event_category');
 
   useEffect(() => {
     if (event_title != null || event_desc != null || event_category != null) {
@@ -51,9 +51,19 @@ const HomePage = () => {
       .catch((err) => console.log(err));
   }, [])
 
-  return (
-    <PageContainer maxWidth='lg' align='center'>
-      {searchVisible &&
+  const getSearchResults = () => {
+    if (searchResults.length === 0) {
+      return (
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <Typography variant="h4" component="div" align='left'>
+              Search Results: No Results found
+            </Typography>
+          </Grid>
+        </Grid>
+      );
+    } else {
+      return (
         <Grid container spacing={2}>
           <Grid item xs={12}>
             <Typography variant="h4" component="div" align='left'>
@@ -62,10 +72,16 @@ const HomePage = () => {
           </Grid>
           {searchResults.map(createCard)}
         </Grid>
-      }
+      );
+    }
+  }
+
+  return (
+    <PageContainer maxWidth='lg' align='center'>
+      {searchVisible && getSearchResults()}
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          <Typography variant="h4" component="div"  align='left'>
+          <Typography variant="h4" component="div" align='left'>
             Upcomming Events:
           </Typography>
         </Grid>
