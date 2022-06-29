@@ -1,5 +1,4 @@
-import React from 'react'
-import { Box, Typography, styled } from '@mui/material';
+import { Box, styled } from '@mui/material';
 
 export const ModalBody = styled(Box)`
   ${({ theme }) => theme.typography.body1}
