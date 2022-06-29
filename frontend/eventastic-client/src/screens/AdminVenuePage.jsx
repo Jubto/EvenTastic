@@ -27,6 +27,7 @@ import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import DialogActions from '@mui/material/DialogActions';
 import OutlinedInput from '@mui/material/OutlinedInput';
+import AdminSideBar from '../components/admin/AdminSideBar'
 
 const Input = styled('input')({
   display:'none'
@@ -134,13 +135,14 @@ const AdminVenuePage = () => {
 
   return (
     <PageContainer maxWidth='false' direction='row'>
-
-      <Box sx={{ flexGrow: 1 }}>
+      <AdminSideBar></AdminSideBar>
+      <Box sx={{ flexGrow: 1 }} style={{'marginLeft':'20px'}}>
 
         <Stack
           direction="row"
           divider={<Divider orientation="vertical" flexItem />}
           spacing={2}
+          style={{'marginLeft':'20px'}}
         >
           <Typography variant="h6" component="span" gutterBottom>
                 All Venues
