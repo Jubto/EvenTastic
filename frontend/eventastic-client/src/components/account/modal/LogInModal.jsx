@@ -12,14 +12,16 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
+import { LocalConvenienceStoreOutlined } from '@mui/icons-material';
 
 const api = new AccountAPI();
 
 const LogInModal = () => {
   const navigate = useNavigate();
   const context = useContext(StoreContext);
-  const [loggedIn, setLoggedIn] = context.login;
+  const [, setLoggedIn] = context.login;
   const [, setAccount] = context.account;
+  const [, setCard] = context.card;
   const [, setHostDetails] = context.host;
   const [LogInModal, setLogInModal] = context.logInModal;
   const [logInFail, setLogInFail] = useState(null);
@@ -29,20 +31,22 @@ const LogInModal = () => {
     password: null,
   })
 
-  const handleClose = (leave) => {
-    const redirect = LogInModal;
+  const handleClose = () => {
     setLogInModal(false);
-    if (leave) {
-      if (redirect === 'createEvent') {
-        navigate('/create-event')
-      }
-      if (redirect === 'myAccount') {
-        navigate('/account')
-      }
+  }
+
+  const redirect = () => {
+    if (LogInModal === 'createEvent') {
+      setLogInModal(false);
+      navigate('/create-event')
+    }
+    if (LogInModal === 'myAccount') {
+      setLogInModal(false);
+      navigate('/account')
     }
   }
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const email = data.get('email')
@@ -63,31 +67,37 @@ const LogInModal = () => {
       const param = {
         'email': email
       }
-      api.getAccounts(param)
-        .then((accountResponse) => {
-          const account = accountResponse.data[0];
-          if (!account || account.password !== password) {
-            setLogInFail(true)
-          }
-          else if (account.account_type === 'Customer') {
-            setLoggedIn(true);
-            setAccount(account)
-            handleClose(true)
-          }
-          else {
-            api.getHost(account.account_id)
-            .then((hostResponse) => {
-              setLoggedIn(true);
-              setAccount(account);
-              setHostDetails(hostResponse.data)
-              handleClose(true)
-            })
-            .catch((error) => console.log(error))
-          }
-        })
-        .catch((error) => console.log(error))
+      try {
+        const accountRes = await api.getAccounts(param)
+        const account = accountRes.data[0];
+        if (!account || account.password !== password) {
+          setLogInFail(true)
+        }
+        console.log('LOGGED IN================================')
+        const cardDetails = await api.getAccountCard(account.account_id)
+        console.log('CARD details ' + cardDetails)
+        setCard(cardDetails.data)
+        if (account.account_type === 'Customer') {
+          setLoggedIn(true);
+          setAccount(account)
+          redirect()
+        }
+        else {
+          const hostRes = await api.getHost(account.account_id)
+          setLoggedIn(true);
+          setAccount(account);
+          setHostDetails(hostRes.data)
+          redirect()
+          console.log('HOST login')
+          console.log(hostRes.data)
+        }
+      }
+      catch(error) {
+        console.error(error)
+      }
     }
   }
+  console.log(`LogInModal is: ${LogInModal}`)
 
   return (
     <Dialog open={LogInModal} onClose={handleClose} aria-labelledby="login modal" maxWidth='lg'>

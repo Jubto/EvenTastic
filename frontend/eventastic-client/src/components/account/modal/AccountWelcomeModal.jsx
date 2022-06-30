@@ -19,18 +19,18 @@ const AccountWelcomeModal = ({ open, setOpen }) => {
       </ModalBody>
       <FlexBox justify='space-between'>
         <Button
-          onClick={handleClose}
-          variant='contained' size='small'
-          sx={{ m: '1rem' }}
-        >
-          continue
-        </Button>
-        <Button
           component={Link} to={'/'}
           variant='contained' size='small'
           sx={{ backgroundColor: 'evenTastic.dull', m: '1rem' }}
         >
           Skip
+        </Button>
+        <Button
+          onClick={handleClose}
+          variant='contained' size='small'
+          sx={{ m: '1rem' }}
+        >
+          continue
         </Button>
       </FlexBox>
     </Dialog>

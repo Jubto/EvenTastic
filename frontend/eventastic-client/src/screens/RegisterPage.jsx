@@ -44,11 +44,11 @@ const ToggleGrid = styled(Grid)`
 const RegisterPage = () => {
   const navigate = useNavigate();
   const context = useContext(StoreContext);
-  const [openCustomerModal, setCustomerModal] = useState(null);
-  const [openHostModal, setHostModal] = useState(null);
   const [loggedIn, setLoggedIn] = context.login;
   const [, setAccount] = context.account;
   const [, setHostDetails] = context.host;
+  const [openCustomerModal, setCustomerModal] = useState(null);
+  const [openHostModal, setHostModal] = useState(null);
   const [hostInputs, setHostInputs] = useState('Customer');
   const [formErrors, setformErrors] = useState({
     error: false,
@@ -63,7 +63,7 @@ const RegisterPage = () => {
     mobile: null
   })
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const firstName = data.get('firstName')
@@ -126,12 +126,12 @@ const RegisterPage = () => {
         "password": password1,
         "mobile": mobile,
       }
-      api.addAccount(body)
-      .then((response) => {
+      try {
+        const accountRes = await api.addAccount(body)
         setLoggedIn(true)
-        setAccount(response.data)
+        setAccount(accountRes.data)
         if (hostInputs === 'Host') {
-          const accountID = response.data.account_id
+          const accountID = accountRes.data.account_id
           const hostDetails = {
             host_contact_no: mobile,
             isVerified: false,
@@ -140,18 +140,19 @@ const RegisterPage = () => {
             org_desc: orgLink,
             org_name: organisation,
           }
-          api.putHost(accountID, hostDetails)
-          .then((response) => {
-            setHostDetails(response.data)
-            setHostModal(true)
-          })
-          .catch((error) => console.log(error))
+          const HostRes = await api.putHost(accountID, hostDetails)
+          setHostDetails(HostRes.data)
+          setHostModal(true)
+          console.log("HOST register!")
+          console.log(HostRes.data)
         }
         else {
           setCustomerModal(true)
         }
-      })
-      .catch((error) => console.log(error))
+      }
+      catch(error) {
+        console.error(error)
+      }
     }
   };
 

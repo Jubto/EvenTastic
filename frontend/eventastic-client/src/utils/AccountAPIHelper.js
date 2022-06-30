@@ -38,6 +38,14 @@ export default class AccountAPI {
     return this.init().put(`/accounts/${id}`, body)
   };
 
+  getAccountCard = (id) => {
+    return this.init().get(`/accounts/${id}/credit_card`)
+  };
+
+  putAccountCard = (id, body) => {
+    return this.init().put(`/accounts/${id}/credit_card`, body)
+  };
+
   getHost = (id) => {
     return this.init().get(`/accounts/${id}/host_details`)
   };

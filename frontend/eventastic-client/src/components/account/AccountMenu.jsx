@@ -17,8 +17,6 @@ const AccountMenu = () => {
   const [, setLogInModal] = context.logInModal;
   const [anchor, setAnchor] = useState(null);
 
-  // TODO: useHistory - to hide this when on register pageS
-
   const handleOpenMenu = (event) => {
     setAnchor(event.currentTarget);
   };
@@ -43,7 +41,7 @@ const AccountMenu = () => {
     <>
     <Tooltip title="Open account menu" enterDelay={10}>
       <IconButton onClick={handleOpenMenu} sx={{ p: 0 }}>
-        <Avatar src={loggedIn && account.profile_pic}/>
+        <Avatar src={loggedIn && `${process.env.PUBLIC_URL}/img/profile-dp/${account.profile_pic}`}/>
       </IconButton>
     </Tooltip>
     <Menu

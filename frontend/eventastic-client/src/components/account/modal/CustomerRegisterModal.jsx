@@ -12,25 +12,25 @@ const CustomerRegisterModal = ({ open, setOpen }) => {
 
   return (
     <Dialog open={open} onClose={handleClose} aria-labelledby="login modal" maxWidth='lg'>
-      <ModalTitle title='Account registered!' close={handleClose}/>
+      <ModalTitle title='Account registered!' close={handleClose} />
       <ModalBody>
         Welcome! You are now a registered EvenTastic user!
         Customise your event feed now by adding interest tags to your profile!
       </ModalBody>
       <FlexBox justify='space-between'>
-        <Button 
-          component={Link} to={'/tags'}
+        <Button
+          component={Link} to={'/account?test=yolo'} state={{ from: '/register' }}
           variant='contained' size='small'
-          sx={{m:'1rem'}}
-        >
-          Add tags
-        </Button>
-        <Button 
-          component={Link} to={'/account?test=yolo'} state={{from:'/register'}}
-          variant='contained' size='small'
-          sx={{backgroundColor:'evenTastic.dull', m:'1rem'}}
+          sx={{ backgroundColor: 'evenTastic.dull', m: '1rem' }}
         >
           Skip
+        </Button>
+        <Button
+          component={Link} to={'/tags'}
+          variant='contained' size='small'
+          sx={{ m: '1rem' }}
+        >
+          Add tags
         </Button>
       </FlexBox>
     </Dialog>
