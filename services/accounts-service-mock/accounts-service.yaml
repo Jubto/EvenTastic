@@ -79,19 +79,6 @@ paths:
       responses:
         "200":
           description: "Response headers will indicate the allowable methods."
-          headers:
-            Access-Control-Allow-Origin:
-              type: string
-              default: '*'
-            Access-Control-Allow-Methods:
-              type: string
-              default: '*'
-            Access-Control-Allow-Headers:
-              type: string
-              default: '*'
-            Access-Control-Max-Age:
-              type: integer
-              default: 86400
   /accounts/{account_id}:
     get:
       summary: "Retrieve Account details by Account ID."
@@ -172,19 +159,6 @@ paths:
       responses:
         "200":
           description: "Response headers will indicate the allowable methods."
-          headers:
-            Access-Control-Allow-Origin:
-              type: string
-              default: '*'
-            Access-Control-Allow-Methods:
-              type: string
-              default: '*'
-            Access-Control-Allow-Headers:
-              type: string
-              default: '*'
-            Access-Control-Max-Age:
-              type: integer
-              default: 86400
   /accounts/{account_id}/credit_card:
     get:
       summary: "Used to retrive the Credit Card details for an Account."
@@ -261,19 +235,6 @@ paths:
       responses:
         "200":
           description: "Response headers will indicate the allowable methods."
-          headers:
-            Access-Control-Allow-Origin:
-              type: string
-              default: '*'
-            Access-Control-Allow-Methods:
-              type: string
-              default: '*'
-            Access-Control-Allow-Headers:
-              type: string
-              default: '*'
-            Access-Control-Max-Age:
-              type: integer
-              default: 86400
   /accounts/{account_id}/host_details:
     get:
       summary: "Used to retrive the Host details for an Account."
@@ -350,19 +311,29 @@ paths:
       responses:
         "200":
           description: "Response headers will indicate the allowable methods."
-          headers:
-            Access-Control-Allow-Origin:
-              type: string
-              default: '*'
-            Access-Control-Allow-Methods:
-              type: string
-              default: '*'
-            Access-Control-Allow-Headers:
-              type: string
-              default: '*'
-            Access-Control-Max-Age:
-              type: integer
-              default: 86400
+  /host_details:
+    get:
+      summary: "Retrieve a List of Host Details. Filter by status."
+      tags:
+        - Accounts
+      operationId: "listHostDetails"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "host_status"
+        in: "query"
+        description: "The Host Status to filter on."
+        required: false
+        type: "string"
+      responses:
+        "200":
+          description: "Returns a list of Host Details. Returns empty array if no Host Details exist."
+          schema:
+            $ref: "#/definitions/HostDetails"
+        "500":
+          description: "Unexpected failure in the service layer."
+          schema:
+            $ref: "#/definitions/UnexpectedServiceError"
 definitions:
   AccountList:
     type: array
@@ -378,6 +349,9 @@ definitions:
       account_type:
         type: string
         enum: ["Customer", "Host", "Admin"]
+      user_desc:
+        type: string
+        example: "Hello I am Bob, I like cheese."
       first_name:
         type: string
         example: "Bob"
@@ -440,12 +414,23 @@ definitions:
   HostDetails:
     type: object
     properties:
+      host_id:
+        type: integer
+        format: int64
+        example: 1
+      account_id:
+        type: integer
+        format: int64
+        example: 1      
       org_name:
         type: string
-        example: All Star Entertainment
+        example: "All Star Entertainment"
       org_desc:
         type: string
-        example: Blurb describing the organisation
+        example: "Blurb describing the organisation"
+      org_email:
+        type: string
+        example: "bob@allstar.com"
       host_contact_no:
         type: string
         example: "+61405123456"

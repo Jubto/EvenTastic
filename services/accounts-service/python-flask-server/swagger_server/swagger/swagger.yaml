@@ -334,6 +334,31 @@ paths:
         "200":
           description: "Response headers will indicate the allowable methods."
       x-swagger-router-controller: "swagger_server.controllers.accounts_controller"
+  /host_details:
+    get:
+      tags:
+      - "Accounts"
+      summary: "Retrieve a List of Host Details. Filter by status."
+      operationId: "list_host_details"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "host_status"
+        in: "query"
+        description: "The Host Status to filter on."
+        required: false
+        type: "string"
+      responses:
+        "200":
+          description: "Returns a list of Host Details. Returns empty array if no\
+            \ Host Details exist."
+          schema:
+            $ref: "#/definitions/HostDetails"
+        "500":
+          description: "Unexpected failure in the service layer."
+          schema:
+            $ref: "#/definitions/UnexpectedServiceError"
+      x-swagger-router-controller: "swagger_server.controllers.accounts_controller"
 definitions:
   AccountList:
     type: "array"
@@ -357,6 +382,9 @@ definitions:
         - "Customer"
         - "Host"
         - "Admin"
+      user_desc:
+        type: "string"
+        example: "Hello I am Bob, I like cheese."
       first_name:
         type: "string"
         example: "Bob"
@@ -392,19 +420,20 @@ definitions:
           $ref: "#/definitions/Tag"
     example:
       account_type: "Customer"
-      password: "Cartoon-Duck-14-Coffee-Glvs"
-      account_id: 1
       mobile: "+61405123456"
       profile_pic: "1603dfd6-efb6-11ec-8ea0-0242ac120002"
       last_name: "Smith"
-      location: "Neutral Bay, NSW, 2089"
-      first_name: "Bob"
-      email: "bob.smith@gmail.com"
-      age: 36
       reward_points: "1250.5"
       tags:
       - name: "Jazz"
       - name: "Jazz"
+      user_desc: "Hello I am Bob, I like cheese."
+      password: "Cartoon-Duck-14-Coffee-Glvs"
+      account_id: 1
+      location: "Neutral Bay, NSW, 2089"
+      first_name: "Bob"
+      email: "bob.smith@gmail.com"
+      age: 36
   Tag:
     type: "object"
     properties:
@@ -436,12 +465,23 @@ definitions:
   HostDetails:
     type: "object"
     properties:
+      host_id:
+        type: "integer"
+        format: "int64"
+        example: 1
+      account_id:
+        type: "integer"
+        format: "int64"
+        example: 1
       org_name:
         type: "string"
         example: "All Star Entertainment"
       org_desc:
         type: "string"
         example: "Blurb describing the organisation"
+      org_email:
+        type: "string"
+        example: "bob@allstar.com"
       host_contact_no:
         type: "string"
         example: "+61405123456"
@@ -455,16 +495,22 @@ definitions:
         type: "boolean"
         example: false
       host_status:
-        type: string
-        enum: ["Pending", "Approved", "Declined"]
+        type: "string"
+        enum:
+        - "Pending"
+        - "Approved"
+        - "Declined"
     example:
       qualification: "Event Management Certificate IV"
+      account_id: 1
+      org_email: "bob@allstar.com"
       isVerified: false
       org_desc: "Blurb describing the organisation"
       host_contact_no: "+61405123456"
       org_name: "All Star Entertainment"
       job_title: "Event Manager"
       host_status: "Pending"
+      host_id: 1
   Error:
     type: "object"
     properties:

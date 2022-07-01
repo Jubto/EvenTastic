@@ -91,6 +91,19 @@ class TestAccountsController(BaseTestCase):
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
 
+    def test_list_host_details(self):
+        """Test case for list_host_details
+
+        Retrieve a List of Host Details. Filter by status.
+        """
+        query_string = [('host_status', 'host_status_example')]
+        response = self.client.open(
+            '/v1/host_details',
+            method='GET',
+            query_string=query_string)
+        self.assert200(response,
+                       'Response body is : ' + response.data.decode('utf-8'))
+
     def test_update_account(self):
         """Test case for update_account
 
