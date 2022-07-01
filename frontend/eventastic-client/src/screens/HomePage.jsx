@@ -82,7 +82,7 @@ const HomePage = () => {
       <Grid container spacing={2}>
         <Grid item xs={12}>
           <Typography variant="h4" component="div" align='left'>
-            Upcomming Events:
+            Upcoming Events:
           </Typography>
         </Grid>
         {eventsList.map(createCard)}
