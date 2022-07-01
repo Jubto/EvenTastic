@@ -11,8 +11,10 @@ import {
 
 const AccountMenu = () => {
   const context = useContext(StoreContext);
+  const [, setRedirect] = context.redirect;
   const [loggedIn, setLoggedIn] = context.login;
   const [account, setAccount] = context.account;
+  const [, setCard] = context.card;
   const [, setHostDetails] = context.host;
   const [, setLogInModal] = context.logInModal;
   const [anchor, setAnchor] = useState(null);
@@ -27,13 +29,15 @@ const AccountMenu = () => {
 
   const handleLogInModal = (redirect) => {
     handleCloseMenu();
-    setLogInModal(redirect);
+    setRedirect(redirect)
+    setLogInModal(true);
   };
 
   const handleLogout = () => {
     handleCloseMenu();
-    setLoggedIn(null);
+    setLoggedIn(false);
     setAccount(null);
+    setCard(null);
     setHostDetails(null);
   };
 
@@ -68,19 +72,19 @@ const AccountMenu = () => {
             </MenuItem>
           </div>
         : <div>
-            <MenuItem id='logIn' onClick={() => handleLogInModal('logIn')}>
+            <MenuItem id='logIn' onClick={() => handleLogInModal('/')}>
               Log in
             </MenuItem>
             <MenuItem component={Link} to={'/register'} onClick={handleCloseMenu}>
               Sign Up
             </MenuItem>
             <Tooltip title="log in to create event" placement="left">
-              <MenuItem id='createEvent' onClick={() => handleLogInModal('createEvent')}>
+              <MenuItem id='createEvent' onClick={() => handleLogInModal('/create-event')}>
                 Create an Event
               </MenuItem>
             </Tooltip>
             <Tooltip title="log in to access account" placement="left">
-              <MenuItem id='myAccount' onClick={() => handleLogInModal('myAccount')}>
+              <MenuItem id='myAccount' onClick={() => handleLogInModal('/account')}>
                 My Account
               </MenuItem>
             </Tooltip>

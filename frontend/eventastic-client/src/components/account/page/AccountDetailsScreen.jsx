@@ -2,25 +2,17 @@ import { useContext, useEffect, useState, useRef } from 'react';
 import { StoreContext } from '../../../utils/context';
 import AccountAPI from '../../../utils/AccountAPIHelper';
 import AccountUpdatedModal from '../modal/AccountUpdatedModal'
-import { FlexBox } from '../../styles/layouts.styled';
+import { ScrollContainer } from '../../styles/layouts.styled';
+import InfoHeader from '../styles/InfoHeader';
 import {
   Button,
-  Divider,
   Grid,
   TextField,
-  Typography,
   styled
 } from '@mui/material';
 import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
 
 const api = new AccountAPI();
-
-const ScrollContainer = styled('div')`
-  overflow-y: auto;
-  padding-right: 4rem;
-  width: 100%;
-  height: 93%;
-`
 
 const ImageHolder = styled(Button)`
   border: 1px solid black;
@@ -40,21 +32,11 @@ const ToggleGrid = styled(Grid)`
   display: ${( {show} ) => show ? 'initial' : 'none'};
 `
 
-const DetailHeaders = ({ title }) => {
-  return (
-    <div>
-      <Typography variant='subtitle1' sx={{ color: 'grey.600', fontWeight: 1000 }}>
-        {title}
-      </Typography>
-      <Divider variant="middle" sx={{ mb: 2 }} />
-    </div>
-  )
-}
-
 const AccountDetailsScreen = ({ change, setChange }) => {
   const context = useContext(StoreContext);
   const [account, setAccount] = context.account;
   const [card, setCard] = context.card;
+  const ref = useRef(null);
   const [OpenModal, setOpenModal] = useState(false);
   const [imgUpload, setImageUpload] = useState(false);
   const [addCard, setAddCard] = useState(false);
@@ -82,7 +64,11 @@ const AccountDetailsScreen = ({ change, setChange }) => {
     setImageUpload(fileName)
   }
 
-  const handleSubmit = (event) => {
+  const scrollTo = () => {
+    ref.current.scrollIntoView()
+  }
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const blurb = data.get('blurb')
@@ -90,11 +76,14 @@ const AccountDetailsScreen = ({ change, setChange }) => {
     const lastName = data.get('lastName')
     const age = data.get('age')
     const mobile = data.get('mobile')
-    const email = data.get('email')
     const location = data.get('location')
-    const cardDetails = data.get('cardDetails')
+    const email = data.get('email')
     const password1 = data.get('password1')
     const password2 = data.get('password2')
+    const cardName = data.get('cardName')
+    const cardNumber = data.get('cardNumber')
+    const cardType = data.get('cardType')
+    const cardExpiry = data.get('cardExpiry')
 
     formErrors.error = false;
 
@@ -102,23 +91,11 @@ const AccountDetailsScreen = ({ change, setChange }) => {
       setformErrors(prevState => { return { ...prevState, firstName: true } })
       formErrors.error = true
     }
-    if (lastName && !/[a-zA-Z]+/.test(lastName)) {
+    if (!/[a-zA-Z]+/.test(lastName)) {
       setformErrors(prevState => { return { ...prevState, lastName: true } })
       formErrors.error = true
     }
-    if (!/\S+@\S+\.\S+/.test(email)) {
-      setformErrors(prevState => { return { ...prevState, email: true } })
-      formErrors.error = true
-    }
-    if (password1 && password1.length < 8) {
-      setformErrors(prevState => { return { ...prevState, password1: true } })
-      formErrors.error = true
-    }
-    if (password1 && password1 !== password2) {
-      setformErrors(prevState => { return { ...prevState, password2: true } })
-      formErrors.error = true
-    }
-    if (age && !/\d+/.test(age)) {
+    if (age && (/\d+/.test(age) && (0 > parseInt(age) || parseInt(age) > 120))) {
       setformErrors(prevState => { return { ...prevState, age: true } })
       formErrors.error = true
     }
@@ -126,49 +103,82 @@ const AccountDetailsScreen = ({ change, setChange }) => {
       setformErrors(prevState => { return { ...prevState, mobile: true } })
       formErrors.error = true
     }
-    if (cardDetails && (!/\d+/.test(cardDetails) || cardDetails.length < 9)) {
-      setformErrors(prevState => { return { ...prevState, cardDetails: true } })
+    if (changeEmail && !/\S+@\S+\.\S+/.test(email)) {
+      setformErrors(prevState => { return { ...prevState, email: true } })
       formErrors.error = true
     }
-
-    console.log(email)
+    if (changePassword) {
+      if (password1.length < 8) {
+        setformErrors(prevState => { return { ...prevState, password1: true } })
+        formErrors.error = true
+      }
+      if (password1 !== password2) {
+        setformErrors(prevState => { return { ...prevState, password2: true } })
+        formErrors.error = true
+      }
+    }
+    if (changeCard) {
+      if (!/[a-zA-Z]+/.test(cardName)) {
+        setformErrors(prevState => { return { ...prevState, cardName: true } })
+        formErrors.error = true
+      }
+      if (!/\d+/.test(cardNumber) || cardNumber.length < 16) {
+        setformErrors(prevState => { return { ...prevState, cardNumber: true } })
+        formErrors.error = true
+      }
+      if (!/\S+/.test(cardType)) {
+        setformErrors(prevState => { return { ...prevState, cardType: true } })
+        formErrors.error = true
+      }
+      if (!/\S+/.test(cardExpiry)) {
+        setformErrors(prevState => { return { ...prevState, cardExpiry: true } })
+        formErrors.error = true
+      }
+    }
 
     if (!formErrors.error) {
       console.log("NO ERROR")
-      // const body = {
-      //   "first_name": firstName ? firstName : account.first_name,
-      //   "last_name": lastName ? lastName : account.last_name,
-      //   "age": age ? parseInt(age) : parseInt(account.age),
-      //   "mobile": mobile ? mobile : account.mobile,
-      //   "email": email ? email : account.email,
-      //   "location": location ? location : account.location,
-      //   "password": password1 ? password1 : account.password,
-      //   "cardDetails": cardDetails ? cardDetails : account.cardDetails,
-      //   "profile_pic": imgUpload ? imgUpload : account.profile_pic
-      // }
-      // console.log('body is:')
-      // console.log(body)
-      // api.putAccount(account.account_id, body)
-      //   .then((response) => {
-      //     setChange(false)
-      //     console.log('account before:')
-      //     console.log(account)
-      //     setAccount(prevState => { return { ...prevState, ...body } })
-      //     setOpenModal(true)
-      //     console.log(response)
-      //     console.log('account now: ')
-      //     console.log(account)
-      //   })
-      //   .catch((error) => console.log(error))
+      const body = {
+        "user_description": blurb ? blurb : account.user_description,
+        "age": age ? parseInt(age) : account.age ? parseInt(account.age) : 0,
+        "email": email ? email : account.email,
+        "first_name": firstName ? firstName : account.first_name,
+        "last_name": lastName ? lastName : account.last_name,
+        "location": location ? location : account.location,
+        "mobile": mobile ? mobile : account.mobile,
+        "password": password1 ? password1 : account.password,
+        "profile_pic": imgUpload ? imgUpload : account.profile_pic
+      }
+      console.log('sending body')
+      console.log(body)
+      try {
+        const accountRes = await api.putAccount(account.account_id, body)
+        setAccount(prevState => { return { ...prevState, ...accountRes.data } })
+        if (changeCard) {
+          const Cardbody = {
+            "card_expiry": cardExpiry,
+            "card_name": cardName,
+            "card_number": cardNumber,
+            "card_type": cardType,
+          }
+          const cardRes = await api.putAccountCard(account.account_id, Cardbody)
+          setCard(cardRes.data)
+        }
+        setChange(false)
+        setChangeEmail(false)
+        setChangePassword(false)
+        setChangeCard(false)
+      }
+      catch (error) {
+        console.error(error)
+      }
+      setOpenModal(true)
     }
   };
 
   useEffect(() => {
     console.log('========================details screen')
-    console.log('ACCOUNT:')
-    console.log(account)
-    console.log('card:')
-    console.log(card)
+    Object.keys(card).length !== 0 && setAddCard(true)
     setChange(false)
   }, [])
 
@@ -216,21 +226,20 @@ const AccountDetailsScreen = ({ change, setChange }) => {
         {/* Account basic details */}
 
         <Grid item sm={12} md={7}>
-          <DetailHeaders title='Account blurb:' />
+          <InfoHeader title='Account blurb:' />
           <TextField
             name="blurb"
             fullWidth
             multiline
             rows={9}
-            defaultValue={'None'}
+            defaultValue={account.user_description}
             id="blurb"
             label="Your blurb"
-            autoFocus
             onBlur={() => console.log("TODO blur event")}
           />
         </Grid>
         <Grid item sm={12} md={6}>
-          <DetailHeaders title='Account basics:' />
+          <InfoHeader title='Account basics:' />
           <TextField
             name="firstName"
             required
@@ -238,7 +247,6 @@ const AccountDetailsScreen = ({ change, setChange }) => {
             defaultValue={account.first_name}
             id="firstName"
             label="First Name"
-            autoFocus
             onChange={() => {
               formErrors.firstName && setformErrors(prevState => { return { ...prevState, firstName: false } })
             }}
@@ -254,7 +262,6 @@ const AccountDetailsScreen = ({ change, setChange }) => {
             defaultValue={account.last_name}
             id="lastName"
             label="Last Name"
-            autoFocus
             onChange={() => {
               formErrors.lastName && setformErrors(prevState => { return { ...prevState, lastName: false } })
             }}
@@ -269,7 +276,6 @@ const AccountDetailsScreen = ({ change, setChange }) => {
             defaultValue={'none'}
             id="gender"
             label="Gender"
-            autoFocus
           />
         </Grid>
         <Grid item sm={12} md={6}>
@@ -279,7 +285,6 @@ const AccountDetailsScreen = ({ change, setChange }) => {
             defaultValue={account.age}
             id="age"
             label="Age"
-            autoFocus
             onChange={() => {
               formErrors.age && setformErrors(prevState => { return { ...prevState, age: false } })
             }}
@@ -295,7 +300,6 @@ const AccountDetailsScreen = ({ change, setChange }) => {
             defaultValue={account.mobile}
             id="mobile"
             label="Mobile"
-            autoFocus
             onChange={() => {
               formErrors.mobile && setformErrors(prevState => { return { ...prevState, mobile: false } })
             }}
@@ -310,24 +314,21 @@ const AccountDetailsScreen = ({ change, setChange }) => {
             defaultValue={account.location}
             id="location"
             label="Location"
-            autoFocus
           />
         </Grid>
 
         {/* Account email */}
 
         <Grid item sm={12} md={6}>
-          <DetailHeaders title='Account email:' />
+          <InfoHeader title='Account email:' />
           <TextField
             name="email"
             required
             fullWidth
-            defaultValue={account.email}
-            value={changeEmail ? null : account.email}
+            value={changeEmail ? undefined : account.email}
             id="email"
             label="Email"
             InputLabelProps={{ shrink: true }}
-            autoFocus
             disabled={!changeEmail}
             onChange={() => {
               formErrors.email && setformErrors(prevState => { return { ...prevState, email: false } })
@@ -338,7 +339,9 @@ const AccountDetailsScreen = ({ change, setChange }) => {
         </Grid>
         <Grid item sm={12} md={6}>
           <Button
-            variant="contained" sx={{ mt: { sm: 0, md: 7 }, width: '191px', backgroundColor: 'info.main' }}
+            variant="contained"
+            sx={{ mt: { sm: 0, md: 7 }, width: '191px',
+            backgroundColor: changeEmail ? 'evenTastic.dull' : 'info.main' }}
             onClick={() => setChangeEmail(!changeEmail)}
           >
             {changeEmail ? 'Undo change' : 'Change email?'}
@@ -348,14 +351,13 @@ const AccountDetailsScreen = ({ change, setChange }) => {
         {/* Account password */}
 
         <Grid item sm={12} md={6}>
-          <DetailHeaders title='Account password:' />
+          <InfoHeader title='Account password:' />
           <TextField
             name="password1"
             fullWidth
             type="password"
             id="password1"
             label="Change password"
-            autoFocus
             autoComplete="new-password"
             disabled={!changePassword}
             onChange={() => {
@@ -367,14 +369,16 @@ const AccountDetailsScreen = ({ change, setChange }) => {
         </Grid>
         <Grid item sm={12} md={6}>
           <Button
-            variant="contained" sx={{ mt: { sm: 0, md: 7 }, width: '191px', backgroundColor: 'info.main' }}
+            variant="contained"
+            sx={{ mt: { sm: 0, md: 7 }, width: '191px',
+            backgroundColor: changePassword ? 'evenTastic.dull' : 'info.main'  }}
             onClick={() => setChangePassword(!changePassword)}
           >
             {changePassword ? 'Undo change' : 'Change password?'}
           </Button>
         </Grid>
         {changePassword
-          ? <Grid item md={12}>
+          ? <Grid item sm={12} sx={{ width: { md: '100%', lg: '59%' }}}>
             <TextField
               name="password2"
               required
@@ -382,14 +386,13 @@ const AccountDetailsScreen = ({ change, setChange }) => {
               type="password"
               id="password2"
               label="Confirm password"
-              autoFocus
               autoComplete="new-password"
               onChange={() => {
                 formErrors.password2 && setformErrors(prevState => { return { ...prevState, password2: false } })
               }}
               error={formErrors.password2}
               helperText={formErrors.password2 ? 'Passwords must match.' : ''}
-              sx={{ width: '49%' }}
+              sx={{ width: { sm: '100%', md: '49%' }}}
             />
           </Grid>
           : ''
@@ -398,17 +401,25 @@ const AccountDetailsScreen = ({ change, setChange }) => {
         {/* Card details */}
 
         <Grid item sm={12} md={6}>
-          <DetailHeaders title='Credit card details:' />
+          <InfoHeader title='Credit card details:' />
           {Object.keys(card).length !== 0
             ? <Button
-              variant="contained" sx={{ width: '191px', backgroundColor: 'info.main' }}
-              onClick={() => setChangeCard(!changeCard)}
+              variant="contained"
+              sx={{ width: '191px', mb:1, backgroundColor: changeCard ? 'evenTastic.dull' : 'info.main'}}
+              onClick={() => {
+                setChangeCard(!changeCard)}
+              }
             >
               {changeCard ? 'Undo change' : 'Change card?'}
             </Button>
             : <Button
-            variant="contained" sx={{ width: '191px', backgroundColor: 'info.main' }}
-            onClick={() => setAddCard(!addCard)}
+            variant="contained"
+            sx={{ width: '191px', mb:1, backgroundColor: changeCard ? 'evenTastic.dull' : 'info.main' }}
+            onClick={() => {
+              setTimeout(scrollTo, 50)
+              setAddCard(!addCard)
+              setChangeCard(!changeCard)}
+            }
           >
             {addCard ? 'Cancel' : 'Add card?'}
           </Button>
@@ -417,11 +428,10 @@ const AccountDetailsScreen = ({ change, setChange }) => {
             name="cardName"
             required
             fullWidth
-            defaultValue={card.cardName}
-            value={changeCard ? null : card.cardName}
+            value={changeCard ? undefined : card.card_name}
             id="cardName"
             label="Card holder name"
-            autoFocus
+            InputLabelProps={{ shrink: true }}
             disabled={!changeCard}
             onChange={() => {
               formErrors.cardName && setformErrors(prevState => { return { ...prevState, cardName: false } })
@@ -431,35 +441,33 @@ const AccountDetailsScreen = ({ change, setChange }) => {
             sx={{display:addCard ? 'inherit' : 'none', mt:2}}
           />
         </Grid>
-        <ToggleGrid show={addCard} item sm={12} md={6}>
+        <ToggleGrid show={addCard ? 1:0} item sm={12} md={6}>
           <TextField
             name="cardNumber"
             required
             fullWidth
-            defaultValue={card.cardNumber}
-            value={changeCard ? null : card.cardNumber}
+            value={changeCard ? undefined : card.card_number}
             id="cardNumber"
             label="Card number"
-            autoFocus
+            InputLabelProps={{ shrink: true }}
             disabled={!changeCard}
             onChange={() => {
               formErrors.cardNumber && setformErrors(prevState => { return { ...prevState, cardNumber: false } })
             }}
             error={formErrors.cardNumber}
             helperText={formErrors.cardNumber ? 'Must be a valid card number.' : ''}
-            sx={{mt: { sm: 0, md: 12.2 }}}
+            sx={{mt: { sm: 0, md: 13.2 }}}
           />
         </ToggleGrid>
-        <ToggleGrid show={addCard} item sm={12} md={6}>
+        <ToggleGrid show={addCard ? 1:0} item sm={12} md={6}>
           <TextField
             name="cardType"
             required
             fullWidth
-            defaultValue={card.cardType}
-            value={changeCard ? null : card.cardType}
+            value={changeCard ? undefined : card.card_type}
             id="cardType"
             label="Card type"
-            autoFocus
+            InputLabelProps={{ shrink: true }}
             disabled={!changeCard}
             onChange={() => {
               formErrors.cardType && setformErrors(prevState => { return { ...prevState, cardType: false } })
@@ -468,16 +476,16 @@ const AccountDetailsScreen = ({ change, setChange }) => {
             helperText={formErrors.cardType ? 'Must be a valid card type.' : ''}
           />
         </ToggleGrid>
-        <ToggleGrid show={addCard} item sm={12} md={6}>
+        <ToggleGrid show={addCard ? 1:0} item sm={12} md={6}>
           <TextField
             name="cardExpiry"
+            ref={ref}
             required
             fullWidth
-            defaultValue={card.cardExpiry}
-            value={changeCard ? null : card.cardExpiry}
+            value={changeCard ? undefined : card.card_expiry}
             id="cardExpiry"
             label="Card expiry"
-            autoFocus
+            InputLabelProps={{ shrink: true }}
             disabled={!changeCard}
             onChange={() => {
               formErrors.cardExpiry && setformErrors(prevState => { return { ...prevState, cardExpiry: false } })

@@ -10,13 +10,12 @@ const AccountPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const context = useContext(StoreContext);
-  const [account, setAccount] = context.account;
-  const [hostDetails, setHostDetails] = context.host;
-  const [openWelcome, setOpenWelcome] = useState(null);
+  const [loggedIn] = context.login;
+  const [openWelcome, setOpenWelcome] = useState(false);
   const [accountScreen, setAccountScreen] = useState('account');
 
   useEffect(() => {
-    if (!account) {
+    if (!loggedIn) {
       navigate('/') // if someone typed /account in url without login
     }
     if (location.state && location.state.from === '/register') {

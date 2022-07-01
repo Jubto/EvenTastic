@@ -1,5 +1,5 @@
 import { useState, useContext } from 'react';
-import { useNavigate } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import AccountAPI from '../../../utils/AccountAPIHelper';
 import { Link } from 'react-router-dom';
 import { StoreContext } from '../../../utils/context';
@@ -12,18 +12,18 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { LocalConvenienceStoreOutlined } from '@mui/icons-material';
 
 const api = new AccountAPI();
 
 const LogInModal = () => {
   const navigate = useNavigate();
   const context = useContext(StoreContext);
+  const [nextPage] = context.redirect;
   const [, setLoggedIn] = context.login;
   const [, setAccount] = context.account;
   const [, setCard] = context.card;
   const [, setHostDetails] = context.host;
-  const [LogInModal, setLogInModal] = context.logInModal;
+  const [open, setOpen] = context.logInModal;
   const [logInFail, setLogInFail] = useState(null);
   const [formErrors, setformErrors] = useState({
     error: false,
@@ -32,18 +32,12 @@ const LogInModal = () => {
   })
 
   const handleClose = () => {
-    setLogInModal(false);
+    setOpen(false);
   }
 
   const redirect = () => {
-    if (LogInModal === 'createEvent') {
-      setLogInModal(false);
-      navigate('/create-event')
-    }
-    if (LogInModal === 'myAccount') {
-      setLogInModal(false);
-      navigate('/account')
-    }
+    navigate(nextPage)
+    handleClose()
   }
 
   const handleSubmit = async (event) => {
@@ -73,23 +67,16 @@ const LogInModal = () => {
         if (!account || account.password !== password) {
           setLogInFail(true)
         }
-        console.log('LOGGED IN================================')
-        const cardDetails = await api.getAccountCard(account.account_id)
-        console.log('CARD details ' + cardDetails)
-        setCard(cardDetails.data)
-        if (account.account_type === 'Customer') {
-          setLoggedIn(true);
-          setAccount(account)
-          redirect()
-        }
         else {
-          const hostRes = await api.getHost(account.account_id)
+          setAccount(account)
+          const cardDetails = await api.getAccountCard(account.account_id)
+          setCard(cardDetails.data)
+          const hostRes = await api.getHost(account.account_id) 
+          const hostDetails = hostRes.data
+          Object.keys(hostDetails).length === 0 ? setHostDetails(false) : setHostDetails(hostDetails)
           setLoggedIn(true);
-          setAccount(account);
-          setHostDetails(hostRes.data)
+          console.log('LOGGED IN================================')
           redirect()
-          console.log('HOST login')
-          console.log(hostRes.data)
         }
       }
       catch(error) {
@@ -97,10 +84,9 @@ const LogInModal = () => {
       }
     }
   }
-  console.log(`LogInModal is: ${LogInModal}`)
 
   return (
-    <Dialog open={LogInModal} onClose={handleClose} aria-labelledby="login modal" maxWidth='lg'>
+    <Dialog open={open} onClose={handleClose} aria-labelledby="login modal" maxWidth='lg'>
       <ModalTitle title='Log into EvenTastic!' close={handleClose} />
       <ModalBody component="form" noValidate onSubmit={handleSubmit}>
         <TextField

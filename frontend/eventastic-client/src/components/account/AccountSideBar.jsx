@@ -94,7 +94,7 @@ const AccountSideBar = ({ changeScreen }) => {
 
           )
         }
-        else if (hostDetails.host_status === 'Pending') {
+        else if (hostDetails.host_status === 'Pending' || hostDetails.host_status === 'Declined') {
           return (
             <FlexBox direction='column'>
               <Divider variant="middle" />
@@ -109,7 +109,7 @@ const AccountSideBar = ({ changeScreen }) => {
             </FlexBox>
           )
         }
-        else if (hostDetails.host_status === 'accepted') {
+        else if (hostDetails.host_status === 'Approved') {
           return (
             <FlexBox direction='column'>
               <SideBarTitle variant='h6'>

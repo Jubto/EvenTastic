@@ -28,25 +28,39 @@ const screenTitles = {
 }
 
 const AccountMain = ({ accountScreen }) => {
-  const [change, setChange] = useState(false);
+  const [accountChange, setAccountChange] = useState(false);
+  const [hostChange, setHostChange] = useState('');
 
   return (
     <AccountContainer>
       <FlexBox justify='space-between'>
         <Typography variant='h6'>{screenTitles[accountScreen]}</Typography>
-        {accountScreen === 'account'
-          ? <Button
-            form='accountForm' type='submit' disabled={!change}
-            variant="contained" sx={{bottom:'5px'}}>
-            Save changes
-          </Button>
-          : ''}
+        {(() => {
+          if (accountScreen === 'account') {
+            return (
+              <Button
+                form='accountForm' type='submit' disabled={!accountChange}
+                variant="contained" sx={{ bottom: '5px', backgroundColor: 'success.main' }}>
+                Save changes
+              </Button>
+            )
+          }
+          else if (accountScreen === 'host') {
+            return (
+              <Button
+                form='hostForm' type='submit' disabled={!hostChange}
+                variant="contained" sx={{ bottom: '5px', backgroundColor: 'success.main' }}>
+                {hostChange === 'register' ? 'Register' : 'Save changes'}
+              </Button>
+            )
+          }
+        })()}
       </FlexBox>
       <Divider variant="middle" sx={{ mb: 2 }} />
       {(() => {
         if (accountScreen === 'account') {
           return (
-            <AccountDetailsScreen change={change} setChange={setChange} />
+            <AccountDetailsScreen change={accountChange} setChange={setAccountChange} />
           )
         } else if (accountScreen === 'interests') {
           return (
@@ -66,7 +80,7 @@ const AccountMain = ({ accountScreen }) => {
           )
         } else if (accountScreen === 'host') {
           return (
-            <HostDetailsScreen />
+            <HostDetailsScreen change={hostChange} setChange={setHostChange} />
           )
         } else if (accountScreen === 'events') {
           return (

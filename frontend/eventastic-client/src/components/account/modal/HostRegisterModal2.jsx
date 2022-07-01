@@ -3,15 +3,16 @@ import { ModalBody } from '../../modal/ModalBody.styled';
 import { FlexBox } from '../../styles/layouts.styled';
 import { Button, Dialog } from '@mui/material';
 
-const AccountUpdatedModal = ({ open, setOpen }) => {
+const HostRegisterModal2 = ({ open, setOpen }) => {
   const handleClose = () => {
     setOpen(false);
   }
   return (
     <Dialog open={open} onClose={handleClose} aria-labelledby="login modal" maxWidth='lg'>
-      <ModalTitle title='Account updated!' close={handleClose} />
+      <ModalTitle title='Host registration requested' close={handleClose} />
       <ModalBody>
-        Your account has been updated!
+        Thank you for registering as a host with us! Host verification will be pending
+        until our admin team has verified your organisation.
       </ModalBody>
       <FlexBox justify='end'>
         <Button
@@ -26,4 +27,4 @@ const AccountUpdatedModal = ({ open, setOpen }) => {
   )
 }
 
-export default AccountUpdatedModal
+export default HostRegisterModal2
