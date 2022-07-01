@@ -1,7 +1,5 @@
 import connexion
 import six
-import psycopg2
-from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT 
 
 from swagger_server.models.account import Account  # noqa: E501
 from swagger_server.models.account_list import AccountList  # noqa: E501
@@ -700,3 +698,17 @@ def update_host_details_options(account_id):  # noqa: E501
         'Access-Control-Max-Age': 86400 
     }
     return None, 200, response_headers
+
+
+
+def list_host_details(host_status=None):  # noqa: E501
+    """Retrieve a List of Host Details. Filter by status.
+
+     # noqa: E501
+
+    :param host_status: The Host Status to filter on.
+    :type host_status: str
+
+    :rtype: HostDetails
+    """
+    return 'do some magic!'

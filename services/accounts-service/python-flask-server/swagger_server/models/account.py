@@ -16,13 +16,15 @@ class Account(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, account_id: int=None, account_type: str=None, first_name: str=None, last_name: str=None, location: str=None, email: str=None, password: str=None, mobile: str=None, profile_pic: str=None, age: int=None, reward_points: str=None, tags: List[Tag]=None):  # noqa: E501
+    def __init__(self, account_id: int=None, account_type: str=None, user_desc: str=None, first_name: str=None, last_name: str=None, location: str=None, email: str=None, password: str=None, mobile: str=None, profile_pic: str=None, age: int=None, reward_points: str=None, tags: List[Tag]=None):  # noqa: E501
         """Account - a model defined in Swagger
 
         :param account_id: The account_id of this Account.  # noqa: E501
         :type account_id: int
         :param account_type: The account_type of this Account.  # noqa: E501
         :type account_type: str
+        :param user_desc: The user_desc of this Account.  # noqa: E501
+        :type user_desc: str
         :param first_name: The first_name of this Account.  # noqa: E501
         :type first_name: str
         :param last_name: The last_name of this Account.  # noqa: E501
@@ -47,6 +49,7 @@ class Account(Model):
         self.swagger_types = {
             'account_id': int,
             'account_type': str,
+            'user_desc': str,
             'first_name': str,
             'last_name': str,
             'location': str,
@@ -62,6 +65,7 @@ class Account(Model):
         self.attribute_map = {
             'account_id': 'account_id',
             'account_type': 'account_type',
+            'user_desc': 'user_desc',
             'first_name': 'first_name',
             'last_name': 'last_name',
             'location': 'location',
@@ -76,6 +80,7 @@ class Account(Model):
 
         self._account_id = account_id
         self._account_type = account_type
+        self._user_desc = user_desc
         self._first_name = first_name
         self._last_name = last_name
         self._location = location
@@ -145,6 +150,27 @@ class Account(Model):
             )
 
         self._account_type = account_type
+
+    @property
+    def user_desc(self) -> str:
+        """Gets the user_desc of this Account.
+
+
+        :return: The user_desc of this Account.
+        :rtype: str
+        """
+        return self._user_desc
+
+    @user_desc.setter
+    def user_desc(self, user_desc: str):
+        """Sets the user_desc of this Account.
+
+
+        :param user_desc: The user_desc of this Account.
+        :type user_desc: str
+        """
+
+        self._user_desc = user_desc
 
     @property
     def first_name(self) -> str:

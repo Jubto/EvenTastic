@@ -334,7 +334,9 @@ def update_host_details(account_id, body):
         # convert the client request body to HostDetails object
         if connexion.request.is_json:
             host_details = HostDetails.from_dict(connexion.request.get_json())
- 
+    
+        # set the host ID to account ID for mock only
+        host_details.host_id = account_id
         # Update the HostDetails in the datastore
         _host_details_dict[account_id] = host_details
         # if successful, return the updated Host Details in the response
@@ -343,7 +345,7 @@ def update_host_details(account_id, body):
         # catch any unexpected runtime error and retrun as 500 error 
         error = UnexpectedServiceError(code="500", type="UnexpectedServiceError", message=str(e))
         return error, 500, {'Access-Control-Allow-Origin': '*'} 
-    return 'do some magic!'
+
 
 
 def update_host_details_options(account_id):
@@ -361,3 +363,31 @@ def update_host_details_options(account_id):
         'Access-Control-Max-Age': 86400 
     }
     return None, 200, response_headers
+
+
+def list_host_details(host_status=None):
+    """Retrieve a List of Host Details. Filter by status.
+
+    :param host_status: The Host Status to filter on.
+    :type host_status: str
+
+    :rtype: HostDetails
+    """
+    try:
+        host_details_list = []
+        for id, host_details in _host_details_dict.items():
+            host_details_list.append(host_details)
+
+        # filter the list of Host Details by host_status.
+        if host_status:
+            filtered = list(filter(
+                lambda status: host_status == status.host_status, host_details_list))
+            return filtered, 200, {'Access-Control-Allow-Origin': '*'}
+        
+        # otherwise, just return the unfiltered list of Host Details
+        return host_details_list, 200, {'Access-Control-Allow-Origin': '*'}
+
+    except Exception as e:
+        # catch any unexpected runtime error and return as 500 error 
+        error = UnexpectedServiceError(code="500", type="UnexpectedServiceError", message=str(e))
+        return error, 500, {'Access-Control-Allow-Origin': '*'}
