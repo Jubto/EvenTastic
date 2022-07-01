@@ -1,13 +1,13 @@
-import { useContext, useState, useRef } from 'react';
+import { useContext, useEffect, useState, useRef } from 'react';
 import { StoreContext } from '../../../utils/context';
 import AccountAPI from '../../../utils/AccountAPIHelper';
 import AccountUpdatedModal from '../modal/AccountUpdatedModal'
+import { ScrollContainer } from '../../styles/layouts.styled';
+import InfoHeader from '../styles/InfoHeader';
 import {
   Button,
-  Divider,
   Grid,
   TextField,
-  Typography,
   styled
 } from '@mui/material';
 import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
@@ -28,12 +28,21 @@ const Image = styled('img')`
   width: 100%;
 `
 
-const AccountDetailsScreen = () => {
+const ToggleGrid = styled(Grid)`
+  display: ${( {show} ) => show ? 'initial' : 'none'};
+`
+
+const AccountDetailsScreen = ({ change, setChange }) => {
   const context = useContext(StoreContext);
   const [account, setAccount] = context.account;
-  const typeTrack = useRef();
-  const [OpenModal, setOpenModal] = useState(null);
-  const [imgUpload, setImageUpload] = useState(null);
+  const [card, setCard] = context.card;
+  const ref = useRef(null);
+  const [OpenModal, setOpenModal] = useState(false);
+  const [imgUpload, setImageUpload] = useState(false);
+  const [addCard, setAddCard] = useState(false);
+  const [changeEmail, setChangeEmail] = useState(false);
+  const [changePassword, setChangePassword] = useState(false);
+  const [changeCard, setChangeCard] = useState(false);
   const [formErrors, setformErrors] = useState({
     error: false,
     firstName: null,
@@ -41,17 +50,25 @@ const AccountDetailsScreen = () => {
     age: null,
     mobile: null,
     email: null,
-    cardDetails: null,
     password1: null,
     password2: null,
+    cardName: null,
+    cardNumber: null,
+    cardType: null,
+    cardExpiry: null
   })
 
   const displayImage = async (event) => {
     const fileName = event.target.files[0].name
+    console.log(URL.createObjectURL(event.target.files[0]))
     setImageUpload(fileName)
   }
 
-  const handleSubmit = (event) => {
+  const scrollTo = () => {
+    ref.current.scrollIntoView()
+  }
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const blurb = data.get('blurb')
@@ -59,11 +76,14 @@ const AccountDetailsScreen = () => {
     const lastName = data.get('lastName')
     const age = data.get('age')
     const mobile = data.get('mobile')
-    const email = data.get('email')
     const location = data.get('location')
-    const cardDetails = data.get('cardDetails')
+    const email = data.get('email')
     const password1 = data.get('password1')
     const password2 = data.get('password2')
+    const cardName = data.get('cardName')
+    const cardNumber = data.get('cardNumber')
+    const cardType = data.get('cardType')
+    const cardExpiry = data.get('cardExpiry')
 
     formErrors.error = false;
 
@@ -75,63 +95,104 @@ const AccountDetailsScreen = () => {
       setformErrors(prevState => { return { ...prevState, lastName: true } })
       formErrors.error = true
     }
-    if (!/\S+@\S+\.\S+/.test(email)) {
-      setformErrors(prevState => { return { ...prevState, email: true } })
-      formErrors.error = true
-    }
-    if (/\S+/.test(password1) && password1.length < 8) {
-      setformErrors(prevState => { return { ...prevState, password1: true } })
-      formErrors.error = true
-    }
-    if (/\S+/.test(password1) && password1 !== password2) {
-      setformErrors(prevState => { return { ...prevState, password2: true } })
-      formErrors.error = true
-    }
-    if (!/\d+/.test(age)) {
+    if (age && (/\d+/.test(age) && (0 > parseInt(age) || parseInt(age) > 120))) {
       setformErrors(prevState => { return { ...prevState, age: true } })
       formErrors.error = true
     }
-    if (!/\d+/.test(mobile) || mobile.length < 9) {
+    if (mobile && (!/\d+/.test(mobile) || mobile.length < 9)) {
       setformErrors(prevState => { return { ...prevState, mobile: true } })
       formErrors.error = true
     }
-    if (!/\d+/.test(cardDetails) || cardDetails.length < 9) {
-      setformErrors(prevState => { return { ...prevState, cardDetails: true } })
+    if (changeEmail && !/\S+@\S+\.\S+/.test(email)) {
+      setformErrors(prevState => { return { ...prevState, email: true } })
       formErrors.error = true
+    }
+    if (changePassword) {
+      if (password1.length < 8) {
+        setformErrors(prevState => { return { ...prevState, password1: true } })
+        formErrors.error = true
+      }
+      if (password1 !== password2) {
+        setformErrors(prevState => { return { ...prevState, password2: true } })
+        formErrors.error = true
+      }
+    }
+    if (changeCard) {
+      if (!/[a-zA-Z]+/.test(cardName)) {
+        setformErrors(prevState => { return { ...prevState, cardName: true } })
+        formErrors.error = true
+      }
+      if (!/\d+/.test(cardNumber) || cardNumber.length < 16) {
+        setformErrors(prevState => { return { ...prevState, cardNumber: true } })
+        formErrors.error = true
+      }
+      if (!/\S+/.test(cardType)) {
+        setformErrors(prevState => { return { ...prevState, cardType: true } })
+        formErrors.error = true
+      }
+      if (!/\S+/.test(cardExpiry)) {
+        setformErrors(prevState => { return { ...prevState, cardExpiry: true } })
+        formErrors.error = true
+      }
     }
 
     if (!formErrors.error) {
+      console.log("NO ERROR")
       const body = {
+        "user_description": blurb ? blurb : account.user_description,
+        "age": age ? parseInt(age) : account.age ? parseInt(account.age) : 0,
+        "email": email ? email : account.email,
         "first_name": firstName ? firstName : account.first_name,
         "last_name": lastName ? lastName : account.last_name,
-        "age": age ? parseInt(age) : parseInt(account.age),
-        "mobile": mobile ? mobile : account.mobile,
-        "email": email ? email : account.email,
         "location": location ? location : account.location,
+        "mobile": mobile ? mobile : account.mobile,
         "password": password1 ? password1 : account.password,
-        "cardDetails": cardDetails ? cardDetails : account.cardDetails,
         "profile_pic": imgUpload ? imgUpload : account.profile_pic
       }
-      console.log('body is:')
+      console.log('sending body')
       console.log(body)
-      api.putAccount(account.account_id, body)
-      .then((response) => {
-        setAccount(prevState => { return { ...prevState, ...body } })
-        setOpenModal(true)
-        console.log(response)
-      })
-      .catch((error) => console.log(error))
+      try {
+        const accountRes = await api.putAccount(account.account_id, body)
+        setAccount(prevState => { return { ...prevState, ...accountRes.data } })
+        if (changeCard) {
+          const Cardbody = {
+            "card_expiry": cardExpiry,
+            "card_name": cardName,
+            "card_number": cardNumber,
+            "card_type": cardType,
+          }
+          const cardRes = await api.putAccountCard(account.account_id, Cardbody)
+          setCard(cardRes.data)
+        }
+        setChange(false)
+        setChangeEmail(false)
+        setChangePassword(false)
+        setChangeCard(false)
+      }
+      catch (error) {
+        console.error(error)
+      }
+      setOpenModal(true)
     }
   };
 
+  useEffect(() => {
+    console.log('========================details screen')
+    Object.keys(card).length !== 0 && setAddCard(true)
+    setChange(false)
+  }, [])
+
   return (
-    <div>
-      <Typography variant='h6'>
-        Account details
-      </Typography>
-      <Divider variant="middle" sx={{ mb: 2 }} />
-      <Grid component="form" noValidate onSubmit={handleSubmit} container spacing={2}>
-        <Grid item xs={12} sm={5}>
+    <ScrollContainer>
+      <Grid
+        onChange={() => !change && setChange(true)}
+        id='accountForm' component="form" noValidate onSubmit={handleSubmit}
+        container spacing={2} sx={{ mt: 0 }}
+      >
+
+        {/* Account image upload */}
+
+        <Grid item sm={12} md={5}>
           <ImageHolder component='label'>
             <input
               hidden type="file" name="profilePicture"
@@ -161,20 +222,24 @@ const AccountDetailsScreen = () => {
 
           </ImageHolder>
         </Grid>
-        <Grid item xs={12} sm={7}>
+
+        {/* Account basic details */}
+
+        <Grid item sm={12} md={7}>
+          <InfoHeader title='Account blurb:' />
           <TextField
             name="blurb"
-            required
             fullWidth
             multiline
             rows={9}
-            defaultValue={'None'}
+            defaultValue={account.user_description}
             id="blurb"
             label="Your blurb"
-            autoFocus
+            onBlur={() => console.log("TODO blur event")}
           />
         </Grid>
-        <Grid item xs={12} sm={6}>
+        <Grid item sm={12} md={6}>
+          <InfoHeader title='Account basics:' />
           <TextField
             name="firstName"
             required
@@ -182,7 +247,6 @@ const AccountDetailsScreen = () => {
             defaultValue={account.first_name}
             id="firstName"
             label="First Name"
-            autoFocus
             onChange={() => {
               formErrors.firstName && setformErrors(prevState => { return { ...prevState, firstName: false } })
             }}
@@ -190,7 +254,7 @@ const AccountDetailsScreen = () => {
             helperText={formErrors.firstName ? 'Must be a valid firstname.' : ''}
           />
         </Grid>
-        <Grid item xs={12} sm={6}>
+        <Grid item sm={12} md={6} sx={{ mt: { sm: 0, md: 5.6 } }} >
           <TextField
             name="lastName"
             required
@@ -198,7 +262,6 @@ const AccountDetailsScreen = () => {
             defaultValue={account.last_name}
             id="lastName"
             label="Last Name"
-            autoFocus
             onChange={() => {
               formErrors.lastName && setformErrors(prevState => { return { ...prevState, lastName: false } })
             }}
@@ -206,26 +269,22 @@ const AccountDetailsScreen = () => {
             helperText={formErrors.lastName ? 'Must be a valid lastName.' : ''}
           />
         </Grid>
-        <Grid item xs={12} sm={6}>
+        <Grid item sm={12} md={6}>
           <TextField
             name="gender"
-            required
             fullWidth
             defaultValue={'none'}
             id="gender"
             label="Gender"
-            autoFocus
           />
         </Grid>
-        <Grid item xs={12} sm={6}>
+        <Grid item sm={12} md={6}>
           <TextField
             name="age"
-            required
             fullWidth
             defaultValue={account.age}
             id="age"
             label="Age"
-            autoFocus
             onChange={() => {
               formErrors.age && setformErrors(prevState => { return { ...prevState, age: false } })
             }}
@@ -233,16 +292,14 @@ const AccountDetailsScreen = () => {
             helperText={formErrors.age ? 'Must be a valid age.' : ''}
           />
         </Grid>
-        <Grid item xs={12} sm={6}>
+        <Grid item sm={12} md={6}>
           <TextField
             name="mobile"
-            required
             fullWidth
             type="tel"
             defaultValue={account.mobile}
             id="mobile"
             label="Mobile"
-            autoFocus
             onChange={() => {
               formErrors.mobile && setformErrors(prevState => { return { ...prevState, mobile: false } })
             }}
@@ -250,15 +307,29 @@ const AccountDetailsScreen = () => {
             helperText={formErrors.mobile ? 'Must be a valid mobile.' : ''}
           />
         </Grid>
-        <Grid item xs={12} sm={6}>
+        <Grid item sm={12} md={6}>
+          <TextField
+            name="location"
+            fullWidth
+            defaultValue={account.location}
+            id="location"
+            label="Location"
+          />
+        </Grid>
+
+        {/* Account email */}
+
+        <Grid item sm={12} md={6}>
+          <InfoHeader title='Account email:' />
           <TextField
             name="email"
             required
             fullWidth
-            defaultValue={account.email}
+            value={changeEmail ? undefined : account.email}
             id="email"
             label="Email"
-            autoFocus
+            InputLabelProps={{ shrink: true }}
+            disabled={!changeEmail}
             onChange={() => {
               formErrors.email && setformErrors(prevState => { return { ...prevState, email: false } })
             }}
@@ -266,43 +337,29 @@ const AccountDetailsScreen = () => {
             helperText={formErrors.email ? 'Must be a valid email.' : ''}
           />
         </Grid>
-        <Grid item xs={12} sm={6}>
-          <TextField
-            name="location"
-            required
-            fullWidth
-            defaultValue={account.location}
-            id="location"
-            label="Location"
-            autoFocus
-          />
+        <Grid item sm={12} md={6}>
+          <Button
+            variant="contained"
+            sx={{ mt: { sm: 0, md: 7 }, width: '191px',
+            backgroundColor: changeEmail ? 'evenTastic.dull' : 'info.main' }}
+            onClick={() => setChangeEmail(!changeEmail)}
+          >
+            {changeEmail ? 'Undo change' : 'Change email?'}
+          </Button>
         </Grid>
-        <Grid item xs={12} sm={6}>
-          <TextField
-            name="cardDetails"
-            required
-            fullWidth
-            defaultValue={account.cardDetails}
-            id="cardDetails"
-            label="Card details"
-            autoFocus
-            onChange={() => {
-              formErrors.cardDetails && setformErrors(prevState => { return { ...prevState, cardDetails: false } })
-            }}
-            error={formErrors.cardDetails}
-            helperText={formErrors.cardDetails ? 'Must be a valid cardDetails.' : ''}
-          />
-        </Grid>
-        <Grid item xs={12} sm={6}>
+
+        {/* Account password */}
+
+        <Grid item sm={12} md={6}>
+          <InfoHeader title='Account password:' />
           <TextField
             name="password1"
-            required
             fullWidth
             type="password"
             id="password1"
             label="Change password"
-            autoFocus
-            autoComplete='off'
+            autoComplete="new-password"
+            disabled={!changePassword}
             onChange={() => {
               formErrors.password1 && setformErrors(prevState => { return { ...prevState, password1: false } })
             }}
@@ -310,8 +367,18 @@ const AccountDetailsScreen = () => {
             helperText={formErrors.password1 ? 'Must contain at least 8 characters.' : ''}
           />
         </Grid>
-        {formErrors.password1
-          ? <Grid item xs={12} sm={6}>
+        <Grid item sm={12} md={6}>
+          <Button
+            variant="contained"
+            sx={{ mt: { sm: 0, md: 7 }, width: '191px',
+            backgroundColor: changePassword ? 'evenTastic.dull' : 'info.main'  }}
+            onClick={() => setChangePassword(!changePassword)}
+          >
+            {changePassword ? 'Undo change' : 'Change password?'}
+          </Button>
+        </Grid>
+        {changePassword
+          ? <Grid item sm={12} sx={{ width: { md: '100%', lg: '59%' }}}>
             <TextField
               name="password2"
               required
@@ -319,25 +386,117 @@ const AccountDetailsScreen = () => {
               type="password"
               id="password2"
               label="Confirm password"
-              autoFocus
-              autoComplete='off'
+              autoComplete="new-password"
               onChange={() => {
                 formErrors.password2 && setformErrors(prevState => { return { ...prevState, password2: false } })
               }}
               error={formErrors.password2}
               helperText={formErrors.password2 ? 'Passwords must match.' : ''}
+              sx={{ width: { sm: '100%', md: '49%' }}}
             />
           </Grid>
           : ''
         }
-        <Grid item xs={12} sm={6}>
-          <Button type='submit' variant="contained" fullWidth>
-            Save changes
+
+        {/* Card details */}
+
+        <Grid item sm={12} md={6}>
+          <InfoHeader title='Credit card details:' />
+          {Object.keys(card).length !== 0
+            ? <Button
+              variant="contained"
+              sx={{ width: '191px', mb:1, backgroundColor: changeCard ? 'evenTastic.dull' : 'info.main'}}
+              onClick={() => {
+                setChangeCard(!changeCard)}
+              }
+            >
+              {changeCard ? 'Undo change' : 'Change card?'}
+            </Button>
+            : <Button
+            variant="contained"
+            sx={{ width: '191px', mb:1, backgroundColor: changeCard ? 'evenTastic.dull' : 'info.main' }}
+            onClick={() => {
+              setTimeout(scrollTo, 50)
+              setAddCard(!addCard)
+              setChangeCard(!changeCard)}
+            }
+          >
+            {addCard ? 'Cancel' : 'Add card?'}
           </Button>
+          }
+          <TextField
+            name="cardName"
+            required
+            fullWidth
+            value={changeCard ? undefined : card.card_name}
+            id="cardName"
+            label="Card holder name"
+            InputLabelProps={{ shrink: true }}
+            disabled={!changeCard}
+            onChange={() => {
+              formErrors.cardName && setformErrors(prevState => { return { ...prevState, cardName: false } })
+            }}
+            error={formErrors.cardName}
+            helperText={formErrors.cardName ? 'Must be a valid card holder name.' : ''}
+            sx={{display:addCard ? 'inherit' : 'none', mt:2}}
+          />
         </Grid>
+        <ToggleGrid show={addCard ? 1:0} item sm={12} md={6}>
+          <TextField
+            name="cardNumber"
+            required
+            fullWidth
+            value={changeCard ? undefined : card.card_number}
+            id="cardNumber"
+            label="Card number"
+            InputLabelProps={{ shrink: true }}
+            disabled={!changeCard}
+            onChange={() => {
+              formErrors.cardNumber && setformErrors(prevState => { return { ...prevState, cardNumber: false } })
+            }}
+            error={formErrors.cardNumber}
+            helperText={formErrors.cardNumber ? 'Must be a valid card number.' : ''}
+            sx={{mt: { sm: 0, md: 13.2 }}}
+          />
+        </ToggleGrid>
+        <ToggleGrid show={addCard ? 1:0} item sm={12} md={6}>
+          <TextField
+            name="cardType"
+            required
+            fullWidth
+            value={changeCard ? undefined : card.card_type}
+            id="cardType"
+            label="Card type"
+            InputLabelProps={{ shrink: true }}
+            disabled={!changeCard}
+            onChange={() => {
+              formErrors.cardType && setformErrors(prevState => { return { ...prevState, cardType: false } })
+            }}
+            error={formErrors.cardType}
+            helperText={formErrors.cardType ? 'Must be a valid card type.' : ''}
+          />
+        </ToggleGrid>
+        <ToggleGrid show={addCard ? 1:0} item sm={12} md={6}>
+          <TextField
+            name="cardExpiry"
+            ref={ref}
+            required
+            fullWidth
+            value={changeCard ? undefined : card.card_expiry}
+            id="cardExpiry"
+            label="Card expiry"
+            InputLabelProps={{ shrink: true }}
+            disabled={!changeCard}
+            onChange={() => {
+              formErrors.cardExpiry && setformErrors(prevState => { return { ...prevState, cardExpiry: false } })
+            }}
+            error={formErrors.cardExpiry}
+            helperText={formErrors.cardExpiry ? 'Must be a valid card expiry date.' : ''}
+          />
+        </ToggleGrid>
       </Grid>
-      <AccountUpdatedModal open={OpenModal} setOpen={setOpenModal}/>
-    </div>
+      <AccountUpdatedModal open={OpenModal} setOpen={setOpenModal} />
+    </ScrollContainer>
   )
 }
 

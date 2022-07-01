@@ -51,6 +51,7 @@ const AccountSideBar = ({ changeScreen }) => {
   const [hostDetails] = context.host;
 
   const handleScreenChange = (change) => {
+    console.log(`change: ${change}`)
     changeScreen(change);
   }
 
@@ -77,45 +78,56 @@ const AccountSideBar = ({ changeScreen }) => {
           <GroupsIcon />
         </SideBarItem>
       </List>
-      { hostDetails && hostDetails.isVerified
-        ? <FlexBox direction='column'>
-          <SideBarTitle variant='h6'>
-            Host menu
-          </SideBarTitle>
-          <Divider variant="middle" sx={{ mb: 2 }} />
-          <List component='nav'>
-            <SideBarItem title='My host details' onClick={() => handleScreenChange('host')}>
-              <AssignmentIndIcon />
-            </SideBarItem>
-            <SideBarItem title='My events' onClick={() => handleScreenChange('events')}>
-              <EventIcon />
-            </SideBarItem>
-          </List>
-        </FlexBox>
-        : hostDetails && hostDetails.host_status === 'Pending'
-          ? <FlexBox direction='column'>
-            <Divider variant="middle"/>
-            <SideBarTitle variant='h6' sx={{ color: 'warning.light' }}>
-              Host status pending
-            </SideBarTitle>
-            <List component='nav'>
-              <SideBarItem title='My host details' onClick={() => handleScreenChange('host')}>
-                <AssignmentIndIcon />
-              </SideBarItem>
-            </List>
-          </FlexBox>
-          : <FlexBox direction='column'>
-            <Divider variant="middle" sx={{ mb: 2 }} />
-            <Button
-              variant='contained' color='success' size='large'
-              sx={{ width: '80%', alignSelf: 'center' }}
-              onClick={() => handleScreenChange('host')}
-            >
-              Become a host
-            </Button>
-          </FlexBox>
-      }
+      {(() => {
+        if (!hostDetails) {
+          return (
+            <FlexBox direction='column'>
+              <Divider variant="middle" sx={{ mb: 2 }} />
+              <Button
+                variant='contained' color='success' size='large'
+                sx={{ width: '80%', alignSelf: 'center' }}
+                onClick={() => handleScreenChange('host')}
+              >
+                Become a host
+              </Button>
+            </FlexBox>
 
+          )
+        }
+        else if (hostDetails.host_status === 'Pending' || hostDetails.host_status === 'Declined') {
+          return (
+            <FlexBox direction='column'>
+              <Divider variant="middle" />
+              <SideBarTitle variant='h6' sx={{ color: 'warning.light' }}>
+                Host status pending
+              </SideBarTitle>
+              <List component='nav'>
+                <SideBarItem title='My host details' onClick={() => handleScreenChange('host')}>
+                  <AssignmentIndIcon />
+                </SideBarItem>
+              </List>
+            </FlexBox>
+          )
+        }
+        else if (hostDetails.host_status === 'Approved') {
+          return (
+            <FlexBox direction='column'>
+              <SideBarTitle variant='h6'>
+                Host menu
+              </SideBarTitle>
+              <Divider variant="middle" sx={{ mb: 2 }} />
+              <List component='nav'>
+                <SideBarItem title='My host details' onClick={() => handleScreenChange('host')}>
+                  <AssignmentIndIcon />
+                </SideBarItem>
+                <SideBarItem title='My events' onClick={() => handleScreenChange('events')}>
+                  <EventIcon />
+                </SideBarItem>
+              </List>
+            </FlexBox>
+          )
+        }
+      })()}
     </SideBar>
   )
 }

@@ -11,13 +11,13 @@ import {
 
 const AccountMenu = () => {
   const context = useContext(StoreContext);
+  const [, setRedirect] = context.redirect;
   const [loggedIn, setLoggedIn] = context.login;
   const [account, setAccount] = context.account;
+  const [, setCard] = context.card;
   const [, setHostDetails] = context.host;
   const [, setLogInModal] = context.logInModal;
   const [anchor, setAnchor] = useState(null);
-
-  // TODO: useHistory - to hide this when on register pageS
 
   const handleOpenMenu = (event) => {
     setAnchor(event.currentTarget);
@@ -29,13 +29,15 @@ const AccountMenu = () => {
 
   const handleLogInModal = (redirect) => {
     handleCloseMenu();
-    setLogInModal(redirect);
+    setRedirect(redirect)
+    setLogInModal(true);
   };
 
   const handleLogout = () => {
     handleCloseMenu();
-    setLoggedIn(null);
+    setLoggedIn(false);
     setAccount(null);
+    setCard(null);
     setHostDetails(null);
   };
 
@@ -43,7 +45,7 @@ const AccountMenu = () => {
     <>
     <Tooltip title="Open account menu" enterDelay={10}>
       <IconButton onClick={handleOpenMenu} sx={{ p: 0 }}>
-        <Avatar src={loggedIn && account.profile_pic}/>
+        <Avatar src={loggedIn && `${process.env.PUBLIC_URL}/img/profile-dp/${account.profile_pic}`}/>
       </IconButton>
     </Tooltip>
     <Menu
@@ -70,19 +72,19 @@ const AccountMenu = () => {
             </MenuItem>
           </div>
         : <div>
-            <MenuItem id='logIn' onClick={() => handleLogInModal('logIn')}>
+            <MenuItem id='logIn' onClick={() => handleLogInModal('/')}>
               Log in
             </MenuItem>
             <MenuItem component={Link} to={'/register'} onClick={handleCloseMenu}>
               Sign Up
             </MenuItem>
             <Tooltip title="log in to create event" placement="left">
-              <MenuItem id='createEvent' onClick={() => handleLogInModal('createEvent')}>
+              <MenuItem id='createEvent' onClick={() => handleLogInModal('/create-event')}>
                 Create an Event
               </MenuItem>
             </Tooltip>
             <Tooltip title="log in to access account" placement="left">
-              <MenuItem id='myAccount' onClick={() => handleLogInModal('myAccount')}>
+              <MenuItem id='myAccount' onClick={() => handleLogInModal('/account')}>
                 My Account
               </MenuItem>
             </Tooltip>

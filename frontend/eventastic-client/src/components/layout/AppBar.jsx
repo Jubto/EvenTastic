@@ -35,7 +35,7 @@ const EvenTasticAppBar = () => {
             >
               EvenTastic
             </Typography>
-            <SearchBar/>
+            {hide ? '' : <SearchBar/>}
           </FlexBox>
           {hide ? '' : <AccountMenu/>}
         </FlexBox>

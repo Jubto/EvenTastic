@@ -1,4 +1,3 @@
-import { Link } from 'react-router-dom';
 import ModalTitle from '../../modal/ModalTitle';
 import { ModalBody } from '../../modal/ModalBody.styled';
 import { FlexBox } from '../../styles/layouts.styled';

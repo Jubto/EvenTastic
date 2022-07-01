@@ -44,11 +44,11 @@ const ToggleGrid = styled(Grid)`
 const RegisterPage = () => {
   const navigate = useNavigate();
   const context = useContext(StoreContext);
-  const [openCustomerModal, setCustomerModal] = useState(null);
-  const [openHostModal, setHostModal] = useState(null);
   const [loggedIn, setLoggedIn] = context.login;
   const [, setAccount] = context.account;
   const [, setHostDetails] = context.host;
+  const [openCustomerModal, setCustomerModal] = useState(false);
+  const [openHostModal, setHostModal] = useState(false);
   const [hostInputs, setHostInputs] = useState('Customer');
   const [formErrors, setformErrors] = useState({
     error: false,
@@ -57,13 +57,14 @@ const RegisterPage = () => {
     email: null,
     password1: null,
     password2: null,
-    organisation: null,
-    orgLink: null,
-    orgPosition: null,
-    mobile: null
+    orgName: null,
+    orgEmail: null,
+    orgJobTitle: null,
+    qualification: null,
+    hostMobile: null
   })
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const firstName = data.get('firstName')
@@ -71,10 +72,11 @@ const RegisterPage = () => {
     const email = data.get('email')
     const password1 = data.get('password1')
     const password2 = data.get('password2')
-    const organisation = data.get('organisation')
-    const orgLink = data.get('orgLink')
-    const orgPosition = data.get('orgPosition')
-    const mobile = data.get('mobile')
+    const orgName = data.get('orgName')
+    const orgEmail = data.get('orgEmail')
+    const orgJobTitle = data.get('orgJobTitle')
+    const qualification = data.get('qualification')
+    const hostMobile = data.get('hostMobile')
 
     formErrors.error = false;
 
@@ -99,20 +101,24 @@ const RegisterPage = () => {
       formErrors.error = true
     }
     if (hostInputs === 'Host') {
-      if (!/\S+/.test(organisation)) {
-        setformErrors(prevState => { return { ...prevState, organisation: true } })
+      if (!/\S+/.test(orgName)) {
+        setformErrors(prevState => { return { ...prevState, orgName: true } })
         formErrors.error = true
       }
-      if (!/\S+/.test(orgLink)) {
-        setformErrors(prevState => { return { ...prevState, orgLink: true } })
+      if (!/\S+@\S+\.\S+/.test(orgEmail)) {
+        setformErrors(prevState => { return { ...prevState, orgEmail: true } })
         formErrors.error = true
       }
-      if (!/\S+/.test(orgPosition)) {
-        setformErrors(prevState => { return { ...prevState, orgPosition: true } })
+      if (!/\S+/.test(orgJobTitle)) {
+        setformErrors(prevState => { return { ...prevState, orgJobTitle: true } })
         formErrors.error = true
       }
-      if (!/\d+/.test(mobile) || mobile.length < 9) {
-        setformErrors(prevState => { return { ...prevState, mobile: true } })
+      if (!/\S+/.test(qualification)) {
+        setformErrors(prevState => { return { ...prevState, qualification: true } })
+        formErrors.error = true
+      }
+      if (!/\d+/.test(hostMobile) || hostMobile.length < 9) {
+        setformErrors(prevState => { return { ...prevState, hostMobile: true } })
         formErrors.error = true
       }
     }
@@ -124,34 +130,38 @@ const RegisterPage = () => {
         "last_name": lastName,
         "email": email,
         "password": password1,
-        "mobile": mobile,
+        "hostMobile": hostMobile,
       }
-      api.addAccount(body)
-      .then((response) => {
+      try {
+        const accountRes = await api.addAccount(body)
         setLoggedIn(true)
-        setAccount(response.data)
+        setAccount(accountRes.data)
         if (hostInputs === 'Host') {
-          const accountID = response.data.account_id
+          const accountID = accountRes.data.account_id
           const hostDetails = {
-            host_contact_no: mobile,
+            host_contact_no: hostMobile,
             isVerified: false,
             host_status: 'Pending',
-            job_title: orgPosition,
-            org_desc: orgLink,
-            org_name: organisation,
+            job_title: orgJobTitle,
+            qualification: qualification,
+            org_email: orgEmail,
+            org_name: orgName,
           }
-          api.putHost(accountID, hostDetails)
-          .then((response) => {
-            setHostDetails(response.data)
-            setHostModal(true)
-          })
-          .catch((error) => console.log(error))
+          const HostRes = await api.putHost(accountID, hostDetails)
+          setHostDetails(HostRes.data)
+          setHostModal(true)
+          console.log("HOST REGISTER")
+          console.log(HostRes.data)
         }
         else {
+          console.log('ACCOUNT REGISTER')
+          console.log(accountRes.data)
           setCustomerModal(true)
         }
-      })
-      .catch((error) => console.log(error))
+      }
+      catch(error) {
+        console.error(error)
+      }
     }
   };
 
@@ -271,64 +281,79 @@ const RegisterPage = () => {
                 </Tooltip>
               </FlexBox>
               <TextField
-                name="organisation"
+                name="orgName"
                 required={hostInputs ? true : false}
                 fullWidth
-                id="organisation"
+                id="orgName"
                 label="Organisation"
                 autoFocus
                 onChange={() => {
-                  formErrors.organisation && setformErrors(prevState => { return { ...prevState, organisation: false } })
+                  formErrors.orgName && setformErrors(prevState => { return { ...prevState, orgName: false } })
                 }}
-                error={formErrors.organisation}
-                helperText={formErrors.organisation ? 'Cannot be empty.' : ''}
+                error={formErrors.orgName}
+                helperText={formErrors.orgName ? 'Must be a valid organisation.' : ''}
               />
             </ToggleGrid>
             <ToggleGrid show={hostInputs} item xs={12} sm={6}>
               <TextField
-                name="orgLink"
+                name="orgEmail"
                 required={hostInputs ? true : false}
                 fullWidth
-                id="orgLink"
-                label="Org link"
+                id="orgEmail"
+                label="Organisation email"
                 autoFocus
                 sx={{mt:{xs:0, sm:4.2}}}
                 onChange={() => {
-                  formErrors.orgLink && setformErrors(prevState => { return { ...prevState, orgLink: false } })
+                  formErrors.orgEmail && setformErrors(prevState => { return { ...prevState, orgEmail: false } })
                 }}
-                error={formErrors.orgLink}
-                helperText={formErrors.orgLink ? 'Cannot be empty.' : ''}
+                error={formErrors.orgEmail}
+                helperText={formErrors.orgEmail ? 'Must be a valid email.' : ''}
               />
             </ToggleGrid>
             <ToggleGrid show={hostInputs} item xs={12} sm={6}>
               <TextField
-                name="orgPosition"
+                name="orgJobTitle"
                 required={hostInputs ? true : false}
                 fullWidth
-                id="orgPosition"
-                label="Org position"
+                id="orgJobTitle"
+                label="Job title"
                 autoFocus
                 onChange={() => {
-                  formErrors.orgPosition && setformErrors(prevState => { return { ...prevState, orgPosition: false } })
+                  formErrors.orgJobTitle && setformErrors(prevState => { return { ...prevState, orgJobTitle: false } })
                 }}
-                error={formErrors.orgPosition}
-                helperText={formErrors.orgPosition ? 'Cannot be empty.' : ''}
+                error={formErrors.orgJobTitle}
+                helperText={formErrors.orgJobTitle ? 'Must be a valid job title.' : ''}
               />
             </ToggleGrid>
             <ToggleGrid show={hostInputs} item xs={12} sm={6}>
               <TextField
-                name="mobile"
+                name="qualification"
                 required={hostInputs ? true : false}
                 fullWidth
-                id="mobile"
-                label="Your mobile"
+                id="qualification"
+                label="Qualification"
+                autoFocus
+                onChange={() => {
+                  formErrors.qualification && setformErrors(prevState => { return { ...prevState, qualification: false } })
+                }}
+                error={formErrors.qualification}
+                helperText={formErrors.qualification ? 'Must be a valid qualification.' : ''}
+              />
+            </ToggleGrid>
+            <ToggleGrid show={hostInputs} item xs={12} sm={6}>
+              <TextField
+                name="hostMobile"
+                required={hostInputs ? true : false}
+                fullWidth
+                id="hostMobile"
+                label="Your host mobile"
                 type="tel"
                 autoFocus
                 onChange={() => {
-                  formErrors.mobile && setformErrors(prevState => { return { ...prevState, mobile: false } })
+                  formErrors.hostMobile && setformErrors(prevState => { return { ...prevState, hostMobile: false } })
                 }}
-                error={formErrors.mobile}
-                helperText={formErrors.mobile ? 'Must be a valid mobile number.' : ''}
+                error={formErrors.hostMobile}
+                helperText={formErrors.hostMobile ? 'Must be a valid mobile number.' : ''}
               />
             </ToggleGrid>
 

@@ -35,3 +35,12 @@ export const PageContainer = styled(muiContainer)`
   align-items: ${({ align }) => align};
   overflow-y: auto;
 `;
+
+export const ScrollContainer = styled('div')`
+  overflow-y: auto;
+  padding-right: ${({ showBar }) => showBar ? '' : '100%'};
+  width: 100%;
+  height: ${({ height }) => height ? height : '93%'};
+  display: ${({ flex }) => flex ? 'flex' : 'inherit'};
+  flex-wrap: ${({ wrap }) => wrap ? 'wrap' : 'nowrap'};
+`

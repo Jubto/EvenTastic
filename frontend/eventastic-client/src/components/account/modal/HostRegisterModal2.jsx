@@ -1,30 +1,20 @@
-import { Link } from 'react-router-dom';
 import ModalTitle from '../../modal/ModalTitle';
 import { ModalBody } from '../../modal/ModalBody.styled';
 import { FlexBox } from '../../styles/layouts.styled';
 import { Button, Dialog } from '@mui/material';
 
-const AccountWelcomeModal = ({ open, setOpen }) => {
-
+const HostRegisterModal2 = ({ open, setOpen }) => {
   const handleClose = () => {
     setOpen(false);
   }
-
   return (
     <Dialog open={open} onClose={handleClose} aria-labelledby="login modal" maxWidth='lg'>
-      <ModalTitle title='Welcome to your account page!' close={handleClose} />
+      <ModalTitle title='Host registration requested' close={handleClose} />
       <ModalBody>
-        Welcome to your account management page! Try add a profile picture and more details so others
-        get an idea of who you are!
+        Thank you for registering as a host with us! Host verification will be pending
+        until our admin team has verified your organisation.
       </ModalBody>
-      <FlexBox justify='space-between'>
-        <Button
-          component={Link} to={'/'}
-          variant='contained' size='small'
-          sx={{ backgroundColor: 'evenTastic.dull', m: '1rem' }}
-        >
-          Skip
-        </Button>
+      <FlexBox justify='end'>
         <Button
           onClick={handleClose}
           variant='contained' size='small'
@@ -37,4 +27,4 @@ const AccountWelcomeModal = ({ open, setOpen }) => {
   )
 }
 
-export default AccountWelcomeModal
+export default HostRegisterModal2

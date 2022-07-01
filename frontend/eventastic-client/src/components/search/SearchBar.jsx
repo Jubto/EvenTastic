@@ -66,7 +66,7 @@ const SearchBar = () => {
                   label="Event Title"
                   type="text"
                   sx={{ width: '100%' }}
-                  value={formValues.event_title}
+                  value={formValues.event_title || ''}
                   onChange={handleInputChange}
                 />
               </Grid>
@@ -77,7 +77,7 @@ const SearchBar = () => {
                   label="Event Description"
                   type="text"
                   sx={{ width: '100%' }}
-                  value={formValues.event_desc}
+                  value={formValues.event_desc || ''}
                   onChange={handleInputChange}
                 />
               </Grid>
@@ -88,7 +88,7 @@ const SearchBar = () => {
                     labelId="event-type-select-label"
                     name="event_category"
                     id="event-type-select"
-                    value={formValues.event_category}
+                    value={formValues.event_category || ''}
                     label="Event Type"
                     onChange={handleInputChange}
                   >
