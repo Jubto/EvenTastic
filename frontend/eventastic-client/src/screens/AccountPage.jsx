@@ -21,6 +21,9 @@ const AccountPage = () => {
     if (location.state && location.state.from === '/register') {
       setOpenWelcome(true)
     }
+    else if (location.state && location.state.from === '/tags') {
+      setAccountScreen('interests')
+    }
   }, [])
 
   return (

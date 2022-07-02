@@ -75,7 +75,10 @@ const LogInModal = () => {
           const hostDetails = hostRes.data
           Object.keys(hostDetails).length === 0 ? setHostDetails(false) : setHostDetails(hostDetails)
           setLoggedIn(true);
-          console.log('LOGGED IN================================')
+          console.log('================================LOGGED IN================================')
+          console.log(account)
+          console.log(cardDetails.data)
+          console.log(hostDetails)
           redirect()
         }
       }

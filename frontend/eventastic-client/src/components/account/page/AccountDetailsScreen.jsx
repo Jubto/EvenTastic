@@ -139,7 +139,7 @@ const AccountDetailsScreen = ({ change, setChange }) => {
     if (!formErrors.error) {
       console.log("NO ERROR")
       const body = {
-        "user_description": blurb ? blurb : account.user_description,
+        "user_desc": blurb ? blurb : account.user_desc,
         "age": age ? parseInt(age) : account.age ? parseInt(account.age) : 0,
         "email": email ? email : account.email,
         "first_name": firstName ? firstName : account.first_name,
@@ -232,7 +232,7 @@ const AccountDetailsScreen = ({ change, setChange }) => {
             fullWidth
             multiline
             rows={9}
-            defaultValue={account.user_description}
+            defaultValue={account.user_desc}
             id="blurb"
             label="Your blurb"
             onBlur={() => console.log("TODO blur event")}

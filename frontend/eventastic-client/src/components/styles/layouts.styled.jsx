@@ -36,7 +36,7 @@ export const PageContainer = styled(muiContainer)`
   overflow-y: auto;
 `;
 
-export const ScrollContainer = styled('div')`
+export const ScrollContainer = styled(Box)`
   overflow-y: auto;
   padding-right: ${({ showBar }) => showBar ? '' : '100%'};
   width: 100%;
