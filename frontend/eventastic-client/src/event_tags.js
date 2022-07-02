@@ -39,7 +39,7 @@ const eventTagsByCategory = [
             { "tag_name": "Punk / Hardcore"},
             { "tag_name": "Singer / Songwriter"},
             { "tag_name": "World"},
-            { "tag_name": "Other"}
+            { "tag_name": "Other Music"}
         ] 
    },
     {
@@ -56,7 +56,7 @@ const eventTagsByCategory = [
             { "tag_name": "Design"},
             { "tag_name": "Career"},
             { "tag_name": "Investment"},
-            { "tag_name": "Other"} 
+            { "tag_name": "Other Business"} 
         ] 
    },
     {
@@ -66,7 +66,7 @@ const eventTagsByCategory = [
             { "tag_name": "Wine"},
             { "tag_name": "Food"},
             { "tag_name": "Spirits"},
-            { "tag_name": "Other"}
+            { "tag_name": "Other Food & Drink"}
         ]
     },
     {
@@ -82,7 +82,7 @@ const eventTagsByCategory = [
             { "tag_name": "Nationality"},
             { "tag_name": "Language"},
             { "tag_name": "Historic"},
-            { "tag_name": "Other"}
+            { "tag_name": "Other Community"}
         ]
     },
     {
@@ -102,7 +102,7 @@ const eventTagsByCategory = [
             { "tag_name": "Painting"},
             { "tag_name": "Design"},
             { "tag_name": "Jewelry"},
-            { "tag_name": "Other"}
+            { "tag_name": "Other Arts"}
         ]
     },
     {
@@ -115,7 +115,7 @@ const eventTagsByCategory = [
             { "tag_name": "Comics"},
             { "tag_name": "Adult"},
             { "tag_name": "Comedy"},
-            { "tag_name": "Other"}
+            { "tag_name": "Other Film & Media"}
         ]
     },
     {
@@ -148,7 +148,7 @@ const eventTagsByCategory = [
             { "tag_name": "Camps"},
             { "tag_name": "Weightlifting"},
             { "tag_name": "Track & Field"},
-            { "tag_name": "Other"}
+            { "tag_name": "Other Sports & Fitness"}
         ]
     },
     {
@@ -159,7 +159,7 @@ const eventTagsByCategory = [
             { "tag_name": "Medical"},
             { "tag_name": "Spa"},
             { "tag_name": "Yoga"},
-            { "tag_name": "Other"}
+            { "tag_name": "Other Health"}
         ]
     },
     {
@@ -172,7 +172,7 @@ const eventTagsByCategory = [
             { "tag_name": "Mobile"},
             { "tag_name": "Social Media"},
             { "tag_name": "Robotics"},
-            { "tag_name": "Other"}
+            { "tag_name": "Other Science & Tech"}
         ]
     },
     {
@@ -184,7 +184,7 @@ const eventTagsByCategory = [
             { "tag_name": "Canoeing"},
             { "tag_name": "Climbing"},
             { "tag_name": "Travel"},
-            { "tag_name": "Other"}
+            { "tag_name": "Other Travel & Outdoor"}
         ]
     },
     {
@@ -198,7 +198,7 @@ const eventTagsByCategory = [
             { "tag_name": "Poverty"},
             { "tag_name": "Disaster Relief"},
             { "tag_name": "Education"},
-            { "tag_name": "Other"}
+            { "tag_name": "Other Charity & Causes"}
         ]
     },
     {
@@ -219,7 +219,7 @@ const eventTagsByCategory = [
             { "tag_name": "Hinduism"},
             { "tag_name": "Folk Religions"},
             { "tag_name": "Shintoism"},
-            { "tag_name": "Other"}
+            { "tag_name": "Other Spirituality"}
         ]
     },
     {
@@ -233,7 +233,7 @@ const eventTagsByCategory = [
             { "tag_name": "Parents Association"},
             { "tag_name": "Reunion"},
             { "tag_name": "Senior Citizen"},
-            { "tag_name": "Other"}
+            { "tag_name": "Other Family & Education"}
         ]
     },
     {
@@ -248,7 +248,7 @@ const eventTagsByCategory = [
             { "tag_name": "Channukah"},
             { "tag_name": "Autmun events"},
             { "tag_name": "New Year's Eve"}, 
-            { "tag_name": "Other"} 
+            { "tag_name": "Other Seasonal"} 
         ]
     },
     {
@@ -264,7 +264,7 @@ const eventTagsByCategory = [
             { "tag_name": "Military"},
             { "tag_name": "International Affairs"},
             { "tag_name": "National Security"},
-            { "tag_name": "Other"}
+            { "tag_name": "Other Government"}
         ]
     },
     {
@@ -274,7 +274,7 @@ const eventTagsByCategory = [
             { "tag_name": "Accessories"},
             { "tag_name": "Bridal"},
             { "tag_name": "Beauty"},
-            { "tag_name": "Other"}
+            { "tag_name": "Other Fashion"}
         ]
     },
     {
@@ -283,7 +283,7 @@ const eventTagsByCategory = [
             { "tag_name": "Dating"},
             { "tag_name": "Pets & Animals"},
             { "tag_name": "Home & Garden"},
-            { "tag_name": "Other"}
+            { "tag_name": "Other Home & Lifestyle"}
         ]
     },
     {
@@ -293,7 +293,7 @@ const eventTagsByCategory = [
             { "tag_name": "Motorcycle"},
             { "tag_name": "Boat"},
             { "tag_name": "Air"},
-            { "tag_name": "Other"}
+            { "tag_name": "Other Auto, Boat & Air"}
         ]
     },
     {
@@ -307,7 +307,7 @@ const eventTagsByCategory = [
             { "tag_name": "Books"},
             { "tag_name": "Adult"},
             { "tag_name": "Drawing & Painting"},
-            { "tag_name": "Other"}
+            { "tag_name": "Other Hobbies"}
         ]
     },
     {
@@ -319,7 +319,7 @@ const eventTagsByCategory = [
             { "tag_name": "After School Care"},
             { "tag_name": "Parking"},
             { "tag_name": "Public Speaker"},
-            { "tag_name": "Other"}
+            { "tag_name": "Other School Activities"}
         ]
     }
 ]

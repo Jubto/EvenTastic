@@ -24,13 +24,6 @@ const StatusBox = styled(FlexBox)`
   background-color: aliceblue;
 `
 
-// const decideBool = (status, change) => {
-//   if (!status) {
-//     return false
-//   }
-//   if (status === 'Approved' && change )
-// }
-
 const HostDetailsScreen = ({ change, setChange }) => {
   const context = useContext(StoreContext);
   const [account] = context.account;

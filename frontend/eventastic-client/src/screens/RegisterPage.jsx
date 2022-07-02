@@ -131,6 +131,7 @@ const RegisterPage = () => {
         "email": email,
         "password": password1,
         "hostMobile": hostMobile,
+        "tags": []
       }
       try {
         const accountRes = await api.addAccount(body)
