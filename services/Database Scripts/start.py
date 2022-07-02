@@ -104,17 +104,17 @@ cur.execute('CREATE TABLE events (\
 
 # """ Enter dummy data here
 print('\nInserting dummy data ...')
-cur.execute("INSERT INTO accounts values(default, 'vishalsingh6475@gmail.com', 'Vishal', 'Singh', 100, \
+cur.execute("INSERT INTO accounts values(default, 'vishalsingh6475@gmail.com', 'Vishal', 'Singh', 66, \
             '469717341', 'Sydney', 'Vish', 'Customer', 'uuid', '3000', 'Movies,Adventure,Sports', 'Doing MIT course at UNSW' \
             );")
-cur.execute("INSERT INTO accounts values(default, 'James@bond.com', 'James', 'Bond', 007, \
-            '7777777', 'Sydney', 'JB', 'Customer', 'uuid', '3000', 'Movies,Adventure,Sports', 'Actor for James Bond movies' \
+cur.execute("INSERT INTO accounts values(default, 'James@bond.com', 'James', 'Bond', 77, \
+            '777777777', 'Sydney', 'JB', 'Customer', 'uuid', '3000', 'Movies,Adventure,Sports', 'Actor for James Bond movies' \
             );")
-cur.execute("INSERT INTO accounts values(default, 'vish@gmail.com', 'Vishal', 'S', 200, \
+cur.execute("INSERT INTO accounts values(default, 'vish@gmail.com', 'Vishal', 'S', 80, \
             '469077369', 'Sydney', 'Vish', 'Customer', 'uuid', '3000', 'Movies,Adventure,Sports,Beaches', 'Just studying' \
             );")
 cur.execute("INSERT INTO accounts values(default, 'neo@matrix.com', 'Keanu', 'Reeves', 57, \
-            '123456789', 'Zion', 'Neo', 'Admin', 'uuid', '999999', 'Killing,Machines', 'Savior of Zion' \
+            '123456789', 'Zion', 'Neo', 'Admin', 'uuid', '9999', 'Killing,Machines', 'Savior of Zion' \
             );")
 
 
@@ -130,11 +130,11 @@ cur.execute("INSERT INTO hosts values(default, 3, 'UNSW', 'Sydney University', '
 
 
 cur.execute(
-    "INSERT INTO saved_cards values(default, 1, 'Vishal', '9999333366668888', 'Credit', '1236');")
+    "INSERT INTO saved_cards values(default, 1, 'Vishal', '9999333366668888', 'Credit', '1228');")
 cur.execute(
-    "INSERT INTO saved_cards values(default, 2, 'Bond', '7777777777777777', 'Credit', '7777');")
+    "INSERT INTO saved_cards values(default, 2, 'Bond', '7777777777777777', 'Credit', '0426');")
 cur.execute(
-    "INSERT INTO saved_cards values(default, 4, 'Neo', '9999999999999999', 'Debit', '9999');")
+    "INSERT INTO saved_cards values(default, 4, 'Neo', '9999999999999999', 'Debit', '1030');")
 
 cur.execute("INSERT INTO  venues values(default, 'Shark Hotel Sydney, NSW', 'Old-school mainstay featuring classic pub favourites & multiple bars, plus billiards.', '9913d5a2-f628-11ec-b939-0242ac120002.jpg', '127 Liverpool St, Sydney NSW 2000');")
 cur.execute("INSERT INTO  venues values(default, 'Sydney Entertainment Centre', 'It is one of Sydneys larger concert venues, licensed to accommodate over 13,000 people as a conventional theatre or 8,000 as a theatre-in-the-round.', '9913d872-f628-11ec-b939-0242ac120002.jpg', '35 Harbour St; Sydney NSW 2000');")
