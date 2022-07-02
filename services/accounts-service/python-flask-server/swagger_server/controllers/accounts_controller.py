@@ -239,6 +239,7 @@ def get_host_details(account_id):  # noqa: E501
         record = cur.fetchone()
         if record != None:
             host_det = dict()
+            host_det['host_id'] = str(record[0])
             host_det['account_id'] = str(record[1])
             host_det['org_name'] = str(record[2])
             host_det['org_desc'] = str(record[3])
@@ -568,8 +569,6 @@ def update_host_details(account_id, body):  # noqa: E501
     """
 
     try: 
-        host_body = body   
-
         if connexion.request.is_json:
             body = HostDetails.from_dict(connexion.request.get_json())  # noqa: E501
 
@@ -581,32 +580,6 @@ def update_host_details(account_id, body):  # noqa: E501
         con = psycopg2.connect(database= 'eventastic', user='postgres', password='postgrespw', host=host, port=port)
         con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
         cur = con.cursor()
-
-        updateHost = 0
-        new_verified = ''
-        new_status = ''
-
-        if "params" in host_body:
-            if host_body["params"]["body"]["host_status"] != 'Pending':
-                updateHost = 1
-                new_verified = host_body["params"]["body"]["is_verified"]
-                new_status = host_body["params"]["body"]["host_status"]
-        elif "params" in host_body:
-            if host_body["body"]["host_status"] != 'Pending':
-                updateHost = 1
-                new_verified = host_body["body"]["is_verified"]
-                new_status = host_body["body"]["host_status"]
-
-        if updateHost == 1:
-            body.is_verified = bool(new_verified)
-            body.host_status = str(new_status)
-
-            update_string = "UPDATE hosts set is_verified=%s, host_status=%s where account_id = %s RETURNING account_id;"
-            cur.execute(update_string, (body.is_verified, body.host_status, account_id))
-            
-            cur.close()
-            con.close()
-            return body, 200, {'Access-Control-Allow-Origin': '*'}
 
         # to check if the account id exists or not
         cur.execute('SELECT * FROM accounts where account_id = ' + str(account_id))
@@ -697,6 +670,7 @@ def list_host_details(host_status=None):  # noqa: E501
         host_list = list()
         for record in records:
             host_det = dict()
+            host_det['host_id'] = str(record[0])
             host_det['account_id'] = str(record[1])
             host_det['org_name'] = str(record[2])
             host_det['org_desc'] = str(record[3])
