@@ -31,8 +31,11 @@ const ApproveHostPage = () => {
   const [hostRequestsList, setHostRequestsList] = useState([])
 
   useEffect(() => {
+    let param = {
+      host_status: 'Pending'
+    }
     api
-      .getHostRequests(-1)
+      .getHostRequests(param) 
       .then((response) => setHostRequestsList(response.data))
       .catch((err) => console.log(err));
   }, [])

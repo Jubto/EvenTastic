@@ -45,7 +45,9 @@ cur.execute('CREATE TABLE accounts (\
             account_type VARCHAR(20),\
             profile_pic VARCHAR(50),\
             reward_points VARCHAR(10),\
-            tags TEXT);')
+            tags TEXT, \
+            user_desc VARCHAR(100) \
+            );')
 
 cur.execute('CREATE TABLE hosts(\
             id SERIAL PRIMARY KEY,\
@@ -57,7 +59,8 @@ cur.execute('CREATE TABLE hosts(\
             job_title VARCHAR(30),\
             qualification VARCHAR(50),\
             is_verified BOOLEAN, \
-            host_status VARCHAR(15) \
+            host_status VARCHAR(15), \
+            org_email VARCHAR(30) \
             );')
 
 cur.execute('CREATE TABLE saved_cards(id SERIAL PRIMARY KEY, \
@@ -102,27 +105,27 @@ cur.execute('CREATE TABLE events (\
 # """ Enter dummy data here
 print('\nInserting dummy data ...')
 cur.execute("INSERT INTO accounts values(default, 'vishalsingh6475@gmail.com', 'Vishal', 'Singh', 100, \
-            '469717341', 'Sydney', 'Vish', 'Customer', 'uuid', '3000', 'Movies,Adventure,Sports' \
+            '469717341', 'Sydney', 'Vish', 'Customer', 'uuid', '3000', 'Movies,Adventure,Sports', 'Doing MIT course at UNSW' \
             );")
 cur.execute("INSERT INTO accounts values(default, 'James@bond.com', 'James', 'Bond', 007, \
-            '7777777', 'Sydney', 'JB', 'Customer', 'uuid', '3000', 'Movies,Adventure,Sports' \
+            '7777777', 'Sydney', 'JB', 'Customer', 'uuid', '3000', 'Movies,Adventure,Sports', 'Actor for James Bond movies' \
             );")
 cur.execute("INSERT INTO accounts values(default, 'vish@gmail.com', 'Vishal', 'S', 200, \
-            '469077369', 'Sydney', 'Vish', 'Customer', 'uuid', '3000', 'Movies,Adventure,Sports,Beaches' \
+            '469077369', 'Sydney', 'Vish', 'Customer', 'uuid', '3000', 'Movies,Adventure,Sports,Beaches', 'Just studying' \
             );")
 cur.execute("INSERT INTO accounts values(default, 'neo@matrix.com', 'Keanu', 'Reeves', 57, \
-            '123456789', 'Zion', 'Neo', 'Admin', 'uuid', '999999', 'Killing,Machines' \
+            '123456789', 'Zion', 'Neo', 'Admin', 'uuid', '999999', 'Killing,Machines', 'Savior of Zion' \
             );")
 
 
 cur.execute("INSERT INTO hosts values(default, 1, 'Westpac', 'Westpac Banking Corp', '0469717341', \
-            'Software Engineer', 'Masters', False, 'Pending' \
+            'Software Engineer', 'Masters', False, 'Pending', 'vish@westpac.com' \
             );")
 cur.execute("INSERT INTO hosts values(default, 2, 'Matrix', 'The Truth', '999999999', \
-            'Superhero', 'The One', False, 'Pending' \
+            'Superhero', 'The One', False, 'Pending', 'anderson@mat.com' \
             );")
 cur.execute("INSERT INTO hosts values(default, 3, 'UNSW', 'Sydney University', '000000000', \
-            'Information Technology', 'Masters', False, 'Pending' \
+            'Information Technology', 'Masters', False, 'Pending', 'vish@unsw.com' \
             );")
 
 

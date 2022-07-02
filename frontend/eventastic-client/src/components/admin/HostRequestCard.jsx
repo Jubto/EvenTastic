@@ -23,30 +23,22 @@ const api = new AccountAPI();
 
 const HostRequestCard = ( {hostData} ) => {
 
-  let navigate = useNavigate();
+  //let navigate = useNavigate();
 
   const ApproveHost = (account_id) => {
     let body = {};
     body["is_verified"] = true;
     body["host_status"] = 'Approved';
-    const params = {
-      'account_id': account_id,
-      'body': body
-    }
-    api.putHostRequests(account_id, params);
+    api.putHost(account_id, body);
     //navigate("/admin/approveHosts");     
-    window.location.href =  "/admin/approveHosts";
+    window.location.href =  "/admin/approveHosts"; 
   }
 
   const DeclineHost = (account_id) => {
     let body = {};
     body["is_verified"] = false;
     body["host_status"] = 'Declined';
-    const params = {
-      'account_id': account_id,
-      'body': body
-    }
-    api.putHostRequests(account_id, params);
+    api.putHost(account_id, body);
     //navigate("/admin/approveHosts");     
     window.location.href =  "/admin/approveHosts";
   }
