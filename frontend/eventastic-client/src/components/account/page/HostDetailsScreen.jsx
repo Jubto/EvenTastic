@@ -41,6 +41,12 @@ const HostDetailsScreen = ({ change, setChange }) => {
     hostMobile: null
   })
 
+  const resetHost = () => {
+    setHostStatus(false)
+    setChange('register')
+    setHostDetails(false)
+  }
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -52,11 +58,11 @@ const HostDetailsScreen = ({ change, setChange }) => {
     const hostMobile = data.get('hostMobile')
     formErrors.error = false;
 
-    if (!/\S+/.test(orgName)) {
+    if (!/\S+/.test(orgName) && !hostDetails) {
       setformErrors(prevState => { return { ...prevState, orgName: true } })
       formErrors.error = true
     }
-    if (!/\S+@\S+\.\S+/.test(orgEmail)) {
+    if (!/\S+@\S+\.\S+/.test(orgEmail) && !hostDetails) {
       setformErrors(prevState => { return { ...prevState, orgEmail: true } })
       formErrors.error = true
     }
@@ -80,12 +86,12 @@ const HostDetailsScreen = ({ change, setChange }) => {
         isVerified: hostDetails ? hostDetails.host_status : false,
         job_title: orgJobTitle,
         org_desc: orgDesc,
-        org_name: orgName,
-        org_email: orgEmail,
+        org_name: orgName ? orgName : hostDetails.org_name,
+        org_email: orgEmail ? orgEmail : hostDetails.org_email,
         qualification: qualification
       }
       if (changeOrgName || changeEmail) {
-        body = {...body, host_status:'Pending', isVerified: false}
+        body = { ...body, host_status: 'Pending', isVerified: false }
       }
       try {
         const hostRes = await api.putHost(account.account_id, body)
@@ -156,6 +162,12 @@ const HostDetailsScreen = ({ change, setChange }) => {
         })()}
 
       </StatusBox>
+      {hostStatus === 'Declined'
+        ? <Button variant='contained' onClick={resetHost} sx={{ mt: 1.5, ml: 1 }}>
+          Apply again
+        </Button>
+        : ''
+      }
       <Grid
         onChange={() => !change && hostStatus === 'Approved' && setChange('save')}
         id='hostForm' component="form" noValidate onSubmit={handleSubmit}
@@ -176,8 +188,7 @@ const HostDetailsScreen = ({ change, setChange }) => {
             label="Organisation name"
             InputLabelProps={{ shrink: true }}
             value={changeOrgName ? undefined : hostDetails ? hostDetails.org_name : undefined}
-            // disabled={hostDetails ? hostStatus !== 'Approved' ? false : !changeOrgName : false}
-            disabled={hostDetails ? !changeEmail : false}
+            disabled={hostDetails ? !changeOrgName : false}
             onChange={() => {
               formErrors.orgName && setformErrors(prevState => { return { ...prevState, orgName: false } })
             }}
