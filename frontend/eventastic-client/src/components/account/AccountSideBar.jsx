@@ -98,8 +98,9 @@ const AccountSideBar = ({ changeScreen }) => {
           return (
             <FlexBox direction='column'>
               <Divider variant="middle" />
-              <SideBarTitle variant='h6' sx={{ color: 'warning.light' }}>
-                Host status pending
+              <SideBarTitle variant='h6'
+                sx={{ color: hostDetails.host_status === 'Pending' ? 'warning.light' : 'error.main' }}>
+                Host status {hostDetails.host_status === 'Pending' ? 'pending' : 'declined'}
               </SideBarTitle>
               <List component='nav'>
                 <SideBarItem title='My host details' onClick={() => handleScreenChange('host')}>
