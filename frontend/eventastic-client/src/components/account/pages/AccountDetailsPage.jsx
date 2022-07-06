@@ -184,7 +184,7 @@ const AccountDetailsPage = ({ change, setChange }) => {
   }, [])
 
   return (
-    <ScrollContainer thin>
+    <ScrollContainer thin pr='1vw'>
       <Grid
         onChange={() => !change && setChange(true)}
         id='accountForm' component="form" noValidate onSubmit={handleSubmit}

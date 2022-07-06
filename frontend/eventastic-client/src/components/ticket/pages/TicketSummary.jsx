@@ -1,9 +1,9 @@
 import { ScrollContainer } from "../../styles/layouts.styled"
 
-const TicketSummary = () => {
+const TicketSummary = ({ ticket }) => {
 
   return (
-    <ScrollContainer hide sx={{ flexGrow: 1, backgroundColor: 'red' }}>
+    <ScrollContainer hide height='100%' sx={{ flexGrow: 2, width:'auto' }}>
       content
     </ScrollContainer>
   )

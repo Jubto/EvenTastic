@@ -42,6 +42,7 @@ export const ScrollContainer = styled(Box)`
   height: ${({ height }) => height ? height : '93%'};
   display: ${({ flex }) => flex ? 'flex' : 'inherit'};
   flex-wrap: ${({ wrap }) => wrap ? 'wrap' : 'nowrap'};
+  padding-right: ${({ pr }) => pr ? pr : 0};
 
   ${({ hide }) => {
     if (hide) {
@@ -59,7 +60,7 @@ export const ScrollContainer = styled(Box)`
       ::-webkit-scrollbar-thumb {
         background: #7775;
         -webkit-border-radius: 1ex;
-        -webkit-box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.75);
+        
       }
 
       ::-webkit-scrollbar-thumb:hover {
@@ -67,15 +68,11 @@ export const ScrollContainer = styled(Box)`
       }
 
       ::-webkit-scrollbar-track {
-        background: #5555;
+        background: #5555551f;
       }
 
       ::-webkit-scrollbar-track:hover {
-        background: #555;
-      }
-
-      ::-webkit-scrollbar-corner {
-        background: #000;
+        background: #55555547;
       }
       `
     }

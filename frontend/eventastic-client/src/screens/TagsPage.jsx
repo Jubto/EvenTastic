@@ -110,7 +110,7 @@ const TagsPage = () => {
             </Typography>
             <Divider variant="middle" sx={{ mb: 2 }} />
           </FlexBox>
-          <ScrollContainer hide height='88%'>
+          <ScrollContainer thin pr='0.25vw' height='88%'>
             {eventTags.eventTagsByCategory.map((tags, idx) => (
               <TagContainer key={idx} categoryAndTags={tags}
                 savedTags={savedTags} setSavedTags={setSavedTags} />
