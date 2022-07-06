@@ -12,7 +12,7 @@ import AdminVenuePage from './screens/AdminVenuePage';
 import ApproveHostPage from './screens/ApproveHostPage';
 import UnauthorizedPage from './screens/UnauthorizedPage';
 import Footer from './components/layout/Footer';
-import LogInModal from './components/account/modal/LogInModal';
+import LogInModal from './components/account/modals/LogInModal';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 const theme = createTheme({

@@ -1,5 +1,13 @@
 import { useContext } from 'react';
 import { StoreContext } from '../../utils/context';
+import { FlexBox } from '../styles/layouts.styled';
+import AccountBoxIcon from '@mui/icons-material/AccountBox';
+import InterestsIcon from '@mui/icons-material/Interests';
+import LocalActivityIcon from '@mui/icons-material/LocalActivity';
+import LoyaltyIcon from '@mui/icons-material/Loyalty';
+import GroupsIcon from '@mui/icons-material/Groups';
+import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
+import EventIcon from '@mui/icons-material/Event';
 import {
   Button,
   Divider,
@@ -10,14 +18,6 @@ import {
   Typography,
   styled
 } from '@mui/material';
-import AccountBoxIcon from '@mui/icons-material/AccountBox';
-import InterestsIcon from '@mui/icons-material/Interests';
-import LocalActivityIcon from '@mui/icons-material/LocalActivity';
-import LoyaltyIcon from '@mui/icons-material/Loyalty';
-import GroupsIcon from '@mui/icons-material/Groups';
-import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
-import EventIcon from '@mui/icons-material/Event';
-import { FlexBox } from '../styles/layouts.styled';
 
 const SideBar = styled('div')`
   display: flex;
@@ -46,13 +46,13 @@ const SideBarItem = ({ title, onClick, children }) => {
   )
 }
 
-const AccountSideBar = ({ changeScreen }) => {
+const AccountSideBar = ({ changePage }) => {
   const context = useContext(StoreContext);
   const [hostDetails] = context.host;
 
-  const handleScreenChange = (change) => {
+  const handleChangePage = (change) => {
     console.log(`change: ${change}`)
-    changeScreen(change);
+    changePage(change);
   }
 
   return (
@@ -62,19 +62,19 @@ const AccountSideBar = ({ changeScreen }) => {
       </SideBarTitle>
       <Divider variant="middle" sx={{ mb: 2 }} />
       <List component='nav'>
-        <SideBarItem title='Account details' onClick={() => handleScreenChange('account')}>
+        <SideBarItem title='Account details' onClick={() => handleChangePage('account')}>
           <AccountBoxIcon />
         </SideBarItem>
-        <SideBarItem title='My interests' onClick={() => handleScreenChange('interests')}>
+        <SideBarItem title='My interests' onClick={() => handleChangePage('interests')}>
           <InterestsIcon />
         </SideBarItem>
-        <SideBarItem title='My tickets' onClick={() => handleScreenChange('tickets')}>
+        <SideBarItem title='My tickets' onClick={() => handleChangePage('tickets')}>
           <LocalActivityIcon />
         </SideBarItem>
-        <SideBarItem title='My reward points' onClick={() => handleScreenChange('points')}>
+        <SideBarItem title='My reward points' onClick={() => handleChangePage('points')}>
           <LoyaltyIcon />
         </SideBarItem>
-        <SideBarItem title='My groups' onClick={() => handleScreenChange('groups')}>
+        <SideBarItem title='My groups' onClick={() => handleChangePage('groups')}>
           <GroupsIcon />
         </SideBarItem>
       </List>
@@ -86,7 +86,7 @@ const AccountSideBar = ({ changeScreen }) => {
               <Button
                 variant='contained' color='success' size='large'
                 sx={{ width: '80%', alignSelf: 'center' }}
-                onClick={() => handleScreenChange('host')}
+                onClick={() => handleChangePage('host')}
               >
                 Become a host
               </Button>
@@ -103,7 +103,7 @@ const AccountSideBar = ({ changeScreen }) => {
                 Host status {hostDetails.host_status === 'Pending' ? 'pending' : 'declined'}
               </SideBarTitle>
               <List component='nav'>
-                <SideBarItem title='My host details' onClick={() => handleScreenChange('host')}>
+                <SideBarItem title='My host details' onClick={() => handleChangePage('host')}>
                   <AssignmentIndIcon />
                 </SideBarItem>
               </List>
@@ -118,10 +118,10 @@ const AccountSideBar = ({ changeScreen }) => {
               </SideBarTitle>
               <Divider variant="middle" sx={{ mb: 2 }} />
               <List component='nav'>
-                <SideBarItem title='My host details' onClick={() => handleScreenChange('host')}>
+                <SideBarItem title='My host details' onClick={() => handleChangePage('host')}>
                   <AssignmentIndIcon />
                 </SideBarItem>
-                <SideBarItem title='My events' onClick={() => handleScreenChange('events')}>
+                <SideBarItem title='My events' onClick={() => handleChangePage('events')}>
                   <EventIcon />
                 </SideBarItem>
               </List>

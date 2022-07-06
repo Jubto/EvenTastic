@@ -6,9 +6,9 @@ export const StoreContext = createContext(null);
 const ContextProvider = ({ children }) => {
   const [redirect, setRedirect] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
-  const [account, setAccount] = useState(null);
+  const [account, setAccount] = useState(false);
   const [card, setCard] = useState({});
-  const [hostDetails, setHostDetails] = useState(null);
+  const [hostDetails, setHostDetails] = useState(false);
   const [LogInModal, setLogInModal] = useState(false);
 
   const states = {

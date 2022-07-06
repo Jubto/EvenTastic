@@ -36,9 +36,9 @@ const AccountMenu = () => {
   const handleLogout = () => {
     handleCloseMenu();
     setLoggedIn(false);
-    setAccount(null);
-    setCard(null);
-    setHostDetails(null);
+    setAccount(false);
+    setCard({});
+    setHostDetails(false);
   };
 
   return (

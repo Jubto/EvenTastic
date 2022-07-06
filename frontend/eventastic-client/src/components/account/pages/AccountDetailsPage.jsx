@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState, useRef } from 'react';
 import { StoreContext } from '../../../utils/context';
 import AccountAPI from '../../../utils/AccountAPIHelper';
-import AccountUpdatedModal from '../modal/AccountUpdatedModal'
+import AccountUpdatedModal from '../modals/AccountUpdatedModal'
 import { ScrollContainer } from '../../styles/layouts.styled';
 import InfoHeader from '../styles/InfoHeader';
 import {
@@ -32,7 +32,7 @@ const ToggleGrid = styled(Grid)`
   display: ${( {show} ) => show ? 'initial' : 'none'};
 `
 
-const AccountDetailsScreen = ({ change, setChange }) => {
+const AccountDetailsPage = ({ change, setChange }) => {
   const context = useContext(StoreContext);
   const [account, setAccount] = context.account;
   const [card, setCard] = context.card;
@@ -177,13 +177,14 @@ const AccountDetailsScreen = ({ change, setChange }) => {
   };
 
   useEffect(() => {
-    console.log('========================details screen')
+    console.log('========================details Page')
+    console.log(account)
     Object.keys(card).length !== 0 && setAddCard(true)
     setChange(false)
   }, [])
 
   return (
-    <ScrollContainer>
+    <ScrollContainer thin>
       <Grid
         onChange={() => !change && setChange(true)}
         id='accountForm' component="form" noValidate onSubmit={handleSubmit}
@@ -500,4 +501,4 @@ const AccountDetailsScreen = ({ change, setChange }) => {
   )
 }
 
-export default AccountDetailsScreen
+export default AccountDetailsPage

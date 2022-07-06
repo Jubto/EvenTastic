@@ -3,8 +3,8 @@ import { useNavigate } from 'react-router';
 import AccountAPI from "../utils/AccountAPIHelper";
 import { StoreContext } from '../utils/context'
 import { FlexBox, PageContainer } from '../components/styles/layouts.styled'
-import CustomerRegisterModal from '../components/account/modal/CustomerRegisterModal';
-import HostRegisterModal from '../components/account/modal/HostRegisterModal';
+import CustomerRegisterModal from '../components/account/modals/CustomerRegisterModal';
+import HostRegisterModal from '../components/account/modals/HostRegisterModal';
 import UndoIcon from '@mui/icons-material/Undo';
 import {
   Button,
@@ -137,6 +137,7 @@ const RegisterPage = () => {
         const accountRes = await api.addAccount(body)
         setLoggedIn(true)
         setAccount(accountRes.data)
+        console.log(accountRes.data)
         if (hostInputs === 'Host') {
           const accountID = accountRes.data.account_id
           const hostDetails = {
@@ -161,6 +162,7 @@ const RegisterPage = () => {
         }
       }
       catch(error) {
+        // TODO account already exists error handle
         console.error(error)
       }
     }

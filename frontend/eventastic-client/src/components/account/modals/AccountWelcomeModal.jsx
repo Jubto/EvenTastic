@@ -1,8 +1,8 @@
 import { Link } from 'react-router-dom';
-import ModalTitle from '../../modal/ModalTitle';
-import { ModalBody } from '../../modal/ModalBody.styled';
+import ModalTitle from '../../styles/modal/ModalTitle';
+import { StandardModal, ModalBody } from '../../styles/modal/Modal.styled';
 import { FlexBox } from '../../styles/layouts.styled';
-import { Button, Dialog } from '@mui/material';
+import { Button } from '@mui/material';
 
 const AccountWelcomeModal = ({ open, setOpen }) => {
 
@@ -11,7 +11,7 @@ const AccountWelcomeModal = ({ open, setOpen }) => {
   }
 
   return (
-    <Dialog open={open} onClose={handleClose} aria-labelledby="login modal" maxWidth='lg'>
+    <StandardModal open={open} onClose={handleClose} aria-labelledby="login modal" maxWidth='lg'>
       <ModalTitle title='Welcome to your account page!' close={handleClose} />
       <ModalBody>
         Welcome to your account management page! Try add a profile picture and more details so others
@@ -33,7 +33,7 @@ const AccountWelcomeModal = ({ open, setOpen }) => {
           continue
         </Button>
       </FlexBox>
-    </Dialog>
+    </StandardModal>
   )
 }
 

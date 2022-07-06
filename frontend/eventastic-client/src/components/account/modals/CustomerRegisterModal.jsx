@@ -1,8 +1,8 @@
 import { Link } from 'react-router-dom';
-import ModalTitle from '../../modal/ModalTitle';
-import { ModalBody } from '../../modal/ModalBody.styled';
+import ModalTitle from '../../styles/modal/ModalTitle';
+import { StandardModal, ModalBody } from '../../styles/modal/Modal.styled';
 import { FlexBox } from '../../styles/layouts.styled';
-import { Button, Dialog } from '@mui/material';
+import { Button } from '@mui/material';
 
 const CustomerRegisterModal = ({ open, setOpen }) => {
 
@@ -11,7 +11,7 @@ const CustomerRegisterModal = ({ open, setOpen }) => {
   }
 
   return (
-    <Dialog open={open} onClose={handleClose} aria-labelledby="login modal" maxWidth='lg'>
+    <StandardModal open={open} onClose={handleClose} aria-labelledby="login modal" maxWidth='lg'>
       <ModalTitle title='Account registered!' close={handleClose} />
       <ModalBody>
         Welcome! You are now a registered EvenTastic user!
@@ -19,21 +19,21 @@ const CustomerRegisterModal = ({ open, setOpen }) => {
       </ModalBody>
       <FlexBox justify='space-between'>
         <Button
-          component={Link} to={'/account?test=yolo'} state={{ from: '/register' }}
+          component={Link} to={'/account'} state={{ from: '/register' }}
           variant='contained' size='small'
           sx={{ backgroundColor: 'evenTastic.dull', m: '1rem' }}
         >
           Skip
         </Button>
         <Button
-          component={Link} to={'/tags'}
+          component={Link} to={'/tags'} state={{ from: '/register' }}
           variant='contained' size='small'
           sx={{ m: '1rem' }}
         >
           Add tags
         </Button>
       </FlexBox>
-    </Dialog>
+    </StandardModal>
   )
 }
 

@@ -1,6 +1,6 @@
 import { useContext, useState } from 'react';
 import { StoreContext } from '../utils/context';
-import { useNavigate } from 'react-router';
+import { useNavigate, useLocation } from 'react-router';
 import AccountAPI from '../utils/AccountAPIHelper';
 import eventTags from '../event_tags'
 import { PageContainer } from '../components/styles/layouts.styled'
@@ -65,19 +65,31 @@ const TagContainer = ({ categoryAndTags, savedTags, setSavedTags }) => {
 
 const TagsPage = () => {
   const navigate = useNavigate()
+  const location = useLocation();
   const context = useContext(StoreContext);
   const [account, setAccount] = context.account;
   const [savedTags, setSavedTags] = useState(account.tags.map((item) => item.name))
 
   const handleSubmit = () => {
+    // console.log('TAG SUBMIT')
+
     const body = {
       ...account,
       'tags': savedTags.map((tag) => ({ 'name': tag }))
     }
+    // console.log(body)
+    // console.log(account)
     api.putAccount(account.account_id, body)
       .then((response) => {
         setAccount(response.data)
-        navigate('/account', { state: {from: '/tags'} })
+        if (location.state && location.state.from === '/register') {
+          // console.log("GO TO ACCOUNT FROM TAG PAGE")
+          navigate('/account', { state: {from: '/register'} })  
+        }
+        else {
+          // console.log("WRONG")
+          navigate('/account', { state: {from: '/tags'} })
+        }
       })
       .catch((error) => {
         console.error(error)
@@ -98,7 +110,7 @@ const TagsPage = () => {
             </Typography>
             <Divider variant="middle" sx={{ mb: 2 }} />
           </FlexBox>
-          <ScrollContainer height='88%'>
+          <ScrollContainer hide height='88%'>
             {eventTags.eventTagsByCategory.map((tags, idx) => (
               <TagContainer key={idx} categoryAndTags={tags}
                 savedTags={savedTags} setSavedTags={setSavedTags} />
@@ -110,7 +122,7 @@ const TagsPage = () => {
             your tags
           </Typography>
           <StyledContainer sx={{ mt: 2, minWidth: '280px', maxWidth: '300px', p: 1 }}>
-            <ScrollContainer flex='true' wrap='true' sx={{ alignContent: 'start' }}>
+            <ScrollContainer hide flex='true' wrap='true' sx={{ alignContent: 'start' }}>
               {savedTags.map((tag, idx) => (
                 <Chip key={idx} label={tag}
                   color={'success'}

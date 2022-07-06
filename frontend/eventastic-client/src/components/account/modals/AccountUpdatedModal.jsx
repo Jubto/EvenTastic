@@ -1,14 +1,14 @@
-import ModalTitle from '../../modal/ModalTitle';
-import { ModalBody } from '../../modal/ModalBody.styled';
+import ModalTitle from '../../styles/modal/ModalTitle';
+import { StandardModal, ModalBody } from '../../styles/modal/Modal.styled';
 import { FlexBox } from '../../styles/layouts.styled';
-import { Button, Dialog } from '@mui/material';
+import { Button } from '@mui/material';
 
 const AccountUpdatedModal = ({ open, setOpen }) => {
   const handleClose = () => {
     setOpen(false);
   }
   return (
-    <Dialog open={open} onClose={handleClose} aria-labelledby="login modal" maxWidth='lg'>
+    <StandardModal open={open} onClose={handleClose} aria-labelledby="login modal" maxWidth='lg'>
       <ModalTitle title='Account updated!' close={handleClose} />
       <ModalBody>
         Your account has been updated!
@@ -22,7 +22,7 @@ const AccountUpdatedModal = ({ open, setOpen }) => {
           continue
         </Button>
       </FlexBox>
-    </Dialog>
+    </StandardModal>
   )
 }
 

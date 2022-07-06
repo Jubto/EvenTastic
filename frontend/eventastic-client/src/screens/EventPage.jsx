@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { PageContainer } from '../components/styles/layouts.styled'
+import TicketPurchaseModal from '../components/ticket/TicketPurchaseModal';
 import EventAPI from "../utils/EventAPIHelper";
 import Grid from '@mui/material/Grid';
 import { styled } from '@mui/material/styles';
@@ -30,9 +31,9 @@ function formatDate(datetime) {
 }
 
 const EventPage = () => {
-
   const { id } = useParams();
   const [eventDetails, setEventDetails] = useState([])
+  const [openTicketModal, setOpenTicketModal] = useState(false)
 
   useEffect(() => {
     api
@@ -72,7 +73,7 @@ const EventPage = () => {
               <b>What is the price range?</b> $20-$30
             </Typography>
             <Stack spacing={3}>
-              <Button variant="contained" href="#contained-buttons" color="error">
+              <Button variant="contained" href="#contained-buttons" color="error" onClick={() => setOpenTicketModal(true)}>
                 Tickets
               </Button>
               <Button variant="contained" href="#contained-buttons" color="warning">
@@ -112,6 +113,7 @@ const EventPage = () => {
           </GridItem>
         </Grid>
       </Grid>
+      <TicketPurchaseModal open={openTicketModal} setOpen={setOpenTicketModal} event={eventDetails} />
     </PageContainer>
   )
 }

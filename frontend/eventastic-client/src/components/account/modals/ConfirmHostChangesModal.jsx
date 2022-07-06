@@ -1,8 +1,8 @@
 import { Link } from 'react-router-dom';
-import ModalTitle from '../../modal/ModalTitle';
-import { ModalBody } from '../../modal/ModalBody.styled';
+import ModalTitle from '../../styles/modal/ModalTitle';
+import { StandardModal, ModalBody } from '../../styles/modal/ModalBody.styled';
 import { FlexBox } from '../../styles/layouts.styled';
-import { Button, Dialog } from '@mui/material';
+import { Button } from '@mui/material';
 
 const ConfirmHostChangesModal = ({ open, setOpen }) => {
 
@@ -11,7 +11,7 @@ const ConfirmHostChangesModal = ({ open, setOpen }) => {
   }
 
   return (
-    <Dialog open={open} onClose={handleClose} aria-labelledby="login modal" maxWidth='lg'>
+    <StandardModal open={open} onClose={handleClose} aria-labelledby="login modal" maxWidth='lg'>
       <ModalTitle title='Account registered!' close={handleClose} />
       <ModalBody>
         Are you sure you want to 
@@ -32,7 +32,7 @@ const ConfirmHostChangesModal = ({ open, setOpen }) => {
           Add tags
         </Button>
       </FlexBox>
-    </Dialog>
+    </StandardModal>
   )
 }
 
