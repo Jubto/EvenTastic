@@ -31,6 +31,22 @@ export default class EventAPI {
   getEventDetails = (eventID) => {
     return this.init().get("/events/" + eventID);
   };
+
+  putEvent = (eventID, body) => {
+    return this.init().put(`/events/${eventID}`, body);
+  };
+
+  getTickets = (params) => {
+    return this.init().get("/tickets/", { params: params });
+  }; 
+
+  getBookings = (accountID, params) => {
+    return this.init().get(`/bookings/${accountID}`, { params: params });
+  };
+
+  patchBookings = (bookingID, body) => {
+    return this.init().patch(`/bookings/${bookingID}`, body);
+  };
   
   // Add additional API call here as needed ...
 }

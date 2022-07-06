@@ -4,7 +4,7 @@ import { useNavigate, useLocation } from 'react-router';
 import { PageContainer } from '../components/styles/layouts.styled'
 import AccountSideBar from '../components/account/AccountSideBar'
 import AccountMain from '../components/account/AccountMain'
-import AccountWelcomeModal from '../components/account/modal/AccountWelcomeModal';
+import AccountWelcomeModal from '../components/account/modals/AccountWelcomeModal';
 
 const AccountPage = () => {
   const navigate = useNavigate();
@@ -12,7 +12,7 @@ const AccountPage = () => {
   const context = useContext(StoreContext);
   const [loggedIn] = context.login;
   const [openWelcome, setOpenWelcome] = useState(false);
-  const [accountScreen, setAccountScreen] = useState('account');
+  const [accountPage, setAccountPage] = useState('account');
 
   useEffect(() => {
     if (!loggedIn) {
@@ -22,14 +22,20 @@ const AccountPage = () => {
       setOpenWelcome(true)
     }
     else if (location.state && location.state.from === '/tags') {
-      setAccountScreen('interests')
+      setAccountPage('interests')
+    }
+    else if (location.state && location.state.from === '/create-events') {
+      setAccountPage('events') 
+    }
+    else if (location.state && location.state.require === 'host') {
+      setAccountPage('host') 
     }
   }, [])
 
   return (
     <PageContainer direction='row' maxWidth='lg'>
-      <AccountSideBar changeScreen={setAccountScreen}/>
-      <AccountMain accountScreen={accountScreen}/>
+      <AccountSideBar changePage={setAccountPage}/>
+      <AccountMain accountPage={accountPage}/>
       <AccountWelcomeModal open={openWelcome} setOpen={setOpenWelcome}/>
     </PageContainer>
   )

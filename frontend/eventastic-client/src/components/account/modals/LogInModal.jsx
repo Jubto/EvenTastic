@@ -3,15 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import AccountAPI from '../../../utils/AccountAPIHelper';
 import { Link } from 'react-router-dom';
 import { StoreContext } from '../../../utils/context';
-import ModalTitle from '../../modal/ModalTitle';
-import { ModalBody } from '../../modal/ModalBody.styled';
+import ModalTitle from '../../styles/modal/ModalTitle';
+import { StandardModal, ModalBody } from '../../styles/modal/Modal.styled';
 import { FlexBox } from '../../styles/layouts.styled';
-import {
-  Button,
-  Dialog,
-  TextField,
-  Typography,
-} from '@mui/material';
+import { Button, TextField, Typography } from '@mui/material';
 
 const api = new AccountAPI();
 
@@ -94,7 +89,7 @@ const LogInModal = () => {
   }
 
   return (
-    <Dialog open={open} onClose={handleClose} aria-labelledby="login modal" maxWidth='lg'>
+    <StandardModal open={open} onClose={handleClose} aria-labelledby="login modal" maxWidth='lg'>
       <ModalTitle title='Log into EvenTastic!' close={handleClose} />
       <ModalBody component="form" noValidate onSubmit={handleSubmit}>
         <TextField
@@ -147,7 +142,7 @@ const LogInModal = () => {
           </FlexBox>
         </FlexBox>
       </ModalBody>
-    </Dialog>
+    </StandardModal>
   )
 }
 

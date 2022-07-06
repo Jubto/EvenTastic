@@ -29,7 +29,13 @@ const HostRequestCard = ( {hostData} ) => {
     let body = {};
     body["is_verified"] = true;
     body["host_status"] = 'Approved';
-    api.putHost(account_id, body);
+    api.putHost(account_id, body)
+    .then((res) => {
+      console.log(res)
+    })
+    .catch((err) => {
+      console.log(err)
+    })
     //navigate("/admin/approveHosts");     
     window.location.href =  "/admin/approveHosts"; 
   }

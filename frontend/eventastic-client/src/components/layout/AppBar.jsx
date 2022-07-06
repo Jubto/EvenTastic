@@ -8,13 +8,22 @@ import { Typography } from '@mui/material';
 
 const EvenTasticAppBar = () => {
   const location = useLocation();
+  const [hideSearch, setHideSearch] = useState(null);
   const [hide, setHide] = useState(null);
 
   useEffect(() => {
-    if (location.pathname === '/register') {
+    if (
+      location.pathname === '/register' ||
+      location.pathname === '/admin') {
       setHide(true)
     }
+    else if (
+      location.pathname === '/create-event' ||
+      location.pathname === '/booking') {
+      setHideSearch(true)
+    }
     else {
+      setHideSearch(false)
       setHide(false)
     }
   }, [location])
@@ -35,7 +44,7 @@ const EvenTasticAppBar = () => {
             >
               EvenTastic
             </Typography>
-            {hide ? '' : <SearchBar/>}
+            {(hide || hideSearch) ? '' : <SearchBar/>}
           </FlexBox>
           {hide ? '' : <AccountMenu/>}
         </FlexBox>

@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from 'react';
 import { StoreContext } from '../../../utils/context';
 import AccountAPI from '../../../utils/AccountAPIHelper';
-import HostRegisterModal2 from '../modal/HostRegisterModal2';
+import HostRegisterModal2 from '../modals/HostRegisterModal2';
 import { FlexBox, ScrollContainer } from '../../styles/layouts.styled';
 import InfoHeader from '../styles/InfoHeader';
 import {
@@ -24,7 +24,7 @@ const StatusBox = styled(FlexBox)`
   background-color: aliceblue;
 `
 
-const HostDetailsScreen = ({ change, setChange }) => {
+const HostDetailsPage = ({ change, setChange }) => {
   const context = useContext(StoreContext);
   const [account] = context.account;
   const [hostDetails, setHostDetails] = context.host;
@@ -93,6 +93,7 @@ const HostDetailsScreen = ({ change, setChange }) => {
       if (changeOrgName || changeEmail) {
         body = { ...body, host_status: 'Pending', isVerified: false }
       }
+      console.log('body is:', body)
       try {
         const hostRes = await api.putHost(account.account_id, body)
         setHostDetails(hostRes.data)
@@ -125,7 +126,7 @@ const HostDetailsScreen = ({ change, setChange }) => {
   }, [hostDetails])
 
   return (
-    <ScrollContainer>
+    <ScrollContainer hide>
       <StatusBox justify='space-between'>
         <Typography variant='subtitle1'
           sx={{ color: 'evenTastic.grey', fontWeight: 1000, mb: 2 }}>Host status:
@@ -306,4 +307,4 @@ const HostDetailsScreen = ({ change, setChange }) => {
   )
 }
 
-export default HostDetailsScreen
+export default HostDetailsPage

@@ -1,20 +1,7 @@
 import React from 'react'
-import { FlexBox } from '../styles/layouts.styled';
+import { StyledTitle } from './Modal.styled';
 import CloseIcon from '@mui/icons-material/Close';
-import {
-  Divider,
-  IconButton,
-  Typography,
-  styled
-} from '@mui/material';
-
-export const StyledTitle = styled(FlexBox)`
-  padding-left: 1rem;
-  padding-right: 1rem;
-  padding-top: 1rem;
-  width: 80vw;
-  max-width: 650px;
-`
+import { Divider, IconButton, Typography} from '@mui/material';
 
 const ModalTitle = ( {title, close} ) => {
 

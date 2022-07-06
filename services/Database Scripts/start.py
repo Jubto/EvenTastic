@@ -6,29 +6,29 @@ port = 5432  # update port of postgres running in Docker here
 host = "localhost"
 
 # Only run create database once
-'''
-print('\nCreating Database ...')
-con = psycopg2.connect(
-    user='postgres', password='postgrespw', host=host, port=port)
-con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
-cur = con.cursor()
-cur.execute('CREATE DATABASE eventastic')
-cur.close()
-con.close()
-'''
+
+# print('\nCreating Database ...')
+# con = psycopg2.connect(
+#     user='postgres', password='postgrespw', host=host, port=port)
+# con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+# cur = con.cursor()
+# cur.execute('CREATE DATABASE eventastic')
+# cur.close()
+# con.close()
+
 
 con = psycopg2.connect(database='eventastic', user='postgres',
                        password='postgrespw', host=host, port=port)
 con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
 cur = con.cursor()
 
-print('\nDropping Tables ...')
-cur.execute('drop TABLE hosts cascade;')
-cur.execute('drop TABLE saved_cards cascade;')
-cur.execute('drop TABLE accounts cascade;')
-cur.execute('drop TABLE venues cascade;')
-cur.execute('drop TABLE venue_seating cascade;')
-cur.execute('drop TABLE events cascade;')
+# print('\nDropping Tables ...')
+# cur.execute('drop TABLE hosts cascade;')
+# cur.execute('drop TABLE saved_cards cascade;')
+# cur.execute('drop TABLE accounts cascade;')
+# cur.execute('drop TABLE venues cascade;')
+# cur.execute('drop TABLE venue_seating cascade;')
+# cur.execute('drop TABLE events cascade;')
 
 
 # Only run create tables once

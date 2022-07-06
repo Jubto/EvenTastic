@@ -38,9 +38,43 @@ export const PageContainer = styled(muiContainer)`
 
 export const ScrollContainer = styled(Box)`
   overflow-y: auto;
-  padding-right: ${({ showBar }) => showBar ? '' : '100%'};
   width: 100%;
   height: ${({ height }) => height ? height : '93%'};
   display: ${({ flex }) => flex ? 'flex' : 'inherit'};
   flex-wrap: ${({ wrap }) => wrap ? 'wrap' : 'nowrap'};
+  padding-right: ${({ pr }) => pr ? pr : 0};
+
+  ${({ hide }) => {
+    if (hide) {
+      return `::-webkit-scrollbar {width:1px};`
+    }
+  }};
+
+  ${({ thin }) => {
+    if (thin) {
+      return `
+        ::-webkit-scrollbar {
+        width: 0.5vw;
+      }
+
+      ::-webkit-scrollbar-thumb {
+        background: #7775;
+        -webkit-border-radius: 1ex;
+        
+      }
+
+      ::-webkit-scrollbar-thumb:hover {
+        background: #777;
+      }
+
+      ::-webkit-scrollbar-track {
+        background: #5555551f;
+      }
+
+      ::-webkit-scrollbar-track:hover {
+        background: #55555547;
+      }
+      `
+    }
+  }};
 `

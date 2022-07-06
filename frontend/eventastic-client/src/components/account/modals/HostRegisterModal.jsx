@@ -1,8 +1,8 @@
 import { Link } from 'react-router-dom';
-import ModalTitle from '../../modal/ModalTitle';
-import { ModalBody } from '../../modal/ModalBody.styled';
+import ModalTitle from '../../styles/modal/ModalTitle';
+import { StandardModal, ModalBody } from '../../styles/modal/Modal.styled';
 import { FlexBox } from '../../styles/layouts.styled';
-import { Box, Button, Dialog } from '@mui/material';
+import { Box, Button } from '@mui/material';
 
 const HostRegisterModal = ({ open, setOpen }) => {
 
@@ -11,7 +11,7 @@ const HostRegisterModal = ({ open, setOpen }) => {
   }
 
   return (
-    <Dialog open={open} onClose={handleClose} aria-labelledby="login modal" maxWidth='lg'>
+    <StandardModal open={open} onClose={handleClose} aria-labelledby="login modal" maxWidth='lg'>
       <ModalTitle title='Account registered!' close={handleClose} />
       <ModalBody>
         <Box sx={{ mb: '1rem' }}>
@@ -31,14 +31,14 @@ const HostRegisterModal = ({ open, setOpen }) => {
           Skip
         </Button>
         <Button
-          component={Link} to={'/tags'}
+          component={Link} to={'/tags'} state={{ from: '/register' }}
           variant='contained' size='small'
           sx={{ m: '1rem' }}
         >
           Add tags
         </Button>
       </FlexBox>
-    </Dialog>
+    </StandardModal>
   )
 }
 

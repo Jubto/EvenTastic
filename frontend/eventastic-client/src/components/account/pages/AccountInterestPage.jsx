@@ -13,17 +13,17 @@ const StyledTagContainer = styled('div')`
   overflow: hidden;
 `
 
-const AccountInterestScreen = () => {
+const AccountInterestPage = () => {
   const navigate = useNavigate()
   const context = useContext(StoreContext);
   const [account] = context.account;
 
   return (
-    <ScrollContainer>
+    <ScrollContainer hide>
       <InfoHeader title='Your interests influence what events we recommend,
        and help with group formation!'/>
       <StyledTagContainer>
-        <ScrollContainer flex='true' wrap='true' sx={{ alignContent: 'start', maxHeight: '50vh' }}>
+        <ScrollContainer hide flex='true' wrap='true' sx={{ alignContent: 'start', maxHeight: '50vh' }}>
           {account.tags.length === 0
             ? <Typography variant='subtitle1' sx={{ ml: 1 }}>
               You have no interest ...
@@ -43,4 +43,4 @@ const AccountInterestScreen = () => {
   )
 }
 
-export default AccountInterestScreen
+export default AccountInterestPage
