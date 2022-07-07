@@ -1,8 +1,11 @@
-
+import { ScrollContainer } from "../../styles/layouts.styled"
 
 const AdminReviewsPage = () => {
+  console.log('ADMIN AdminReviewsPage')
   return (
-    <div>AdminReviewsPage</div>
+    <ScrollContainer>
+      AdminReviewsPage
+    </ScrollContainer>
   )
 }
 

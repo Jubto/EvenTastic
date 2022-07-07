@@ -3,8 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import AccountAPI from '../../../utils/AccountAPIHelper';
 import { Link } from 'react-router-dom';
 import { StoreContext } from '../../../utils/context';
-import ModalTitle from '../../styles/modal/ModalTitle';
-import { StandardModal, ModalBody } from '../../styles/modal/Modal.styled';
+import { StandardModal, ModalBody, ModalTitle } from '../../styles/modal/modal.styled';
 import { FlexBox } from '../../styles/layouts.styled';
 import { Button, TextField, Typography } from '@mui/material';
 
@@ -30,8 +29,16 @@ const LogInModal = () => {
     setOpen(false);
   }
 
-  const redirect = () => {
+  const userLogin = () => {
+    setLoggedIn(true);
     navigate(nextPage)
+    handleClose()
+  }
+
+  const adminLogin = () => {
+    setLoggedIn(true)
+    setAccount({ admin:true })
+    navigate('/admin/approveHosts')
     handleClose()
   }
 
@@ -44,19 +51,17 @@ const LogInModal = () => {
     formErrors.error = false;
 
     if (email === 'admin' && password === 'admin') {
-      setLoggedIn(true)
-      setAccount({ admin:true })
-      navigate('/admin')
-      handleClose()
-    } 
-
-    if (!/\S+@\S+\.\S+/.test(email)) {
-      setformErrors(prevState => { return { ...prevState, email: true } })
-      formErrors.error = true
+      adminLogin()
     }
-    if (!/\S+/.test(password)) {
-      setformErrors(prevState => { return { ...prevState, password: true } })
-      formErrors.error = true
+    else {
+      if (!/\S+@\S+\.\S+/.test(email)) {
+        setformErrors(prevState => { return { ...prevState, email: true } })
+        formErrors.error = true
+      }
+      if (!/\S+/.test(password)) {
+        setformErrors(prevState => { return { ...prevState, password: true } })
+        formErrors.error = true
+      }
     }
 
     if (!formErrors.error) {
@@ -66,6 +71,7 @@ const LogInModal = () => {
       try {
         const accountRes = await api.getAccounts(param)
         const account = accountRes.data[0];
+
         if (!account || account.password !== password) {
           setLogInFail(true)
         }
@@ -76,12 +82,13 @@ const LogInModal = () => {
           const hostRes = await api.getHost(account.account_id) 
           const hostDetails = hostRes.data
           Object.keys(hostDetails).length === 0 ? setHostDetails(false) : setHostDetails(hostDetails)
-          setLoggedIn(true);
-          console.log('================================LOGGED IN================================')
-          console.log(account)
-          console.log(cardDetails.data)
-          console.log(hostDetails)
-          redirect()
+          
+          if (account.account_type === 'Admin') {
+            adminLogin()
+          }
+          else {
+            userLogin()
+          }
         }
       }
       catch(error) {

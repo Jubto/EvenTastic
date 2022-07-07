@@ -1,6 +1,5 @@
 import { Link } from 'react-router-dom';
-import ModalTitle from '../../styles/modal/ModalTitle';
-import { StandardModal, ModalBody } from '../../styles/modal/Modal.styled';
+import { StandardModal, ModalBody, ModalTitle } from '../../styles/modal/modal.styled';
 import { FlexBox } from '../../styles/layouts.styled';
 import { Button } from '@mui/material';
 

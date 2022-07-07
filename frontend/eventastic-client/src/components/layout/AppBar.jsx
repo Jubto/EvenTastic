@@ -7,21 +7,31 @@ import AppBar from '@mui/material/AppBar';
 import { Typography, styled } from '@mui/material';
 
 const AppTitle = styled(Typography)`
-  padding-left: auto;
   font-family: monospace;
   font-weight: 700;
   letter-spacing: .3rem;
   color: ${({ theme }) => theme.palette.evenTastic.title};
 
+  padding-right: 1rem;
+  padding-left: 1rem;
+
+  ${({theme}) => theme.breakpoints.down("sm")} {
+    padding-right: 0.25rem;
+    padding-left: 0.25rem;
+  }
+
   ${({ admin }) => {
     if (!admin) {
-      return `cursor: pointer;`
+      return `
+      cursor: pointer;
+
+      &:hover {
+        background-color: #e9d1d9;
+      }
+
+      `
     }
   }};
-
-  &:hover {
-    background-color: #e9d1d9;
-  }
 `
 
 const EvenTasticAppBar = () => {
@@ -59,7 +69,7 @@ const EvenTasticAppBar = () => {
 
   return (
     <AppBar position="static" sx={{ backgroundColor: 'evenTastic.layout', mb:2, pl:0 }}>
-      <Container maxWidth='false'>
+
         <FlexBox justify='space-between'>
           <FlexBox>
             <AppTitle variant="h4" onClick={redirect}
@@ -71,7 +81,7 @@ const EvenTasticAppBar = () => {
           </FlexBox>
           {hide ? '' : <AccountMenu/>}
         </FlexBox>
-      </Container>
+
     </AppBar>
   );
 };

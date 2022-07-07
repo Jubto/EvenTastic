@@ -1,4 +1,4 @@
-import { PageContainer } from '../../styles/layouts.styled';
+import { ScrollContainer } from '../../styles/layouts.styled';
 import VenueAPI from "../../../utils/VenueAPIHelper";
 import * as React from 'react';
 import { styled } from '@mui/material/styles';
@@ -132,8 +132,9 @@ const AdminVenueScreen = () => {
       .catch((err) => console.log(err));
   }, [])
 
+
   return (
-    <PageContainer maxWidth='false' direction='row'>
+    <ScrollContainer thin>
       <Box sx={{ flexGrow: 1 }} style={{'marginLeft':'20px'}}>
         <Stack
           direction="row"
@@ -309,7 +310,7 @@ const AdminVenueScreen = () => {
         }
         
       </Box>
-    </PageContainer>
+    </ScrollContainer>
   )
 }
 

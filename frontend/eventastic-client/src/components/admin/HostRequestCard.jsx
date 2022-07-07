@@ -9,6 +9,7 @@ import AccountAPI from "../../utils/AccountAPIHelper";
 export const StyledHostCard = styled(Card)`
   border: 1px solid black;
   border-radius: 5px;
+  margin: 1rem;
   height: 270px;
   width: 300px;
 `;
@@ -51,7 +52,7 @@ const HostRequestCard = ( {hostData} ) => {
 
 
   return (
-    <Grid item>
+    // <Grid item>
       <StyledHostCard>
           <CardHeader title={hostData.org_name} />
           <CardContent>
@@ -74,7 +75,7 @@ const HostRequestCard = ( {hostData} ) => {
               </SaveButtonBox>
           </CardContent>
       </StyledHostCard>
-    </Grid>
+    // </Grid>
   )
 }
 

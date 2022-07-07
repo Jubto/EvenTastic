@@ -5,8 +5,7 @@ import CardDetails from './pages/CardDetails';
 import RewardPoints from './pages/RewardPoints';
 import TicketSummary from './pages/TicketSummary';
 import { FlexBox } from '../styles/layouts.styled';
-import ModalTitle from '../styles/modal/ModalTitle';
-import { LargeModal, ModalBodyLarge } from '../styles/modal/Modal.styled';
+import { LargeModal, ModalBodyLarge, ModalTitle } from '../styles/modal/modal.styled';
 import { Divider } from '@mui/material';
 
 
