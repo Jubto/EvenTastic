@@ -50,7 +50,7 @@ const RegisterScreen = () => {
   const [openCustomerModal, setCustomerModal] = useState(false);
   const [openHostModal, setHostModal] = useState(false);
   const [hostInputs, setHostInputs] = useState('Customer');
-  const [formErrors, setformErrors] = useState({
+  const [formErrors, setFormErrors] = useState({
     error: false,
     firstName: null,
     lastName: null,
@@ -81,44 +81,44 @@ const RegisterScreen = () => {
     formErrors.error = false;
 
     if (!/[a-zA-Z]+/.test(firstName)) {
-      setformErrors(prevState => { return { ...prevState, firstName: true } })
+      setFormErrors(prevState => { return { ...prevState, firstName: true } })
       formErrors.error = true
     }
     if (!/[a-zA-Z]+/.test(lastName)) {
-      setformErrors(prevState => { return { ...prevState, lastName: true } })
+      setFormErrors(prevState => { return { ...prevState, lastName: true } })
       formErrors.error = true
     }
     if (!/\S+@\S+\.\S+/.test(email)) {
-      setformErrors(prevState => { return { ...prevState, email: true } })
+      setFormErrors(prevState => { return { ...prevState, email: true } })
       formErrors.error = true
     }
     if (!/\S+/.test(password1) || password1.length < 8) {
-      setformErrors(prevState => { return { ...prevState, password1: true } })
+      setFormErrors(prevState => { return { ...prevState, password1: true } })
       formErrors.error = true
     }
     if (password1 !== password2) {
-      setformErrors(prevState => { return { ...prevState, password2: true } })
+      setFormErrors(prevState => { return { ...prevState, password2: true } })
       formErrors.error = true
     }
     if (hostInputs === 'Host') {
       if (!/\S+/.test(orgName)) {
-        setformErrors(prevState => { return { ...prevState, orgName: true } })
+        setFormErrors(prevState => { return { ...prevState, orgName: true } })
         formErrors.error = true
       }
       if (!/\S+@\S+\.\S+/.test(orgEmail)) {
-        setformErrors(prevState => { return { ...prevState, orgEmail: true } })
+        setFormErrors(prevState => { return { ...prevState, orgEmail: true } })
         formErrors.error = true
       }
       if (!/\S+/.test(orgJobTitle)) {
-        setformErrors(prevState => { return { ...prevState, orgJobTitle: true } })
+        setFormErrors(prevState => { return { ...prevState, orgJobTitle: true } })
         formErrors.error = true
       }
       if (!/\S+/.test(qualification)) {
-        setformErrors(prevState => { return { ...prevState, qualification: true } })
+        setFormErrors(prevState => { return { ...prevState, qualification: true } })
         formErrors.error = true
       }
       if (!/\d+/.test(hostMobile) || hostMobile.length < 9) {
-        setformErrors(prevState => { return { ...prevState, hostMobile: true } })
+        setFormErrors(prevState => { return { ...prevState, hostMobile: true } })
         formErrors.error = true
       }
     }
@@ -201,7 +201,7 @@ const RegisterScreen = () => {
                 label="First Name"
                 autoFocus
                 onChange={() => {
-                  formErrors.firstName && setformErrors(prevState => { return { ...prevState, firstName: false } })
+                  formErrors.firstName && setFormErrors(prevState => { return { ...prevState, firstName: false } })
                 }}
                 error={formErrors.firstName}
                 helperText={formErrors.firstName ? 'Must be a valid firstname.' : ''}
@@ -216,7 +216,7 @@ const RegisterScreen = () => {
                 label="Last Name"
                 autoFocus
                 onChange={() => {
-                  formErrors.lastName && setformErrors(prevState => { return { ...prevState, lastName: false } })
+                  formErrors.lastName && setFormErrors(prevState => { return { ...prevState, lastName: false } })
                 }}
                 error={formErrors.lastName}
                 helperText={formErrors.lastName ? 'Must be a valid lastname.' : ''}
@@ -231,7 +231,7 @@ const RegisterScreen = () => {
                 label="Email"
                 autoFocus
                 onChange={() => {
-                  formErrors.email && setformErrors(prevState => { return { ...prevState, email: false } })
+                  formErrors.email && setFormErrors(prevState => { return { ...prevState, email: false } })
                 }}
                 error={formErrors.email}
                 helperText={formErrors.email ? 'Invalid email.' : ''}
@@ -247,7 +247,7 @@ const RegisterScreen = () => {
                 label="Password"
                 autoFocus
                 onChange={() => {
-                  formErrors.password1 && setformErrors(prevState => { return { ...prevState, password1: false } })
+                  formErrors.password1 && setFormErrors(prevState => { return { ...prevState, password1: false } })
                 }}
                 error={formErrors.password1}
                 helperText={formErrors.password1 ? 'Cannot be empty. Must contain at least 8 characters.' : ''}
@@ -263,7 +263,7 @@ const RegisterScreen = () => {
                 label="Confirm password"
                 autoFocus
                 onChange={() => {
-                  formErrors.password2 && setformErrors(prevState => { return { ...prevState, password2: false } })
+                  formErrors.password2 && setFormErrors(prevState => { return { ...prevState, password2: false } })
                 }}
                 error={formErrors.password2}
                 helperText={formErrors.password2 ? 'Passwords must match.' : ''}
@@ -291,7 +291,7 @@ const RegisterScreen = () => {
                 label="Organisation"
                 autoFocus
                 onChange={() => {
-                  formErrors.orgName && setformErrors(prevState => { return { ...prevState, orgName: false } })
+                  formErrors.orgName && setFormErrors(prevState => { return { ...prevState, orgName: false } })
                 }}
                 error={formErrors.orgName}
                 helperText={formErrors.orgName ? 'Must be a valid organisation.' : ''}
@@ -307,7 +307,7 @@ const RegisterScreen = () => {
                 autoFocus
                 sx={{mt:{xs:0, sm:4.2}}}
                 onChange={() => {
-                  formErrors.orgEmail && setformErrors(prevState => { return { ...prevState, orgEmail: false } })
+                  formErrors.orgEmail && setFormErrors(prevState => { return { ...prevState, orgEmail: false } })
                 }}
                 error={formErrors.orgEmail}
                 helperText={formErrors.orgEmail ? 'Must be a valid email.' : ''}
@@ -322,7 +322,7 @@ const RegisterScreen = () => {
                 label="Job title"
                 autoFocus
                 onChange={() => {
-                  formErrors.orgJobTitle && setformErrors(prevState => { return { ...prevState, orgJobTitle: false } })
+                  formErrors.orgJobTitle && setFormErrors(prevState => { return { ...prevState, orgJobTitle: false } })
                 }}
                 error={formErrors.orgJobTitle}
                 helperText={formErrors.orgJobTitle ? 'Must be a valid job title.' : ''}
@@ -337,7 +337,7 @@ const RegisterScreen = () => {
                 label="Qualification"
                 autoFocus
                 onChange={() => {
-                  formErrors.qualification && setformErrors(prevState => { return { ...prevState, qualification: false } })
+                  formErrors.qualification && setFormErrors(prevState => { return { ...prevState, qualification: false } })
                 }}
                 error={formErrors.qualification}
                 helperText={formErrors.qualification ? 'Must be a valid qualification.' : ''}
@@ -353,7 +353,7 @@ const RegisterScreen = () => {
                 type="tel"
                 autoFocus
                 onChange={() => {
-                  formErrors.hostMobile && setformErrors(prevState => { return { ...prevState, hostMobile: false } })
+                  formErrors.hostMobile && setFormErrors(prevState => { return { ...prevState, hostMobile: false } })
                 }}
                 error={formErrors.hostMobile}
                 helperText={formErrors.hostMobile ? 'Must be a valid mobile number.' : ''}

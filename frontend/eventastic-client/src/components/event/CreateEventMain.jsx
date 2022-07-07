@@ -32,7 +32,9 @@ const CreateEventMain = ({ page, changePage }) => {
         changePage(page + 1)
       }
       else {
-        navigate(`/event/${createEvent.eventID}`)
+        // reach here by clicking submit
+        // TODO api.post the createEvent state here
+        navigate(`/event/${createEvent.eventID}`) // navigate to the newly created event
       }
     } 
     else {
@@ -40,7 +42,6 @@ const CreateEventMain = ({ page, changePage }) => {
         changePage(page - 1)
       }
       else {
-        // api.post new event
         navigate('/account', { state: {from: '/create-events'} })
       }
     }
