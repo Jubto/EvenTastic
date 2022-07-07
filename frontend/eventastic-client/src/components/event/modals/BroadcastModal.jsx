@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { StandardModal, ModalBody, ModalTitle } from '../../styles/modal/modal.styled';
 import { FlexBox } from '../../styles/layouts.styled';
 import { Button, TextField, Typography, styled } from '@mui/material';
@@ -8,6 +9,10 @@ const BroadcastTitle = styled(Typography)`
 `
 
 const BroadcastModal = ({ open, setOpen, eventName, setBroadcast }) => {
+  const [formErrors, setFormErrors] = useState({
+    title: '',
+    message: ''
+  })
 
   const handleClose = () => {
     setOpen(false);
@@ -34,7 +39,7 @@ const BroadcastModal = ({ open, setOpen, eventName, setBroadcast }) => {
             id="title"
             label="Broadcast title"
             onChange={() => {
-              formErrors.title && setformErrors(prevState => { return { ...prevState, title: false } })
+              formErrors.title && setFormErrors(prevState => { return { ...prevState, title: false } })
             }}
             error={formErrors.title}
             helperText={formErrors.title ? 'Cannot be empty' : ''}

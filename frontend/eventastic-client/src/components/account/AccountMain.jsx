@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FlexBox } from '../styles/layouts.styled';
 import AccountDetailsPage from './pages/AccountDetailsPage';
@@ -8,6 +8,7 @@ import AccountPointsPage from './pages/AccountPointsPage'
 import AccountGroupPage from './pages/AccountGroupPage'
 import HostDetailsPage from './pages/HostDetailsPage'
 import HostEventsPage from './pages/HostEventsPage'
+import ManageEventDetailsPage from './pages/ManageEventDetailsPage';
 import { Button, Divider, Typography, styled } from '@mui/material';
 
 export const AccountContainer = styled('div')`
@@ -28,17 +29,33 @@ const PageTitles = {
   'events': 'My Hosted Events'
 }
 
-const AccountMain = ({ accountPage }) => {
+const AccountMain = ({ accountPage, changePage }) => {
   const navigate = useNavigate();
   const [accountChange, setAccountChange] = useState(false);
   const [hostChange, setHostChange] = useState('');
   const [toggleTickets, setToggleTickets] = useState(false)
   const [toggleEvents, setToggleEvents] = useState(false)
+  const [manageEvent, setManageEvent] = useState({})
+
+  useEffect(() => {
+    accountPage !== 'manageEvent' && setManageEvent({})
+  }, [accountPage])
+
+  useEffect(() => {
+    if (Object.keys(manageEvent).length !== 0 && accountPage !== 'manageEvent') {
+      changePage('manageEvent')
+    }
+  }, [manageEvent])
 
   return (
     <AccountContainer>
       <FlexBox justify='space-between'>
-        <Typography variant='h6'>{PageTitles[accountPage]}</Typography>
+        <Typography variant='h6'>
+          {Object.keys(manageEvent).length === 0
+          ? PageTitles[accountPage]
+          : `Manage: ${manageEvent.event_title}`
+          }
+        </Typography>
         {(() => {
           if (accountPage === 'account') {
             return (
@@ -134,9 +151,14 @@ const AccountMain = ({ accountPage }) => {
           )
         } else if (accountPage === 'events') {
           return (
-            <HostEventsPage toggle={toggleEvents} />
+            <HostEventsPage toggle={toggleEvents} setManageEvent={setManageEvent} />
+          )
+        } else if (accountPage === 'manageEvent') {
+          return (
+            <ManageEventDetailsPage eventDetails={manageEvent} changePage={changePage} />
           )
         }
+
       })()}
     </AccountContainer>
 

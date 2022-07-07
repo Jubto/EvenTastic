@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react"
+import { useContext, useEffect, useRef, useState } from "react"
 import { StoreContext } from '../../../utils/context';
 import EventAPI from "../../../utils/EventAPIHelper"
 import CancelTicketModal from "../modals/CancelTicketModal";
@@ -17,6 +17,7 @@ const Ticket = ({ booking, onClick }) => {
 const AccountTicketsPage = ({ toggle }) => {
   const context = useContext(StoreContext);
   const [account] = context.account;
+  const isMounted = useRef(false);
   const [UpComingBookings, setUpComingBookings] = useState([])
   const [PastBookings, setPastBookings] = useState([])
   const [openModal, setOpenModal] = useState(false)
@@ -76,8 +77,13 @@ const AccountTicketsPage = ({ toggle }) => {
   }, [])
 
   useEffect(() => {
-    setUpComingBookings(UpComingBookings.filter((booking) => booking.bookingID !== toCancel))
-    patchBookings(toCancel)
+    if (isMounted.current) {
+      setUpComingBookings(UpComingBookings.filter((booking) => booking.bookingID !== toCancel))
+      patchBookings(toCancel)
+    }
+    else {
+      isMounted.current = false
+    }
   }, [cancelBooking])
 
   return (

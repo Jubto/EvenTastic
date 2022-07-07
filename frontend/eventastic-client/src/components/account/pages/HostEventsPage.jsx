@@ -16,27 +16,27 @@ function formatDate(datetime) {
   return d.toLocaleDateString("en-US", dateFormat)
 }
 
-const Event = ({ event, onClick }) => {
+const EventCard = ({ eventDetails, setManageEvent }) => {
   return (
-    <FlexBox id={event.event_id} onClick={onClick} sx={{ border: '1px solid black', m: 3 }}>
+    <FlexBox id={eventDetails.event_id} sx={{ border: '1px solid black', m: 3 }}>
       <Stack
         direction="row"
         spacing={2}
       >
         <img
-          src={process.env.PUBLIC_URL + '/img/event/' + event.event_img}
+          src={process.env.PUBLIC_URL + '/img/event/' + eventDetails.event_img}
           width="15%"
           alt="A visulaisation of the Event"
         >
         </img>
         <Typography variant="body1" component="div" width="30%">
-          <b>Event Title:</b><br></br>{event.event_title}
+          <b>Event Title:</b><br></br>{eventDetails.event_title}
         </Typography>
         <Typography variant="body1" component="div" width="40%">
-          <b>Start Date:</b><br></br>{formatDate(event.event_start_datetime)}<br></br>
-          <b>End Date:</b><br></br>{formatDate(event.event_end_datetime)}
+          <b>Start Date:</b><br></br>{formatDate(eventDetails.event_start_datetime)}<br></br>
+          <b>End Date:</b><br></br>{formatDate(eventDetails.event_end_datetime)}
         </Typography>
-        <Link href={'/event/' + event.event_id} width="10%">
+        <Link onClick={() => setManageEvent(eventDetails)} width="10%">
           <button>Manage Event</button>
         </Link>
       </Stack>
@@ -44,7 +44,7 @@ const Event = ({ event, onClick }) => {
   )
 }
 
-const HostEventsPage = ({ toggle }) => {
+const HostEventsPage = ({ toggle, setManageEvent }) => {
   const context = useContext(StoreContext);
   const [hostDetails] = context.host;
   const [upComingEvents, setUpComingEvents] = useState([])
@@ -75,18 +75,20 @@ const HostEventsPage = ({ toggle }) => {
   }, [])
 
   return (
-    <ScrollContainer thin sx={{ p: 1, mt: 7 }}>
+    <ScrollContainer thin height='90%' sx={{ p: 1, mt: 7 }}>
       {toggle
         ? <div>
-          Past
-          {PastEvents.map((event, idx) => (
-            <Event key={idx} event={event} />
+          {PastEvents.map((eventDetails, idx) => (
+            <EventCard key={idx} eventDetails={eventDetails}
+            setManageEvent={setManageEvent}
+            />
           ))}
         </div>
         : <div>
-          UpComing
-          {upComingEvents.map((event, idx) => (
-            <Event key={idx} event={event} />
+          {upComingEvents.map((eventDetails, idx) => (
+            <EventCard key={idx} eventDetails={eventDetails}
+              setManageEvent={setManageEvent}
+            />
           ))}
         </div>
       }
