@@ -57,7 +57,7 @@ export const ModalTitle = ( {title, close} ) => {
         <CloseIcon />
       </IconButton>
     </StyledTitle>
-    <Divider variant="middle" sx={{mb:4}} />
+    <Divider variant="middle" sx={{mb:2}} />
     </>
   )
 }

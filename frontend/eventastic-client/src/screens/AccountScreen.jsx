@@ -35,7 +35,7 @@ const AccountScreen = () => {
   return (
     <PageContainer direction='row' maxWidth='lg'>
       <AccountSideBar changePage={setAccountPage}/>
-      <AccountMain accountPage={accountPage}/>
+      <AccountMain accountPage={accountPage} changePage={setAccountPage}/>
       <AccountWelcomeModal open={openWelcome} setOpen={setOpenWelcome}/>
     </PageContainer>
   )

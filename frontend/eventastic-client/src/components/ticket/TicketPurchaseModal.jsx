@@ -21,7 +21,7 @@ const TicketPurchaseModal = ({ open, setOpen, event }) => {
     <LargeModal open={open} onClose={handleClose} aria-labelledby="Purchase ticket modal" maxWidth='lg'>
       <ModalTitle title={`Purchase tickets for ${event.event_title}`} close={handleClose} />
       <ModalBodyLarge>
-        <FlexBox sx={{ height: '100%', mt: -2 }}>
+        <FlexBox sx={{ height: '100%' }}>
           ${(() => {
             if (page === 'selection') {
               return (
