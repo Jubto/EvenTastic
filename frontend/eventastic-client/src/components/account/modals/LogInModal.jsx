@@ -19,7 +19,7 @@ const LogInModal = () => {
   const [, setHostDetails] = context.host;
   const [open, setOpen] = context.logInModal;
   const [logInFail, setLogInFail] = useState(null);
-  const [formErrors, setformErrors] = useState({
+  const [formErrors, setFormErrors] = useState({
     error: false,
     email: null,
     password: null,
@@ -55,11 +55,11 @@ const LogInModal = () => {
     }
     else {
       if (!/\S+@\S+\.\S+/.test(email)) {
-        setformErrors(prevState => { return { ...prevState, email: true } })
+        setFormErrors(prevState => { return { ...prevState, email: true } })
         formErrors.error = true
       }
       if (!/\S+/.test(password)) {
-        setformErrors(prevState => { return { ...prevState, password: true } })
+        setFormErrors(prevState => { return { ...prevState, password: true } })
         formErrors.error = true
       }
     }
@@ -108,7 +108,7 @@ const LogInModal = () => {
           sx={{ mb: 4, mr:2, width: '100%', maxWidth: '300px' }}
           autoFocus
           onChange={() => {
-            formErrors.email && setformErrors(prevState => { return { ...prevState, email: false } })
+            formErrors.email && setFormErrors(prevState => { return { ...prevState, email: false } })
             logInFail && setLogInFail(false)
           }}
           error={formErrors.email}
@@ -122,7 +122,7 @@ const LogInModal = () => {
           sx={{ mb: 2, mr:2, width: '100%', maxWidth: '300px' }}
           autoFocus
           onChange={() => {
-            formErrors.password && setformErrors(prevState => { return { ...prevState, password: false } })
+            formErrors.password && setFormErrors(prevState => { return { ...prevState, password: false } })
             logInFail && setLogInFail(false)
           }}
           error={formErrors.password}

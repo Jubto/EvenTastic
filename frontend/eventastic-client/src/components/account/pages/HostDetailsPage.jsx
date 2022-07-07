@@ -32,7 +32,7 @@ const HostDetailsPage = ({ change, setChange }) => {
   const [hostStatus, setHostStatus] = useState(false);
   const [changeOrgName, setChangeOrgName] = useState(false);
   const [changeEmail, setChangeEmail] = useState(false);
-  const [formErrors, setformErrors] = useState({
+  const [formErrors, setFormErrors] = useState({
     error: false,
     orgName: null,
     orgEmail: null,
@@ -59,23 +59,23 @@ const HostDetailsPage = ({ change, setChange }) => {
     formErrors.error = false;
 
     if (!/\S+/.test(orgName) && !hostDetails) {
-      setformErrors(prevState => { return { ...prevState, orgName: true } })
+      setFormErrors(prevState => { return { ...prevState, orgName: true } })
       formErrors.error = true
     }
     if (!/\S+@\S+\.\S+/.test(orgEmail) && !hostDetails) {
-      setformErrors(prevState => { return { ...prevState, orgEmail: true } })
+      setFormErrors(prevState => { return { ...prevState, orgEmail: true } })
       formErrors.error = true
     }
     if (!/\S+/.test(orgJobTitle)) {
-      setformErrors(prevState => { return { ...prevState, orgJobTitle: true } })
+      setFormErrors(prevState => { return { ...prevState, orgJobTitle: true } })
       formErrors.error = true
     }
     if (!/\S+/.test(qualification)) {
-      setformErrors(prevState => { return { ...prevState, qualification: true } })
+      setFormErrors(prevState => { return { ...prevState, qualification: true } })
       formErrors.error = true
     }
     if (!/\d+/.test(hostMobile) || hostMobile.length < 9) {
-      setformErrors(prevState => { return { ...prevState, hostMobile: true } })
+      setFormErrors(prevState => { return { ...prevState, hostMobile: true } })
       formErrors.error = true
     }
 
@@ -191,7 +191,7 @@ const HostDetailsPage = ({ change, setChange }) => {
             value={changeOrgName ? undefined : hostDetails ? hostDetails.org_name : undefined}
             disabled={hostDetails ? !changeOrgName : false}
             onChange={() => {
-              formErrors.orgName && setformErrors(prevState => { return { ...prevState, orgName: false } })
+              formErrors.orgName && setFormErrors(prevState => { return { ...prevState, orgName: false } })
             }}
             error={formErrors.orgName}
             helperText={formErrors.orgName ? 'Must be a valid organisation name.' : ''}
@@ -233,7 +233,7 @@ const HostDetailsPage = ({ change, setChange }) => {
             value={changeEmail ? undefined : hostDetails ? hostDetails.org_email : undefined}
             disabled={hostDetails ? !changeEmail : false}
             onChange={() => {
-              formErrors.orgEmail && setformErrors(prevState => { return { ...prevState, orgEmail: false } })
+              formErrors.orgEmail && setFormErrors(prevState => { return { ...prevState, orgEmail: false } })
             }}
             error={formErrors.orgEmail}
             helperText={formErrors.orgEmail ? 'Must be a valid email.' : ''}
@@ -262,7 +262,7 @@ const HostDetailsPage = ({ change, setChange }) => {
             defaultValue={hostDetails ? hostDetails.job_title : ''}
             disabled={hostStatus === 'Pending' || hostStatus === 'Declined'}
             onChange={() => {
-              formErrors.orgJobTitle && setformErrors(prevState => { return { ...prevState, orgJobTitle: false } })
+              formErrors.orgJobTitle && setFormErrors(prevState => { return { ...prevState, orgJobTitle: false } })
             }}
             error={formErrors.orgJobTitle}
             helperText={formErrors.orgJobTitle ? 'Must be a valid job title.' : ''}
@@ -278,7 +278,7 @@ const HostDetailsPage = ({ change, setChange }) => {
             defaultValue={hostDetails ? hostDetails.qualification : ''}
             disabled={hostStatus === 'Pending' || hostStatus === 'Declined'}
             onChange={() => {
-              formErrors.qualification && setformErrors(prevState => { return { ...prevState, qualification: false } })
+              formErrors.qualification && setFormErrors(prevState => { return { ...prevState, qualification: false } })
             }}
             error={formErrors.qualification}
             helperText={formErrors.qualification ? 'Must be a valid qualification.' : ''}
@@ -295,7 +295,7 @@ const HostDetailsPage = ({ change, setChange }) => {
             defaultValue={hostDetails ? hostDetails.host_contact_no : ''}
             disabled={hostStatus === 'Pending' || hostStatus === 'Declined'}
             onChange={() => {
-              formErrors.hostMobile && setformErrors(prevState => { return { ...prevState, hostMobile: false } })
+              formErrors.hostMobile && setFormErrors(prevState => { return { ...prevState, hostMobile: false } })
             }}
             error={formErrors.hostMobile}
             helperText={formErrors.hostMobile ? 'Must be a valid mobile.' : ''}

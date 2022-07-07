@@ -48,7 +48,7 @@ const AccountTicketsPage = ({ toggle }) => {
       ))
       setUpComingBookings(bookingMapping)
 
-      // todo 
+      // todo, repeat of above
       const completedRes = await api.getBookings(account.account_id, 'Completed')
       setPastBookings(completedRes.data)
     }
@@ -77,6 +77,7 @@ const AccountTicketsPage = ({ toggle }) => {
   }, [])
 
   useEffect(() => {
+    // This allows CancelTicketModal to commit the cancel
     if (isMounted.current) {
       setUpComingBookings(UpComingBookings.filter((booking) => booking.bookingID !== toCancel))
       patchBookings(toCancel)

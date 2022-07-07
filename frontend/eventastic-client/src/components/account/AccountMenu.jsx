@@ -41,14 +41,13 @@ const AccountMenu = () => {
     setHostDetails(false);
   };
 
-  console.log('account menu')
-  console.log(account)
-
   return (
     <>
       <Tooltip title="Open account menu" enterDelay={10}>
         <IconButton onClick={handleOpenMenu} sx={{ p: 0, mr:{ xs:'0.25rem', md:'1rem' } }}>
-          <Avatar src={loggedIn && `${process.env.PUBLIC_URL}/img/profile-dp/${account.profile_pic}`} />
+          <Avatar 
+            src={`${process.env.PUBLIC_URL}/img/profile-dp/${account.profile_pic}`}
+          />
         </IconButton>
       </Tooltip>
       <Menu

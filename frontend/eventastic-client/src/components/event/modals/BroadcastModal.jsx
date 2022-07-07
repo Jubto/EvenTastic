@@ -4,31 +4,46 @@ import { FlexBox } from '../../styles/layouts.styled';
 import { Button, TextField, Typography, styled } from '@mui/material';
 
 const BroadcastTitle = styled(Typography)`
+  margin-bottom: 0.5rem;
   color: ${({ theme }) => theme.palette.evenTastic.grey};
   font-weight: 1000;
 `
 
-const BroadcastModal = ({ open, setOpen, eventName, setBroadcast }) => {
+const BroadcastModal = ({ open, setOpen }) => {
   const [formErrors, setFormErrors] = useState({
-    title: '',
-    message: ''
+    title: false,
+    message: false
   })
 
   const handleClose = () => {
     setOpen(false);
   }
 
-  const handleSubmit = () => {
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    const title = data.get('title')
+    const message = data.get('message')
 
+    formErrors.error = false;
+    if (!title) {
+      setFormErrors(prevState => { return { ...prevState, title: true } })
+      formErrors.error = true
+    }
+    if (!message) {
+      setFormErrors(prevState => { return { ...prevState, message: true } })
+      formErrors.error = true
+    }
+
+    if (!formErrors.error) {
+      console.log('YAY')
+    }
   }
 
   return (
     <StandardModal open={open} onClose={handleClose} aria-labelledby="Delete Event modal" maxWidth='lg'>
       <ModalTitle title='Broadcast message' close={handleClose} />
-      <ModalBody component="form" noValidate onSubmit={handleSubmit}>
-        <BroadcastTitle variant='subtitle1'>
-          Event: {eventName}
-        </BroadcastTitle>
+      <ModalBody id='form' component="form" noValidate onSubmit={handleSubmit}>
         <BroadcastTitle variant='subtitle1'>
           Broadcast title
         </BroadcastTitle>
@@ -43,7 +58,24 @@ const BroadcastModal = ({ open, setOpen, eventName, setBroadcast }) => {
             }}
             error={formErrors.title}
             helperText={formErrors.title ? 'Cannot be empty' : ''}
-            sx={{ width: { sm: '100%', md: '59%' } }}
+            sx={{mb:2}}
+          />
+        <BroadcastTitle variant='subtitle1'>
+          Broadcast message
+        </BroadcastTitle>
+        <TextField
+            name="message"
+            required
+            fullWidth
+            multiline
+            rows={6}
+            id="message"
+            label="Broadcast message"
+            onChange={() => {
+              formErrors.message && setFormErrors(prevState => { return { ...prevState, message: false } })
+            }}
+            error={formErrors.message}
+            helperText={formErrors.message ? 'Cannot be empty' : ''}
           />
       </ModalBody>
       <FlexBox justify='space-between'>
@@ -55,7 +87,7 @@ const BroadcastModal = ({ open, setOpen, eventName, setBroadcast }) => {
         </Button>
         <Button 
           variant='contained' size='small' color='success'
-          type='submit' sx={{ m: '1rem' }}
+          type='submit' form='form' sx={{ m: '1rem' }}
         >
           Broadcast
         </Button>

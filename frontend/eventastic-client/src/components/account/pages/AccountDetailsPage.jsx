@@ -43,7 +43,7 @@ const AccountDetailsPage = ({ change, setChange }) => {
   const [changeEmail, setChangeEmail] = useState(false);
   const [changePassword, setChangePassword] = useState(false);
   const [changeCard, setChangeCard] = useState(false);
-  const [formErrors, setformErrors] = useState({
+  const [formErrors, setFormErrors] = useState({
     error: false,
     firstName: null,
     lastName: null,
@@ -88,50 +88,50 @@ const AccountDetailsPage = ({ change, setChange }) => {
     formErrors.error = false;
 
     if (!/[a-zA-Z]+/.test(firstName)) {
-      setformErrors(prevState => { return { ...prevState, firstName: true } })
+      setFormErrors(prevState => { return { ...prevState, firstName: true } })
       formErrors.error = true
     }
     if (!/[a-zA-Z]+/.test(lastName)) {
-      setformErrors(prevState => { return { ...prevState, lastName: true } })
+      setFormErrors(prevState => { return { ...prevState, lastName: true } })
       formErrors.error = true
     }
     if (age && (/\d+/.test(age) && (0 > parseInt(age) || parseInt(age) > 120))) {
-      setformErrors(prevState => { return { ...prevState, age: true } })
+      setFormErrors(prevState => { return { ...prevState, age: true } })
       formErrors.error = true
     }
     if (mobile && (!/\d+/.test(mobile) || mobile.length < 9)) {
-      setformErrors(prevState => { return { ...prevState, mobile: true } })
+      setFormErrors(prevState => { return { ...prevState, mobile: true } })
       formErrors.error = true
     }
     if (changeEmail && !/\S+@\S+\.\S+/.test(email)) {
-      setformErrors(prevState => { return { ...prevState, email: true } })
+      setFormErrors(prevState => { return { ...prevState, email: true } })
       formErrors.error = true
     }
     if (changePassword) {
       if (password1.length < 8) {
-        setformErrors(prevState => { return { ...prevState, password1: true } })
+        setFormErrors(prevState => { return { ...prevState, password1: true } })
         formErrors.error = true
       }
       if (password1 !== password2) {
-        setformErrors(prevState => { return { ...prevState, password2: true } })
+        setFormErrors(prevState => { return { ...prevState, password2: true } })
         formErrors.error = true
       }
     }
     if (changeCard) {
       if (!/[a-zA-Z]+/.test(cardName)) {
-        setformErrors(prevState => { return { ...prevState, cardName: true } })
+        setFormErrors(prevState => { return { ...prevState, cardName: true } })
         formErrors.error = true
       }
       if (!/\d+/.test(cardNumber) || cardNumber.length < 16) {
-        setformErrors(prevState => { return { ...prevState, cardNumber: true } })
+        setFormErrors(prevState => { return { ...prevState, cardNumber: true } })
         formErrors.error = true
       }
       if (!/\S+/.test(cardType)) {
-        setformErrors(prevState => { return { ...prevState, cardType: true } })
+        setFormErrors(prevState => { return { ...prevState, cardType: true } })
         formErrors.error = true
       }
       if (!/\S+/.test(cardExpiry)) {
-        setformErrors(prevState => { return { ...prevState, cardExpiry: true } })
+        setFormErrors(prevState => { return { ...prevState, cardExpiry: true } })
         formErrors.error = true
       }
     }
@@ -249,7 +249,7 @@ const AccountDetailsPage = ({ change, setChange }) => {
             id="firstName"
             label="First Name"
             onChange={() => {
-              formErrors.firstName && setformErrors(prevState => { return { ...prevState, firstName: false } })
+              formErrors.firstName && setFormErrors(prevState => { return { ...prevState, firstName: false } })
             }}
             error={formErrors.firstName}
             helperText={formErrors.firstName ? 'Must be a valid firstname.' : ''}
@@ -264,7 +264,7 @@ const AccountDetailsPage = ({ change, setChange }) => {
             id="lastName"
             label="Last Name"
             onChange={() => {
-              formErrors.lastName && setformErrors(prevState => { return { ...prevState, lastName: false } })
+              formErrors.lastName && setFormErrors(prevState => { return { ...prevState, lastName: false } })
             }}
             error={formErrors.lastName}
             helperText={formErrors.lastName ? 'Must be a valid lastName.' : ''}
@@ -287,7 +287,7 @@ const AccountDetailsPage = ({ change, setChange }) => {
             id="age"
             label="Age"
             onChange={() => {
-              formErrors.age && setformErrors(prevState => { return { ...prevState, age: false } })
+              formErrors.age && setFormErrors(prevState => { return { ...prevState, age: false } })
             }}
             error={formErrors.age}
             helperText={formErrors.age ? 'Must be a valid age.' : ''}
@@ -302,7 +302,7 @@ const AccountDetailsPage = ({ change, setChange }) => {
             id="mobile"
             label="Mobile"
             onChange={() => {
-              formErrors.mobile && setformErrors(prevState => { return { ...prevState, mobile: false } })
+              formErrors.mobile && setFormErrors(prevState => { return { ...prevState, mobile: false } })
             }}
             error={formErrors.mobile}
             helperText={formErrors.mobile ? 'Must be a valid mobile.' : ''}
@@ -332,7 +332,7 @@ const AccountDetailsPage = ({ change, setChange }) => {
             InputLabelProps={{ shrink: true }}
             disabled={!changeEmail}
             onChange={() => {
-              formErrors.email && setformErrors(prevState => { return { ...prevState, email: false } })
+              formErrors.email && setFormErrors(prevState => { return { ...prevState, email: false } })
             }}
             error={formErrors.email}
             helperText={formErrors.email ? 'Must be a valid email.' : ''}
@@ -362,7 +362,7 @@ const AccountDetailsPage = ({ change, setChange }) => {
             autoComplete="new-password"
             disabled={!changePassword}
             onChange={() => {
-              formErrors.password1 && setformErrors(prevState => { return { ...prevState, password1: false } })
+              formErrors.password1 && setFormErrors(prevState => { return { ...prevState, password1: false } })
             }}
             error={formErrors.password1}
             helperText={formErrors.password1 ? 'Must contain at least 8 characters.' : ''}
@@ -389,7 +389,7 @@ const AccountDetailsPage = ({ change, setChange }) => {
               label="Confirm password"
               autoComplete="new-password"
               onChange={() => {
-                formErrors.password2 && setformErrors(prevState => { return { ...prevState, password2: false } })
+                formErrors.password2 && setFormErrors(prevState => { return { ...prevState, password2: false } })
               }}
               error={formErrors.password2}
               helperText={formErrors.password2 ? 'Passwords must match.' : ''}
@@ -435,7 +435,7 @@ const AccountDetailsPage = ({ change, setChange }) => {
             InputLabelProps={{ shrink: true }}
             disabled={!changeCard}
             onChange={() => {
-              formErrors.cardName && setformErrors(prevState => { return { ...prevState, cardName: false } })
+              formErrors.cardName && setFormErrors(prevState => { return { ...prevState, cardName: false } })
             }}
             error={formErrors.cardName}
             helperText={formErrors.cardName ? 'Must be a valid card holder name.' : ''}
@@ -453,7 +453,7 @@ const AccountDetailsPage = ({ change, setChange }) => {
             InputLabelProps={{ shrink: true }}
             disabled={!changeCard}
             onChange={() => {
-              formErrors.cardNumber && setformErrors(prevState => { return { ...prevState, cardNumber: false } })
+              formErrors.cardNumber && setFormErrors(prevState => { return { ...prevState, cardNumber: false } })
             }}
             error={formErrors.cardNumber}
             helperText={formErrors.cardNumber ? 'Must be a valid card number.' : ''}
@@ -471,7 +471,7 @@ const AccountDetailsPage = ({ change, setChange }) => {
             InputLabelProps={{ shrink: true }}
             disabled={!changeCard}
             onChange={() => {
-              formErrors.cardType && setformErrors(prevState => { return { ...prevState, cardType: false } })
+              formErrors.cardType && setFormErrors(prevState => { return { ...prevState, cardType: false } })
             }}
             error={formErrors.cardType}
             helperText={formErrors.cardType ? 'Must be a valid card type.' : ''}
@@ -489,7 +489,7 @@ const AccountDetailsPage = ({ change, setChange }) => {
             InputLabelProps={{ shrink: true }}
             disabled={!changeCard}
             onChange={() => {
-              formErrors.cardExpiry && setformErrors(prevState => { return { ...prevState, cardExpiry: false } })
+              formErrors.cardExpiry && setFormErrors(prevState => { return { ...prevState, cardExpiry: false } })
             }}
             error={formErrors.cardExpiry}
             helperText={formErrors.cardExpiry ? 'Must be a valid card expiry date.' : ''}

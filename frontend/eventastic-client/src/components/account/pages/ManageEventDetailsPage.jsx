@@ -1,4 +1,6 @@
+import { useState } from 'react';
 import { PageContainer } from '../../../components/styles/layouts.styled'
+import BroadcastModal from '../../event/modals/BroadcastModal';
 import Grid from '@mui/material/Grid';
 import { styled } from '@mui/material/styles';
 import Paper from '@mui/material/Paper';
@@ -26,6 +28,8 @@ function formatDate(datetime) {
 }
 
 const ManageEventDetailsPage = ({ eventDetails, changePage }) => {
+  const [openBroadcast, setOpenBroadcast] = useState(false)
+
   return (
     <PageContainer maxWidth='lg'>
       <Grid container spacing={1}>
@@ -63,7 +67,10 @@ const ManageEventDetailsPage = ({ eventDetails, changePage }) => {
                 </Button>
               </Grid>
               <Grid item xs={6}>
-                <Button variant="contained" href="#contained-buttons" color="primary" fullWidth>
+                <Button 
+                  variant="contained" href="#contained-buttons" color="primary" fullWidth
+                  onClick={() => setOpenBroadcast(true)}
+                >
                   Message All
                 </Button>
               </Grid>
@@ -108,6 +115,10 @@ const ManageEventDetailsPage = ({ eventDetails, changePage }) => {
           </GridItem>
         </Grid>
       </Grid>
+      <BroadcastModal 
+        open={openBroadcast} setOpen={setOpenBroadcast}
+        eventName={eventDetails.event_title}
+      />
     </PageContainer>
   )
 }

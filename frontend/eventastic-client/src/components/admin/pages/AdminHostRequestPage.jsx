@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import AccountAPI from "../../../utils/AccountAPIHelper";
 import HostRequestCard from '../HostRequestCard'
 import { ScrollContainer } from '../../styles/layouts.styled';
-import { Grid } from '@mui/material'
 
 const api = new AccountAPI();
 
@@ -15,20 +14,17 @@ const ApproveHostScreen = () => {
     }
     api
       .getHostRequests(param)
-      .then((response) => {
-        setHostRequestsList(response.data)
-        console.log(response.data)
-      })
+      .then((response) => setHostRequestsList(response.data))
       .catch((err) => console.log(err));
   }, [])
 
   return (
     <ScrollContainer hide flex='true' wrap='true' align='start'>
-      {hostRequestsList.map((hostRequest, idx) => {
+      {hostRequestsList.map((hostRequest, idx) => 
         <HostRequestCard 
           key={idx} hostRequest={hostRequest} setRequests={setHostRequestsList}
         />
-      })}
+      )}
     </ScrollContainer>
   )
 

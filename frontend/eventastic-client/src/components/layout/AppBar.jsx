@@ -73,7 +73,7 @@ const EvenTasticAppBar = () => {
         <FlexBox justify='space-between'>
           <FlexBox>
             <AppTitle variant="h4" onClick={redirect}
-              admin={isAdmin()}
+              admin={isAdmin() ? 1 : 0}
             >
               EvenTastic
             </AppTitle>
