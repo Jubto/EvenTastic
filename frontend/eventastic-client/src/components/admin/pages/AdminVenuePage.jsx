@@ -297,8 +297,8 @@ const AdminVenueScreen = () => {
                       spacing={2}
                     >
                       {
-                        venue.seating.map((seating) => {
-                          return <Item> {seating.seating_type.toUpperCase()} : {seating.seating_number}</Item>
+                        venue.seating.map((seating, idx) => {
+                          return <Item key={idx}> {seating.seating_type.toUpperCase()} : {seating.seating_number}</Item>
                         })
                       }
                     </Stack>
