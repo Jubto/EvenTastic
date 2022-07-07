@@ -18,13 +18,13 @@ export const AccountContainer = styled('div')`
 `;
 
 const PageTitles = {
-  'account': 'My account details',
-  'interests': 'My interests',
-  'tickets': 'My tickets',
-  'points': 'My reward points',
-  'groups': 'My groups',
-  'host': 'Host details',
-  'events': 'My hosted events'
+  'account': 'My Account Details',
+  'interests': 'My Interests',
+  'tickets': 'My Tickets',
+  'points': 'My Reward Points',
+  'groups': 'My Groups',
+  'host': 'Host Details',
+  'events': 'My Hosted Events'
 }
 
 const AccountMain = ({ accountPage }) => {
