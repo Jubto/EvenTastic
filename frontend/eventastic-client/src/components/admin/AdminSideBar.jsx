@@ -20,13 +20,13 @@ const AccountSideBar = () => {
         </SideBarTitle>
         <Divider variant="middle" sx={{ mb: 2 }} />
         <List>
-          <SideBarItem title='Set Venues' onClick={() => navigate("/admin/approveHosts")}>
+          <SideBarItem title='Set Venues' onClick={() => navigate("/admin/createVenues")}>
             <DomainAddIcon />
           </SideBarItem>
           <SideBarItem title='Manage reviews' onClick={() => navigate("/admin/approveReviews")}>
             <GradingIcon />
           </SideBarItem>
-          <SideBarItem title='Host requests' onClick={() => navigate("/admin/createVenues")}>
+          <SideBarItem title='Host requests' onClick={() => navigate("/admin/approveHosts")}>
             <RequestQuoteIcon />
           </SideBarItem>
         </List>
