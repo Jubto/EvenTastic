@@ -15,6 +15,7 @@ export const AccountContainer = styled('div')`
   border: 3px solid #ad9fa3;
   margin-bottom: 1rem;
   padding: 1rem;
+  overflow: hidden;
 `;
 
 const PageTitles = {

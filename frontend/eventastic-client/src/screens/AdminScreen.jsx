@@ -13,6 +13,7 @@ export const AdminContainer = styled('div')`
   border: 3px solid #ad9fa3;
   margin-bottom: 1rem;
   padding: 1rem;
+  overflow: hidden;
 `;
 
 const AdminScreen = () => {
