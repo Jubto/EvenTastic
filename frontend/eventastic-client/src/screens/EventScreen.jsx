@@ -30,7 +30,7 @@ function formatDate(datetime) {
   return d.toLocaleDateString("en-US", dateFormat)
 }
 
-const EventPage = () => {
+const EventScreen = () => {
   const { id } = useParams();
   const [eventDetails, setEventDetails] = useState([])
   const [openTicketModal, setOpenTicketModal] = useState(false)
@@ -118,4 +118,4 @@ const EventPage = () => {
   )
 }
 
-export default EventPage
+export default EventScreen

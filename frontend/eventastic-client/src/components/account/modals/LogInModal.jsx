@@ -44,7 +44,9 @@ const LogInModal = () => {
     formErrors.error = false;
 
     if (email === 'admin' && password === 'admin') {
-      navigate('/admin/createVenues')
+      setLoggedIn(true)
+      setAccount({ admin:true })
+      navigate('/admin')
       handleClose()
     } 
 

@@ -27,7 +27,7 @@ const createCard = (host) => {
   );
 }
 
-const ApproveHostPage = () => {
+const ApproveHostScreen = () => {
   const [hostRequestsList, setHostRequestsList] = useState([])
 
   useEffect(() => {
@@ -56,4 +56,4 @@ const ApproveHostPage = () => {
 } 
 
 
-export default ApproveHostPage
+export default ApproveHostScreen

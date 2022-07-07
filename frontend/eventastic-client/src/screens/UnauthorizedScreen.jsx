@@ -1,6 +1,6 @@
 import { PageContainer } from '../components/styles/layouts.styled'
 
-const UnauthorizedPage = () => {
+const UnauthorizedScreen = () => {
   return (
     <PageContainer maxWidth='lg'>
       <div>UnauthorizedPage</div>
@@ -8,4 +8,4 @@ const UnauthorizedPage = () => {
   )
 }
 
-export default UnauthorizedPage
+export default UnauthorizedScreen

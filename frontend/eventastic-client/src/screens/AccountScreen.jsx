@@ -6,7 +6,7 @@ import AccountSideBar from '../components/account/AccountSideBar'
 import AccountMain from '../components/account/AccountMain'
 import AccountWelcomeModal from '../components/account/modals/AccountWelcomeModal';
 
-const AccountPage = () => {
+const AccountScreen = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const context = useContext(StoreContext);
@@ -41,4 +41,4 @@ const AccountPage = () => {
   )
 }
 
-export default AccountPage
+export default AccountScreen

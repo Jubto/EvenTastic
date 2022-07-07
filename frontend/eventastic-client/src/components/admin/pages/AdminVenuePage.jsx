@@ -1,4 +1,5 @@
-import { PageContainer } from '../components/styles/layouts.styled'
+import { PageContainer } from '../../styles/layouts.styled';
+import VenueAPI from "../../../utils/VenueAPIHelper";
 import * as React from 'react';
 import { styled } from '@mui/material/styles';
 import Card from '@mui/material/Card';
@@ -7,7 +8,6 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import Divider from '@mui/material/Divider';
-import VenueAPI from "../utils/VenueAPIHelper";
 import { useState, useEffect } from 'react';
 import Avatar from '@mui/material/Avatar';
 import { red } from '@mui/material/colors';
@@ -27,7 +27,6 @@ import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import DialogActions from '@mui/material/DialogActions';
 import OutlinedInput from '@mui/material/OutlinedInput';
-import AdminSideBar from '../components/admin/AdminSideBar'
 
 const Input = styled('input')({
   display:'none'
@@ -54,7 +53,7 @@ const Item = styled(Paper)(({ theme }) => ({
 
 const api = new VenueAPI();
 
-const AdminVenuePage = () => {
+const AdminVenueScreen = () => {
   const [venueList, setVenueList] = useState([])
   const [expanded, setExpanded] = React.useState(false);
   const [open, setOpen] = React.useState(false);
@@ -135,9 +134,7 @@ const AdminVenuePage = () => {
 
   return (
     <PageContainer maxWidth='false' direction='row'>
-      <AdminSideBar></AdminSideBar>
       <Box sx={{ flexGrow: 1 }} style={{'marginLeft':'20px'}}>
-
         <Stack
           direction="row"
           divider={<Divider orientation="vertical" flexItem />}
@@ -316,4 +313,4 @@ const AdminVenuePage = () => {
   )
 }
 
-export default AdminVenuePage
+export default AdminVenueScreen
