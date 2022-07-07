@@ -32,7 +32,7 @@ const HostEventsPage = ({ toggle }) => {
       const upcomingRes = await api.getEventList(param)
       setUpComingEvents(upcomingRes.data)
       param = {
-        event_status: 'Cancelled',
+        event_status: 'Completed',
         ...param
       }
       const completedRes = await api.getEventList(param)

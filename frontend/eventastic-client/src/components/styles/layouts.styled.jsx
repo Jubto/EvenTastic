@@ -42,6 +42,7 @@ export const ScrollContainer = styled(Box)`
   height: ${({ height }) => height ? height : '93%'};
   display: ${({ flex }) => flex ? 'flex' : 'inherit'};
   flex-wrap: ${({ wrap }) => wrap ? 'wrap' : 'nowrap'};
+  align-items: ${({ align }) => align};
   padding-right: ${({ pr }) => pr ? pr : 0};
 
   ${({ hide }) => {

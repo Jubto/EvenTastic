@@ -41,7 +41,7 @@ const ToggleGrid = styled(Grid)`
   display: ${( {show} ) => show === 'Host' ? 'initial' : 'none'};
 `
 
-const RegisterPage = () => {
+const RegisterScreen = () => {
   const navigate = useNavigate();
   const context = useContext(StoreContext);
   const [loggedIn, setLoggedIn] = context.login;
@@ -391,4 +391,4 @@ const RegisterPage = () => {
   )
 }
 
-export default RegisterPage
+export default RegisterScreen

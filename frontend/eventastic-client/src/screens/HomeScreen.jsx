@@ -17,7 +17,7 @@ const createCard = (event) => {
   );
 }
 
-const HomePage = () => {
+const HomeScreen = () => {
 
   const [eventsList, setEventsList] = useState([])
   const [searchResults, setSearchResults] = useState([])
@@ -92,4 +92,4 @@ const HomePage = () => {
 
 }
 
-export default HomePage
+export default HomeScreen

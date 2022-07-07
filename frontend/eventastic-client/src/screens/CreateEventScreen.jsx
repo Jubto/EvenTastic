@@ -6,7 +6,7 @@ import CreateEventMain from "../components/event/CreateEventMain"
 import { FlexBox, PageContainer } from "../components/styles/layouts.styled"
 import { Typography } from "@mui/material"
 
-const CreateEventPage = () => {
+const CreateEventScreen = () => {
   const context = useContext(StoreContext);
   const [hostDetails] = context.host;
   const [createPage, setCreatePage] = useState(1);
@@ -32,4 +32,4 @@ const CreateEventPage = () => {
   )
 }
 
-export default CreateEventPage
+export default CreateEventScreen

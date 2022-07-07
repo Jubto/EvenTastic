@@ -63,7 +63,7 @@ const TagContainer = ({ categoryAndTags, savedTags, setSavedTags }) => {
 }
 
 
-const TagsPage = () => {
+const TagsScreen = () => {
   const navigate = useNavigate()
   const location = useLocation();
   const context = useContext(StoreContext);
@@ -71,23 +71,17 @@ const TagsPage = () => {
   const [savedTags, setSavedTags] = useState(account.tags.map((item) => item.name))
 
   const handleSubmit = () => {
-    // console.log('TAG SUBMIT')
-
     const body = {
       ...account,
       'tags': savedTags.map((tag) => ({ 'name': tag }))
     }
-    // console.log(body)
-    // console.log(account)
     api.putAccount(account.account_id, body)
       .then((response) => {
         setAccount(response.data)
         if (location.state && location.state.from === '/register') {
-          // console.log("GO TO ACCOUNT FROM TAG PAGE")
           navigate('/account', { state: {from: '/register'} })  
         }
         else {
-          // console.log("WRONG")
           navigate('/account', { state: {from: '/tags'} })
         }
       })
@@ -122,7 +116,7 @@ const TagsPage = () => {
             your tags
           </Typography>
           <StyledContainer sx={{ mt: 2, minWidth: '280px', maxWidth: '300px', p: 1 }}>
-            <ScrollContainer hide flex='true' wrap='true' sx={{ alignContent: 'start' }}>
+            <ScrollContainer hide flex='true' wrap='true' align='start'>
               {savedTags.map((tag, idx) => (
                 <Chip key={idx} label={tag}
                   color={'success'}
@@ -139,4 +133,4 @@ const TagsPage = () => {
   )
 }
 
-export default TagsPage
+export default TagsScreen

@@ -41,56 +41,76 @@ const AccountMenu = () => {
     setHostDetails(false);
   };
 
+  console.log('account menu')
+  console.log(account)
+
   return (
     <>
-    <Tooltip title="Open account menu" enterDelay={10}>
-      <IconButton onClick={handleOpenMenu} sx={{ p: 0 }}>
-        <Avatar src={loggedIn && `${process.env.PUBLIC_URL}/img/profile-dp/${account.profile_pic}`}/>
-      </IconButton>
-    </Tooltip>
-    <Menu
-      sx={{ mt: '25px' }}
-      id="appbar-menu"
-      keepMounted
-      anchorEl={anchor}
-      paperwidth={13}
-      anchorOrigin={{vertical: 'top', horizontal: 'center'}}
-      transformOrigin={{vertical: 'top', horizontal: 'right'}}
-      open={Boolean(anchor)}
-      onClose={handleCloseMenu}
-    >
-      {loggedIn
-        ? <div>
-            <MenuItem component={Link} to={'/create-event'} onClick={handleCloseMenu}>
-              Create an Event
-            </MenuItem>
-            <MenuItem component={Link} to={'/account'} onClick={handleCloseMenu}>
-              My Account
-            </MenuItem>
-            <MenuItem component={Link} to={'/'} onClick={handleLogout}>
-              Logout
-            </MenuItem>
-          </div>
-        : <div>
-            <MenuItem id='logIn' onClick={() => handleLogInModal('/')}>
-              Log in
-            </MenuItem>
-            <MenuItem component={Link} to={'/register'} onClick={handleCloseMenu}>
-              Sign Up
-            </MenuItem>
-            <Tooltip title="log in to create event" placement="left">
-              <MenuItem id='createEvent' onClick={() => handleLogInModal('/create-event')}>
-                Create an Event
-              </MenuItem>
-            </Tooltip>
-            <Tooltip title="log in to access account" placement="left">
-              <MenuItem id='myAccount' onClick={() => handleLogInModal('/account')}>
-                My Account
-              </MenuItem>
-            </Tooltip>
-          </div>
-      }
-    </Menu>
+      <Tooltip title="Open account menu" enterDelay={10}>
+        <IconButton onClick={handleOpenMenu} sx={{ p: 0, mr:{ xs:'0.25rem', md:'1rem' } }}>
+          <Avatar src={loggedIn && `${process.env.PUBLIC_URL}/img/profile-dp/${account.profile_pic}`} />
+        </IconButton>
+      </Tooltip>
+      <Menu
+        sx={{ mt: '25px' }}
+        id="appbar-menu"
+        keepMounted
+        anchorEl={anchor}
+        paperwidth={13}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+        open={Boolean(anchor)}
+        onClose={handleCloseMenu}
+      >
+        {(() => {
+          if (!loggedIn) {
+            return (
+              <div>
+                <MenuItem id='logIn' onClick={() => handleLogInModal('/')}>
+                  Log in
+                </MenuItem>
+                <MenuItem component={Link} to={'/register'} onClick={handleCloseMenu}>
+                  Sign Up
+                </MenuItem>
+                <Tooltip title="log in to create event" placement="left">
+                  <MenuItem id='createEvent' onClick={() => handleLogInModal('/create-event')}>
+                    Create an Event
+                  </MenuItem>
+                </Tooltip>
+                <Tooltip title="log in to access account" placement="left">
+                  <MenuItem id='myAccount' onClick={() => handleLogInModal('/account')}>
+                    My Account
+                  </MenuItem>
+                </Tooltip>
+              </div>
+            )
+          }
+          else if (account.admin) {
+            return (
+              <div>
+                <MenuItem component={Link} to={'/'} onClick={handleLogout}>
+                  Admin logout
+                </MenuItem>
+              </div>
+            )
+          }
+          else {
+            return (
+              <div>
+                <MenuItem component={Link} to={'/create-event'} onClick={handleCloseMenu}>
+                  Create an Event
+                </MenuItem>
+                <MenuItem component={Link} to={'/account'} onClick={handleCloseMenu}>
+                  My Account
+                </MenuItem>
+                <MenuItem component={Link} to={'/'} onClick={handleLogout}>
+                  Logout
+                </MenuItem>
+              </div>
+            )
+          }
+        })()}
+      </Menu>
     </>
   )
 }
