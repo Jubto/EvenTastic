@@ -206,23 +206,15 @@ cur.execute("INSERT INTO tickets values (default, 1, 1, 1, 'F_1', 'Purchased', '
 cur.execute("INSERT INTO tickets values (default, 1, 1, 1, 'F_2', 'Purchased', 'QR', 'Front', 100.0);")
 cur.execute("INSERT INTO tickets values (default, 1, 1, 1, 'F_3', 'Purchased', 'QR', 'Front', 100.0);")
 cur.execute("INSERT INTO tickets values (default, 1, 1, -1, 'F_4', 'Available', 'QR', 'Front', 100.0);")
-cur.execute("INSERT INTO tickets values (default, 1, 1, -1, 'F_5', 'Available', 'QR', 'Front', 100.0);")
-cur.execute("INSERT INTO tickets values (default, 1, 1, -1, 'F_6', 'Available', 'QR', 'Front', 100.0);")
-cur.execute("INSERT INTO tickets values (default, 1, 1, -1, 'F_7', 'Available', 'QR', 'Front', 100.0);")
-cur.execute("INSERT INTO tickets values (default, 1, 1, -1, 'F_8', 'Available', 'QR', 'Front', 100.0);")
-cur.execute("INSERT INTO tickets values (default, 1, 1, -1, 'F_9', 'Available', 'QR', 'Front', 100.0);")
-cur.execute("INSERT INTO tickets values (default, 1, 1, -1, 'F_10', 'Available', 'QR', 'Front', 100.0);")
-
+for t_id in range(5, 101):
+    cur.execute(f"INSERT INTO tickets values (default, 1, 1, -1, 'F_{t_id}', 'Available', 'QR', 'Front', 100.0);")
+    
 cur.execute("INSERT INTO tickets values (default, 1, 1, 1, 'M_1', 'Purchased', 'QR', 'Middle', 100.0);")
 cur.execute("INSERT INTO tickets values (default, 1, 1, 1, 'M_2', 'Purchased', 'QR', 'Middle', 100.0);")
 cur.execute("INSERT INTO tickets values (default, 1, 1, 2, 'M_3', 'Purchased', 'QR', 'Middle', 100.0);")
 cur.execute("INSERT INTO tickets values (default, 1, 1, 2, 'M_4', 'Purchased', 'QR', 'Middle', 100.0);")
-cur.execute("INSERT INTO tickets values (default, 1, 1, -1, 'M_5', 'Available', 'QR', 'Middle', 100.0);")
-cur.execute("INSERT INTO tickets values (default, 1, 1, -1, 'M_6', 'Available', 'QR', 'Middle', 100.0);")
-cur.execute("INSERT INTO tickets values (default, 1, 1, -1, 'M_7', 'Available', 'QR', 'Middle', 100.0);")
-cur.execute("INSERT INTO tickets values (default, 1, 1, -1, 'M_8', 'Available', 'QR', 'Middle', 100.0);")
-cur.execute("INSERT INTO tickets values (default, 1, 1, -1, 'M_9', 'Available', 'QR', 'Middle', 100.0);")
-cur.execute("INSERT INTO tickets values (default, 1, 1, -1, 'M_10', 'Available', 'QR', 'Middle', 100.0);")
+for t_id in range(5, 101):
+    cur.execute(f"INSERT INTO tickets values (default, 1, 1, -1, 'M_{t_id}', 'Available', 'QR', 'Middle', 100.0);")
 
 
 cur.execute('SELECT * FROM accounts')

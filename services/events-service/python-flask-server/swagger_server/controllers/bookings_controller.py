@@ -29,34 +29,63 @@ def create_booking(body):  # noqa: E501
         if connexion.request.is_json:
             body = Booking.from_dict(connexion.request.get_json())  # noqa: E501
 
-        if body.account_id == None or body.event_id == None or body.total_cost == None or body.tickets == None:
+        if body.account_id == None or body.event_id == None or body.total_cost == None or body.ticket_details == None:
             error = InvalidInputError(code=400, type="InvalidInputError", 
                     message="The following mandatory fields were not provided: account ID or event ID or total cost or tickets list")
             return error, 400, {'Access-Control-Allow-Origin': '*'}
 
-        if len(body.tickets) == 0:
-            error = InvalidInputError(code=400, type="InvalidInputError", 
+        # to check at least one ticket type was provided
+        if len(body.ticket_details) == 0:
+            error = InvalidInputError(code=401, type="InvalidInputError", 
                     message="The following mandatory fields were not provided: tickets list")
+            return error, 400, {'Access-Control-Allow-Origin': '*'}
+
+        # to check at least one ticket type has value > 0
+        status = 0
+        for key in body.ticket_details:
+            if body.ticket_details[key] > 0: status = 1
+        if status == 0:
+            error = InvalidInputError(code=402, type="InvalidInputError", 
+                    message="No ticket seats were selected")
             return error, 400, {'Access-Control-Allow-Origin': '*'}
 
         con = psycopg2.connect(database= 'eventastic', user='postgres', password='postgrespw', host=host, port=port)
         con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
         cur = con.cursor()
 
-        # could check if account id or event id exists in the database
+        ### could add database calls to check if account id or event id exists ###
 
-        for type in body.tickets:
-            print(type)
+        # to check that tickets table has enough number of seats available
+        for key in body.ticket_details:
+            cur.execute(f"SELECT count(ticket_id) FROM tickets WHERE ticket_status = 'Available' and \
+                event_id = {body.event_id} and ticket_type = '{key}' ;")
+            record = cur.fetchone()
+            if record[0] < body.ticket_details[key]:
+                error = InvalidInputError(code=403, type="InvalidInputError", 
+                        message=f"Not enough available seats for the selected type: {key}")
+                return error, 400, {'Access-Control-Allow-Origin': '*'}
 
-        """
-        
-        insert_string = "INSERT INTO bookings VALUES (default, %s,%s,%s,%s) RETURNING booking_id;"
-        cur.execute(insert_string, (body.account_id, body.event_id, body.booking_status, body.total_cost))
-        booking_id = cur.fetchone()[0]
+        # inserting into bookings table
+        cur.execute(f"INSERT INTO bookings values (default, {body.account_id}, {body.event_id}, 'Booked', {body.total_cost})\
+                    RETURNING booking_id;")
+        body.booking_id = cur.fetchone()[0]
+        # updating corresponding ticket seats in tickets table
+        for key in body.ticket_details:
+            cur.execute(f"UPDATE tickets SET ticket_status='Purchased', booking_id={body.booking_id} WHERE \
+                ticket_status = 'Available' and event_id = {body.event_id} and ticket_type = '{key}' \
+                and ticket_id in (SELECT ticket_id FROM tickets WHERE ticket_status = 'Available' and \
+                event_id = {body.event_id} and ticket_type = '{key}' ORDER BY ticket_id LIMIT {body.ticket_details[key]} ) ;")
 
-        cur.execute("INSERT INTO bookings values (default, 1, 1, 'Booked', 200.0);")
-        cur.execute("INSERT INTO tickets values (default, 1, 1, 1, 'F_1', 'Purchased', 'QR', 'Front', 100.0);")
-        """
+        body.booking_status = 'Booked'
+        cur.execute(f"SELECT email FROM accounts where account_id = {body.account_id}")
+        body.booking_email = cur.fetchone()[0]
+
+        tickets = dict()
+        cur.execute(f"SELECT ticket_ref FROM tickets where event_id = {body.event_id} and booking_id={body.booking_id}")
+        records = cur.fetchall()
+        for record in records:
+            tickets[str(record[0])] = 1
+        body.ticket_details = tickets
 
         cur.close()
         con.close()            
@@ -83,8 +112,8 @@ def get_booking_details(booking_id):  # noqa: E501
         con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
         cur = con.cursor()
 
-        cur.execute(f"SELECT booking_id, account_id, event_id, booking_status, total_cost \
-                    FROM bookings where booking_id = {booking_id}")
+        cur.execute(f"SELECT b.booking_id, b.account_id, b.event_id, b.booking_status, a.email, b.total_cost \
+                    FROM bookings b join accounts a on a.account_id = b.account_id where booking_id = {booking_id}")
         record = cur.fetchone()
         if record == None:
             error = BookingNotFoundError(code=404, type="BookingNotFoundError", 
@@ -99,15 +128,16 @@ def get_booking_details(booking_id):  # noqa: E501
         booking['account_id'] = int(record[1])
         booking['event_id'] = int(record[2])
         booking['booking_status'] = str(record[3])
-        booking['total_cost'] = float(record[4])
+        booking['booking_email'] = str(record[4])
+        booking['total_cost'] = float(record[5])
             
         cur.execute(f"SELECT ticket_type, count(ticket_type) from tickets \
                     where booking_id = {b_id} group by booking_id, ticket_type")
         t_records = cur.fetchall()
-        ticket_list = list()
+        ticket_list = dict()
         for t_row in t_records:
-            ticket_list.append({ t_row[0]: int(t_row[1]) })    
-        booking['tickets'] = ticket_list
+            ticket_list[str(t_row[0])] = int(t_row[1])
+        booking['ticket_details'] = ticket_list
                     
 
         cur.close()
@@ -135,17 +165,23 @@ def list_bookings(account_id=None, booking_status=None, event_id=None):  # noqa:
     :rtype: BookingList
     """
     try:
-        if account_id == None or booking_status == None:
+        if account_id == None and booking_status == None and event_id == None:
             error = InvalidInputError(code=400, type="InvalidInputError", 
-                    message="The following mandatory fields were not provided: account id or booking status")
+                    message="Please provide at least one of the mandatory fields: account id or event id or booking status")
             return error, 400, {'Access-Control-Allow-Origin': '*'}
 
         con = psycopg2.connect(database= 'eventastic', user='postgres', password='postgrespw', host=host, port=port)
         con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
         cur = con.cursor()
 
-        cur.execute(f"SELECT booking_id, account_id, event_id, booking_status, total_cost \
-                    FROM bookings where booking_status = '{booking_status}' and account_id = {account_id}")
+        select_string = "SELECT b.booking_id, b.account_id, b.event_id, b.booking_status, a.email, b.total_cost \
+            FROM bookings b join accounts a on a.account_id = b.account_id where "
+        if account_id != None: select_string += f" b.account_id = {account_id} and "
+        if event_id != None: select_string += f" b.event_id = {event_id} and "
+        if booking_status != None: select_string += f" b.booking_status = '{booking_status}' and "
+        select_string = select_string[:-4]
+        cur.execute(select_string)
+
         records = cur.fetchall()
         bookings_list = list()
         for record in records:
@@ -155,15 +191,16 @@ def list_bookings(account_id=None, booking_status=None, event_id=None):  # noqa:
             booking['account_id'] = int(record[1])
             booking['event_id'] = int(record[2])
             booking['booking_status'] = str(record[3])
-            booking['total_cost'] = float(record[4])
+            booking['booking_email'] = str(record[4])
+            booking['total_cost'] = float(record[5])
             
             cur.execute(f"SELECT ticket_type, count(ticket_type) from tickets \
                     where booking_id = {b_id} group by booking_id, ticket_type")
             t_records = cur.fetchall()
-            ticket_list = list()
+            ticket_list = dict()
             for t_row in t_records:
-                ticket_list.append({ t_row[0]: int(t_row[1]) })    
-            booking['tickets'] = ticket_list
+                ticket_list[str(t_row[0])] = int(t_row[1]) 
+            booking['ticket_details'] = ticket_list
                     
             bookings_list.append(booking)
 
