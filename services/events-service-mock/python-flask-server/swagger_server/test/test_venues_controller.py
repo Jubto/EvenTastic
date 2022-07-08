@@ -30,17 +30,6 @@ class TestVenuesController(BaseTestCase):
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
 
-    def test_create_venue_options(self):
-        """Test case for create_venue_options
-
-        Used to respond to browser with Access-Control-Allow-Methods header. Required for POST.
-        """
-        response = self.client.open(
-            '/v1/venues',
-            method='OPTIONS')
-        self.assert200(response,
-                       'Response body is : ' + response.data.decode('utf-8'))
-
     def test_get_venue_details(self):
         """Test case for get_venue_details
 

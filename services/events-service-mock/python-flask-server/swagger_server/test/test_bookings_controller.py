@@ -31,17 +31,6 @@ class TestBookingsController(BaseTestCase):
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
 
-    def test_create_booking_options(self):
-        """Test case for create_booking_options
-
-        Used to respond to browser with Access-Control-Allow-Methods header. Required for POST.
-        """
-        response = self.client.open(
-            '/v1/bookings',
-            method='OPTIONS')
-        self.assert200(response,
-                       'Response body is : ' + response.data.decode('utf-8'))
-
     def test_get_booking_details(self):
         """Test case for get_booking_details
 
@@ -59,22 +48,12 @@ class TestBookingsController(BaseTestCase):
         Retrieve a List of Bookings. Search by Account ID and Booking Status.
         """
         query_string = [('account_id', 'account_id_example'),
-                        ('booking_status', 'booking_status_example')]
+                        ('booking_status', 'booking_status_example'),
+                        ('event_id', 'event_id_example')]
         response = self.client.open(
             '/v1/bookings',
             method='GET',
             query_string=query_string)
-        self.assert200(response,
-                       'Response body is : ' + response.data.decode('utf-8'))
-
-    def test_update_booking_options(self):
-        """Test case for update_booking_options
-
-        Used to respond to browser with Access-Control-Allow-Methods header. Required for PATCH.
-        """
-        response = self.client.open(
-            '/v1/bookings/{booking_id}'.format(booking_id=789),
-            method='OPTIONS')
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
 

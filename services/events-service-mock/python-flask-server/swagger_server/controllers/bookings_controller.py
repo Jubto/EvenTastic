@@ -25,17 +25,6 @@ def create_booking(body):  # noqa: E501
     return 'do some magic!'
 
 
-def create_booking_options():  # noqa: E501
-    """Used to respond to browser with Access-Control-Allow-Methods header. Required for POST.
-
-     # noqa: E501
-
-
-    :rtype: None
-    """
-    return 'do some magic!'
-
-
 def get_booking_details(booking_id):  # noqa: E501
     """Retrieve Booking details by Booking ID.
 
@@ -49,7 +38,7 @@ def get_booking_details(booking_id):  # noqa: E501
     return 'do some magic!'
 
 
-def list_bookings(account_id=None, booking_status=None):  # noqa: E501
+def list_bookings(account_id=None, booking_status=None, event_id=None):  # noqa: E501
     """Retrieve a List of Bookings. Search by Account ID and Booking Status.
 
      # noqa: E501
@@ -58,21 +47,10 @@ def list_bookings(account_id=None, booking_status=None):  # noqa: E501
     :type account_id: str
     :param booking_status: The Booking Status to search for.
     :type booking_status: str
+    :param event_id: The Event ID to search for.
+    :type event_id: str
 
     :rtype: BookingList
-    """
-    return 'do some magic!'
-
-
-def update_booking_options(booking_id):  # noqa: E501
-    """Used to respond to browser with Access-Control-Allow-Methods header. Required for PATCH.
-
-     # noqa: E501
-
-    :param booking_id: ID of the Booking to be updated.
-    :type booking_id: int
-
-    :rtype: None
     """
     return 'do some magic!'
 

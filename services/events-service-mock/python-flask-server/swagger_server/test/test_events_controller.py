@@ -31,17 +31,6 @@ class TestEventsController(BaseTestCase):
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
 
-    def test_create_event_options(self):
-        """Test case for create_event_options
-
-        Used to respond to browser with Access-Control-Allow-Methods header. Required for POST.
-        """
-        response = self.client.open(
-            '/v1/events',
-            method='OPTIONS')
-        self.assert200(response,
-                       'Response body is : ' + response.data.decode('utf-8'))
-
     def test_get_event_details(self):
         """Test case for get_event_details
 
@@ -81,17 +70,6 @@ class TestEventsController(BaseTestCase):
             method='PUT',
             data=json.dumps(body),
             content_type='application/json')
-        self.assert200(response,
-                       'Response body is : ' + response.data.decode('utf-8'))
-
-    def test_update_event_options(self):
-        """Test case for update_event_options
-
-        Used to respond to browser with Access-Control-Allow-Methods header. Required for PUT.
-        """
-        response = self.client.open(
-            '/v1/events/{event_id}'.format(event_id=789),
-            method='OPTIONS')
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
 

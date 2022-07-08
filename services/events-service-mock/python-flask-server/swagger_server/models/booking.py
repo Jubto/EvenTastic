@@ -6,7 +6,6 @@ from datetime import date, datetime  # noqa: F401
 from typing import List, Dict  # noqa: F401
 
 from swagger_server.models.base_model_ import Model
-from swagger_server.models.ticket_id import TicketID
 from swagger_server import util
 
 
@@ -16,7 +15,7 @@ class Booking(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, booking_id: int=None, account_id: int=None, event_id: int=None, booking_status: str=None, total_cost: float=None, tickets: List[TicketID]=None):  # noqa: E501
+    def __init__(self, booking_id: int=None, account_id: int=None, event_id: int=None, booking_status: str=None, booking_email: str=None, total_cost: float=None, ticket_details: object=None):  # noqa: E501
         """Booking - a model defined in Swagger
 
         :param booking_id: The booking_id of this Booking.  # noqa: E501
@@ -27,18 +26,21 @@ class Booking(Model):
         :type event_id: int
         :param booking_status: The booking_status of this Booking.  # noqa: E501
         :type booking_status: str
+        :param booking_email: The booking_email of this Booking.  # noqa: E501
+        :type booking_email: str
         :param total_cost: The total_cost of this Booking.  # noqa: E501
         :type total_cost: float
-        :param tickets: The tickets of this Booking.  # noqa: E501
-        :type tickets: List[TicketID]
+        :param ticket_details: The ticket_details of this Booking.  # noqa: E501
+        :type ticket_details: object
         """
         self.swagger_types = {
             'booking_id': int,
             'account_id': int,
             'event_id': int,
             'booking_status': str,
+            'booking_email': str,
             'total_cost': float,
-            'tickets': List[TicketID]
+            'ticket_details': object
         }
 
         self.attribute_map = {
@@ -46,16 +48,18 @@ class Booking(Model):
             'account_id': 'account_id',
             'event_id': 'event_id',
             'booking_status': 'booking_status',
+            'booking_email': 'booking_email',
             'total_cost': 'total_cost',
-            'tickets': 'tickets'
+            'ticket_details': 'ticket_details'
         }
 
         self._booking_id = booking_id
         self._account_id = account_id
         self._event_id = event_id
         self._booking_status = booking_status
+        self._booking_email = booking_email
         self._total_cost = total_cost
-        self._tickets = tickets
+        self._ticket_details = ticket_details
 
     @classmethod
     def from_dict(cls, dikt) -> 'Booking':
@@ -159,6 +163,27 @@ class Booking(Model):
         self._booking_status = booking_status
 
     @property
+    def booking_email(self) -> str:
+        """Gets the booking_email of this Booking.
+
+
+        :return: The booking_email of this Booking.
+        :rtype: str
+        """
+        return self._booking_email
+
+    @booking_email.setter
+    def booking_email(self, booking_email: str):
+        """Sets the booking_email of this Booking.
+
+
+        :param booking_email: The booking_email of this Booking.
+        :type booking_email: str
+        """
+
+        self._booking_email = booking_email
+
+    @property
     def total_cost(self) -> float:
         """Gets the total_cost of this Booking.
 
@@ -180,22 +205,22 @@ class Booking(Model):
         self._total_cost = total_cost
 
     @property
-    def tickets(self) -> List[TicketID]:
-        """Gets the tickets of this Booking.
+    def ticket_details(self) -> object:
+        """Gets the ticket_details of this Booking.
 
 
-        :return: The tickets of this Booking.
-        :rtype: List[TicketID]
+        :return: The ticket_details of this Booking.
+        :rtype: object
         """
-        return self._tickets
+        return self._ticket_details
 
-    @tickets.setter
-    def tickets(self, tickets: List[TicketID]):
-        """Sets the tickets of this Booking.
+    @ticket_details.setter
+    def ticket_details(self, ticket_details: object):
+        """Sets the ticket_details of this Booking.
 
 
-        :param tickets: The tickets of this Booking.
-        :type tickets: List[TicketID]
+        :param ticket_details: The ticket_details of this Booking.
+        :type ticket_details: object
         """
 
-        self._tickets = tickets
+        self._ticket_details = ticket_details

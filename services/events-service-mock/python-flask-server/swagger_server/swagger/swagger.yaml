@@ -86,17 +86,6 @@ paths:
           schema:
             $ref: "#/definitions/UnexpectedServiceError"
       x-swagger-router-controller: "swagger_server.controllers.events_controller"
-    options:
-      tags:
-      - "Events"
-      summary: "Used to respond to browser with Access-Control-Allow-Methods header.\
-        \ Required for POST."
-      operationId: "create_event_options"
-      parameters: []
-      responses:
-        "200":
-          description: "Response headers will indicate the allowable methods."
-      x-swagger-router-controller: "swagger_server.controllers.events_controller"
   /events/{event_id}:
     get:
       tags:
@@ -164,23 +153,6 @@ paths:
           description: "Unexpected failure in the service layer."
           schema:
             $ref: "#/definitions/UnexpectedServiceError"
-      x-swagger-router-controller: "swagger_server.controllers.events_controller"
-    options:
-      tags:
-      - "Events"
-      summary: "Used to respond to browser with Access-Control-Allow-Methods header.\
-        \ Required for PUT."
-      operationId: "update_event_options"
-      parameters:
-      - name: "event_id"
-        in: "path"
-        description: "ID of the Event to be updated."
-        required: true
-        type: "integer"
-        format: "int64"
-      responses:
-        "200":
-          description: "Response headers will indicate the allowable methods."
       x-swagger-router-controller: "swagger_server.controllers.events_controller"
     patch:
       tags:
@@ -268,17 +240,6 @@ paths:
           schema:
             $ref: "#/definitions/UnexpectedServiceError"
       x-swagger-router-controller: "swagger_server.controllers.venues_controller"
-    options:
-      tags:
-      - "Venues"
-      summary: "Used to respond to browser with Access-Control-Allow-Methods header.\
-        \ Required for POST."
-      operationId: "create_venue_options"
-      parameters: []
-      responses:
-        "200":
-          description: "Response headers will indicate the allowable methods."
-      x-swagger-router-controller: "swagger_server.controllers.venues_controller"
   /venues/{venue_id}:
     get:
       tags:
@@ -362,6 +323,11 @@ paths:
         description: "The Booking Status to search for."
         required: false
         type: "string"
+      - name: "event_id"
+        in: "query"
+        description: "The Event ID to search for."
+        required: false
+        type: "string"
       responses:
         "200":
           description: "Returns a list of Bookings. Returns empty array if no Bookings\
@@ -403,17 +369,6 @@ paths:
           schema:
             $ref: "#/definitions/UnexpectedServiceError"
       x-swagger-router-controller: "swagger_server.controllers.bookings_controller"
-    options:
-      tags:
-      - "Bookings"
-      summary: "Used to respond to browser with Access-Control-Allow-Methods header.\
-        \ Required for POST."
-      operationId: "create_booking_options"
-      parameters: []
-      responses:
-        "200":
-          description: "Response headers will indicate the allowable methods."
-      x-swagger-router-controller: "swagger_server.controllers.bookings_controller"
   /bookings/{booking_id}:
     get:
       tags:
@@ -442,23 +397,6 @@ paths:
           description: "Unexpected failure in the service layer."
           schema:
             $ref: "#/definitions/UnexpectedServiceError"
-      x-swagger-router-controller: "swagger_server.controllers.bookings_controller"
-    options:
-      tags:
-      - "Bookings"
-      summary: "Used to respond to browser with Access-Control-Allow-Methods header.\
-        \ Required for PATCH."
-      operationId: "update_booking_options"
-      parameters:
-      - name: "booking_id"
-        in: "path"
-        description: "ID of the Booking to be updated."
-        required: true
-        type: "integer"
-        format: "int64"
-      responses:
-        "200":
-          description: "Response headers will indicate the allowable methods."
       x-swagger-router-controller: "swagger_server.controllers.bookings_controller"
     patch:
       tags:
@@ -565,22 +503,39 @@ definitions:
         - "Booked"
         - "Cancelled"
         - "Completed"
+      booking_email:
+        type: "string"
+        example: "bob@gmail.com"
       total_cost:
         type: "number"
         format: "float"
         example: 200.0
-      tickets:
-        type: "array"
-        items:
-          $ref: "#/definitions/TicketID"
+      ticket_details:
+        type: "object"
+        properties:
+          general:
+            type: "integer"
+            format: "int64"
+            example: 1
+          front:
+            type: "integer"
+            format: "int64"
+            example: 2
+          middle:
+            type: "integer"
+            format: "int64"
+            example: 3
+          back:
+            type: "integer"
+            format: "int64"
+            example: 4
     example:
       booking_id: 1
       account_id: 2
       event_id: 2
-      tickets:
-      - tid: 2
-      - tid: 2
       total_cost: 200.0
+      ticket_details: "{}"
+      booking_email: "bob@gmail.com"
       booking_status: "Booked"
   Ticket:
     type: "object"
@@ -722,15 +677,6 @@ definitions:
         example: "Jazz"
     example:
       name: "Jazz"
-  TicketID:
-    type: "object"
-    properties:
-      tid:
-        type: "integer"
-        format: "int64"
-        example: 2
-    example:
-      tid: 2
   Seating:
     type: "object"
     properties:
