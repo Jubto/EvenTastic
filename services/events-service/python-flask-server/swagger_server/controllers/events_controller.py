@@ -28,17 +28,6 @@ def create_event(body):  # noqa: E501
     return 'do some magic!'
 
 
-def create_event_options():  # noqa: E501
-    """Used to respond to browser with Access-Control-Allow-Methods header. Required for POST.
-
-     # noqa: E501
-
-
-    :rtype: None
-    """
-    return 'do some magic!'
-
-
 def get_event_details(event_id):  # noqa: E501
     """Retrieve Event details by Event ID.
 
@@ -181,19 +170,6 @@ def update_event(event_id, body):  # noqa: E501
     """
     if connexion.request.is_json:
         body = Event.from_dict(connexion.request.get_json())  # noqa: E501
-    return 'do some magic!'
-
-
-def update_event_options(event_id):  # noqa: E501
-    """Used to respond to browser with Access-Control-Allow-Methods header. Required for PUT.
-
-     # noqa: E501
-
-    :param event_id: ID of the Event to be updated.
-    :type event_id: int
-
-    :rtype: None
-    """
     return 'do some magic!'
 
 

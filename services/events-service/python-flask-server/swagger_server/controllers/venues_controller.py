@@ -48,17 +48,6 @@ def create_venue(body):  # noqa: E501
         return error, 500, {'Access-Control-Allow-Origin': '*'}
 
 
-def create_venue_options():  # noqa: E501
-    """Used to respond to browser with Access-Control-Allow-Methods header. Required for POST.
-
-     # noqa: E501
-
-
-    :rtype: None
-    """
-    return 'do some magic!'
-
-
 def get_venue_details(venue_id):  # noqa: E501
     """Retrieve Venue details by Venue ID.
 

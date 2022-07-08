@@ -80,15 +80,7 @@ paths:
         "500":
           description: "Unexpected failure in the service layer."
           schema:
-            $ref: "#/definitions/UnexpectedServiceError" 
-    options:
-      summary: "Used to respond to browser with Access-Control-Allow-Methods header. Required for POST."
-      tags:
-        - Events
-      operationId: "createEventOptions"
-      responses:
-        "200":
-          description: "Response headers will indicate the allowable methods."
+            $ref: "#/definitions/UnexpectedServiceError"
   /events/{event_id}:
     get:
       summary: "Retrieve Event details by Event ID."
@@ -154,21 +146,6 @@ paths:
           description: "Unexpected failure in the service layer."
           schema:
             $ref: "#/definitions/UnexpectedServiceError"
-    options:
-      summary: "Used to respond to browser with Access-Control-Allow-Methods header. Required for PUT."
-      tags:
-        - Events
-      operationId: "updateEventOptions"
-      parameters:
-      - name: "event_id"
-        in: "path"
-        description: "ID of the Event to be updated."
-        required: true
-        type: "integer"
-        format: "int64"
-      responses:
-        "200":
-          description: "Response headers will indicate the allowable methods."
     patch:
       summary: "Used to update the Status of a single Event e.g. Cancel an Event."
       tags:
@@ -251,14 +228,6 @@ paths:
           description: "Unexpected failure in the service layer."
           schema:
             $ref: "#/definitions/UnexpectedServiceError"
-    options:
-      summary: "Used to respond to browser with Access-Control-Allow-Methods header. Required for POST."
-      tags:
-        - Venues
-      operationId: "createVenueOptions"
-      responses:
-        "200":
-          description: "Response headers will indicate the allowable methods."
   /venues/{venue_id}:
     get:
       summary: "Retrieve Venue details by Venue ID."
@@ -339,6 +308,11 @@ paths:
         description: "The Booking Status to search for."
         required: false
         type: "string"
+      - name: "event_id"
+        in: "query"
+        description: "The Event ID to search for."
+        required: false
+        type: "string"
       responses:
         "200":
           description: "Returns a list of Bookings. Returns empty array if no Bookings match the search criteria."
@@ -377,14 +351,6 @@ paths:
           description: "Unexpected failure in the service layer."
           schema:
             $ref: "#/definitions/UnexpectedServiceError" 
-    options:
-      summary: "Used to respond to browser with Access-Control-Allow-Methods header. Required for POST."
-      tags:
-        - Bookings
-      operationId: "createBookingOptions"
-      responses:
-        "200":
-          description: "Response headers will indicate the allowable methods."
   /bookings/{booking_id}:
     get:
       summary: "Retrieve Booking details by Booking ID."
@@ -442,22 +408,6 @@ paths:
           description: "Booking not found." 
           schema:
             $ref: "#/definitions/BookingNotFoundError"
-    options:
-      summary: "Used to respond to browser with Access-Control-Allow-Methods header. Required for PATCH."
-      tags:
-        - Bookings
-      operationId: "updateBookingOptions"
-      parameters:
-      - name: "booking_id"
-        in: "path"
-        description: "ID of the Booking to be updated."
-        required: true
-        type: "integer"
-        format: "int64"
-      responses:
-        "200":
-          description: "Response headers will indicate the allowable methods."
-
 definitions:
   VenueList:
     type: array
@@ -516,14 +466,32 @@ definitions:
       booking_status:
         type: string
         enum: ["Booked", "Cancelled", "Completed"]
+      booking_email:
+        type: string
+        example: "bob@gmail.com"
       total_cost:
         type: number
         format: float
         example: 200.00
-      tickets:
-        type: array
-        items:
-          $ref: "#/definitions/TicketID"
+      ticket_details:
+        type: object
+        properties:
+          general:
+            type: integer
+            format: int64
+            example: 1
+          front:
+            type: integer
+            format: int64
+            example: 2
+          middle:
+            type: integer
+            format: int64
+            example: 3
+          back:
+            type: integer
+            format: int64
+            example: 4
   Ticket:
     type: object
     properties:
@@ -631,13 +599,6 @@ definitions:
       name:
         type: string
         example: Jazz
-  TicketID:
-    type: object
-    properties:
-      tid:
-        type: integer
-        format: int64
-        example: 2
   Seating:
     type: object
     properties:

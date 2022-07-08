@@ -16,7 +16,6 @@ from swagger_server.models.invalid_input_error import InvalidInputError
 from swagger_server.models.seating import Seating
 from swagger_server.models.tag import Tag
 from swagger_server.models.ticket import Ticket
-from swagger_server.models.ticket_id import TicketID
 from swagger_server.models.ticket_list import TicketList
 from swagger_server.models.unexpected_service_error import UnexpectedServiceError
 from swagger_server.models.venue import Venue
