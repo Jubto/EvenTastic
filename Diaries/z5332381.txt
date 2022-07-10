@@ -1,17 +1,32 @@
 Week 1:
-Participated in group discussion
-Read through project specifications
-Created a list of 3 preferred projects highlighting the pros and cons of each
-Added meeting minutes of the discussion highlighting next action times to be conducted
-Created a when2meet link to figure out preferred timings to schedule meetings throughout the week
+-Participated in group discussion.
+-Read through project specifications.
+-Created a list of 3 preferred projects highlighting the pros and cons of each.
+-Added meeting minutes of the discussion highlighting next action times to be conducted.
+-Created a when2meet link to figure out preferred timings to schedule meetings throughout the week.
 
 Week 2:
-Joined github classroom
-Created user stories for Manage Reviews
-Provided feedback on user stories provided by other teammates and participated in discussion
+-Joined github classroom.
+-Created user stories for Manage Reviews.
+-Provided feedback on user stories provided by other teammates and participated in discussion.
 
 
 Week 3:
-Modified user stories based on discussion with the tutor
-Shared points noted of tutor's advise on changes to be made for our user stories. Also added key points to remember for project proposal
-Provided wireframe mockups for some pages on draw.io, uploaded to comp9900 folder on OneDrive.
+-Modified user stories based on discussion with the tutor.
+-Shared points noted of tutor's advise on changes to be made for our user stories. Also added key points to remember for project proposal.
+-Provided wireframe mockups for some pages on draw.io, uploaded to comp9900 folder on OneDrive.
+
+Week 4:
+-Created the schema design with Vishal for database tables required for sprint 1.
+-Made a more readable form of the schema on draw.io so the rest of the team can understand.
+-Added the code for getting event details and retrieving information from the database.
+
+Week 5:
+-Completed backend work for User story ZW9900-11 for event search.
+-Implemented fuzzy search so user can enter a part of the title/category and still retrieve the information they wanted.
+-Discussed with the group after the presentation of sprint1 on what changes need to be made for sprint 2
+.
+Week 6:
+-Had discussion with team on sprint 2 activities.
+-Worked on populating database with creation of new events, updates to events, and event cancellation.
+-Discussed and planned API requirements for Group Formation for each event.
