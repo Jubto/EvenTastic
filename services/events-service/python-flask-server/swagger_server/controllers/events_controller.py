@@ -158,7 +158,7 @@ def get_event_details(event_id):  # noqa: E501
         return error, 500, {'Access-Control-Allow-Origin': '*'}
 
 
-def list_events(event_title=None, event_category=None, event_desc=None):  # noqa: E501
+def list_events(event_title=None, event_category=None, event_desc=None, host_id=None, event_status=None):  # noqa: E501
     """Retrieve a List of Events. Search by Event Title, Event category or Event Description.
 
      # noqa: E501
@@ -191,6 +191,12 @@ def list_events(event_title=None, event_category=None, event_desc=None):  # noqa
             cur.execute("SELECT * FROM events where event_category ~* '"+str(event_category)+"';") #only event category
         elif (event_desc != None):
             cur.execute("SELECT * FROM events where event_desc ~* '"+str(event_desc)+"';") #only event desc
+        elif (host_id != None and event_status != None):
+            cur.execute("SELECT * FROM events where host_id = '"+str(host_id)+"' and event_status ~* '"+str(event_status)+"';") #host id and event status
+        elif (host_id != None):
+            cur.execute("SELECT * FROM events where host_id = '"+str(host_id)+"';") #only host id
+        elif (event_status != None):
+            cur.execute("SELECT * FROM events where event_status ~* '"+str(event_status)+"';") #only event status
         else:
             cur.execute("SELECT * FROM events")
 
