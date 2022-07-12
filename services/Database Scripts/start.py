@@ -211,30 +211,56 @@ cur.execute("INSERT INTO  events values(default, 3, 3, 6, 20.00, 12.00, 100.00, 
 cur.execute("INSERT INTO bookings values (default, 1, 1, 'Booked', 500.0);")
 cur.execute("INSERT INTO bookings values (default, 1, 1, 'Booked', 200.0);")
 
-cur.execute(
-    "INSERT INTO tickets values (default, 1, 1, 1, 'F_1', 'Purchased', 'QR', 'Front', 100.0);")
-cur.execute(
-    "INSERT INTO tickets values (default, 1, 1, 1, 'F_2', 'Purchased', 'QR', 'Front', 100.0);")
-cur.execute(
-    "INSERT INTO tickets values (default, 1, 1, 1, 'F_3', 'Purchased', 'QR', 'Front', 100.0);")
-cur.execute(
-    "INSERT INTO tickets values (default, 1, 1, -1, 'F_4', 'Available', 'QR', 'Front', 100.0);")
-for t_id in range(5, 101):
+# QR-code : (Venueid-Eventid-accountid-type&number)
+for t_id in range(31):
     cur.execute(
-        f"INSERT INTO tickets values (default, 1, 1, -1, 'F_{t_id}', 'Available', 'QR', 'Front', 100.0);")
+        f"INSERT INTO tickets values (default, 1, 1, -1, 'G_{t_id}', 'Available', '1-1-1-G_{t_id}', 'General', 100.0);")
 
 cur.execute(
-    "INSERT INTO tickets values (default, 1, 1, 1, 'M_1', 'Purchased', 'QR', 'Middle', 100.0);")
+    "INSERT INTO tickets values (default, 1, 1, 1, 'F_1', 'Purchased', '1-1-1-F_1', 'Front', 100.0);")
 cur.execute(
-    "INSERT INTO tickets values (default, 1, 1, 1, 'M_2', 'Purchased', 'QR', 'Middle', 100.0);")
+    "INSERT INTO tickets values (default, 1, 1, 1, 'F_2', 'Purchased', '1-1-1-F_2', 'Front', 100.0);")
 cur.execute(
-    "INSERT INTO tickets values (default, 1, 1, 2, 'M_3', 'Purchased', 'QR', 'Middle', 100.0);")
+    "INSERT INTO tickets values (default, 1, 1, 1, 'F_3', 'Purchased', '1-1-1-F_3', 'Front', 100.0);")
 cur.execute(
-    "INSERT INTO tickets values (default, 1, 1, 2, 'M_4', 'Purchased', 'QR', 'Middle', 100.0);")
-for t_id in range(5, 101):
+    "INSERT INTO tickets values (default, 1, 1, -1, 'F_4', 'Available', '1-1-1-F_4', 'Front', 100.0);")
+for t_id in range(5, 21):
     cur.execute(
-        f"INSERT INTO tickets values (default, 1, 1, -1, 'M_{t_id}', 'Available', 'QR', 'Middle', 100.0);")
+        f"INSERT INTO tickets values (default, 1, 1, -1, 'F_{t_id}', 'Available', '1-1-1-F_{t_id}', 'Front', 100.0);")
 
+cur.execute(
+    "INSERT INTO tickets values (default, 1, 1, 1, 'M_1', 'Purchased', '1-1-1-M_1', 'Middle', 100.0);")
+cur.execute(
+    "INSERT INTO tickets values (default, 1, 1, 1, 'M_2', 'Purchased', '1-1-1-M_2', 'Middle', 100.0);")
+cur.execute(
+    "INSERT INTO tickets values (default, 1, 1, 2, 'M_3', 'Purchased', '1-1-1-M_3', 'Middle', 100.0);")
+cur.execute(
+    "INSERT INTO tickets values (default, 1, 1, 2, 'M_4', 'Purchased', '1-1-1-M_4', 'Middle', 100.0);")
+for t_id in range(5, 21):
+    cur.execute(
+        f"INSERT INTO tickets values (default, 1, 1, -1, 'M_{t_id}', 'Available', '1-1-1-M_{t_id}', 'Middle', 100.0);")
+
+
+for t_id in range(21):
+    cur.execute(
+        f"INSERT INTO tickets values (default, 1, 1, -1, 'B_{t_id}', 'Available', '1-1-1-B_{t_id}', 'Back', 100.0);")
+
+for v_id, e_id in [(2, 2), (3, 3), (4, 4), (5, 5), (6, 6)]:
+    for t_id in range(31):
+        cur.execute(
+            f"INSERT INTO tickets values (default, {v_id}, {e_id}, -1, 'G_{t_id}', 'Available', '1-1-1-G_{t_id}', 'General', 100.0);")
+
+    for t_id in range(21):
+        cur.execute(
+            f"INSERT INTO tickets values (default, {v_id}, {e_id}, -1, 'F_{t_id}', 'Available', '1-1-1-F_{t_id}', 'Front', 100.0);")
+
+    for t_id in range(21):
+        cur.execute(
+            f"INSERT INTO tickets values (default, {v_id}, {e_id}, -1, 'M_{t_id}', 'Available', '1-1-1-M_{t_id}', 'Middle', 100.0);")
+
+    for t_id in range(21):
+        cur.execute(
+            f"INSERT INTO tickets values (default, {v_id}, {e_id}, -1, 'B_{t_id}', 'Available', '1-1-1-B_{t_id}', 'Back', 100.0);")
 
 cur.execute('SELECT * FROM accounts')
 records = cur.fetchall()
