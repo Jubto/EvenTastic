@@ -24,10 +24,10 @@ const AccountTicketsPage = ({ toggle }) => {
   const [cancelBooking, setCancelBooking] = useState(false)
   const [toCancel, setToCancel] = useState(null)
 
-  const getBookings = async () => {
+  const getBooking = async () => {
     try {
       // possible api calling
-      const bookedRes = await api.getBookings(account.account_id, 'Booked')
+      const bookedRes = await api.getBooking(account.account_id, 'Booked')
       const bookedEventsRes = await Promise.all(bookedRes.data.map((booking) => {
         api.getEventDetails(booking.event_id)
       }))
@@ -49,7 +49,7 @@ const AccountTicketsPage = ({ toggle }) => {
       setUpComingBookings(bookingMapping)
 
       // todo, repeat of above
-      const completedRes = await api.getBookings(account.account_id, 'Completed')
+      const completedRes = await api.getBooking(account.account_id, 'Completed')
       setPastBookings(completedRes.data)
     }
     catch (err) {
@@ -73,7 +73,7 @@ const AccountTicketsPage = ({ toggle }) => {
   }
 
   useEffect(() => {
-    getBookings()
+    getBooking()
   }, [])
 
   useEffect(() => {
@@ -88,7 +88,7 @@ const AccountTicketsPage = ({ toggle }) => {
   }, [cancelBooking])
 
   return (
-    <ScrollContainer hide sx={{ p: 1, mt: 7 }}>
+    <ScrollContainer thin pr='1vw' sx={{ p: 1, mt: 7 }}>
       {toggle
         ? <div>
           Past

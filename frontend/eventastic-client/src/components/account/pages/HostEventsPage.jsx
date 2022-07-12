@@ -75,7 +75,7 @@ const HostEventsPage = ({ toggle, setManageEvent }) => {
   }, [])
 
   return (
-    <ScrollContainer thin height='90%' sx={{ p: 1, mt: 7 }}>
+    <ScrollContainer thin pr='1vw' height='90%' sx={{ p: 1, mt: 7 }}>
       {toggle
         ? <div>
           {PastEvents.map((eventDetails, idx) => (

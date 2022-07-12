@@ -126,7 +126,7 @@ const HostDetailsPage = ({ change, setChange }) => {
   }, [hostDetails])
 
   return (
-    <ScrollContainer hide>
+    <ScrollContainer thin pr='1vw'>
       <StatusBox justify='space-between'>
         <Typography variant='subtitle1'
           sx={{ color: 'evenTastic.grey', fontWeight: 1000, mb: 2 }}>Host status:

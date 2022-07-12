@@ -1,7 +1,10 @@
+import { ScrollContainer } from "../../styles/layouts.styled"
 
 const AccountGroupPage = () => {
   return (
-    <div>AccountGroupPage</div>
+    <ScrollContainer thin pr='1vw'>
+      AccountGroupPage
+    </ScrollContainer>
   )
 }
 

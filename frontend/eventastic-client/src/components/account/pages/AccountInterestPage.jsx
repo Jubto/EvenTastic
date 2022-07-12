@@ -23,7 +23,7 @@ const AccountInterestPage = () => {
       <InfoHeader title='Your interests influence what events we recommend,
        and help with group formation!'/>
       <StyledTagContainer>
-        <ScrollContainer hide flex='true' wrap='true' align='start' sx={{ maxHeight: '50vh' }}>
+        <ScrollContainer thin flex='true' wrap='true' align='start' sx={{ maxHeight: '50vh' }}>
           {account.tags.length === 0
             ? <Typography variant='subtitle1' sx={{ ml: 1 }}>
               You have no interest ...
