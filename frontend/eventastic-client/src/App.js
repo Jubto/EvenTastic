@@ -8,6 +8,7 @@ import AccountScreen from './screens/AccountScreen';
 import TagsScreen from './screens/TagsScreen';
 import EventScreen from './screens/EventScreen';
 import CreateEventScreen from './screens/CreateEventScreen';
+import CreateEventPage from './screens/CreateEventPage';
 import AdminScreen from './screens/AdminScreen';
 import UnauthorizedScreen from './screens/UnauthorizedScreen';
 import Footer from './components/layout/Footer';
@@ -37,7 +38,7 @@ function App() {
           <Route exact path='/account' element={<AccountScreen/>}/>
           <Route exact path='/tags' element={<TagsScreen/>}/>
           <Route exact path='/event/:id' element={<EventScreen/>}/>
-          <Route exact path='/create-event' element={<CreateEventScreen/>}/>
+          <Route exact path='/create-event' element={<CreateEventPage/>}/>
           <Route exact path='/admin/*' element={<AdminScreen/>}/>
           <Route exact path='/unauthorized' element={<UnauthorizedScreen/>}/>
         </Routes>

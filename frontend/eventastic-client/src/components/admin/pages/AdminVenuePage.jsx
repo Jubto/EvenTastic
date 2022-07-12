@@ -84,7 +84,7 @@ const AdminVenueScreen = () => {
   const onFileChange = (event) => {
     
       // Update the state
-      //console.log(event.target.files)
+      const fileName = event.target.files[0].name
       setImage(event.target.files[0]);
       //console.log(image)
     };

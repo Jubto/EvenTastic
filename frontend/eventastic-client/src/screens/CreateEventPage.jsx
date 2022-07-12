@@ -10,6 +10,7 @@ import VenueAPI from "../utils/VenueAPIHelper";
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+import NotHostErrorModal from "../components/event/modals/NotHostErrorModal";
 import {
   Button,
   Grid,
@@ -25,7 +26,9 @@ import {
 } from '@mui/material';
 
 const steps = ['Basic Info', 'Details', 'Tickets','Preview/Submit'];
-
+const Input = styled('input')({
+    display:'none'
+});
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 const MenuProps = {
@@ -49,6 +52,9 @@ const CreateEventPage = () => {
   const [hostDetails] = context.host;
   const [datevalue, setDateValue] = React.useState(new Date());
   const [enddatevalue, setEndDateValue] = React.useState(new Date());
+  const [uploadimg, setUploadImage] = React.useState({});
+  const [uploadimgurl, setUploadImageUrl] = React.useState("");
+  const [open, setOpen] = React.useState(false);
   const [formDetails, setFormDetails] = React.useState({
     event_title: "",
     event_category: "",
@@ -56,7 +62,9 @@ const CreateEventPage = () => {
     event_location: "",
     venue_id: null,
     event_start_datetime: "",
-    event_end_datetime: ""
+    event_end_datetime: "",
+    event_short_desc: "",
+    event_desc: ""
   });
   
   
@@ -66,6 +74,8 @@ const CreateEventPage = () => {
     event_category: false,
     event_tags: false,
     event_location: false,
+    event_short_desc: false,
+    event_desc: false
   })
 
   const handleBack = () => {
@@ -76,32 +86,48 @@ const CreateEventPage = () => {
     console.log(formDetails)
 
     formErrors.error = false;
-
-    if (!/\S+/.test(formDetails.event_title)) {
-      setformErrors(prevState => { return { ...prevState, event_title: true } })
-      formErrors.error = true
+    if(activeStep === 0)
+    {
+      
+      if (!/\S+/.test(formDetails.event_title)) {
+        setformErrors(prevState => { return { ...prevState, event_title: true } })
+        formErrors.error = true
+      }
+      
+      if (formDetails.event_category === "") {
+        setformErrors(prevState => { return { ...prevState, event_category: true } })
+        formErrors.error = true
+      }
+      
+      if (formDetails.event_tags.length === 0) {
+        setformErrors(prevState => { return { ...prevState, event_tags: true } })
+        formErrors.error = true
+      }
+      
+      if (formDetails.event_location === "") {
+        setformErrors(prevState => { return { ...prevState, event_location: true } })
+        formErrors.error = true
+      }
+      
+      if (formDetails.event_start_datetime === "") {
+        setformErrors(prevState => { return { ...prevState, event_start_datetime: true } })
+        formErrors.error = true
+      }
+    
     }
+    else if(activeStep === 1)
+    {
+      if (!/\S+/.test(formDetails.event_desc)) {
+        setformErrors(prevState => { return { ...prevState, event_desc: true } })
+        formErrors.error = true
+      }
 
-    if (formDetails.event_category === "") {
-      setformErrors(prevState => { return { ...prevState, event_category: true } })
-      formErrors.error = true
+      if (!/\S+/.test(formDetails.event_short_desc)) {
+        setformErrors(prevState => { return { ...prevState, event_short_desc: true } })
+        formErrors.error = true
+      }
     }
-
-    if (formDetails.event_tags.length === 0) {
-      setformErrors(prevState => { return { ...prevState, event_tags: true } })
-      formErrors.error = true
-    }
-
-    if (formDetails.event_location === "") {
-      setformErrors(prevState => { return { ...prevState, event_location: true } })
-      formErrors.error = true
-    }
-
-    if (formDetails.event_start_datetime === "") {
-      setformErrors(prevState => { return { ...prevState, event_start_datetime: true } })
-      formErrors.error = true
-    }
-
+    
     if(!formErrors.error)
       setActiveStep((prevActiveStep) => prevActiveStep + 1);
   }
@@ -111,10 +137,16 @@ const CreateEventPage = () => {
   }
 
   React.useEffect(() => {
-    venue_api
+    if (!hostDetails || hostDetails.host_status !== 'Approved') {
+      setOpen(true)
+    }
+    else{
+      venue_api
       .getVenueList()
       .then((response) => setVenueList(response.data))
       .catch((err) => console.log(err));
+    }
+    
   }, [])
 
   return (
@@ -183,7 +215,7 @@ const CreateEventPage = () => {
                                   if(formErrors.event_category === true){
                                     setformErrors(prevState => { return { ...prevState, event_category: false } })
                                   }
-                                  setTags(eventTags.eventTagsByCategory.filter((cat)=>cat.cat_name === formDetails.event_category)[0].tags)
+                                  
                       
                                 }}
                               >
@@ -198,9 +230,9 @@ const CreateEventPage = () => {
                             </FormControl>
                           </Grid>
                           <Grid item xs={1}></Grid>
-                          <Grid item xs={4}>
+                          <Grid item xs={6}>
                             {
-                              formDetails.event_category &&
+                              formDetails.event_category && 
                             <FormControl fullWidth error={formErrors.event_tags}>
                               <InputLabel id="tags-label">Tags</InputLabel>
                               <Select
@@ -229,7 +261,7 @@ const CreateEventPage = () => {
                                 MenuProps={MenuProps}
                               >
                                 {
-                                  tags.map((tag)=>{
+                                  eventTags.eventTagsByCategory.filter((cat)=>cat.cat_name === formDetails.event_category)[0].tags.map((tag)=>{
                                     return <MenuItem value={tag.tag_name}>{tag.tag_name}</MenuItem>
                                   })
                                 }
@@ -352,16 +384,87 @@ const CreateEventPage = () => {
                       </Grid> 
                 :     
                 activeStep === 1 ?
-                      <>
-                      {console.log(activeStep)}
-                      </>
+                      <Grid container direction='column'>
+                        <Grid container direction='row' sx={{width:'100%',margin:'25px',marginBottom:'1px'}}>
+                          <Grid item xs={3} style={{paddingTop:"10px"}}>
+                            <Typography variant="subtitle1" gutterBottom component="div" >
+                              Add Event Image:
+                            </Typography>
+                          </Grid>
+                        </Grid>
+
+                        <Grid container direction='row' sx={{width:'100%',margin:'25px',marginBottom:'1px'}}>
+                          <Grid item xs={4}>
+                            <label htmlFor="contained-button-file">
+                              <Input accept="image/*" id="contained-button-file" type="file" onChange={(e)=>{
+                                setUploadImage(e.target.files[0])
+                                console.log(URL.createObjectURL(e.target.files[0]))
+                              }}/>
+                              <Button variant="contained" component="span">
+                                Upload Image
+                              </Button>
+                            </label>
+                          </Grid>
+                        </Grid>
+
+                        <Grid container direction='row' sx={{width:'100%',margin:'25px',marginBottom:'1px'}}>
+                          <Grid item xs={3} style={{paddingTop:"10px"}}>
+                            <Typography variant="subtitle1" gutterBottom component="div" >
+                              Event Details:
+                            </Typography>
+                          </Grid>
+                        </Grid>
+
+                        <Grid container direction='row' sx={{width:'100%',margin:'25px',marginBottom:'1px'}}>
+                          <TextField
+                            name="event_short_desc"
+                            required
+                            fullWidth
+                            value={formDetails.event_short_desc}
+                            id="event_short_desc"
+                            label="Event Summary"
+                            autoFocus
+                            onChange={(event) => {
+                              setFormDetails(prevState => { return {...prevState, event_short_desc: event.target.value}}) 
+                              if(formErrors.event_short_desc === true){
+                                setformErrors(prevState => { return { ...prevState, event_short_desc: false } })
+                              }
+                              
+                            }}
+                            error={formErrors.event_short_desc}
+                            helperText={formErrors.event_short_desc ? 'Summary field is required' : ''}
+                          />
+                        </Grid>
+
+                        <Grid container direction='row' sx={{width:'100%',margin:'25px',marginBottom:'1px'}}>
+                          <TextField
+                            name="event_desc"
+                            required
+                            fullWidth
+                            value={formDetails.event_desc}
+                            id="event_desc"
+                            label="Event Description"
+                            autoFocus
+                            multiline
+                            rows={5}
+                            onChange={(event) => {
+                              setFormDetails(prevState => { return {...prevState, event_desc: event.target.value}}) 
+                              if(formErrors.event_desc === true){
+                                setformErrors(prevState => { return { ...prevState, event_desc: false } })
+                              }
+                              
+                            }}
+                            error={formErrors.event_desc}
+                            helperText={formErrors.event_desc ? 'Description field is required' : ''}
+                          />
+                        </Grid>
+                      </Grid>
                        
                   : 
                   activeStep === 2 ?
-                      <>
-                      {console.log(activeStep)}
-                      </>
-
+                      <Grid container direction='column'>
+                        
+                      </Grid>
                   :
                   
                   activeStep === 3 &&
@@ -407,6 +510,7 @@ const CreateEventPage = () => {
                 </Grid>
               </Grid>
         </Grid>
+        <NotHostErrorModal open={open} setOpen={setOpen}/>
     </Box>
   )
 }
