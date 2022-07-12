@@ -11,7 +11,10 @@ from swagger_server.models.unexpected_service_error import UnexpectedServiceErro
 from swagger_server import util
 
 port=5432 #Change according to port in Docker
+host='localhost'
 
+# List of allowable fields to be updated, list can be updated as required
+_update_allow_list = ["event_title","event_category","event_short_desc","event_desc","event_img","tags"]
 
 def create_event(body):  # noqa: E501
     """Used to create an Event.
@@ -156,10 +159,8 @@ def list_events(event_title=None, event_category=None, event_desc=None):  # noqa
         return error, 500, {'Access-Control-Allow-Origin': '*'}
 
 
-def update_event(event_id, body):  # noqa: E501
+def update_event(event_id, body):
     """Used to update the Event details. Replaces the Event resource.
-
-     # noqa: E501
 
     :param event_id: ID of the Event to be updated.
     :type event_id: int
@@ -169,8 +170,42 @@ def update_event(event_id, body):  # noqa: E501
     :rtype: Event
     """
     if connexion.request.is_json:
-        body = Event.from_dict(connexion.request.get_json())  # noqa: E501
-    return 'do some magic!'
+        body = Event.from_dict(connexion.request.get_json())
+
+    # check if Event Exists
+    check = get_event_details(event_id)
+    # if error code is not 200 OK, return error
+    if check[1] != 200:
+        return check
+
+    try:
+        # Create the sql update statement
+        sql = "UPDATE events SET"
+        for attr, value in body.__dict__.items():
+            tmp_attr = attr[1:]
+            if tmp_attr in _update_allow_list and value:
+                if tmp_attr == "tags":
+                    value = formatTags(value)
+                sql = sql + " {} = '{}',".format(tmp_attr, value)
+        sql = sql[:-1] + " WHERE event_id = {}".format(event_id)
+
+        # Execute the sql update statement
+        con = psycopg2.connect(database= 'eventastic', user='postgres', password='postgrespw', host=host, port=port)
+        con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+        cur = con.cursor()
+        cur.execute(sql)
+        cur.close()
+        con.close()
+    except Exception as e:
+        # catch any unexpected runtime error and return as 500 error 
+        cur.close()
+        con.close()
+        error = UnexpectedServiceError(code="500", type="UnexpectedServiceError", message=str(e))
+        return error, 500, {'Access-Control-Allow-Origin': '*'}
+
+    # return the updated record
+    result = get_event_details(event_id)
+    return result
 
 
 def update_event_status(event_id, body):  # noqa: E501
@@ -188,3 +223,10 @@ def update_event_status(event_id, body):  # noqa: E501
     if connexion.request.is_json:
         body = EventStatusUpdate.from_dict(connexion.request.get_json())  # noqa: E501
     return 'do some magic!'
+
+# Transforms the JSON tag array into tag1, tag2, tag3 etc..
+def formatTags(tags):
+    formatted = ""
+    for tag in tags:
+        formatted = formatted + tag.name + ","
+    return formatted[:-1]
