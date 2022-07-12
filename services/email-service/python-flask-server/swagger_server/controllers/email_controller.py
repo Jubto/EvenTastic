@@ -34,3 +34,17 @@ def send_email(body):
         # catch any unexpected runtime error and return as 500 error 
         error = UnexpectedServiceError(code="500", type="UnexpectedServiceError", message=str(e))
         return error, 500, {'Access-Control-Allow-Origin': '*'}
+
+
+def send_email_options():
+    """Used to respond to browser with Access-Control-Allow-Methods header. Required for POST.
+
+    :rtype: None
+    """
+    response_headers = {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': '*',
+        'Access-Control-Allow-Headers': '*',
+        'Access-Control-Max-Age': 86400 
+    }
+    return None, 200, response_headers

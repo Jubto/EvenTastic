@@ -41,6 +41,17 @@ paths:
           schema:
             $ref: "#/definitions/UnexpectedServiceError"
       x-swagger-router-controller: "swagger_server.controllers.email_controller"
+    options:
+      tags:
+      - "Email"
+      summary: "Used to respond to browser with Access-Control-Allow-Methods header.\
+        \ Required for POST."
+      operationId: "send_email_options"
+      parameters: []
+      responses:
+        "200":
+          description: "Response headers will indicate the allowable methods."
+      x-swagger-router-controller: "swagger_server.controllers.email_controller"
 definitions:
   Email:
     type: "object"

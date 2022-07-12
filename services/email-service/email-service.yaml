@@ -39,6 +39,14 @@ paths:
           description: "Unexpected failure in the service layer."
           schema:
             $ref: "#/definitions/UnexpectedServiceError"
+    options:
+      summary: "Used to respond to browser with Access-Control-Allow-Methods header. Required for POST."
+      tags:
+        - Email
+      operationId: "sendEmailOptions"
+      responses:
+        "200":
+          description: "Response headers will indicate the allowable methods."
 definitions:
   Email:
     type: object

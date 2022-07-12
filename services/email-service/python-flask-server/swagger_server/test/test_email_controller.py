@@ -28,6 +28,17 @@ class TestEmailController(BaseTestCase):
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
 
+    def test_send_email_options(self):
+        """Test case for send_email_options
+
+        Used to respond to browser with Access-Control-Allow-Methods header. Required for POST.
+        """
+        response = self.client.open(
+            '/v1/email',
+            method='OPTIONS')
+        self.assert200(response,
+                       'Response body is : ' + response.data.decode('utf-8'))
+
 
 if __name__ == '__main__':
     import unittest
