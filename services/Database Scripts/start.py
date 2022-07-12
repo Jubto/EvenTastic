@@ -111,32 +111,31 @@ cur.execute('CREATE TABLE events (\
             event_status TEXT,\
             tags TEXT);')
 
-# Bookings status :  [BOOKED, CANCELLED, COMPLETED]. 
+# Bookings status :  [Booked, Cancelled, Completed].
 cur.execute('CREATE TABLE bookings (\
             booking_id SERIAL PRIMARY KEY, \
             account_id INT NOT NULL,\
             FOREIGN KEY (account_id) REFERENCES accounts (account_id),\
             event_id INT NOT NULL,\
             FOREIGN KEY (event_id) REFERENCES events (event_id),\
-            booking_status TEXT,\
+            booking_status VARCHAR(15),\
             total_cost float8);')
 
-# Ticket type : GENERAL, FRONT, MIDDLE, BACK
+# Ticket type : General, Front, Middle, Back
 cur.execute('CREATE TABLE tickets (\
             ticket_id SERIAL PRIMARY KEY, \
             venue_id INT NOT NULL,\
             FOREIGN KEY (venue_id) REFERENCES venues (venue_id),\
             event_id INT NOT NULL,\
             FOREIGN KEY (event_id) REFERENCES events (event_id),\
-            booking_id INT NOT NULL,\
-            FOREIGN KEY (booking_id) REFERENCES bookings (booking_id),\
+            booking_id INT,\
             ticket_ref TEXT,\
             ticket_status TEXT,\
             qr_code TEXT,\
             ticket_type TEXT,\
             ticket_price float8);')
 
-# """ Enter dummy data here
+# Enter dummy data here
 print('\nInserting dummy data ...')
 cur.execute("INSERT INTO accounts values(default, 'vishalsingh6475@gmail.com', 'Vishal', 'Singh', 66, \
             '469717341', 'Sydney', 'Vish', 'Customer', 'uuid', '3000', 'Movies,Adventure,Sports', 'Doing MIT course at UNSW' \
@@ -199,7 +198,34 @@ cur.execute("INSERT INTO  events values(default, 2, 2, 3, 10.00, 100.00, 90.00, 
 cur.execute("INSERT INTO  events values(default, 2, 2, 4, 15.00, 110.00, 85.00, 55.00, 'Whisky Live Sydney 2022','Food','Sydney''s Premier Whisky Event.','WHISKY LIVE is Sydney''s premiere whisky sampling event, featuring high quality whiskies and spirits, all open under one roof for your tasting pleasure. Come along and learn while you taste.','2022-09-11T20:00:00+10:00','2022-09-11T22:00:00+10:00','Sydney Cove Passenger Terminal','b51a5319-f9ae-4191-aa95-fdf9a808e0fb.jpeg','UPCOMING','Spirits');")
 cur.execute("INSERT INTO  events values(default, 3, 3, 5, 20.00, 80.00, 70.00, 50.00, 'Jump for Joy','Kids Entertainment','Australia''s biggest inflatable park!','Jump for Joy will be back in town at Centennial Park with Australia''s biggest inflatable play-park!','2022-11-01T20:00:00+10:00','2022-11-01T22:00:00+10:00','Centennial Park Brazilian Fields','50407a37-7fce-4a17-97ba-2dbc68446db6.jpeg','UPCOMING', 'Family Friendly');")
 cur.execute("INSERT INTO  events values(default, 3, 3, 6, 20.00, 12.00, 100.00, 90.00, 'Venture & Capital 2022','Business','Come and be bored!','Everything we do is about connecting ventures with capital—this is why Wholesale Investor exists. In line with this, our 2022 Venture & Capital Conference focuses on empowering innovation, ambition, and capital.','2022-12-02T20:00:00+10:00','2022-12-02T22:00:00+10:00', 'The Venue Alexandria','39061bdb-9ace-45ed-9ddf-8b40223fc1b2.jpeg','UPCOMING','Startups Small Business,Investment');")
-# """
+
+cur.execute("INSERT INTO bookings values (default, 1, 1, 'Booked', 500.0);")
+cur.execute("INSERT INTO bookings values (default, 1, 1, 'Booked', 200.0);")
+
+cur.execute(
+    "INSERT INTO tickets values (default, 1, 1, 1, 'F_1', 'Purchased', 'QR', 'Front', 100.0);")
+cur.execute(
+    "INSERT INTO tickets values (default, 1, 1, 1, 'F_2', 'Purchased', 'QR', 'Front', 100.0);")
+cur.execute(
+    "INSERT INTO tickets values (default, 1, 1, 1, 'F_3', 'Purchased', 'QR', 'Front', 100.0);")
+cur.execute(
+    "INSERT INTO tickets values (default, 1, 1, -1, 'F_4', 'Available', 'QR', 'Front', 100.0);")
+for t_id in range(5, 101):
+    cur.execute(
+        f"INSERT INTO tickets values (default, 1, 1, -1, 'F_{t_id}', 'Available', 'QR', 'Front', 100.0);")
+
+cur.execute(
+    "INSERT INTO tickets values (default, 1, 1, 1, 'M_1', 'Purchased', 'QR', 'Middle', 100.0);")
+cur.execute(
+    "INSERT INTO tickets values (default, 1, 1, 1, 'M_2', 'Purchased', 'QR', 'Middle', 100.0);")
+cur.execute(
+    "INSERT INTO tickets values (default, 1, 1, 2, 'M_3', 'Purchased', 'QR', 'Middle', 100.0);")
+cur.execute(
+    "INSERT INTO tickets values (default, 1, 1, 2, 'M_4', 'Purchased', 'QR', 'Middle', 100.0);")
+for t_id in range(5, 101):
+    cur.execute(
+        f"INSERT INTO tickets values (default, 1, 1, -1, 'M_{t_id}', 'Available', 'QR', 'Middle', 100.0);")
+
 
 cur.execute('SELECT * FROM accounts')
 records = cur.fetchall()
