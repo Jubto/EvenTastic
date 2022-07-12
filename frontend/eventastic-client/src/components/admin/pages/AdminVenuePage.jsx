@@ -64,9 +64,10 @@ const AdminVenueScreen = () => {
   const [Front_seats,setFrontSeats] = React.useState('');
   const [Middle_seats,setMiddleSeats] = React.useState('');
   const [Back_seats,setBackSeats] = React.useState('');
+  const [General_seats,setGeneralSeats] = React.useState('');
 
   const handleCreate = () => {
-    const data = {'seating':[{'seating_type':'Front','seating_number':parseInt(Front_seats)},{'seating_type':'Middle','seating_number':parseInt(Middle_seats)},{'seating_type':'Back','seating_number':parseInt(Back_seats)}], 
+    const data = {'seating':[{'seating_type':'General','seating_number':parseInt(General_seats)},{'seating_type':'Front','seating_number':parseInt(Front_seats)},{'seating_type':'Middle','seating_number':parseInt(Middle_seats)},{'seating_type':'Back','seating_number':parseInt(Back_seats)}], 
                     'venue_name':name, 'venue_desc':desc, 'venue_address':address, 'venue_img':'url'}
     console.log(data)
     api
@@ -74,7 +75,7 @@ const AdminVenueScreen = () => {
       .then((response) => alert("Successfully done"))
       .then(() => {
         setName(''); setDesc(''); setAddress(''); setImage(''); setFrontSeats('');
-        setMiddleSeats(''); setBackSeats('');
+        setMiddleSeats(''); setBackSeats('');setGeneralSeats('');
         setVenueList([...venueList,data]);
         setOpen(false);
       })
@@ -99,6 +100,10 @@ const AdminVenueScreen = () => {
 
   const handleChangeBack = (event) => {
     setBackSeats(event.target.value);
+  };
+
+  const handleChangeGeneral = (event) => {
+    setGeneralSeats(event.target.value);
   };
 
   const handleChangeAddress = (event) => {
@@ -214,6 +219,16 @@ const AdminVenueScreen = () => {
                     style ={{'marginTop':'10px'}}
                   >
                       <FormControl>
+                        <InputLabel htmlFor="component-outlined">General Seats</InputLabel>
+                        <OutlinedInput
+                          id="component-outlined"
+                          value={General_seats}
+                          onChange={handleChangeGeneral}
+                          label="General Seats"
+                        />
+                      </FormControl>
+
+                      <FormControl>
                         <InputLabel htmlFor="component-outlined">Front Seats</InputLabel>
                         <OutlinedInput
                           id="component-outlined"
@@ -254,7 +269,7 @@ const AdminVenueScreen = () => {
         {
           venueList.map((venue) => {
             return (
-              <Card key={venue.venue_id} sx={{ maxWidth: 345 }} style={{margin:'20px'}}>
+              <Card key={venue.venue_id} sx={{ maxWidth: 450 }} style={{margin:'20px'}}>
                 <CardHeader
                   avatar={
                     <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
