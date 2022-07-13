@@ -14,6 +14,7 @@ from swagger_server import util
 port = 5432  # Change according to port in Docker
 host = 'localhost'
 
+_update_allow_list = ["event_title","event_category","event_short_desc","event_desc","event_img","tags","event_location"]
 
 def create_event(body):  # noqa: E501
     """Used to create an Event.
@@ -119,7 +120,6 @@ def get_event_details(event_id):  # noqa: E501
             event['front_seat_price'] = str(record[5])
             event['mid_seat_price'] = str(record[6])
             event['back_seat_price'] = str(record[7])
-
             event['event_title'] = str(record[8])
             event['event_category'] = str(record[9])
             event['event_short_desc'] = str(record[10])
@@ -258,86 +258,43 @@ def update_event(event_id, body):  # noqa: E501
     :type body: dict | bytes
     :rtype: Event
     """
-    try:
-        if connexion.request.is_json:
-            body = Event.from_dict(connexion.request.get_json())  # noqa: E501
+    if connexion.request.is_json:
+        body = Event.from_dict(connexion.request.get_json())
 
-        con = psycopg2.connect(database='eventastic', user='postgres',
-                               password='postgrespw', host=host, port=port)
+    # check if Event Exists
+    check = get_event_details(event_id)
+    # if error code is not 200 OK, return error
+    if check[1] != 200:
+        return check
+
+    try:
+        # Create the sql update statement
+        sql = "UPDATE events SET"
+        for attr, value in body.__dict__.items():
+            tmp_attr = attr[1:]
+            if tmp_attr in _update_allow_list and value:
+                if tmp_attr == "tags":
+                    value = formatTags(value)
+                sql = sql + " {} = '{}',".format(tmp_attr, value)
+        sql = sql[:-1] + " WHERE event_id = {}".format(event_id)
+
+        # Execute the sql update statement
+        con = psycopg2.connect(database='eventastic', user='postgres', password='postgrespw', host=host, port=port)
         con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
         cur = con.cursor()
-
-        # to check if the event id exists or not
-        cur.execute('SELECT * FROM events where event_id = ' + str(event_id))
-        record = cur.fetchone()
-        if record == None:
-            error = EventNotFoundError(code=404, type="EventNotFoundError",
-                                       message="The following Event ID does not exist: " + str(event_id))
-            cur.close()
-            con.close()
-            return error, 404, {'Access-Control-Allow-Origin': '*'}
-
-        if body.tags is None:
-            tags_string = ""
-        else:
-            tags_string = ""
-            tag_length = len(body.tags)
-            i = 0
-            for tag in body.tags:
-                if i < tag_length-1:
-                    tags_string = tags_string + tag.name + ','
-                else:
-                    tags_string = tags_string + tag.name
-                i += 1
-
-        # Perform Update
-        update_string = "UPDATE events set "
-
-        if body.gen_seat_price != None:
-            update_string += f" gen_seat_price='{body.gen_seat_price}',"
-        if body.front_seat_price != None:
-            update_string += f" front_seat_price='{body.front_seat_price}',"
-        if body.mid_seat_price != None:
-            update_string += f" mid_seat_price='{body.mid_seat_price}',"
-        if body.back_seat_price != None:
-            update_string += f" back_seat_price='{body.back_seat_price}',"
-        if body.event_title != None:
-            update_string += f" event_title='{body.event_title}',"
-        if body.event_category != None:
-            update_string += f" event_category='{body.event_category}',"
-        if body.event_short_desc != None:
-            update_string += f" event_short_desc='{body.event_short_desc}',"
-        if body.event_desc != None:
-            update_string += f" event_desc='{body.event_desc}',"
-        if body.event_start_datetime != None:
-            update_string += f" event_start_datetime='{body.event_start_datetime}',"
-        if body.event_end_datetime != None:
-            update_string += f" event_end_datetime='{body.event_end_datetime}',"
-        if body.event_location != None:
-            update_string += f" event_location='{body.event_location}',"
-        if body.event_img != None:
-            update_string += f" event_img='{body.event_img}',"
-        if body.event_status != None:
-            update_string += f" event_status='{body.event_status}',"
-        if tags_string != "":
-            update_string += f" tags='{tags_string}',"
-
-        update_string = list(update_string)
-        update_string[-1] = " "
-        update_string = "".join(update_string)
-        update_string += f" where event_id = {event_id} RETURNING event_id;"
-        cur.execute(update_string)
-        body.event_id = cur.fetchone()[0]
-
+        cur.execute(sql)
         cur.close()
         con.close()
-        return body, 200, {'Access-Control-Allow-Origin': '*'}
-
     except Exception as e:
         # catch any unexpected runtime error and return as 500 error
-        error = UnexpectedServiceError(
-            code="500", type="UnexpectedServiceError", message=str(e))
+        cur.close()
+        con.close()
+        error = UnexpectedServiceError(code="500", type="UnexpectedServiceError", message=str(e))
         return error, 500, {'Access-Control-Allow-Origin': '*'}
+
+    # return the updated record
+    result = get_event_details(event_id)
+    return result
 
 
 def update_event_options(event_id):  # noqa: E501
@@ -410,3 +367,11 @@ def update_event_status(event_id, body):  # noqa: E501
         error = UnexpectedServiceError(
             code="500", type="UnexpectedServiceError", message=str(e))
         return error, 500, {'Access-Control-Allow-Origin': '*'}
+
+
+# Transforms the JSON tag array into tag1, tag2, tag3 etc..
+def formatTags(tags):
+    formatted = ""
+    for tag in tags:
+        formatted = formatted + tag.name + ","
+    return formatted[:-1] 
