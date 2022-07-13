@@ -3,6 +3,8 @@ import { useParams } from 'react-router-dom';
 import { PageContainer } from '../components/styles/layouts.styled'
 import ReviewModal from '../components/review/ReviewModal'
 import TicketPurchaseModal from '../components/ticket/TicketPurchaseModal';
+import GroupListModal from '../components/group/GroupListModal';
+import GroupMainModal  from '../components/group/GroupMainModal';
 import EventAPI from "../utils/EventAPIHelper";
 import Grid from '@mui/material/Grid';
 import { styled } from '@mui/material/styles';
@@ -36,6 +38,8 @@ const EventScreen = () => {
   const [eventDetails, setEventDetails] = useState([])
   const [openTicketModal, setOpenTicketModal] = useState(false)
   const [openReviewModal, setOpenReviewModal] = useState(false)
+  const [openGroupListModal, setOpenGroupListModal] = useState(false)
+  const [openGroupMainModal, setOpenGroupMainModal] = useState(false)
 
   useEffect(() => {
     api
@@ -81,7 +85,7 @@ const EventScreen = () => {
               <Button variant="contained" href="#contained-buttons" color="warning" onClick={() => setOpenReviewModal(true)}>
                 Reviews
               </Button>
-              <Button variant="contained" href="#contained-buttons" color="info">
+              <Button variant="contained" href="#contained-buttons" color="info" onClick={() => setOpenGroupListModal(true)}>
                 Find Groups
               </Button>
             </Stack>
@@ -115,8 +119,10 @@ const EventScreen = () => {
           </GridItem>
         </Grid>
       </Grid>
-      <TicketPurchaseModal open={openTicketModal} setOpen={setOpenTicketModal} event={eventDetails} />
-      <ReviewModal open={openReviewModal} setOpen={setOpenReviewModal} event={eventDetails}/>
+      <TicketPurchaseModal open={openTicketModal} setOpen={setOpenTicketModal} eventDetails={eventDetails} />
+      <ReviewModal open={openReviewModal} setOpen={setOpenReviewModal} eventDetails={eventDetails}/>
+      <GroupListModal open={openGroupListModal} setOpen={setOpenGroupListModal} eventDetails={eventDetails} />
+      <GroupMainModal open={openGroupMainModal} setOpen={setOpenGroupMainModal} eventDetails={eventDetails} />
     </PageContainer>
   )
 }

@@ -35,25 +35,25 @@ const AccountMain = ({ accountPage, changePage }) => {
   const [hostChange, setHostChange] = useState('');
   const [toggleTickets, setToggleTickets] = useState(false)
   const [toggleEvents, setToggleEvents] = useState(false)
-  const [manageEvent, setManageEvent] = useState({})
+  const [managedEventDetails, setManagedEventDetails] = useState({})
 
   useEffect(() => {
-    accountPage !== 'manageEvent' && setManageEvent({})
+    accountPage !== 'managedEventDetails' && setManagedEventDetails({})
   }, [accountPage])
 
   useEffect(() => {
-    if (Object.keys(manageEvent).length !== 0 && accountPage !== 'manageEvent') {
-      changePage('manageEvent')
+    if (Object.keys(managedEventDetails).length !== 0 && accountPage !== 'managedEventDetails') {
+      changePage('managedEventDetails')
     }
-  }, [manageEvent])
+  }, [managedEventDetails])
 
   return (
     <AccountContainer>
       <FlexBox justify='space-between'>
         <Typography variant='h6'>
-          {Object.keys(manageEvent).length === 0
-          ? PageTitles[accountPage]
-          : `Manage: ${manageEvent.event_title}`
+          {Object.keys(managedEventDetails).length === 0
+            ? PageTitles[accountPage]
+            : `Manage: ${managedEventDetails.event_title}`
           }
         </Typography>
         {(() => {
@@ -96,8 +96,8 @@ const AccountMain = ({ accountPage, changePage }) => {
           else if (accountPage === 'events') {
             return (
               // TODO negative margins on media mobile
-              <FlexBox justify='space-between' sx={{ml:-50 }}>
-                <FlexBox sx={{ml:'auto', mr:10}}>
+              <FlexBox justify='space-between' sx={{ ml: -50 }}>
+                <FlexBox sx={{ ml: 'auto', mr: 10 }}>
                   <Button onClick={() => setToggleEvents(true)}
                     variant="contained" color='success' sx={{
                       top: '45px', width: '117px', mr: 7,
@@ -151,11 +151,15 @@ const AccountMain = ({ accountPage, changePage }) => {
           )
         } else if (accountPage === 'events') {
           return (
-            <HostEventsPage toggle={toggleEvents} setManageEvent={setManageEvent} />
+            <HostEventsPage toggle={toggleEvents} setManagedEventDetails={setManagedEventDetails} />
           )
-        } else if (accountPage === 'manageEvent') {
+        } else if (accountPage === 'managedEventDetails') {
           return (
-            <ManageEventDetailsPage eventDetails={manageEvent} changePage={changePage} />
+            <ManageEventDetailsPage
+              managedEventDetails={managedEventDetails}
+              setManagedEventDetails={setManagedEventDetails}
+              changePage={changePage}
+            />
           )
         }
 

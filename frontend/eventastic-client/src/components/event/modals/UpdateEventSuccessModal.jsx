@@ -2,7 +2,7 @@ import { StandardModal, ModalBody, ModalTitle } from '../../styles/modal/modal.s
 import { FlexBox } from '../../styles/layouts.styled';
 import { Button } from '@mui/material';
 
-const UpdateEventSuccessModal = ({ open, setOpen, eventDetails }) => {
+const UpdateEventSuccessModal = ({ open, setOpen }) => {
 
   const handleClose = () => {
     setOpen(false);

@@ -30,7 +30,7 @@ function formatDate(datetime) {
   return d.toLocaleDateString("en-US", dateFormat)
 }
 
-const ManageEventDetailsPage = ({ eventDetails, changePage }) => {
+const ManageEventDetailsPage = ({ managedEventDetails, setManagedEventDetails, changePage }) => {
   const [openSentModal, setSentModal] = useState(false)
   const [openBroadcast, setOpenBroadcast] = useState(false)
   const [openEventUpdateModal, setOpenEventUpdateModal] = useState(false)
@@ -42,7 +42,7 @@ const ManageEventDetailsPage = ({ eventDetails, changePage }) => {
         <Grid item xs={6} md={6}>
           <div>
             <img
-              src={process.env.PUBLIC_URL + '/img/event/' + eventDetails.event_img}
+              src={process.env.PUBLIC_URL + '/img/event/' + managedEventDetails.event_img}
               width="100%"
               alt="A visulaisation of the Event"
             >
@@ -52,31 +52,31 @@ const ManageEventDetailsPage = ({ eventDetails, changePage }) => {
         <Grid item xs={6} md={6}>
           <GridItem>
             <Typography gutterBottom variant="h4" component="div">
-              {eventDetails.event_title}
+              {managedEventDetails.event_title}
             </Typography>
             <Typography gutterBottom variant="body1" component="div">
-              <b>Where is it?</b><br></br>{eventDetails.event_location}
+              <b>Where is it?</b><br></br>{managedEventDetails.event_location}
             </Typography>
             <Typography gutterBottom variant="body1" component="div">
-              <b>When does it start?</b><br></br>{formatDate(eventDetails.event_start_datetime)}
+              <b>When does it start?</b><br></br>{formatDate(managedEventDetails.event_start_datetime)}
             </Typography>
             <Typography gutterBottom variant="body1" component="div">
-              <b>When does it end?</b><br></br>{formatDate(eventDetails.event_end_datetime)}
+              <b>When does it end?</b><br></br>{formatDate(managedEventDetails.event_end_datetime)}
             </Typography>
             <Typography gutterBottom variant="body1" component="div">
               <b>What is the price range?</b> $20-$30
             </Typography>
             <Grid container spacing={2}>
               <Grid item xs={6}>
-                <Button 
-                   variant="contained" href="#contained-buttons" color="success" fullWidth
-                   onClick={() => setOpenEventUpdateModal(true)}
+                <Button
+                  variant="contained" href="#contained-buttons" color="success" fullWidth
+                  onClick={() => setOpenEventUpdateModal(true)}
                 >
                   Update Event
                 </Button>
               </Grid>
               <Grid item xs={6}>
-                <Button 
+                <Button
                   variant="contained" href="#contained-buttons" color="primary" fullWidth
                   onClick={() => setOpenBroadcast(true)}
                 >
@@ -102,7 +102,7 @@ const ManageEventDetailsPage = ({ eventDetails, changePage }) => {
               Overview:
             </Typography>
             <Typography gutterBottom variant="body1" component="div">
-              {eventDetails.event_desc}
+              {managedEventDetails.event_desc}
             </Typography>
           </GridItem>
         </Grid>
@@ -112,7 +112,7 @@ const ManageEventDetailsPage = ({ eventDetails, changePage }) => {
               Tags:
             </Typography>
             <Stack direction="row" spacing={2}>
-              {eventDetails.tags?.map(function (tag, i) {
+              {managedEventDetails.tags?.map(function (tag, i) {
                 return (
                   <Chip
                     key={i}
@@ -124,27 +124,27 @@ const ManageEventDetailsPage = ({ eventDetails, changePage }) => {
           </GridItem>
         </Grid>
       </Grid>
-      <BroadcastModal 
+      <BroadcastModal
         open={openBroadcast}
         setOpen={setOpenBroadcast}
-        eventDetails={eventDetails}
+        managedEventDetails={managedEventDetails}
         setSuccessModal={setSentModal}
       />
       <BroadcastSentModal
         open={openSentModal}
         setOpen={setSentModal}
-        eventDetails={eventDetails}
+        managedEventDetails={managedEventDetails}
       />
-      <UpdateEventModal 
+      <UpdateEventModal
         open={openEventUpdateModal}
         setOpen={setOpenEventUpdateModal}
-        eventDetails={eventDetails}
+        managedEventDetails={managedEventDetails}
+        setManagedEventDetails={setManagedEventDetails}
         setSuccessModal={setOpenEventUpdateSuccessModal}
       />
       <UpdateEventSuccessModal
         open={openEventUpdateSuccessModal}
         setOpen={setOpenEventUpdateSuccessModal}
-        eventDetails={eventDetails}
       />
     </ScrollContainer>
   )

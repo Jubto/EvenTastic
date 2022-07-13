@@ -9,7 +9,7 @@ import { LargeModal, ModalBodyLarge, ModalTitle } from '../styles/modal/modal.st
 import { Divider } from '@mui/material';
 
 
-const TicketPurchaseModal = ({ open, setOpen, event }) => {
+const TicketPurchaseModal = ({ open, setOpen, eventDetails }) => {
   const [page, setPage] = useState('selection')
   const [ticketDetails, setTicketDetails] = useState({})
 
@@ -19,7 +19,7 @@ const TicketPurchaseModal = ({ open, setOpen, event }) => {
 
   return (
     <LargeModal open={open} onClose={handleClose} aria-labelledby="Purchase ticket modal" maxWidth='lg'>
-      <ModalTitle title={`Purchase tickets for ${event.event_title}`} close={handleClose} />
+      <ModalTitle title={`Purchase tickets for ${eventDetails.event_title}`} close={handleClose} />
       <ModalBodyLarge>
         <FlexBox sx={{ height: '100%' }}>
           ${(() => {

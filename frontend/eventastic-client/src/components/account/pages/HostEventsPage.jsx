@@ -16,7 +16,7 @@ function formatDate(datetime) {
   return d.toLocaleDateString("en-US", dateFormat)
 }
 
-const EventCard = ({ eventDetails, setManageEvent }) => {
+const EventCard = ({ eventDetails, setManagedEventDetails }) => {
   return (
     <FlexBox id={eventDetails.event_id} sx={{ border: '1px solid black', m: 3 }}>
       <Stack
@@ -36,7 +36,7 @@ const EventCard = ({ eventDetails, setManageEvent }) => {
           <b>Start Date:</b><br></br>{formatDate(eventDetails.event_start_datetime)}<br></br>
           <b>End Date:</b><br></br>{formatDate(eventDetails.event_end_datetime)}
         </Typography>
-        <Link onClick={() => setManageEvent(eventDetails)} width="10%">
+        <Link onClick={() => setManagedEventDetails(eventDetails)} width="10%">
           <button>Manage Event</button>
         </Link>
       </Stack>
@@ -44,7 +44,7 @@ const EventCard = ({ eventDetails, setManageEvent }) => {
   )
 }
 
-const HostEventsPage = ({ toggle, setManageEvent }) => {
+const HostEventsPage = ({ toggle, setManagedEventDetails }) => {
   const context = useContext(StoreContext);
   const [hostDetails] = context.host;
   const [upComingEvents, setUpComingEvents] = useState([])
@@ -80,14 +80,14 @@ const HostEventsPage = ({ toggle, setManageEvent }) => {
         ? <div>
           {PastEvents.map((eventDetails, idx) => (
             <EventCard key={idx} eventDetails={eventDetails}
-            setManageEvent={setManageEvent}
+              setManagedEventDetails={setManagedEventDetails}
             />
           ))}
         </div>
         : <div>
           {upComingEvents.map((eventDetails, idx) => (
             <EventCard key={idx} eventDetails={eventDetails}
-              setManageEvent={setManageEvent}
+              setManagedEventDetails={setManagedEventDetails}
             />
           ))}
         </div>
