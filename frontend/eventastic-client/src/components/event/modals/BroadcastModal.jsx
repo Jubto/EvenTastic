@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import EventAPI from '../../../utils/EventAPIHelper';
-import EmailAPI from '../../../utils/emailAPIhelper';
+import EmailAPI from '../../../utils/EmailAPIHelper';
 import { StandardModal, ModalBody, ModalTitle } from '../../styles/modal/modal.styled';
 import { FlexBox } from '../../styles/layouts.styled';
 import { Button, TextField, Typography, styled } from '@mui/material';
