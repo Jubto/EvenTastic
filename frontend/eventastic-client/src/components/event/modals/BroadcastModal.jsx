@@ -84,7 +84,7 @@ const BroadcastModal = ({ open, setOpen, eventDetails }) => {
             total_cost: 200
           }
         ]
-        const bookingRes = eventAPI.getBookings(param)
+        const bookingRes = await eventAPI.getBookings(param)
         // const emailsToBroadcast = res.data.map((booking) => booking.booking_email)
         const emailsToBroadcast = tempBookingData.map((booking) => ({email_address : booking.booking_email}))
         const sendgridBroadcast = {
@@ -96,11 +96,8 @@ const BroadcastModal = ({ open, setOpen, eventDetails }) => {
           },
           email_to: emailsToBroadcast
         }
-        console.log(sendgridBroadcast)
-        const emailRes = emailAPI.postEmails(sendgridBroadcast)
-        console.log(emailsToBroadcast)
-        console.log(bookingRes.data)
-        console.log('EMAIL RES IS :::')
+        const emailRes = await emailAPI.postEmails(sendgridBroadcast)
+        console.log('EMAILS SENT')
         console.log(emailRes)
       }
       catch(err) {
