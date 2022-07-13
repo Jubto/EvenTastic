@@ -1,12 +1,13 @@
 import { useState } from "react"
+import { ScrollContainer } from "../../styles/layouts.styled"
 
 const AccountPointsPage = () => {
   const [open, setOpen] = useState()
 
   return (
-    <div>
+    <ScrollContainer thin pr='1vw'>
       AccountPointsPage
-    </div>
+    </ScrollContainer>
   )
 }
 

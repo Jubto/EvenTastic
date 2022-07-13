@@ -40,7 +40,11 @@ export default class EventAPI {
     return this.init().get("/tickets/", { params: params });
   }; 
 
-  getBookings = (accountID, params) => {
+  getBookings = (params) => {
+    return this.init().get('/bookings', { params: params });
+  };
+
+  getBooking = (accountID, params) => {
     return this.init().get(`/bookings/${accountID}`, { params: params });
   };
 

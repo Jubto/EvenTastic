@@ -7,13 +7,12 @@ from swagger_server.models.email import Email
 from swagger_server.models.unexpected_service_error import UnexpectedServiceError
 
 
-API_KEY = "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"
+API_KEY = "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"
 
 
 def send_email(body):
     if connexion.request.is_json:
         body = Email.from_dict(connexion.request.get_json())
-    
     try:
         to_emails = []
         for rec in body.email_to:
