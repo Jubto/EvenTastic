@@ -9,7 +9,7 @@ import { Button, Divider, IconButton, Typography } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 
-const ReviewModal = ({ open, setOpen, event }) => {
+const ReviewModal = ({ open, setOpen, eventDetails }) => {
   const context = useContext(StoreContext);
   const [account, setAccount] = context.account;
   const [hostDetails, setHostDetails] = context.host;
@@ -33,7 +33,7 @@ const ReviewModal = ({ open, setOpen, event }) => {
       <StyledTitle direction='column'>
         <FlexBox justify='center'>
           <Typography variant='h5' sx={{ml:'auto'}}>
-            Reivews for {event.event_title}
+            Reivews for {eventDetails.event_title}
           </Typography>
           <IconButton aria-label="close" onClick={handleClose} sx={{ml:'auto'}}>
             <CloseIcon />
