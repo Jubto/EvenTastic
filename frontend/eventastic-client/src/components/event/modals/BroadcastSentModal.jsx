@@ -2,7 +2,7 @@ import { StandardModal, ModalBody, ModalTitle } from '../../styles/modal/modal.s
 import { FlexBox } from '../../styles/layouts.styled';
 import { Button } from '@mui/material';
 
-const BroadcastSentModal = ({ open, setOpen, eventDetails }) => {
+const BroadcastSentModal = ({ open, setOpen, managedEventDetails }) => {
 
   const handleClose = () => {
     setOpen(false);
@@ -12,7 +12,7 @@ const BroadcastSentModal = ({ open, setOpen, eventDetails }) => {
     <StandardModal open={open} onClose={handleClose} aria-labelledby="login modal" maxWidth='lg'>
       <ModalTitle title='Broadcast sent!' close={handleClose} />
       <ModalBody>
-        Your broadcast has been sent to everybody who has a booking with <b>{eventDetails.event_title}</b>
+        Your broadcast has been sent to everybody who has a booking with <b>{managedEventDetails.event_title}</b>
       </ModalBody>
       <FlexBox justify='space-between'>
         <Button

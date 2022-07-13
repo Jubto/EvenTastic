@@ -6,7 +6,7 @@ import GroupRequestsPage from './pages-main/GroupRequestsPage';
 import { FlexBox } from '../styles/layouts.styled';
 import { StyledTitle, LargeModal, ModalBodyLarge } from '../styles/modal/modal.styled';
 import { Button, Divider, IconButton, Tabs , Tab, Typography } from '@mui/material';
-
+import CloseIcon from '@mui/icons-material/Close';
 
 const GroupMainModal = ({ open, setOpen, eventDetails }) => {
   const context = useContext(StoreContext);
@@ -32,7 +32,7 @@ const GroupMainModal = ({ open, setOpen, eventDetails }) => {
           <Typography variant='h5'>
             Your group name
           </Typography>
-          <IconButton aria-label="close" onClick={close}>
+          <IconButton aria-label="close" onClick={handleClose}>
             <CloseIcon />
           </IconButton>
         </FlexBox>

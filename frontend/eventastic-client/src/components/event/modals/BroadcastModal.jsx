@@ -15,7 +15,7 @@ const BroadcastTitle = styled(Typography)`
   font-weight: 1000;
 `
 
-const BroadcastModal = ({ open, setOpen, eventDetails, setSuccessModal }) => {
+const BroadcastModal = ({ open, setOpen, managedEventDetails, setSuccessModal }) => {
   const [formErrors, setFormErrors] = useState({
     title: false,
     message: false
@@ -44,7 +44,7 @@ const BroadcastModal = ({ open, setOpen, eventDetails, setSuccessModal }) => {
     if (!formErrors.error) {
       try {
         const param = {
-          'event_id': eventDetails.event_id,
+          'event_id': managedEventDetails.event_id,
           'booking_status': 'Booked'
         }
         const bookingRes = await eventAPI.getBookings(param)
