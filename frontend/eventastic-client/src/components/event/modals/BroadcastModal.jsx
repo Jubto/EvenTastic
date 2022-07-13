@@ -7,6 +7,7 @@ import { Button, TextField, Typography, styled } from '@mui/material';
 
 const eventAPI = new EventAPI();
 const emailAPI = new EmailAPI();
+const evenTasticEmail = 'eventastic.comp9900@gmail.com'
 
 const BroadcastTitle = styled(Typography)`
   margin-bottom: 0.5rem;
@@ -14,7 +15,7 @@ const BroadcastTitle = styled(Typography)`
   font-weight: 1000;
 `
 
-const BroadcastModal = ({ open, setOpen, eventDetails }) => {
+const BroadcastModal = ({ open, setOpen, eventDetails, setSuccessModal }) => {
   const [formErrors, setFormErrors] = useState({
     title: false,
     message: false
@@ -41,67 +42,27 @@ const BroadcastModal = ({ open, setOpen, eventDetails }) => {
     }
 
     if (!formErrors.error) {
-      const param = {
-        'event_id': eventDetails.event_id,
-        'booking_status': 'Booked'
-      }
       try {
-        const tempBookingData = [
-          {
-            account_id: 7,
-            booking_email: "kentocroft@gmail.com",
-            booking_id: 1,
-            booking_status: "Booked",
-            event_id: 2,
-            ticket_details: "{}",
-            total_cost: 200
-          },
-          {
-            account_id: 2,
-            booking_email: "jubjubfriend@gmail.com",
-            booking_id: 1,
-            booking_status: "Booked",
-            event_id: 2,
-            ticket_details: "{}",
-            total_cost: 200
-          },
-          // {
-          //   account_id: 2,
-          //   booking_email: "lordbyronshelly@gmail.com",
-          //   booking_id: 1,
-          //   booking_status: "Booked",
-          //   event_id: 2,
-          //   ticket_details: "{}",
-          //   total_cost: 200
-          // },
-          {
-            account_id: 2,
-            booking_email: "k.croft@student.unsw.edu.au",
-            booking_id: 1,
-            booking_status: "Booked",
-            event_id: 2,
-            ticket_details: "{}",
-            total_cost: 200
-          }
-        ]
+        const param = {
+          'event_id': eventDetails.event_id,
+          'booking_status': 'Booked'
+        }
         const bookingRes = await eventAPI.getBookings(param)
-        // const emailsToBroadcast = res.data.map((booking) => booking.booking_email)
-        const emailsToBroadcast = tempBookingData.map((booking) => ({email_address : booking.booking_email}))
+        const emailsToBroadcast = bookingRes.data.map((booking) => ({email_address : booking.booking_email}))
         const sendgridBroadcast = {
           email_subject: title,
           email_content: message,
           email_from: {
-            email_address: "eventastic.comp9900@gmail.com",
+            email_address: evenTasticEmail,
             name: "EvenTastic"
           },
           email_to: emailsToBroadcast
         }
         const emailRes = await emailAPI.postEmails(sendgridBroadcast)
-        console.log('EMAILS SENT')
-        console.log(emailRes)
+        handleClose(true)
+        setSuccessModal(true)
       }
       catch(err) {
-        console.log('ERROR')
         console.log(err)
       }
     }

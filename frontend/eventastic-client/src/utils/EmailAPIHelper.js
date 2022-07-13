@@ -22,8 +22,6 @@ export default class EmailAPI {
     return this.client;
   };
 
-
-  
   postEmails = (body) => {
     return this.init().post("/email", body);
   };

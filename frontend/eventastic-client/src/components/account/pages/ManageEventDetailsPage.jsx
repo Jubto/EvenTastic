@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { ScrollContainer } from '../../../components/styles/layouts.styled'
 import BroadcastModal from '../../event/modals/BroadcastModal';
+import BroadcastSentModal from '../../event/modals/BroadcastSentModal';
 import Grid from '@mui/material/Grid';
 import { styled } from '@mui/material/styles';
 import Paper from '@mui/material/Paper';
@@ -28,6 +29,7 @@ function formatDate(datetime) {
 }
 
 const ManageEventDetailsPage = ({ eventDetails, changePage }) => {
+  const [openSentModal, setSentModal] = useState(false)
   const [openBroadcast, setOpenBroadcast] = useState(false)
 
   return (
@@ -116,7 +118,14 @@ const ManageEventDetailsPage = ({ eventDetails, changePage }) => {
         </Grid>
       </Grid>
       <BroadcastModal 
-        open={openBroadcast} setOpen={setOpenBroadcast}
+        open={openBroadcast}
+        setOpen={setOpenBroadcast}
+        eventDetails={eventDetails}
+        setSuccessModal={setSentModal}
+      />
+      <BroadcastSentModal
+        open={openSentModal}
+        setOpen={setSentModal}
         eventDetails={eventDetails}
       />
     </ScrollContainer>
