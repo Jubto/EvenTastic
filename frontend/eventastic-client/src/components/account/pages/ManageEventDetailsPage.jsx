@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { ScrollContainer } from '../../../components/styles/layouts.styled'
 import BroadcastModal from '../../event/modals/BroadcastModal';
 import BroadcastSentModal from '../../event/modals/BroadcastSentModal';
+import UpdateEventModal from '../../event/modals/UpdateEventModal';
+import UpdateEventSuccessModal from '../../event/modals/UpdateEventSuccessModal';
 import Grid from '@mui/material/Grid';
 import { styled } from '@mui/material/styles';
 import Paper from '@mui/material/Paper';
@@ -31,6 +33,8 @@ function formatDate(datetime) {
 const ManageEventDetailsPage = ({ eventDetails, changePage }) => {
   const [openSentModal, setSentModal] = useState(false)
   const [openBroadcast, setOpenBroadcast] = useState(false)
+  const [openEventUpdateModal, setOpenEventUpdateModal] = useState(false)
+  const [openEventUpdateSuccessModal, setOpenEventUpdateSuccessModal] = useState(false)
 
   return (
     <ScrollContainer thin pr='1vw'>
@@ -64,7 +68,10 @@ const ManageEventDetailsPage = ({ eventDetails, changePage }) => {
             </Typography>
             <Grid container spacing={2}>
               <Grid item xs={6}>
-                <Button variant="contained" href="#contained-buttons" color="success" fullWidth>
+                <Button 
+                   variant="contained" href="#contained-buttons" color="success" fullWidth
+                   onClick={() => setOpenEventUpdateModal(true)}
+                >
                   Update Event
                 </Button>
               </Grid>
@@ -126,6 +133,17 @@ const ManageEventDetailsPage = ({ eventDetails, changePage }) => {
       <BroadcastSentModal
         open={openSentModal}
         setOpen={setSentModal}
+        eventDetails={eventDetails}
+      />
+      <UpdateEventModal 
+        open={openEventUpdateModal}
+        setOpen={setOpenEventUpdateModal}
+        eventDetails={eventDetails}
+        setSuccessModal={setOpenEventUpdateSuccessModal}
+      />
+      <UpdateEventSuccessModal
+        open={openEventUpdateSuccessModal}
+        setOpen={setOpenEventUpdateSuccessModal}
         eventDetails={eventDetails}
       />
     </ScrollContainer>

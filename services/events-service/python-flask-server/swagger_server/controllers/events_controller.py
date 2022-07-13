@@ -275,7 +275,7 @@ def update_event(event_id, body):  # noqa: E501
             if tmp_attr in _update_allow_list and value:
                 if tmp_attr == "tags":
                     value = formatTags(value)
-                sql = sql + " {} = '{}',".format(tmp_attr, value)
+                sql = sql + " {} = '{}',".format(tmp_attr, value.replace("'", "''"))
         sql = sql[:-1] + " WHERE event_id = {}".format(event_id)
 
         # Execute the sql update statement
