@@ -63,12 +63,6 @@ const AccountDetailsPage = ({ change, setChange }) => {
     cardExpiry: null
   })
 
-  // const displayImage = async (event) => {
-  //   const fileName = event.target.files[0].name
-  //   console.log(URL.createObjectURL(event.target.files[0]))
-  //   setImageUpload(fileName)
-  // }
-
   const handleImage = async (event) => {
     const imageFile = event.target.files[0]
     const imageBlob = await fileToDataUrl(imageFile)

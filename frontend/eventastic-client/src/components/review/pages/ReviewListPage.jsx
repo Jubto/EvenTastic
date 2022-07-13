@@ -1,8 +1,10 @@
-import React from 'react'
+import { ScrollContainer } from "../../styles/layouts.styled"
 
 const ReviewListPage = () => {
   return (
-    <div>ReviewListPage</div>
+    <ScrollContainer thin>
+      ReviewListPage
+    </ScrollContainer>
   )
 }
 

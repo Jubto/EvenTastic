@@ -1,8 +1,22 @@
-import React from 'react'
+import { ScrollContainer } from "../../styles/layouts.styled"
+import { Box, Button } from "@mui/material"
 
-const RespondReviewPage = () => {
+const RespondReviewPage = ({ setPage, setReviews }) => {
+
+  const handleSubmit = (event) => {
+    // setReviews(prevState => { return { ...prevState, newReview } })
+    setPage('listReviews')
+  }
+
   return (
-    <div>RespondReviewPage</div>
+    <ScrollContainer thin>
+      <Box id='form' component="form" noValidate onSubmit={handleSubmit}>
+        RespondReviewPage
+        <Button variant='contained' type='submit'>
+          Post Reply
+        </Button>
+      </Box>
+    </ScrollContainer>
   )
 }
 
