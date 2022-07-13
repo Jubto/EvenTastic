@@ -22,9 +22,9 @@ align-self: center;
 margin-top: 1rem;
 `
 
-export const SideBarItem = ({ title, onClick, children }) => {
+export const SideBarItem = ({ title, onClick, children, selected }) => {
   return (
-    <ListItemButton onClick={onClick}>
+    <ListItemButton onClick={onClick} selected={selected}>
       <ListItemIcon>
         {children}
       </ListItemIcon>

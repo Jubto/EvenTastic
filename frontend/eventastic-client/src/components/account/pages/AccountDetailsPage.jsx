@@ -1,4 +1,5 @@
 import { useContext, useEffect, useState, useRef } from 'react';
+import { fileToDataUrl } from '../../../utils/helpers';
 import { StoreContext } from '../../../utils/context';
 import AccountAPI from '../../../utils/AccountAPIHelper';
 import AccountUpdatedModal from '../modals/AccountUpdatedModal'
@@ -17,15 +18,19 @@ const api = new AccountAPI();
 const ImageHolder = styled(Button)`
   border: 1px solid black;
   cursor: pointer;
-  height:0;
+  height:100%;
   width:100%;
-  padding-bottom:100%;
+  max-height: 350px;
+  max-width: 350px;
+  ${({theme}) => theme.breakpoints.down("md")} {
+    max-width: 100%;
+  }
   background-color: ${({ theme }) => theme.palette.evenTastic.dull};
 `
 
 const Image = styled('img')`
-  margin-top: auto;
-  width: 100%;
+  max-height: 100%;
+  max-width: 100%;
 `
 
 const ToggleGrid = styled(Grid)`
@@ -58,10 +63,18 @@ const AccountDetailsPage = ({ change, setChange }) => {
     cardExpiry: null
   })
 
-  const displayImage = async (event) => {
-    const fileName = event.target.files[0].name
-    console.log(URL.createObjectURL(event.target.files[0]))
-    setImageUpload(fileName)
+  // const displayImage = async (event) => {
+  //   const fileName = event.target.files[0].name
+  //   console.log(URL.createObjectURL(event.target.files[0]))
+  //   setImageUpload(fileName)
+  // }
+
+  const handleImage = async (event) => {
+    const imageFile = event.target.files[0]
+    const imageBlob = await fileToDataUrl(imageFile)
+    console.log(imageBlob)
+    console.log(URL.createObjectURL(imageFile))
+    setImageUpload(imageBlob)
   }
 
   const scrollTo = () => {
@@ -137,7 +150,6 @@ const AccountDetailsPage = ({ change, setChange }) => {
     }
 
     if (!formErrors.error) {
-      console.log("NO ERROR")
       const body = {
         "user_desc": blurb ? blurb : account.user_desc,
         "age": age ? parseInt(age) : account.age ? parseInt(account.age) : 0,
@@ -149,8 +161,6 @@ const AccountDetailsPage = ({ change, setChange }) => {
         "password": password1 ? password1 : account.password,
         "profile_pic": imgUpload ? imgUpload : account.profile_pic
       }
-      console.log('sending body')
-      console.log(body)
       try {
         const accountRes = await api.putAccount(account.account_id, body)
         setAccount(prevState => { return { ...prevState, ...accountRes.data } })
@@ -177,8 +187,6 @@ const AccountDetailsPage = ({ change, setChange }) => {
   };
 
   useEffect(() => {
-    console.log('========================details Page')
-    console.log(account)
     Object.keys(card).length !== 0 && setAddCard(true)
     setChange(false)
   }, [])
@@ -197,20 +205,20 @@ const AccountDetailsPage = ({ change, setChange }) => {
           <ImageHolder component='label'>
             <input
               hidden type="file" name="profilePicture"
-              id="profilePicture" label="profilePicture" onChange={displayImage}
+              id="profilePicture" label="profilePicture" onChange={handleImage}
             />
             {(() => {
               if (account.profile_pic && !imgUpload) {
                 return (
                   <Image
-                    src={`${process.env.PUBLIC_URL}/img/profile-dp/${account.profile_pic}`}
+                    src={account.profile_pic}
                     alt="Account profile picture"
                   />
                 )
               } else if (imgUpload) {
                 return (
                   <Image
-                    src={`${process.env.PUBLIC_URL}/img/profile-dp/${imgUpload}`}
+                    src={imgUpload}
                     alt="Account profile picture"
                   />
                 )

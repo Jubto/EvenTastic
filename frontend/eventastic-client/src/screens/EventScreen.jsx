@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { PageContainer } from '../components/styles/layouts.styled'
+import ReviewModal from '../components/review/ReviewModal'
 import TicketPurchaseModal from '../components/ticket/TicketPurchaseModal';
 import EventAPI from "../utils/EventAPIHelper";
 import Grid from '@mui/material/Grid';
@@ -34,6 +35,7 @@ const EventScreen = () => {
   const { id } = useParams();
   const [eventDetails, setEventDetails] = useState([])
   const [openTicketModal, setOpenTicketModal] = useState(false)
+  const [openReviewModal, setOpenReviewModal] = useState(false)
 
   useEffect(() => {
     api
@@ -76,7 +78,7 @@ const EventScreen = () => {
               <Button variant="contained" href="#contained-buttons" color="error" onClick={() => setOpenTicketModal(true)}>
                 Tickets
               </Button>
-              <Button variant="contained" href="#contained-buttons" color="warning">
+              <Button variant="contained" href="#contained-buttons" color="warning" onClick={() => setOpenReviewModal(true)}>
                 Reviews
               </Button>
               <Button variant="contained" href="#contained-buttons" color="info">
@@ -114,6 +116,7 @@ const EventScreen = () => {
         </Grid>
       </Grid>
       <TicketPurchaseModal open={openTicketModal} setOpen={setOpenTicketModal} event={eventDetails} />
+      <ReviewModal open={openReviewModal} setOpen={setOpenReviewModal} event={eventDetails}/>
     </PageContainer>
   )
 }

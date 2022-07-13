@@ -11,7 +11,7 @@ import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
 import EventIcon from '@mui/icons-material/Event';
 import { Button, Divider, List} from '@mui/material';
 
-const AccountSideBar = ({ changePage }) => {
+const AccountSideBar = ({ accountPage, changePage }) => {
   const context = useContext(StoreContext);
   const [hostDetails] = context.host;
 
@@ -26,19 +26,39 @@ const AccountSideBar = ({ changePage }) => {
       </SideBarTitle>
       <Divider variant="middle" sx={{ mb: 2 }} />
       <List component='nav'>
-        <SideBarItem title='Account details' onClick={() => handleChangePage('account')}>
+        <SideBarItem
+          title='Account details'
+          selected={accountPage === 'account' ? true : false}
+          onClick={() => handleChangePage('account')}
+        >
           <AccountBoxIcon />
         </SideBarItem>
-        <SideBarItem title='My interests' onClick={() => handleChangePage('interests')}>
+        <SideBarItem 
+          title='My interests' 
+          selected={accountPage === 'interests' ? true : false}
+          onClick={() => handleChangePage('interests')}
+        >
           <InterestsIcon />
         </SideBarItem>
-        <SideBarItem title='My tickets' onClick={() => handleChangePage('tickets')}>
+        <SideBarItem 
+          title='My tickets' 
+          selected={accountPage === 'tickets' ? true : false}
+          onClick={() => handleChangePage('tickets')}
+        >
           <LocalActivityIcon />
         </SideBarItem>
-        <SideBarItem title='My reward points' onClick={() => handleChangePage('points')}>
+        <SideBarItem 
+          title='My reward points' 
+          selected={accountPage === 'points' ? true : false}
+          onClick={() => handleChangePage('points')}
+        >
           <LoyaltyIcon />
         </SideBarItem>
-        <SideBarItem title='My groups' onClick={() => handleChangePage('groups')}>
+        <SideBarItem 
+          title='My groups' 
+          selected={accountPage === 'groups' ? true : false}
+          onClick={() => handleChangePage('groups')}
+        >
           <GroupsIcon />
         </SideBarItem>
       </List>
@@ -67,7 +87,11 @@ const AccountSideBar = ({ changePage }) => {
                 Host status {hostDetails.host_status === 'Pending' ? 'pending' : 'declined'}
               </SideBarTitle>
               <List component='nav'>
-                <SideBarItem title='My host details' onClick={() => handleChangePage('host')}>
+                <SideBarItem
+                  title='My host details'
+                  selected={accountPage === 'host' ? true : false}
+                  onClick={() => handleChangePage('host')}
+                >
                   <AssignmentIndIcon />
                 </SideBarItem>
               </List>
@@ -82,10 +106,18 @@ const AccountSideBar = ({ changePage }) => {
               </SideBarTitle>
               <Divider variant="middle" sx={{ mb: 2 }} />
               <List component='nav'>
-                <SideBarItem title='My host details' onClick={() => handleChangePage('host')}>
+                <SideBarItem
+                  title='My host details'
+                  selected={accountPage === 'host' ? true : false}
+                  onClick={() => handleChangePage('host')}
+                >
                   <AssignmentIndIcon />
                 </SideBarItem>
-                <SideBarItem title='My events' onClick={() => handleChangePage('events')}>
+                <SideBarItem 
+                  title='My events'
+                  selected={accountPage === 'events' ? true : false}
+                  onClick={() => handleChangePage('events')}
+                >
                   <EventIcon />
                 </SideBarItem>
               </List>

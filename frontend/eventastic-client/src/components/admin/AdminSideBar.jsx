@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { SideBar, SideBarTitle, SideBarItem } from "../styles/sidebar/sidebar.styled";
 import { Divider, List, styled } from '@mui/material';
 import DomainAddIcon from '@mui/icons-material/DomainAdd';
@@ -12,6 +12,7 @@ export const SideBarButton = styled('button')`
 `;
 
 const AccountSideBar = () => {
+  const location = useLocation();
   const navigate = useNavigate();
   return (
     <SideBar>
@@ -20,13 +21,25 @@ const AccountSideBar = () => {
         </SideBarTitle>
         <Divider variant="middle" sx={{ mb: 2 }} />
         <List>
-          <SideBarItem title='Set Venues' onClick={() => navigate("/admin/createVenues")}>
+          <SideBarItem 
+            title='Set Venues'
+            selected={location.pathname === '/admin/createVenues' ? true : false}
+            onClick={() => navigate("/admin/createVenues")}
+          >
             <DomainAddIcon />
           </SideBarItem>
-          <SideBarItem title='Manage reviews' onClick={() => navigate("/admin/approveReviews")}>
+          <SideBarItem 
+            title='Manage reviews' 
+            selected={location.pathname === '/admin/approveReviews' ? true : false}
+            onClick={() => navigate("/admin/approveReviews")}
+          >
             <GradingIcon />
           </SideBarItem>
-          <SideBarItem title='Host requests' onClick={() => navigate("/admin/approveHosts")}>
+          <SideBarItem 
+            title='Host requests' 
+            selected={location.pathname === '/admin/approveHosts' ? true : false}
+            onClick={() => navigate("/admin/approveHosts")}
+          >
             <RequestQuoteIcon />
           </SideBarItem>
         </List>
