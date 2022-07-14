@@ -27,6 +27,7 @@ import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import DialogActions from '@mui/material/DialogActions';
 import OutlinedInput from '@mui/material/OutlinedInput';
+import { fileToDataUrl } from '../../../utils/helpers';
 
 const Input = styled('input')({
   display:'none'
@@ -61,6 +62,7 @@ const AdminVenueScreen = () => {
   const [desc, setDesc] = React.useState('');
   const [address, setAddress] = React.useState('');
   const [image, setImage] = React.useState('');
+  const [imageName, setImageName] = React.useState('');
   const [Front_seats,setFrontSeats] = React.useState('');
   const [Middle_seats,setMiddleSeats] = React.useState('');
   const [Back_seats,setBackSeats] = React.useState('');
@@ -68,25 +70,30 @@ const AdminVenueScreen = () => {
 
   const handleCreate = () => {
     const data = {'seating':[{'seating_type':'General','seating_number':parseInt(General_seats)},{'seating_type':'Front','seating_number':parseInt(Front_seats)},{'seating_type':'Middle','seating_number':parseInt(Middle_seats)},{'seating_type':'Back','seating_number':parseInt(Back_seats)}], 
-                    'venue_name':name, 'venue_desc':desc, 'venue_address':address, 'venue_img':'url'}
+                    'venue_name':name, 'venue_desc':desc, 'venue_address':address, 'venue_img':image}
     console.log(data)
+    
     api
       .addVenue(data)
       .then((response) => alert("Successfully done"))
       .then(() => {
         setName(''); setDesc(''); setAddress(''); setImage(''); setFrontSeats('');
-        setMiddleSeats(''); setBackSeats('');setGeneralSeats('');
+        setMiddleSeats(''); setBackSeats('');setGeneralSeats(''); setImageName('');
         setVenueList([...venueList,data]);
         setOpen(false);
       })
       .catch((err) => console.log(err));
+    
   }
 
-  const onFileChange = (event) => {
+  const onFileChange = async (event) => {
     
       // Update the state
-      const fileName = event.target.files[0].name
-      setImage(event.target.files[0]);
+      const imageFile = event.target.files[0]
+      const imageBlob = await fileToDataUrl(imageFile)
+      setImageName(imageFile.name);
+      //console.log(imageBlob)
+      setImage(imageBlob);
       //console.log(image)
     };
 
@@ -204,7 +211,7 @@ const AdminVenueScreen = () => {
                       </Button>
                     </label>
                     <Typography variant="caption"  style={{marginLeft:'10px'}}gutterBottom>
-                      {image && image.name}
+                      {image && imageName}
                     </Typography>
                   </div>
                   <div style ={{'marginTop':'20px'}}>
@@ -279,12 +286,23 @@ const AdminVenueScreen = () => {
                   title={venue.venue_name}
                   subheader={venue.venue_address}
                 />
-                <CardMedia
-                  component="img"
-                  height="194"
-                  image={process.env.PUBLIC_URL + '/img/venues/' + venue.venue_img}
-                  alt="Venue_img"
-                />
+                {
+                  venue.venue_img.length < 70 ?
+                  <CardMedia
+                    component="img"
+                    height="194"
+                    image={process.env.PUBLIC_URL + '/img/venues/' + venue.venue_img}
+                    alt="Venue_img"
+                  />
+                  :
+                  <CardMedia
+                    component="img"
+                    height="194"
+                    image={venue.venue_img}
+                    alt="Venue_img"
+                  />
+                }
+                
                 <CardContent>
                   <Typography variant="body2" color="text.secondary">
                     {venue.venue_desc}
