@@ -273,8 +273,8 @@ definitions:
         enum: [/join_status]
       value:
         type: string
-        example: "Approved"
-        enum: ["Pending", "Approved", "Rejected"]
+        example: "Accepted"
+        enum: ["Pending", "Accepted", "Rejected"]
     required: 
       - op
       - path

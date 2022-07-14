@@ -124,7 +124,7 @@ class GroupStatusUpdate(Model):
         :param value: The value of this GroupStatusUpdate.
         :type value: str
         """
-        allowed_values = ["Pending", "Approved", "Rejected"]  # noqa: E501
+        allowed_values = ["Pending", "Accepted", "Rejected"]  # noqa: E501
         if value not in allowed_values:
             raise ValueError(
                 "Invalid value for `value` ({0}), must be one of {1}"

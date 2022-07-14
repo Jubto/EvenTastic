@@ -23,14 +23,16 @@ con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
 cur = con.cursor()
 
 print('\nDropping Tables ...')
-cur.execute('drop TABLE hosts cascade;')
-cur.execute('drop TABLE saved_cards cascade;')
-cur.execute('drop TABLE accounts cascade;')
-cur.execute('drop TABLE venues cascade;')
-cur.execute('drop TABLE venue_seating cascade;')
-cur.execute('drop TABLE events cascade;')
-cur.execute('drop TABLE bookings cascade;')
-cur.execute('drop TABLE tickets cascade;')
+cur.execute('drop TABLE IF EXISTS hosts cascade;')
+cur.execute('drop TABLE IF EXISTS saved_cards cascade;')
+cur.execute('drop TABLE IF EXISTS accounts cascade;')
+cur.execute('drop TABLE IF EXISTS venues cascade;')
+cur.execute('drop TABLE IF EXISTS venue_seating cascade;')
+cur.execute('drop TABLE IF EXISTS events cascade;')
+cur.execute('drop TABLE IF EXISTS bookings cascade;')
+cur.execute('drop TABLE IF EXISTS tickets cascade;')
+cur.execute('drop TABLE IF EXISTS groups cascade;')
+cur.execute('drop TABLE IF EXISTS group_members cascade;')
 
 # Only run create tables once
 print('\nCreating Tables ...')
@@ -44,7 +46,7 @@ cur.execute('CREATE TABLE accounts (\
             location VARCHAR(50),\
             password VARCHAR(50),\
             account_type VARCHAR(20),\
-            profile_pic VARCHAR(50),\
+            profile_pic TEXT,\
             reward_points VARCHAR(10),\
             tags TEXT, \
             user_desc VARCHAR(100) \
@@ -134,6 +136,22 @@ cur.execute('CREATE TABLE tickets (\
             qr_code TEXT,\
             ticket_type TEXT,\
             ticket_price float8);')
+
+# Groups Table
+cur.execute('CREATE TABLE groups(id SERIAL PRIMARY KEY,\
+    group_host_id INT NOT NULL,\
+        event_id INT NOT NULL,\
+            group_name VARCHAR(50),\
+                group_desc TEXT,\
+                    group_img TEXT);')
+
+# Group Members Table
+cur.execute('CREATE TABLE group_members(id SERIAL PRIMARY KEY,\
+    account_id INT NOT NULL,\
+        group_id INT NOT NULL,\
+            join_status VARCHAR(20),\
+                join_desc TEXT,\
+                    interest_tags TEXT);')
 
 # Enter dummy data here
 print('\nInserting dummy data ...')

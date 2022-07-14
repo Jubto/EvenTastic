@@ -1,107 +1,288 @@
 import connexion
-import six
+import psycopg2
+from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
-from swagger_server.models.group import Group  # noqa: E501
-from swagger_server.models.group_list import GroupList  # noqa: E501
-from swagger_server.models.group_member import GroupMember  # noqa: E501
-from swagger_server.models.group_not_found_error import GroupNotFoundError  # noqa: E501
-from swagger_server.models.group_status_update import GroupStatusUpdate  # noqa: E501
-from swagger_server.models.invalid_input_error import InvalidInputError  # noqa: E501
-from swagger_server.models.unexpected_service_error import UnexpectedServiceError  # noqa: E501
-from swagger_server import util
+from swagger_server.models.group import Group
+from swagger_server.models.group_member import GroupMember
+from swagger_server.models.tag import Tag
+from swagger_server.models.group_not_found_error import GroupNotFoundError
+from swagger_server.models.group_status_update import GroupStatusUpdate
+from swagger_server.models.unexpected_service_error import UnexpectedServiceError
+
+port = 5432
+host = 'localhost'
+user ='postgres'
+password='postgrespw'
+database='eventastic'
 
 
-def create_group(body):  # noqa: E501
-    """Used to create an Group.
+_update_allow_list = ["group_name", "group_desc", "group_img"]
 
-     # noqa: E501
 
-    :param body: Event object containing the Group details.
-    :type body: dict | bytes
+def get_connection():
+    con = psycopg2.connect(database=database, user=user, password=password, host=host, port=port)
+    con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+    return con
 
-    :rtype: Group
-    """
+
+def create_group(body):
     if connexion.request.is_json:
-        body = Group.from_dict(connexion.request.get_json())  # noqa: E501
-    return 'do some magic!'
+        body = Group.from_dict(connexion.request.get_json())
+    try:
+        con = get_connection()
+        cur = con.cursor()
+        sql = "INSERT INTO groups VALUES (default, %s,%s,%s,%s,%s) RETURNING id;"
+        cur.execute(sql, (
+            body.group_host_id, body.event_id, body.group_name.replace("'", "''"), 
+                body.group_desc.replace("'", "''"), body.group_img))
+        body.group_id = cur.fetchone()[0]
+        con.close()
+        return body, 201, {'Access-Control-Allow-Origin': '*'}
+
+    except Exception as e:
+        print(str(e))
+        if con:
+            con.close()
+        error = UnexpectedServiceError(code="500", type="UnexpectedServiceError", message=str(e))
+        return error, 500, {'Access-Control-Allow-Origin': '*'}
 
 
-def create_group_member(group_id, body):  # noqa: E501
-    """Used to create a new Group Memeber for a Group.
-
-     # noqa: E501
-
-    :param group_id: ID of the Group.
-    :type group_id: int
-    :param body: The details of the Group Member to be created.
-    :type body: dict | bytes
-
-    :rtype: GroupMember
-    """
+def create_group_member(group_id, body):
     if connexion.request.is_json:
-        body = GroupMember.from_dict(connexion.request.get_json())  # noqa: E501
-    return 'do some magic!'
+        body = GroupMember.from_dict(connexion.request.get_json())
+    try:
+        # check if Group Exists
+        check = get_group_details(group_id)
+        # if error code is not 200 OK, return error
+        if check[1] != 200:
+            return check
+
+        con = get_connection()
+        cur = con.cursor()
+        sql = "INSERT INTO group_members VALUES (default, %s,%s,%s,%s,%s) RETURNING id;"
+        cur.execute(sql, (
+            body.account_id, group_id, body.join_status, 
+                body.join_desc.replace("'", "''"), tags_to_string(body.interest_tags)))
+        body.group_membership_id = cur.fetchone()[0]
+        con.close()
+        return body, 201, {'Access-Control-Allow-Origin': '*'}
+
+    except Exception as e:
+        print(str(e))
+        if con:
+            con.close()
+        error = UnexpectedServiceError(code="500", type="UnexpectedServiceError", message=str(e))
+        return error, 500, {'Access-Control-Allow-Origin': '*'}
 
 
-def get_group_details(group_id):  # noqa: E501
-    """Retrieve Group details by Group ID.
+def get_group_details(group_id):
+    try:
+        con = get_connection()
+        cur = con.cursor()
+        cur.execute('SELECT * FROM groups where id = ' + str(group_id))
+        record = cur.fetchone()
+        if record:
+            group_details = record_to_group(record)
+            group_details.group_members = list_group_members(group_id)[0]
+            return group_details, 200, {'Access-Control-Allow-Origin': '*'}
+        else:
+            con.close()
+            error = GroupNotFoundError(code=404, type="GroupNotFoundError", 
+                message="The following Group ID does not exist: " + str(group_id))
+            return error, 404, {'Access-Control-Allow-Origin': '*'}
 
-     # noqa: E501
-
-    :param group_id: ID of the Group to be retrieved.
-    :type group_id: int
-
-    :rtype: Group
-    """
-    return 'do some magic!'
-
-
-def list_groups(event_id=None, account_id=None):  # noqa: E501
-    """Retrieve a List of Groups. Search by Event ID or Account ID.
-
-     # noqa: E501
-
-    :param event_id: The Event ID to search for.
-    :type event_id: str
-    :param account_id: The Account ID to search for.
-    :type account_id: str
-
-    :rtype: GroupList
-    """
-    return 'do some magic!'
+    except Exception as e:
+        print(str(e))
+        if con:
+            con.close()
+        error = UnexpectedServiceError(code="500", type="UnexpectedServiceError", message=str(e))
+        return error, 500, {'Access-Control-Allow-Origin': '*'}
 
 
-def update_group(group_id, body):  # noqa: E501
-    """Used to update the Group details. Replaces the Group resource.
+def list_group_members(group_id):
+    try:
+        con = get_connection()
+        cur = con.cursor()
+        cur.execute('SELECT * FROM group_members where group_id = ' + str(group_id))
+        records = cur.fetchall()
+        group_members = records_to_members(records)
+        return group_members, 200, {'Access-Control-Allow-Origin': '*'}
 
-     # noqa: E501
+    except Exception as e:
+        print(str(e))
+        if con:
+            con.close()
+        error = UnexpectedServiceError(code="500", type="UnexpectedServiceError", message=str(e))
+        return error, 500, {'Access-Control-Allow-Origin': '*'}
 
-    :param group_id: ID of the Group to be updated.
-    :type group_id: int
-    :param body: Group object to update. Performs a complete replace of the Group details.
-    :type body: dict | bytes
 
-    :rtype: Group
-    """
+def get_member_details(group_membership_id):
+    try:
+        con = get_connection()
+        cur = con.cursor()
+        cur.execute('SELECT * FROM group_members where id = ' + str(group_membership_id))
+        record = cur.fetchone()
+        if record:
+            member_details = record_to_member(record)
+            return member_details, 200, {'Access-Control-Allow-Origin': '*'}
+        else:
+            con.close()
+            error = GroupNotFoundError(code=404, type="GroupNotFoundError", 
+                message="The following Group Member ID does not exist: " + str(group_membership_id))
+            return error, 404, {'Access-Control-Allow-Origin': '*'}
+
+    except Exception as e:
+        print(str(e))
+        if con:
+            con.close()
+        error = UnexpectedServiceError(code="500", type="UnexpectedServiceError", message=str(e))
+        return error, 500, {'Access-Control-Allow-Origin': '*'}
+
+
+def list_groups(event_id=None, account_id=None):
+    # TODO implement filter
+    try:
+        con = get_connection()
+        cur = con.cursor()
+        cur.execute('SELECT * FROM groups')
+        records = cur.fetchall()
+        groups_list = records_to_groups(records)
+        for group in groups_list:
+            group.group_members = list_group_members(group.group_id)[0]
+
+        return groups_list, 200, {'Access-Control-Allow-Origin': '*'}
+
+    except Exception as e:
+        print(str(e))
+        if con:
+            con.close()
+        error = UnexpectedServiceError(code="500", type="UnexpectedServiceError", message=str(e))
+        return error, 500, {'Access-Control-Allow-Origin': '*'}
+
+
+def update_group(group_id, body):
     if connexion.request.is_json:
-        body = Group.from_dict(connexion.request.get_json())  # noqa: E501
-    return 'do some magic!'
+        body = Group.from_dict(connexion.request.get_json())
+    
+    try:
+        # check if Group Exists
+        check = get_group_details(group_id)
+        # if error code is not 200 OK, return error
+        if check[1] != 200:
+            return check
+
+        # Create the sql update statement
+        sql = "UPDATE groups SET"
+        for attr, value in body.__dict__.items():
+            tmp_attr = attr[1:]
+            if tmp_attr in _update_allow_list and value:
+                sql = sql + \
+                    " {} = '{}',".format(tmp_attr, value.replace("'", "''"))
+        sql = sql[:-1] + " WHERE id = {}".format(group_id)
+
+        # Execute the sql update statement
+        con = get_connection()
+        cur = con.cursor()
+        cur.execute(sql)
+        con.close()
+    except Exception as e:
+        # catch any unexpected runtime error and return as 500 error
+        if con:
+            con.close()
+        error = UnexpectedServiceError(
+            code="500", type="UnexpectedServiceError", message=str(e))
+        return error, 500, {'Access-Control-Allow-Origin': '*'}
+
+    # return the updated record
+    result = get_group_details(group_id)
+    return result
 
 
-def update_group_member_status(group_id, group_membership_id, body):  # noqa: E501
-    """Used to PATCH the status of a Group Membership.
-
-     # noqa: E501
-
-    :param group_id: ID of the Group.
-    :type group_id: int
-    :param group_membership_id: ID of the Group Membership.
-    :type group_membership_id: int
-    :param body: The details of the PATCH operation to be performed.
-    :type body: dict | bytes
-
-    :rtype: GroupStatusUpdate
-    """
+def update_group_member_status(group_id, group_membership_id, body):
     if connexion.request.is_json:
-        body = GroupStatusUpdate.from_dict(connexion.request.get_json())  # noqa: E501
-    return 'do some magic!'
+        body = GroupStatusUpdate.from_dict(connexion.request.get_json())
+    print('hello')
+    try:
+        # check if Group Member Exists
+        print(body.value)
+        check = get_member_details(group_membership_id)
+        # if error code is not 200 OK, return error
+        if check[1] != 200:
+            return check
+        print('test')
+        # Execute the sql statement
+        con = get_connection()
+        cur = con.cursor()
+        sql = "UPDATE group_members set join_status='{}' where id = {}".format(body.value, group_membership_id)
+        cur.execute(sql)
+        con.close()
+
+    except Exception as e:
+        # catch any unexpected runtime error and return as 500 error
+        if con:
+            con.close()
+        error = UnexpectedServiceError(
+            code="500", type="UnexpectedServiceError", message=str(e))
+        return error, 500, {'Access-Control-Allow-Origin': '*'}
+
+    # return the updated record
+    result = get_member_details(group_membership_id)
+    return result
+
+
+# maps a collection of database records to a List of Groups
+def records_to_groups(records):
+    group_list = []
+    for record in records:
+        group_list.append(record_to_group(record))
+    return group_list
+
+
+# maps a collection of database records to a List of GroupMembers
+def records_to_members(records):
+    member_list = []
+    for record in records:
+        member_list.append(record_to_member(record))
+    return member_list
+
+
+# maps a database record to a Group
+def record_to_group(record):
+    group = Group()
+    group.group_id=record[0]
+    group.group_host_id=record[1]
+    group.event_id=record[2]
+    group.group_name=record[3]
+    group.group_desc=record[4]
+    group.group_img=record[5]
+    return group
+
+
+# maps a database record to a GroupMember
+def record_to_member(record):
+    member = GroupMember()
+    member.group_membership_id=record[0]
+    member.account_id=record[1]
+    member.group_id=record[2]
+    member.join_status=record[3]
+    member.join_desc=record[4]
+    member.interest_tags=string_to_tags(record[5])
+    return member
+
+
+# Transforms the JSON tag array into tag1, tag2, tag3 etc..
+def tags_to_string(tags):
+    formatted = ""
+    for tag in tags:
+        formatted = formatted + tag.name + ","
+    return formatted[:-1]
+
+
+# Transforms the a string of tags tag1, tag2, tag3 etc.. into JSON Tags
+def string_to_tags(tag_str):
+    tags = tag_str.split(',')
+    tags_list = []
+    for tag in tags:
+        tmp = Tag()
+        tmp.name = tag
+        tags_list.append(tmp)

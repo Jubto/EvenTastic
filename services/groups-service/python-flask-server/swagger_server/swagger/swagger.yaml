@@ -283,22 +283,22 @@ definitions:
       group_name: "The Group Name"
       group_members:
       - group_membership_id: 1
-        account_id: 6
+        account_id: 2
         join_desc: "Why I want to join this group ..."
         interest_tags:
         - name: "Jazz"
         - name: "Jazz"
-        group_id: 1
+        group_id: 3
         join_status: "Pending"
-      - group_membership_id: 2
-        account_id: 5
+      - group_membership_id: 1
+        account_id: 2
         join_desc: "Why I want to join this group ..."
         interest_tags:
         - name: "Jazz"
         - name: "Jazz"
-        group_id: 1
+        group_id: 3
         join_status: "Pending"
-      group_host_id: 10
+      group_host_id: 2
       group_desc: "A blurb about the group"
   Tag:
     type: "object"
@@ -326,15 +326,15 @@ definitions:
         - "/join_status"
       value:
         type: "string"
-        example: "Approved"
+        example: "Accepted"
         enum:
         - "Pending"
-        - "Approved"
+        - "Accepted"
         - "Rejected"
     example:
       op: "replace"
       path: "/join_status"
-      value: "Approved"
+      value: "Accepted"
   Error:
     type: "object"
     properties:
