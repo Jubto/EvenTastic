@@ -14,7 +14,9 @@ from swagger_server import util
 port = 5432  # Change according to port in Docker
 host = 'localhost'
 
-_update_allow_list = ["event_title","event_category","event_short_desc","event_desc","event_img","tags","event_location"]
+_update_allow_list = ["event_title", "event_category",
+                      "event_short_desc", "event_desc", "event_img", "tags", "event_location"]
+
 
 def create_event(body):  # noqa: E501
     """Used to create an Event.
@@ -68,8 +70,48 @@ def create_event(body):  # noqa: E501
                                     body.event_short_desc, body.event_desc, body.event_start_datetime, body.event_end_datetime, body.event_location,
                                     body.event_img, body.event_status, tags_string))
         body.event_id = cur.fetchone()[0]
-        print("New ID is:\n")
-        print(body.event_id)
+        #print("New ID is:\n")
+        # print(body.event_id)
+
+        if body.gen_seat_price != -1:
+            cur.execute(
+                f"select seating_number from venue_seating where seating_type='general' and venue_id={body.venue_id}")
+            gen_seats = cur.fetchone()[0]
+            for i in range(1, gen_seats+1):
+                qr = str(body.venue_id)+"-"+str(body.event_id) + \
+                    "-"+str(body.account_id)+"-G_"+str(i)
+                cur.execute(
+                    f"INSERT INTO tickets values (default, {body.venue_id}, {body.event_id}, -1, 'G_{i}', 'Available', '{qr}', 'General', {body.gen_seat_price});")
+
+        if body.front_seat_price != -1:
+            cur.execute(
+                f"select seating_number from venue_seating where seating_type='front' and venue_id={body.venue_id}")
+            front_seats = cur.fetchone()[0]
+            for i in range(1, front_seats+1):
+                qr = str(body.venue_id)+"-"+str(body.event_id) + \
+                    "-"+str(body.account_id)+"-F_"+str(i)
+                cur.execute(
+                    f"INSERT INTO tickets values (default, {body.venue_id}, {body.event_id}, -1, 'F_{i}', 'Available', '{qr}', 'Front', {body.front_seat_price});")
+
+        if body.mid_seat_price != -1:
+            cur.execute(
+                f"select seating_number from venue_seating where seating_type='middle' and venue_id={body.venue_id}")
+            middle_seats = cur.fetchone()[0]
+            for i in range(1, middle_seats+1):
+                qr = str(body.venue_id)+"-"+str(body.event_id) + \
+                    "-"+str(body.account_id)+"-M_"+str(i)
+                cur.execute(
+                    f"INSERT INTO tickets values (default, {body.venue_id}, {body.event_id}, -1, 'M_{i}', 'Available', '{qr}', 'Middle', {body.mid_seat_price});")
+
+        if body.back_seat_price != -1:
+            cur.execute(
+                f"select seating_number from venue_seating where seating_type='back' and venue_id={body.venue_id}")
+            back_seats = cur.fetchone()[0]
+            for i in range(1, back_seats+1):
+                qr = str(body.venue_id)+"-"+str(body.event_id) + \
+                    "-"+str(body.account_id)+"-B_"+str(i)
+                cur.execute(
+                    f"INSERT INTO tickets values (default, {body.venue_id}, {body.event_id}, -1, 'B_{i}', 'Available', '{qr}', 'Back', {body.back_seat_price});")
 
         cur.close()
         con.close()
@@ -275,11 +317,13 @@ def update_event(event_id, body):  # noqa: E501
             if tmp_attr in _update_allow_list and value:
                 if tmp_attr == "tags":
                     value = formatTags(value)
-                sql = sql + " {} = '{}',".format(tmp_attr, value.replace("'", "''"))
+                sql = sql + \
+                    " {} = '{}',".format(tmp_attr, value.replace("'", "''"))
         sql = sql[:-1] + " WHERE event_id = {}".format(event_id)
 
         # Execute the sql update statement
-        con = psycopg2.connect(database='eventastic', user='postgres', password='postgrespw', host=host, port=port)
+        con = psycopg2.connect(database='eventastic', user='postgres',
+                               password='postgrespw', host=host, port=port)
         con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
         cur = con.cursor()
         cur.execute(sql)
@@ -289,7 +333,8 @@ def update_event(event_id, body):  # noqa: E501
         # catch any unexpected runtime error and return as 500 error
         cur.close()
         con.close()
-        error = UnexpectedServiceError(code="500", type="UnexpectedServiceError", message=str(e))
+        error = UnexpectedServiceError(
+            code="500", type="UnexpectedServiceError", message=str(e))
         return error, 500, {'Access-Control-Allow-Origin': '*'}
 
     # return the updated record
@@ -374,4 +419,4 @@ def formatTags(tags):
     formatted = ""
     for tag in tags:
         formatted = formatted + tag.name + ","
-    return formatted[:-1] 
+    return formatted[:-1]
