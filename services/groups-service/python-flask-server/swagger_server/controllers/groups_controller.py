@@ -204,7 +204,6 @@ def update_group_member_status(group_id, group_membership_id, body):
 
     try:
         # check if Group Member Exists
-        print(body.value)
         check = get_member_details(group_membership_id)
         # if error code is not 200 OK, return error
         if check[1] != 200:
