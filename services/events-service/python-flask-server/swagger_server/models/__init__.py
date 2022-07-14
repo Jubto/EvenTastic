@@ -13,6 +13,11 @@ from swagger_server.models.event_list import EventList
 from swagger_server.models.event_not_found_error import EventNotFoundError
 from swagger_server.models.event_status_update import EventStatusUpdate
 from swagger_server.models.invalid_input_error import InvalidInputError
+from swagger_server.models.review import Review
+from swagger_server.models.review_interaction import ReviewInteraction
+from swagger_server.models.review_interaction_not_found_error import ReviewInteractionNotFoundError
+from swagger_server.models.review_list import ReviewList
+from swagger_server.models.review_not_found_error import ReviewNotFoundError
 from swagger_server.models.seating import Seating
 from swagger_server.models.tag import Tag
 from swagger_server.models.ticket import Ticket
