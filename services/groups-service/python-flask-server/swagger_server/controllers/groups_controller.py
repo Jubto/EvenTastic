@@ -285,3 +285,4 @@ def string_to_tags(tag_str):
         tmp = Tag()
         tmp.name = tag
         tags_list.append(tmp)
+    return tags_list
