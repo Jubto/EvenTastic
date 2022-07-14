@@ -201,7 +201,7 @@ def update_group(group_id, body):
 def update_group_member_status(group_id, group_membership_id, body):
     if connexion.request.is_json:
         body = GroupStatusUpdate.from_dict(connexion.request.get_json())
-    print('hello')
+
     try:
         # check if Group Member Exists
         print(body.value)
@@ -209,7 +209,7 @@ def update_group_member_status(group_id, group_membership_id, body):
         # if error code is not 200 OK, return error
         if check[1] != 200:
             return check
-        print('test')
+
         # Execute the sql statement
         con = get_connection()
         cur = con.cursor()
