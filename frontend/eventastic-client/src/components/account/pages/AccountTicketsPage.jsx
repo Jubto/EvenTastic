@@ -3,6 +3,7 @@ import { styled } from '@mui/material/styles';
 import { StoreContext } from '../../../utils/context';
 import EventAPI from "../../../utils/EventAPIHelper"
 import CancelTicketModal from "../modals/CancelTicketModal";
+import SendTicketsModal from "../modals/SendTicketsModal";
 import { FlexBox, ScrollContainer } from "../../styles/layouts.styled"
 import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
@@ -24,19 +25,29 @@ function formatDate(datetime) {
   return d.toLocaleDateString("en-US", dateFormat)
 }
 
-const Ticket = ({ booking, handleCancelBooking }) => {
+const Ticket = ({ booking, handleCancelBooking, handleSendTicketsModal }) => {
   return (
     <FlexBox id={booking.booking_id} sx={{ border: '1px solid black', borderRadius: '3px', m: 3 }}>
       <Stack
         direction="row"
         spacing={2}
       >
+        { booking.event_img.length < 70 ?
         <img
           src={process.env.PUBLIC_URL + '/img/event/' + booking.event_img}
           width="20%"
           alt="Event thumbnail"
         >
         </img>
+        :
+        <img
+          src={booking.event_img}
+          width="20%"
+          alt="Event thumbnail"
+        >
+        </img>
+        }
+
         <Typography variant="body1" component="div" width="50%">
           <b>{booking.event_title}</b><br></br>
           <b>Location:</b> {booking.event_location}<br></br>
@@ -46,7 +57,7 @@ const Ticket = ({ booking, handleCancelBooking }) => {
         <Typography variant="body1" component="div" width="10%">
         </Typography>
         <SaveButtonBox  width="20%">
-          <Button sx={{ height: '50%' }} variant="contained">Send Tickets</Button>
+          <Button sx={{ height: '50%' }} variant="contained" value={booking.booking_id} onClick={(e) => handleSendTicketsModal(e.target.value)} >Send Tickets</Button> 
           <Button sx={{ height: '50%' }} variant="contained" color="error" value={booking.booking_id} onClick={(e) => handleCancelBooking(e.target.value)} >Cancel Booking</Button>
         </SaveButtonBox>
       </Stack>
@@ -83,27 +94,23 @@ const AccountTicketsPage = ({ toggle }) => {
   const [account] = context.account;
   const [UpComingBookings, setUpComingBookings] = useState([])
   const [PastBookings, setPastBookings] = useState([])
+  const [ticketString, setTicketString] = useState('')
   const [openModal, setOpenModal] = useState(false)
+  const [sendTicketsModal, setSendTicketsModal] = useState(false)
   const [cancelBooking, setCancelBooking] = useState(null)
   const [toCancel, setToCancel] = useState(null)
 
   const getBookings = async () => {
     try {
-      // possible api calling  
       const booking_params = {
         account_id: account.account_id,
         booking_status: 'Booked'
       }
       const bookedRes = await api.getBookings(booking_params)
 
-      //console.log(bookedRes.data)
-
       let bookedEventsRes = await Promise.all(bookedRes.data.map((booking, idx) => {
         return api.getEventDetails(booking.event_id).then((res) => res.data)
       }))
-
-      //console.log('Events')
-      //console.log(bookedEventsRes)
       
       const bookingMapping = bookedRes.data.map((booking, idx) => (
         {
@@ -120,7 +127,6 @@ const AccountTicketsPage = ({ toggle }) => {
         }
       ))
 
-      console.log(bookingMapping)
       setUpComingBookings(bookingMapping)
 
       // get past bookings data
@@ -131,14 +137,9 @@ const AccountTicketsPage = ({ toggle }) => {
       }
       const pastBookings = await api.getBookings(pastBookingParams)
 
-      //console.log(pastBookings.data)
-
       let pastBookedEvents = await Promise.all(pastBookings.data.map((booking, idx) => {
         return api.getEventDetails(booking.event_id).then((res) => res.data)
       }))
-
-      //console.log('Events')
-      //console.log(pastBookedEvents)
       
       const pastBookingsMapping = pastBookings.data.map((booking, idx) => (
         {
@@ -166,6 +167,29 @@ const AccountTicketsPage = ({ toggle }) => {
     setOpenModal(true)
   }
 
+  const handleSendTicketsModal = async (booking_id) => {
+    try {
+      setSendTicketsModal(true)
+
+      const bookingParams = {
+        booking_id: booking_id
+      }
+      const ticketList = await api.getTickets(bookingParams)
+      let seats = ''
+      for (let i=0; i<ticketList.data.length; i++) {
+        seats += ticketList.data[i].ticket_ref
+        if (i < ticketList.data.length-2)
+          seats += ', '
+        if (i == ticketList.data.length-2)
+          seats += ' and '
+      }
+      setTicketString(seats)
+    }
+    catch (err) {
+      console.error(err)
+    }
+  }
+
   useEffect(() => {
     getBookings()
   }, [])
@@ -179,7 +203,7 @@ const AccountTicketsPage = ({ toggle }) => {
       {toggle
         ? <div>
         {UpComingBookings.map((booking, idx) => (
-          <Ticket key={idx} booking={booking} handleCancelBooking={handleCancelBooking} />
+          <Ticket key={idx} booking={booking} handleCancelBooking={handleCancelBooking} handleSendTicketsModal={handleSendTicketsModal} />
         ))}
       </div>
         : 
@@ -189,8 +213,9 @@ const AccountTicketsPage = ({ toggle }) => {
           ))}
         </div>
       }
-      <CancelTicketModal 
-        open={openModal} setOpen={setOpenModal} toCancel={toCancel} setCancelBooking={setCancelBooking} />
+      <div style={{ height:'50px' }}></div>
+      <CancelTicketModal open={openModal} setOpen={setOpenModal} toCancel={toCancel} setCancelBooking={setCancelBooking} />
+      <SendTicketsModal open={sendTicketsModal} setOpen={setSendTicketsModal} ticketString={ticketString} />
     </ScrollContainer>
   )
 }

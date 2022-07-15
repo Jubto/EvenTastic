@@ -231,7 +231,7 @@ cur.execute("INSERT INTO bookings values (default, 1, 1, 'Booked', 500.0);")
 cur.execute("INSERT INTO bookings values (default, 1, 1, 'Booked', 200.0);")
 
 # QR-code : (Venueid-Eventid-accountid-type&number)
-for t_id in range(31):
+for t_id in range(1, 31):
     cur.execute(
         f"INSERT INTO tickets values (default, 1, 1, -1, 'G_{t_id}', 'Available', '1-1-1-G_{t_id}', 'General', 100.0);")
 
@@ -260,24 +260,24 @@ for t_id in range(5, 21):
         f"INSERT INTO tickets values (default, 1, 1, -1, 'M_{t_id}', 'Available', '1-1-1-M_{t_id}', 'Middle', 100.0);")
 
 
-for t_id in range(21):
+for t_id in range(1, 21):
     cur.execute(
         f"INSERT INTO tickets values (default, 1, 1, -1, 'B_{t_id}', 'Available', '1-1-1-B_{t_id}', 'Back', 100.0);")
 
 for v_id, e_id in [(2, 2), (3, 3), (4, 4), (5, 5), (6, 6)]:
-    for t_id in range(31):
+    for t_id in range(1, 31):
         cur.execute(
             f"INSERT INTO tickets values (default, {v_id}, {e_id}, -1, 'G_{t_id}', 'Available', '1-1-1-G_{t_id}', 'General', 100.0);")
 
-    for t_id in range(21):
+    for t_id in range(1, 21):
         cur.execute(
             f"INSERT INTO tickets values (default, {v_id}, {e_id}, -1, 'F_{t_id}', 'Available', '1-1-1-F_{t_id}', 'Front', 100.0);")
 
-    for t_id in range(21):
+    for t_id in range(1, 21):
         cur.execute(
             f"INSERT INTO tickets values (default, {v_id}, {e_id}, -1, 'M_{t_id}', 'Available', '1-1-1-M_{t_id}', 'Middle', 100.0);")
 
-    for t_id in range(21):
+    for t_id in range(1, 21):
         cur.execute(
             f"INSERT INTO tickets values (default, {v_id}, {e_id}, -1, 'B_{t_id}', 'Available', '1-1-1-B_{t_id}', 'Back', 100.0);")
 

@@ -38,10 +38,6 @@ export default class EventAPI {
     return this.init().put(`/events/${eventID}`, body);
   };
 
-  getTickets = (params) => {
-    return this.init().get("/tickets/", { params: params });
-  }; 
-
   addBooking = (body) => {
     return this.init().post("/bookings", body);
   };
