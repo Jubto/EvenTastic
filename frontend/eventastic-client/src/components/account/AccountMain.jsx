@@ -33,7 +33,7 @@ const AccountMain = ({ accountPage, changePage }) => {
   const navigate = useNavigate();
   const [accountChange, setAccountChange] = useState(false);
   const [hostChange, setHostChange] = useState('');
-  const [toggleTickets, setToggleTickets] = useState(false)
+  const [toggleTickets, setToggleTickets] = useState(true)
   const [toggleEvents, setToggleEvents] = useState(false)
   const [managedEventDetails, setManagedEventDetails] = useState({})
 
@@ -67,20 +67,20 @@ const AccountMain = ({ accountPage, changePage }) => {
           }
           else if (accountPage === 'tickets') {
             return (
-              <FlexBox sx={{ ml: 'auto', mr: 'auto' }}>
+              <FlexBox sx={{ ml: 'auto', mr: 'auto' }}>                
                 <Button onClick={() => setToggleTickets(true)}
                   variant="contained" color='success' sx={{
-                    top: '45px', width: '117px', mr: 7,
+                    top: '45px', mr: 10,
                     backgroundColor: toggleTickets ? 'success.light' : 'success.main'
                   }}>
-                  Past
+                  Upcoming
                 </Button>
                 <Button onClick={() => setToggleTickets(false)}
                   variant="contained" color='success' sx={{
-                    top: '45px', mr: 10,
+                    top: '45px', width: '117px', mr: 7,
                     backgroundColor: toggleTickets ? 'success.main' : 'success.light'
                   }}>
-                  Up-coming
+                  Past
                 </Button>
               </FlexBox>
             )

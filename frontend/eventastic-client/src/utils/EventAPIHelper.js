@@ -40,6 +40,10 @@ export default class EventAPI {
     return this.init().get("/tickets/", { params: params });
   }; 
 
+  addBooking = (body) => {
+    return this.init().post("/bookings", body);
+  };
+
   getBookings = (params) => {
     return this.init().get('/bookings', { params: params });
   };
@@ -50,6 +54,10 @@ export default class EventAPI {
 
   patchBookings = (bookingID, body) => {
     return this.init().patch(`/bookings/${bookingID}`, body);
+  };
+
+  getTickets = (params) => {
+    return this.init().get('/tickets', { params: params });
   };
   
   // Add additional API call here as needed ...
