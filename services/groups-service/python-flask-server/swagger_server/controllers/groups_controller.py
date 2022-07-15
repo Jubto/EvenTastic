@@ -84,6 +84,7 @@ def get_group_details(group_id):
         if record:
             group_details = record_to_group(record)
             group_details.group_members = list_group_members(group_id)[0]
+            con.close()
             return group_details, 200, {'Access-Control-Allow-Origin': '*'}
         else:
             con.close()
@@ -106,6 +107,7 @@ def list_group_members(group_id):
         cur.execute('SELECT * FROM group_members where group_id = ' + str(group_id))
         records = cur.fetchall()
         group_members = records_to_members(records)
+        con.close()
         return group_members, 200, {'Access-Control-Allow-Origin': '*'}
 
     except Exception as e:
@@ -124,6 +126,7 @@ def get_member_details(group_membership_id):
         record = cur.fetchone()
         if record:
             member_details = record_to_member(record)
+            con.close()
             return member_details, 200, {'Access-Control-Allow-Origin': '*'}
         else:
             con.close()
@@ -140,7 +143,6 @@ def get_member_details(group_membership_id):
 
 
 def list_groups(event_id=None, account_id=None):
-    # TODO implement filter
     try:
         con = get_connection()
         cur = con.cursor()
@@ -150,7 +152,26 @@ def list_groups(event_id=None, account_id=None):
         for group in groups_list:
             group.group_members = list_group_members(group.group_id)[0]
 
-        return groups_list, 200, {'Access-Control-Allow-Origin': '*'}
+        if event_id and not account_id:
+            filtered = list(filter(lambda group: group.event_id == int(event_id), groups_list))
+            con.close()
+            return filtered, 200, {'Access-Control-Allow-Origin': '*'}
+        elif account_id and not event_id:
+            user_group_ids = get_user_group_ids(account_id)[0]
+            filtered = list(filter(lambda group: group.group_id in user_group_ids, groups_list))
+            con.close()
+            return filtered, 200, {'Access-Control-Allow-Origin': '*'}
+        elif account_id and event_id:
+            # first, filter by event_id
+            filtered1 = list(filter(lambda group: group.event_id == int(event_id), groups_list))
+            # second, filter by account_id
+            user_group_ids = get_user_group_ids(account_id)[0]
+            filtered2 = list(filter(lambda group: group.group_id in user_group_ids, filtered1))
+            con.close()
+            return filtered2, 200, {'Access-Control-Allow-Origin': '*'}
+        else:
+            con.close()
+            return groups_list, 200, {'Access-Control-Allow-Origin': '*'}
 
     except Exception as e:
         print(str(e))
@@ -227,6 +248,27 @@ def update_group_member_status(group_id, group_membership_id, body):
     # return the updated record
     result = get_member_details(group_membership_id)
     return result
+
+
+# returns a list of Group IDs that the User is a member of.
+def get_user_group_ids(account_id):
+    try:
+        con = get_connection()
+        cur = con.cursor()
+        cur.execute('SELECT * FROM group_members where account_id = ' + str(account_id))
+        records = cur.fetchall()
+        group_id_list = []
+        for rec in records:
+            group_id_list.append(rec[2])
+        con.close()
+        return group_id_list, 200, {'Access-Control-Allow-Origin': '*'}
+
+    except Exception as e:
+        print(str(e))
+        if con:
+            con.close()
+        error = UnexpectedServiceError(code="500", type="UnexpectedServiceError", message=str(e))
+        return error, 500, {'Access-Control-Allow-Origin': '*'}
 
 
 # maps a collection of database records to a List of Groups
