@@ -2,25 +2,20 @@ import psycopg2
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
 
-port = 5432  # update port of postgres running in Docker here
+port = 5432
 host = "localhost"
+user = "postgres"
+password = "postgrespw"
 
-# Only run create database once
-'''
+
+con = psycopg2.connect(user=user, password=password, host=host, port=port)
+con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+cur = con.cursor()
+print('\nDropping Database ...')
+cur.execute('DROP DATABASE IF EXISTS eventastic')
 print('\nCreating Database ...')
-con = psycopg2.connect(
-    user='postgres', password='postgrespw', host=host, port=port)
-con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
-cur = con.cursor()
 cur.execute('CREATE DATABASE eventastic')
-cur.close()
-con.close()
-'''
 
-con = psycopg2.connect(database='eventastic', user='postgres',
-                       password='postgrespw', host=host, port=port)
-con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
-cur = con.cursor()
 
 print('\nDropping Tables ...')
 cur.execute('drop TABLE IF EXISTS hosts cascade;')
@@ -34,7 +29,8 @@ cur.execute('drop TABLE IF EXISTS tickets cascade;')
 cur.execute('drop TABLE IF EXISTS groups cascade;')
 cur.execute('drop TABLE IF EXISTS group_members cascade;')
 
-# Only run create tables once
+
+# Create Tables
 print('\nCreating Tables ...')
 cur.execute('CREATE TABLE accounts (\
             account_id SERIAL PRIMARY KEY,\
