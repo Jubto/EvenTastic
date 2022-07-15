@@ -24,7 +24,7 @@ const EventCard = ({ eventDetails, setManagedEventDetails }) => {
         spacing={2}
       >
         <img
-          src={process.env.PUBLIC_URL + '/img/event/' + eventDetails.event_img}
+          src={eventDetails.event_img.length<70 ? process.env.PUBLIC_URL + '/img/event/' + eventDetails.event_img : eventDetails.event_img}
           width="15%"
           alt="A visulaisation of the Event"
         >

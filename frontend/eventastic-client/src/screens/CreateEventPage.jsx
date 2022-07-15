@@ -227,7 +227,7 @@ const CreateEventPage = () => {
         console.log(response)
         alert("Successfully Event is created done")})
       .then(()=>{
-        //window.location.href = '/';
+        window.location.href = '/';
       })
       .catch((err) => console.log(err));
       

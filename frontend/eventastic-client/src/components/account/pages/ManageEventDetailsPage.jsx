@@ -42,7 +42,7 @@ const ManageEventDetailsPage = ({ managedEventDetails, setManagedEventDetails, c
         <Grid item xs={6} md={6}>
           <div>
             <img
-              src={process.env.PUBLIC_URL + '/img/event/' + managedEventDetails.event_img}
+              src={managedEventDetails.event_img.length<70 ? process.env.PUBLIC_URL + '/img/event/' + managedEventDetails.event_img : managedEventDetails.event_img}
               width="100%"
               alt="A visulaisation of the Event"
             >
