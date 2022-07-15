@@ -46,7 +46,7 @@ const AccountMenu = () => {
       <Tooltip title="Open account menu" enterDelay={10}>
         <IconButton onClick={handleOpenMenu} sx={{ p: 0, mr:{ xs:'0.25rem', md:'1rem' } }}>
           <Avatar 
-            src={`${process.env.PUBLIC_URL}/img/profile-dp/${account.profile_pic}`}
+            src={account.profile_pic}
           />
         </IconButton>
       </Tooltip>
@@ -65,7 +65,7 @@ const AccountMenu = () => {
           if (!loggedIn) {
             return (
               <div>
-                <MenuItem id='logIn' onClick={() => handleLogInModal('/')}>
+                <MenuItem id='logIn' onClick={() => handleLogInModal(false)}>
                   Log in
                 </MenuItem>
                 <MenuItem component={Link} to={'/register'} onClick={handleCloseMenu}>

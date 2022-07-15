@@ -83,7 +83,7 @@ const AccountTicketsPage = ({ toggle }) => {
       patchBookings(toCancel)
     }
     else {
-      isMounted.current = false
+      isMounted.current = true
     }
   }, [cancelBooking])
 

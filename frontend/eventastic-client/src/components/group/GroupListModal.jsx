@@ -1,4 +1,4 @@
-import { useEffect, useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { StoreContext } from '../../utils/context';
 import GroupListingsPage from './pages-listing/GroupListingsPage';
 import CreateGroupPage from './pages-listing/CreateGroupPage';
@@ -8,62 +8,97 @@ import { StyledTitle, LargeModal, ModalBodyLarge } from '../styles/modal/modal.s
 import { Button, Divider, IconButton, Typography } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 
-const GroupListModal = ({ open, setOpen, eventDetails }) => {
+const GroupListModal = ({ open, setOpen, eventDetails, groupList, setGroupList, setGroupCreatedModal }) => {
   const context = useContext(StoreContext);
-  const [account, setAccount] = context.account;
-  const [hostDetails, setHostDetails] = context.host;
+  const [account] = context.account;
+  const [loginModal, setLoginModal] = context.logInModal;
+  const [requestedGroupId, setRequestedGroupId] = useState(false)
+  const [redirect, setRedirect] = useState(false)
   const [page, setPage] = useState('listGroups')
 
   const handleClose = () => {
     setOpen(false);
+    setTimeout(() => setPage('listGroups'), 200);
   }
 
   useEffect(() => {
-    // api call: 
-    // Get /bookings setReviews()
-    // Determine all account_id review interactions
-    // setMadeReivew() // Determine if account_id has made a reivew or not
-  }, [])
+    // Allows redirect after clicking 'create group' if user logs in via prompted login modal
+    if (loginModal && !account.account_id) {
+      setRedirect('creatGroup')
+    }
+    else if (!loginModal && !account.account_id) {
+      setRedirect('listGroups')
+    }
+    else {
+      setPage(redirect)
+    }
+    if (!open) {
+      setRedirect('listGroups')
+    }
+  }, [loginModal, open])
 
   return (
     <LargeModal open={open} onClose={handleClose} aria-labelledby="Review modal" maxWidth='lg'>
-      <StyledTitle>
-        <FlexBox justify='space-between'>
-          <Typography variant='h5'>
-            Request to join a group that suits you and have fun discussing {eventDetails.event_title}
-          </Typography>
-          <FlexBox>
-            {page !== 'listGroups'
-              ? ''
-              : <Button sx={{mr:3}}
-                  variant='contained' color='success'
-                  onClick={() => setPage('creatGroup')}
-                >
-                  Create your own group
-                </Button>
-            }
-            <IconButton aria-label="close" onClick={handleClose} sx={{ ml: 'auto' }}>
-              <CloseIcon />
-            </IconButton>
-          </FlexBox>
+      <StyledTitle justify='space-between' sx={{ mb: 2 }}>
+        <Typography variant='h4'>
+          {(() => {
+            if (page === 'listGroups') return 'Time to find a group!'
+            else if (page === 'creatGroup') return 'Create your own group'
+            else if (page === 'makeRequest') return 'Request to join a group'
+          })()}
+        </Typography>
+        <FlexBox>
+          {page !== 'listGroups'
+            ? <Button sx={{ mr: 3 }}
+              variant='contained' color='warning'
+              onClick={() => setPage('listGroups')}
+            >
+              Cancel
+            </Button>
+            : <Button sx={{ mr: 3 }}
+              variant='contained' color='success'
+              onClick={() => account.account_id ? setPage('creatGroup') : setLoginModal(true)}
+            >
+              Create new group
+            </Button>
+          }
+          <IconButton aria-label="close" onClick={handleClose} sx={{ ml: 'auto' }}>
+            <CloseIcon />
+          </IconButton>
         </FlexBox>
       </StyledTitle>
       <Divider variant="middle" sx={{ mb: 2 }} />
-      <ModalBodyLarge>
+      <ModalBodyLarge sx={{  overflow: 'hidden'}}>
         {(() => {
           if (page === 'listGroups') {
             return (
-              <GroupListingsPage setPage={setPage} />
+              <GroupListingsPage 
+                setPage={setPage} 
+                groupList={groupList}
+                setRequestedGroupId={setRequestedGroupId}
+                eventTitle={eventDetails.event_title}
+              />
             )
           }
           else if (page === 'creatGroup') {
             return (
-              <CreateGroupPage setPage={setPage} />
+              <CreateGroupPage 
+                setGroupList={setGroupList} 
+                eventID={eventDetails.event_id}
+                account={account}
+                setOpen={setGroupCreatedModal}
+                setParent={setOpen}
+              />
             )
           }
           else if (page === 'makeRequest') {
             return (
-              <RequestJoinPage setPage={setPage} />
+              <RequestJoinPage 
+                setPage={setPage} 
+                setGroupList={setGroupList}
+                group={groupList.filter((group) => group.group_id === requestedGroupId)[0]}
+                account={account}
+              />
             )
           }
         })()}

@@ -20,6 +20,8 @@ const theme = createTheme({
     evenTastic: {
       title: 'lightsalmon',
       layout: 'lavenderblush',
+      purple: 'rgb(156, 39, 176)',
+      dark_purple: 'rgb(114 30 129)',
       dull: '#b5b5b5',
       grey: '#757575'
     }

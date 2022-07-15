@@ -12,7 +12,7 @@ const api = new AccountAPI();
 const LogInModal = () => {
   const navigate = useNavigate();
   const context = useContext(StoreContext);
-  const [nextPage] = context.redirect;
+  const [nextPage, setRedirect] = context.redirect;
   const [, setLoggedIn] = context.login;
   const [, setAccount] = context.account;
   const [, setCard] = context.card;
@@ -32,6 +32,7 @@ const LogInModal = () => {
   const userLogin = () => {
     setLoggedIn(true);
     navigate(nextPage)
+    setRedirect(false)
     handleClose()
   }
 

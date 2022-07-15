@@ -19,6 +19,7 @@ const ReviewModal = ({ open, setOpen, eventDetails }) => {
 
   const handleClose = () => {
     setOpen(false);
+    setTimeout(() => setPage('listReviews'), 200);
   }
 
   useEffect(() => {

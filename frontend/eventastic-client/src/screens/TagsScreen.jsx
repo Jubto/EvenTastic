@@ -75,6 +75,10 @@ const TagsScreen = () => {
       ...account,
       'tags': savedTags.map((tag) => ({ 'name': tag }))
     }
+    // TODO
+    // const body = {
+    //   tags: savedTags.map((tag) => ({ 'name': tag }))
+    // }
     api.putAccount(account.account_id, body)
       .then((response) => {
         setAccount(response.data)

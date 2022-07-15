@@ -23,7 +23,8 @@ const ImageHolder = styled(Button)`
   max-height: 350px;
   max-width: 350px;
   ${({theme}) => theme.breakpoints.down("md")} {
-    max-width: 100%;
+    min-height: 350px;
+    min-width: 350px;
   }
   background-color: ${({ theme }) => theme.palette.evenTastic.dull};
 `
@@ -218,11 +219,10 @@ const AccountDetailsPage = ({ change, setChange }) => {
                 )
               } else {
                 return (
-                  <AddAPhotoIcon fontSize='large' color='disabled' sx={{ mt: '100%' }} />
+                  <AddAPhotoIcon fontSize='large' color='disabled' />
                 )
               }
             })()}
-
           </ImageHolder>
         </Grid>
 
@@ -235,9 +235,9 @@ const AccountDetailsPage = ({ change, setChange }) => {
             fullWidth
             multiline
             rows={9}
-            defaultValue={account.user_desc}
             id="blurb"
             label="Your blurb"
+            defaultValue={account.user_desc}
             onBlur={() => console.log("TODO blur event")}
           />
         </Grid>
@@ -247,9 +247,9 @@ const AccountDetailsPage = ({ change, setChange }) => {
             name="firstName"
             required
             fullWidth
-            defaultValue={account.first_name}
             id="firstName"
             label="First Name"
+            defaultValue={account.first_name}
             onChange={() => {
               formErrors.firstName && setFormErrors(prevState => { return { ...prevState, firstName: false } })
             }}
@@ -262,9 +262,9 @@ const AccountDetailsPage = ({ change, setChange }) => {
             name="lastName"
             required
             fullWidth
-            defaultValue={account.last_name}
             id="lastName"
             label="Last Name"
+            defaultValue={account.last_name}
             onChange={() => {
               formErrors.lastName && setFormErrors(prevState => { return { ...prevState, lastName: false } })
             }}
@@ -285,9 +285,9 @@ const AccountDetailsPage = ({ change, setChange }) => {
           <TextField
             name="age"
             fullWidth
-            defaultValue={account.age}
             id="age"
             label="Age"
+            defaultValue={account.age}
             onChange={() => {
               formErrors.age && setFormErrors(prevState => { return { ...prevState, age: false } })
             }}
@@ -300,9 +300,9 @@ const AccountDetailsPage = ({ change, setChange }) => {
             name="mobile"
             fullWidth
             type="tel"
-            defaultValue={account.mobile}
             id="mobile"
             label="Mobile"
+            defaultValue={account.mobile}
             onChange={() => {
               formErrors.mobile && setFormErrors(prevState => { return { ...prevState, mobile: false } })
             }}
@@ -314,9 +314,9 @@ const AccountDetailsPage = ({ change, setChange }) => {
           <TextField
             name="location"
             fullWidth
-            defaultValue={account.location}
             id="location"
             label="Location"
+            defaultValue={account.location}
           />
         </Grid>
 
@@ -328,10 +328,10 @@ const AccountDetailsPage = ({ change, setChange }) => {
             name="email"
             required
             fullWidth
-            value={changeEmail ? undefined : account.email}
             id="email"
             label="Email"
             InputLabelProps={{ shrink: true }}
+            value={changeEmail ? undefined : account.email}
             disabled={!changeEmail}
             onChange={() => {
               formErrors.email && setFormErrors(prevState => { return { ...prevState, email: false } })
@@ -431,10 +431,10 @@ const AccountDetailsPage = ({ change, setChange }) => {
             name="cardName"
             required
             fullWidth
-            value={changeCard ? undefined : card.card_name}
             id="cardName"
             label="Card holder name"
             InputLabelProps={{ shrink: true }}
+            value={changeCard ? undefined : card.card_name}
             disabled={!changeCard}
             onChange={() => {
               formErrors.cardName && setFormErrors(prevState => { return { ...prevState, cardName: false } })
@@ -449,10 +449,10 @@ const AccountDetailsPage = ({ change, setChange }) => {
             name="cardNumber"
             required
             fullWidth
-            value={changeCard ? undefined : card.card_number}
             id="cardNumber"
             label="Card number"
             InputLabelProps={{ shrink: true }}
+            value={changeCard ? undefined : card.card_number}
             disabled={!changeCard}
             onChange={() => {
               formErrors.cardNumber && setFormErrors(prevState => { return { ...prevState, cardNumber: false } })
@@ -467,10 +467,10 @@ const AccountDetailsPage = ({ change, setChange }) => {
             name="cardType"
             required
             fullWidth
-            value={changeCard ? undefined : card.card_type}
             id="cardType"
             label="Card type"
             InputLabelProps={{ shrink: true }}
+            value={changeCard ? undefined : card.card_type}
             disabled={!changeCard}
             onChange={() => {
               formErrors.cardType && setFormErrors(prevState => { return { ...prevState, cardType: false } })
@@ -485,10 +485,10 @@ const AccountDetailsPage = ({ change, setChange }) => {
             ref={ref}
             required
             fullWidth
-            value={changeCard ? undefined : card.card_expiry}
             id="cardExpiry"
             label="Card expiry"
             InputLabelProps={{ shrink: true }}
+            value={changeCard ? undefined : card.card_expiry}
             disabled={!changeCard}
             onChange={() => {
               formErrors.cardExpiry && setFormErrors(prevState => { return { ...prevState, cardExpiry: false } })

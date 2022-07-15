@@ -1,20 +1,18 @@
-import { useState, useEffect } from 'react';
+import { useContext, useState, useEffect } from 'react';
+import { StoreContext } from '../utils/context';
 import { useParams } from 'react-router-dom';
-import { PageContainer } from '../components/styles/layouts.styled'
+import EventAPI from "../utils/EventAPIHelper";
+import GroupAPI from '../utils/GroupAPIHelper';
 import ReviewModal from '../components/review/ReviewModal'
 import TicketPurchaseModal from '../components/ticket/TicketPurchaseModal';
 import GroupListModal from '../components/group/GroupListModal';
-import GroupMainModal  from '../components/group/GroupMainModal';
-import EventAPI from "../utils/EventAPIHelper";
-import Grid from '@mui/material/Grid';
-import { styled } from '@mui/material/styles';
-import Paper from '@mui/material/Paper';
-import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
-import Stack from '@mui/material/Stack';
-import Chip from '@mui/material/Chip';
+import GroupMainModal from '../components/group/GroupMainModal';
+import GroupCreatedModal from '../components/group/modals/GroupCreatedModal';
+import { PageContainer } from '../components/styles/layouts.styled'
+import { Button, Chip, Grid, Paper, Typography, Stack, styled } from '@mui/material';
 
-const api = new EventAPI();
+const eventApi = new EventAPI();
+const groupApi = new GroupAPI()
 
 // formating for the Grid Items 
 export const GridItem = styled(Paper)`
@@ -35,18 +33,35 @@ function formatDate(datetime) {
 
 const EventScreen = () => {
   const { id } = useParams();
+  const context = useContext(StoreContext);
+  const [account] = context.account;
   const [eventDetails, setEventDetails] = useState([])
-  const [openTicketModal, setOpenTicketModal] = useState(false)
-  const [openReviewModal, setOpenReviewModal] = useState(false)
-  const [openGroupListModal, setOpenGroupListModal] = useState(false)
-  const [openGroupMainModal, setOpenGroupMainModal] = useState(false)
+  const [groupList, setGroupList] = useState([])
+  const [hasGroup, setHasGroup] = useState(0)
+  const [openTicketModal, setTicketModal] = useState(false)
+  const [openReviewModal, setReviewModal] = useState(false)
+  const [openGroupListModal, setGroupListModal] = useState(false)
+  const [openGroupMainModal, setGroupMainModal] = useState(false)
+  const [openGroupCreatedModal, setGroupCreatedModal] = useState(false)
 
   useEffect(() => {
-    api
+    eventApi
       .getEventDetails(id)
       .then((response) => setEventDetails(response.data))
       .catch((err) => console.log(err));
+
+    groupApi
+      .getGroupList({ event_id: eventDetails.event_id })
+      .then((response) => {
+        const groups = response.data
+        setGroupList(groups)
+      })
+      .catch((err) => console.error(err));
   }, [])
+
+  useEffect(() => {
+    setHasGroup(groupList.filter((group) => group.group_host_id === account.account_id).length)
+  }, [groupList, account])
 
   return (
     <PageContainer maxWidth='lg'>
@@ -79,15 +94,39 @@ const EventScreen = () => {
               <b>What is the price range?</b> $20-$30
             </Typography>
             <Stack spacing={3}>
-              <Button variant="contained" href="#contained-buttons" color="error" onClick={() => setOpenTicketModal(true)}>
+              <Button
+                variant="contained"
+                href="#contained-buttons"
+                color="error" onClick={() => setTicketModal(true)}
+              >
                 Tickets
               </Button>
-              <Button variant="contained" href="#contained-buttons" color="warning" onClick={() => setOpenReviewModal(true)}>
+              <Button
+                variant="contained"
+                href="#contained-buttons"
+                color="warning" onClick={() => setReviewModal(true)}
+              >
                 Reviews
               </Button>
-              <Button variant="contained" href="#contained-buttons" color="info" onClick={() => setOpenGroupListModal(true)}>
-                Find Groups
-              </Button>
+              {hasGroup
+                ? <Button
+                  variant="contained"
+                  href="#contained-buttons"
+                  onClick={() => setGroupMainModal(true)}
+                  sx={{ bgcolor: 'evenTastic.purple', '&:hover': { backgroundColor: 'evenTastic.dark_purple' } }}
+                >
+                  View Your Group
+                </Button>
+                : <Button
+                  variant="contained"
+                  href="#contained-buttons"
+                  onClick={() => setGroupListModal(true)}
+                  sx={{ bgcolor: 'evenTastic.purple', '&:hover': { backgroundColor: 'evenTastic.dark_purple' } }}
+                >
+                  Find Groups
+                </Button>
+              }
+
             </Stack>
           </GridItem>
         </Grid>
@@ -119,10 +158,33 @@ const EventScreen = () => {
           </GridItem>
         </Grid>
       </Grid>
-      <TicketPurchaseModal open={openTicketModal} setOpen={setOpenTicketModal} eventDetails={eventDetails} />
-      <ReviewModal open={openReviewModal} setOpen={setOpenReviewModal} eventDetails={eventDetails}/>
-      <GroupListModal open={openGroupListModal} setOpen={setOpenGroupListModal} eventDetails={eventDetails} />
-      <GroupMainModal open={openGroupMainModal} setOpen={setOpenGroupMainModal} eventDetails={eventDetails} />
+      <TicketPurchaseModal
+        open={openTicketModal}
+        setOpen={setTicketModal}
+        eventDetails={eventDetails}
+      />
+      <ReviewModal
+        open={openReviewModal}
+        setOpen={setReviewModal}
+        eventDetails={eventDetails}
+      />
+      <GroupListModal
+        open={openGroupListModal}
+        setOpen={setGroupListModal}
+        eventDetails={eventDetails}
+        groupList={groupList}
+        setGroupList={setGroupList}
+        setGroupCreatedModal={setGroupCreatedModal}
+      />
+      <GroupMainModal
+        open={openGroupMainModal}
+        setOpen={setGroupMainModal}
+        eventDetails={eventDetails}
+      />
+      <GroupCreatedModal 
+        open={openGroupCreatedModal}
+        setOpen={setGroupCreatedModal}
+      />
     </PageContainer>
   )
 }
