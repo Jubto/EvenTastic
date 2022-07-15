@@ -1,15 +1,30 @@
 import { StandardModal, ModalBody, ModalTitle } from '../../styles/modal/modal.styled';
 import { FlexBox } from '../../styles/layouts.styled';
 import { Button, Typography } from '@mui/material';
+import EventAPI from "../../../utils/EventAPIHelper"
 
-const CancelTicketModal = ({ open, setOpen, setCancel }) => {
+const api = new EventAPI()
+
+const CancelTicketModal = ({ open, setOpen, toCancel, setCancelBooking }) => {
+
+  const cancelBooking = (bookingID) => {
+    const body = {
+      op: "replace",
+      path: "/booking_status",
+      value: "Cancelled"
+    }
+    api.patchBookings(bookingID, body)
+      .then((res) => console.log(res))
+      .catch((err) => console.error(err))
+  }
 
   const handleClose = () => {
     setOpen(false);
   }
 
   const handleCancel = () => {
-    setCancel(prevstate => !prevstate)
+    cancelBooking(toCancel)
+    setCancelBooking(toCancel)
     handleClose()
   }
 
@@ -18,7 +33,7 @@ const CancelTicketModal = ({ open, setOpen, setCancel }) => {
       <ModalTitle title='Cancel booking' close={handleClose} />
       <ModalBody>
         <Typography>
-        Are you sure you want to cancel the ticket bookings this event?
+        Are you sure you want to cancel this booking?
         </Typography>
       </ModalBody>
       <FlexBox justify='space-between'>

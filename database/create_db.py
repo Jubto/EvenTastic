@@ -15,7 +15,12 @@ print('\nDropping Database ...')
 cur.execute('DROP DATABASE IF EXISTS eventastic')
 print('\nCreating Database ...')
 cur.execute('CREATE DATABASE eventastic')
+cur.close()
+con.close()
 
+con = psycopg2.connect(database='eventastic', user='postgres', password='postgrespw', host=host, port=port)
+con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+cur = con.cursor()
 
 print('\nDropping Tables ...')
 cur.execute('drop TABLE IF EXISTS hosts cascade;')
