@@ -58,6 +58,7 @@ const TicketSelection = ({ open, setPage, generalSeats, frontSeats, middleSeats,
             <b>Seat Selection:</b>
           </div>
           <div>
+            { generalPrice >= 0 &&
             <SeatsBox>
               <div>
                 General Seats: 
@@ -77,7 +78,9 @@ const TicketSelection = ({ open, setPage, generalSeats, frontSeats, middleSeats,
                 </Select>
               </div>
             </SeatsBox>
+            }
 
+            { frontPrice >= 0 &&
             <SeatsBox>
               <div>
                 Front Seats: 
@@ -97,7 +100,9 @@ const TicketSelection = ({ open, setPage, generalSeats, frontSeats, middleSeats,
                 </Select>
               </div>
             </SeatsBox>
+            }
 
+            { middlePrice >= 0 &&
             <SeatsBox>
               <div>
                 Middle Seats: 
@@ -117,7 +122,9 @@ const TicketSelection = ({ open, setPage, generalSeats, frontSeats, middleSeats,
                 </Select>
               </div>
             </SeatsBox>
+            }
 
+            { backPrice >= 0 &&
             <SeatsBox>
               <div>
                 Back Seats: 
@@ -137,6 +144,7 @@ const TicketSelection = ({ open, setPage, generalSeats, frontSeats, middleSeats,
                 </Select>
               </div>
             </SeatsBox>
+            }
 
           </div>
           <br></br>
