@@ -22,7 +22,9 @@ export default class EventAPI {
     return this.client;
   };
 
-
+  postEvent = (body) => {
+    return this.init().post("/events", body);
+  };
   
   getEventList = (params) => {
     return this.init().get("/events", { params: params });
