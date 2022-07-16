@@ -100,43 +100,75 @@ def list_reviews(event_id=None, interaction_acount_id=None):  # noqa: E501
     :rtype: ReviewList
     """
     try:
-        con = psycopg2.connect(database='eventastic', user='postgres',
-                               password='postgrespw', host='localhost', port=port)
+        con = psycopg2.connect(database= 'eventastic', user='postgres', password='postgrespw', host=host, port=port)
         con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
         cur = con.cursor()
-        
-        cur.execute('SELECT * FROM reviews where event_id = ' + str(event_id))
-        records = cur.fetchall()
 
-        reviews = []
-        for record in records:
-            if record != None:
-                review = dict()
-                review['review_id'] = str(record[0])
-                review['event_id'] = str(record[1])
-                review['account_id'] = str(record[2])
-                review['upvote_count'] = str(record[3])
-                review['rating'] = str(record[4])
-                review['review_text'] = str(record[5])
-                review['time_stamp'] = str(record[6])
-                review['flag_count'] = str(record[7])
-                review['status'] = str(record[8])
-                review['reply_text'] = str(record[9])
+        reviews_list = list()
 
-                reviews.append(review)
+        if event_id == None and interaction_acount_id == None:
+            cur.execute(f"SELECT * FROM reviews where flag_count > 0 and review_status = 'Active' ")
+            records = cur.fetchall()
+            if len(records) > 0:
+                for record in records:
+                    review = dict()
+                    review['review_id'] = int(record[0])
+                    review['event_id'] = int(record[1])
+                    review['reviewer_account_id'] = int(record[2])
+                    review['upvotes'] = int(record[3])
+                    review['rating'] = int(record[4])
+                    review['review_text'] = str(record[5])
+                    review['review_timestamp'] = str(record[6])
+                    review['flag_count'] = int(record[7])
+                    review['review_status'] = str(record[8])
+                    review['reply_text'] = str(record[9])
+                    
+                    reviews_list.append(review)
+
+        elif event_id != None:
+            cur.execute(f"SELECT * FROM reviews where event_id = {event_id} and review_status = 'Active' ")
+            records = cur.fetchall()
+            if len(records) > 0:
+                for record in records:
+                    review = dict()
+                    review['review_id'] = int(record[0])
+                    review_id = review['review_id']
+                    review['event_id'] = int(record[1])
+                    review['reviewer_account_id'] = int(record[2])
+                    review['upvotes'] = int(record[3])
+                    review['rating'] = int(record[4])
+                    review['review_text'] = str(record[5])
+                    review['review_timestamp'] = str(record[6])
+                    review['flag_count'] = int(record[7])
+                    review['review_status'] = str(record[8])
+                    review['reply_text'] = str(record[9])
+
+                    interaction = dict()
+                    if interaction_acount_id != None:
+                        cur.execute(f"SELECT * FROM interactions where review_id={review_id} and interaction_account_id={interaction_acount_id} ")
+                        inter_record = cur.fetchone()
+                        if inter_record != None:
+                            interaction['interaction_id'] = int(inter_record[0])
+                            interaction['review_id'] = int(inter_record[1])
+                            interaction['interaction_account_id'] = int(inter_record[2])
+                            interaction['review_upvoted'] = bool(inter_record[3])
+                            interaction['review_flagged'] = bool(inter_record[4])
+
+                    review['review_interaction'] = interaction
+                    
+                    reviews_list.append(review)        
+                    
 
         cur.close()
         con.close()
-        return reviews, 200, {'Access-Control-Allow-Origin': '*'}
+        return reviews_list, 200, {'Access-Control-Allow-Origin': '*'}
 
     except Exception as e:
-        # catch any unexpected runtime error and return as 500 error
+        # catch any unexpected runtime error and return as 500 error 
+        error = UnexpectedServiceError(code="500", type="UnexpectedServiceError", message=str(e))
         cur.close()
         con.close()
-        error = UnexpectedServiceError(
-            code="500", type="UnexpectedServiceError", message=str(e))
         return error, 500, {'Access-Control-Allow-Origin': '*'}
-
 
 
 def update_review(review_id, body):  # noqa: E501
@@ -151,9 +183,52 @@ def update_review(review_id, body):  # noqa: E501
 
     :rtype: Review
     """
-    if connexion.request.is_json:
-        body = Review.from_dict(connexion.request.get_json())  # noqa: E501
-    return 'do some magic!'
+    try:
+        if connexion.request.is_json:
+            body = Review.from_dict(connexion.request.get_json())  # noqa: E501
+
+        if (body.upvotes == None and body.flag_count == None and body.reply_text == None and body.review_status == None):
+            error = InvalidInputError(code=400, type="InvalidInputError", 
+                    message="Provide at least one of the following mandatory fields: upvotes or flag count or reply text or review status")
+            return error, 400, {'Access-Control-Allow-Origin': '*'}
+
+        con = psycopg2.connect(database= 'eventastic', user='postgres', password='postgrespw', host=host, port=port)
+        con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+        cur = con.cursor()
+
+        cur.execute(f"SELECT review_id FROM reviews where review_id = {review_id}")
+        record = cur.fetchone()
+        if record == None:
+            error = ReviewNotFoundError(code=404, type="ReviewNotFoundError", 
+                    message="The following Review ID does not exist: " + str(review_id))
+            cur.close()
+            con.close()
+            return error, 404, {'Access-Control-Allow-Origin': '*'}
+
+        update_string = "UPDATE reviews set "
+        if body.upvotes != None: update_string += f" upvote_count={int(body.upvotes)},"
+        if body.flag_count != None: update_string += f" flag_count={int(body.flag_count)},"
+        if body.reply_text != None: update_string += f" reply_text='{body.reply_text}',"
+        if body.review_status != None: update_string += f" review_status='{body.review_status}',"
+
+        update_string = update_string[:-1]
+
+        update_string += f" where review_id = {review_id} RETURNING review_id;"
+            
+        cur.execute(update_string)
+        rev_id = cur.fetchone()[0]                   
+
+        cur.close()
+        con.close()
+        return {"message": "Review has been updated successfully."}, 200, {'Access-Control-Allow-Origin': '*'}
+
+    except Exception as e:
+        # catch any unexpected runtime error and return as 500 error 
+        error = UnexpectedServiceError(code="500", type="UnexpectedServiceError", message=str(e))
+        cur.close()
+        con.close()
+        return error, 500, {'Access-Control-Allow-Origin': '*'}
+
 
 
 def update_review_interaction(interaction_id, body):  # noqa: E501

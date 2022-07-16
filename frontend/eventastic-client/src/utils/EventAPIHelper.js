@@ -57,6 +57,14 @@ export default class EventAPI {
   getTickets = (params) => {
     return this.init().get('/tickets', { params: params });
   };
+
+  getReviews = (params) => {
+    return this.init().get('/reviews', { params: params });
+  };
+
+  putReviews = (reviewId, body) => {
+    return this.init().put(`/reviews/${reviewId}`, body);
+  };
   
   // Add additional API call here as needed ...
 }

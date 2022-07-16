@@ -52,7 +52,7 @@ const Ticket = ({ booking, handleCancelBooking, handleSendTicketsModal }) => {
           <b>{booking.event_title}</b><br></br>
           <b>Location:</b> {booking.event_location}<br></br>
           <b>DateTime:</b> {formatDate(booking.event_start_datetime)}<br></br>
-          <b>Total Cost</b>: {booking.total_cost}<br></br>
+          <b>Total Cost</b>: A$ {booking.total_cost}<br></br>
         </Typography>
         <Typography variant="body1" component="div" width="10%">
         </Typography>
@@ -82,7 +82,7 @@ const pastTickets = ({ booking, handleCancelBooking }) => {
           <b>{booking.event_title}</b><br></br>
           <b>Location:</b> {booking.event_location}<br></br>
           <b>DateTime:</b> {formatDate(booking.event_start_datetime)}<br></br>
-          <b>Total Cost</b>: {booking.total_cost}<br></br>
+          <b>Total Cost</b>: A$ {booking.total_cost}<br></br>
         </Typography>
       </Stack>
     </FlexBox>

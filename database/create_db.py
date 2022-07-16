@@ -320,6 +320,10 @@ for v_id, e_id in [(2, 2), (3, 3), (4, 4), (5, 5), (6, 6)]:
 cur.execute("INSERT INTO reviews values (default, 1, 1, 0, 4, 'Amazing Event. Highly Recommend it', '2022-08-25T21:00:00+10:00', 0, 'Active', '');")
 cur.execute("INSERT INTO reviews values (default, 1, 2, 0, 1, 'Poorly organised', '2022-08-26T21:00:00+10:00', 0, 'Active', '');")
 cur.execute("INSERT INTO reviews values (default, 2, 2, 3, 5, 'Best event ever.', '2022-08-26T21:00:00+10:00', 0, 'Active', 'Thanks for the feedback!');")
+cur.execute("INSERT INTO reviews values (default, 3, 3, 0, 4, 'Amazing Event. Highly Recommend it', '2022-08-25T21:00:00+10:00', 1, 'Active', '');")
+cur.execute("INSERT INTO reviews values (default, 4, 3, 0, 1, 'Poorly organised', '2022-08-26T21:00:00+10:00', 3, 'Active', '');")
+cur.execute("INSERT INTO reviews values (default, 5, 4, 3, 5, 'Best event ever.', '2022-08-26T21:00:00+10:00', 2, 'Active', 'Thanks for the feedback!');")
+
 
 cur.execute("INSERT INTO interactions values (default, 1, 1, True, False);")
 cur.execute("INSERT INTO interactions values (default, 2, 1, False, True);")
