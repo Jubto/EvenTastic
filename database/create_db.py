@@ -33,6 +33,8 @@ cur.execute('drop TABLE IF EXISTS bookings cascade;')
 cur.execute('drop TABLE IF EXISTS tickets cascade;')
 cur.execute('drop TABLE IF EXISTS groups cascade;')
 cur.execute('drop TABLE IF EXISTS group_members cascade;')
+cur.execute('drop TABLE IF EXISTS reviews cascade;')
+cur.execute('drop TABLE IF EXISTS interactions cascade;')
 
 
 # Create Tables
@@ -153,6 +155,37 @@ cur.execute('CREATE TABLE group_members(id SERIAL PRIMARY KEY,\
             join_status VARCHAR(20),\
                 join_desc TEXT,\
                     interest_tags TEXT);')
+
+#Reviews Table
+# Review Status : Visible, Cancelled
+# Rating : User rating between 1 - 5
+cur.execute('CREATE TABLE reviews(\
+            review_id SERIAL PRIMARY KEY,\
+            event_id INT NOT NULL,\
+            FOREIGN KEY (event_id) REFERENCES events (event_id),\
+            account_id INT NOT NULL,\
+            FOREIGN KEY (account_id) REFERENCES accounts (account_id),\
+            upvote_count INT,\
+            rating INT,\
+            review_text TEXT,\
+            time_stamp TEXT,\
+            flag_count INT,\
+            review_status TEXT, \
+            reply_text TEXT \
+            );')
+
+#Interactions Table
+#viewing account id refers to the user currently logged in
+#This table keeps a track of user interaction with reviews
+cur.execute('CREATE TABLE interactions(\
+            interaction_id SERIAL PRIMARY KEY,\
+            review_id INT NOT NULL,\
+            FOREIGN KEY (review_id) REFERENCES reviews (review_id),\
+            viewing_account_id INT NOT NULL,\
+            FOREIGN KEY (viewing_account_id) REFERENCES accounts (account_id),\
+            upvoted BOOLEAN,\
+            flagged BOOLEAN \
+            );')
 
 # Enter dummy data here
 print('\nInserting dummy data ...')
@@ -281,6 +314,12 @@ for v_id, e_id in [(2, 2), (3, 3), (4, 4), (5, 5), (6, 6)]:
         cur.execute(
             f"INSERT INTO tickets values (default, {v_id}, {e_id}, -1, 'B_{t_id}', 'Available', '1-1-1-B_{t_id}', 'Back', 100.0);")
 
+
+cur.execute("INSERT INTO reviews values (default, 1, 1, 0, 4, 'Amazing Event. Highly Recommend it', '2022-08-25T21:00:00+10:00', 0, 'Visible', '');")
+cur.execute("INSERT INTO reviews values (default, 1, 2, 0, 1, 'Poorly organised', '2022-08-26T21:00:00+10:00', 0, 'Visible', '');")
+
+cur.execute("INSERT INTO interactions values (default, 1, 1, True, False);")
+
 cur.execute('SELECT * FROM accounts')
 records = cur.fetchall()
 print("\nAccount details")
@@ -325,6 +364,22 @@ for row in records:
 cur.execute('SELECT * FROM venue_seating')
 records = cur.fetchall()
 print("\nVenue_seating details")
+for row in records:
+    for j in range(len(row)):
+        print(row[j], end=" ")
+    print()
+
+cur.execute('SELECT * FROM reviews')
+records = cur.fetchall()
+print("\nReview details")
+for row in records:
+    for j in range(len(row)):
+        print(row[j], end=" ")
+    print()
+
+cur.execute('SELECT * FROM interactions')
+records = cur.fetchall()
+print("\Interaction details")
 for row in records:
     for j in range(len(row)):
         print(row[j], end=" ")
