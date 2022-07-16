@@ -18,7 +18,7 @@ const Image = styled('img')`
   height: 100%;
 `
 
-const RequestJoinPage = ({ setPage, setGroupList, group, account }) => {
+const RequestJoinPage = ({ setOpen, setPage, setGroupList, group, account }) => {
   const [formErrors, setFormErrors] = useState({
     error: false,
     joinRequest: false,
@@ -60,9 +60,9 @@ const RequestJoinPage = ({ setPage, setGroupList, group, account }) => {
         }
         console.log('now')
         console.log(group)
-        setGroupList(prevState => 
-          { return [...prevState.filter((prevGroup) => prevGroup.group_id !== group.group_id), group] })
+        setGroupList(prevState => { return [group, ...prevState.filter((prevGroup) => prevGroup.group_id !== group.group_id)] })
         setPage('listGroups')
+        setOpen(true)
       }
       catch (err) {
         console.log(err)
@@ -72,17 +72,20 @@ const RequestJoinPage = ({ setPage, setGroupList, group, account }) => {
 
   return (
     <ScrollContainer thin pr='1vw' height='97%'>
-      <FlexBox>
-        <Typography variant='subtitle1' sx={{ color: 'evenTastic.grey', fontWeight: 1000, mb: 2, mr: 1 }}>
-          {group.group_name}
-        </Typography>
-        <Chip icon={<PeopleAltIcon />} label={group.group_members.length} />
-      </FlexBox>
       <FlexBox wrap='true' sx={{ mb: 2 }}>
         <ImageHolder>
           <Image src={group.group_img} alt='group thumbnail' />
         </ImageHolder>
         <FlexBox direction='column' sx={{ maxWidth: '900px', width: { sm: '100%', md: '60vw' } }} >
+          <InfoHeader title='Group name' />
+          <FlexBox>
+            <Typography variant='subtitle1' sx={{ fontWeight: 1000, mb: 2, mr: 1 }}>
+              {group.group_name}
+            </Typography>
+            <Chip icon={<PeopleAltIcon />} label={group.group_members.reduce((total, member) => (
+              total + (member.join_status === 'Accepted' ? 1 : 0)), 0)}
+            />
+          </FlexBox>
           <InfoHeader title='Group description' />
           <Typography variant='body1'>
             {group.group_desc}
@@ -105,10 +108,9 @@ const RequestJoinPage = ({ setPage, setGroupList, group, account }) => {
           }}
           error={formErrors.joinRequest}
           helperText={formErrors.joinRequest ? 'Cannot be empty.' : ''}
+          sx={{mb:2}}
         />
-        <Typography variant='subtitle1' sx={{ color: 'evenTastic.grey', fontWeight: 1000, mb: 2, mr: 1 }}>
-          Your Interests
-        </Typography>
+        <InfoHeader title='Choose Your Interests To Show' />
         <ScrollContainer thin sx={{ height: '50px' }}>
           {account.tags.map((tag, idx) => (
             <Chip key={idx} clickable label={tag.name}

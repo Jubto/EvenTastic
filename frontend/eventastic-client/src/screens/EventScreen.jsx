@@ -8,6 +8,7 @@ import TicketPurchaseModal from '../components/ticket/TicketPurchaseModal';
 import GroupListModal from '../components/group/GroupListModal';
 import GroupMainModal from '../components/group/GroupMainModal';
 import GroupCreatedModal from '../components/group/modals/GroupCreatedModal';
+import GroupJoinedModal from '../components/group/modals/GroupJoinedModal';
 import { PageContainer } from '../components/styles/layouts.styled'
 import { Button, Chip, Grid, Paper, Typography, Stack, styled } from '@mui/material';
 
@@ -35,33 +36,107 @@ const EventScreen = () => {
   const { id } = useParams();
   const context = useContext(StoreContext);
   const [account] = context.account;
+  const [accountGroups, setAccountGroups] = context.groups;
   const [eventDetails, setEventDetails] = useState([])
   const [groupList, setGroupList] = useState([])
-  const [hasGroup, setHasGroup] = useState(0)
+  const [groupDetails, setGroupDetails] = useState(false)
+  const [apiGetGroup, setApiGetGroup] = useState(false)
+  const [hasLeftGroup, setHasLeftGroup] = useState(false)
+
+  // modals
   const [openTicketModal, setTicketModal] = useState(false)
   const [openReviewModal, setReviewModal] = useState(false)
   const [openGroupListModal, setGroupListModal] = useState(false)
   const [openGroupMainModal, setGroupMainModal] = useState(false)
   const [openGroupCreatedModal, setGroupCreatedModal] = useState(false)
+  const [openGroupJoinedModal, setGroupJoinedModal] = useState(false)
 
-  useEffect(() => {
-    eventApi
-      .getEventDetails(id)
-      .then((response) => setEventDetails(response.data))
-      .catch((err) => console.log(err));
 
-    groupApi
-      .getGroupList({ event_id: eventDetails.event_id })
-      .then((response) => {
-        const groups = response.data
+  const apiGroupsFilterBy = (eventID, accountID = false) => {
+    let params = {}
+    if (eventID && !accountID) {
+      params = {
+        event_id: eventDetails.event_id
+      }
+    }
+    else if (eventID && accountID) {
+      params = {
+        event_id: eventDetails.event_id,
+        account_id: account.account_id
+      }
+    }
+    return new Promise((resolve, reject) => {
+      groupApi.getGroupList(params)
+        .then((res) => {
+          resolve(res.data)
+        })
+        .catch((err) => reject(err))
+    })
+  }
+
+  const initApiCalls = async () => {
+    try {
+      const eventRes = await eventApi.getEventDetails(id)
+      setEventDetails(eventRes.data)
+      if (account && accountGroups[eventRes.data.event_id]) {
+        // user is logged in + already member of group
+        setGroupDetails(accountGroups[eventRes.data.event_id])
+      }
+      else {
+        // get list of groups filtered by eventID
+        const groups = await apiGroupsFilterBy(eventRes.data.event_id)
         setGroupList(groups)
-      })
-      .catch((err) => console.error(err));
-  }, [])
+      }
+    }
+    catch (err) {
+      console.log(err)
+    }
+  }
 
   useEffect(() => {
-    setHasGroup(groupList.filter((group) => group.group_host_id === account.account_id).length)
-  }, [groupList, account])
+    // this is called in main group modal when you click leave group
+    if (hasLeftGroup) {
+      setGroupDetails(false)
+      const temp = accountGroups
+      delete temp[eventDetails.event_id]
+      setAccountGroups(temp) // update global account groups
+      apiGroupsFilterBy(eventDetails.event_id)
+      .then((groupsRes) => {
+        setGroupList(groupsRes)
+      })
+      .catch((err) => console.error(err))
+    }
+  }, [hasLeftGroup])
+
+  useEffect(() => {
+    // This is called when:
+    // logging in while in listing modal when you're already part of group
+    // When creating a new group in listing modal
+    // When accepting to join a new group in the listing modal
+    if (apiGetGroup) {
+      if (accountGroups[eventDetails.event_id]){
+        setGroupDetails(accountGroups[eventDetails.event_id])
+      }
+      else {
+        apiGroupsFilterBy(eventDetails.event_id, account.account_id)
+        .then((groupRes) => {
+          const group = groupRes[0]
+          setGroupDetails(group)
+          const temp = accountGroups
+          temp[eventDetails.event_id] = group
+          setAccountGroups(temp) // update global account groups
+        })
+        .catch((err) => console.error(err))
+      }
+      setGroupListModal(false) // close group listing modal
+      setApiGetGroup(false)
+    }
+    // TODO potentially spawn modal if it improves ux, not sure yet
+  }, [apiGetGroup])
+
+  useEffect(() => {
+    initApiCalls()
+  }, [])
 
   return (
     <PageContainer maxWidth='lg'>
@@ -108,7 +183,7 @@ const EventScreen = () => {
               >
                 Reviews
               </Button>
-              {hasGroup
+              {groupDetails
                 ? <Button
                   variant="contained"
                   href="#contained-buttons"
@@ -172,19 +247,30 @@ const EventScreen = () => {
         open={openGroupListModal}
         setOpen={setGroupListModal}
         eventDetails={eventDetails}
+        accountGroups={accountGroups}
         groupList={groupList}
         setGroupList={setGroupList}
+        setApiGetGroup={setApiGetGroup}
         setGroupCreatedModal={setGroupCreatedModal}
+        setGroupJoinedModal={setGroupJoinedModal}
       />
       <GroupMainModal
         open={openGroupMainModal}
         setOpen={setGroupMainModal}
         eventDetails={eventDetails}
+        groupDetails={groupDetails}
+        setGroupDetails={setGroupDetails}
+        setHasLeftGroup={setHasLeftGroup}
       />
-      <GroupCreatedModal 
+      <GroupCreatedModal
         open={openGroupCreatedModal}
         setOpen={setGroupCreatedModal}
       />
+      <GroupJoinedModal
+        open={openGroupJoinedModal}
+        setOpen={setGroupJoinedModal}
+      />
+
     </PageContainer>
   )
 }

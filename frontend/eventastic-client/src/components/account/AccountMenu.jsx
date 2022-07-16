@@ -14,6 +14,7 @@ const AccountMenu = () => {
   const [, setRedirect] = context.redirect;
   const [loggedIn, setLoggedIn] = context.login;
   const [account, setAccount] = context.account;
+  const [, setAccountGroups] = context.groups;
   const [, setCard] = context.card;
   const [, setHostDetails] = context.host;
   const [, setLogInModal] = context.logInModal;
@@ -37,6 +38,7 @@ const AccountMenu = () => {
     handleCloseMenu();
     setLoggedIn(false);
     setAccount(false);
+    setAccountGroups({})
     setCard({});
     setHostDetails(false);
   };

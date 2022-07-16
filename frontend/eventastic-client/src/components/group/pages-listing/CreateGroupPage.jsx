@@ -27,7 +27,7 @@ const Image = styled('img')`
   max-width: 100%;
 `
 
-const CreateGroupPage = ({ setGroupList, eventID, account, setOpen, setParent }) => {
+const CreateGroupPage = ({ eventID, account, setOpen, setApiGetGroup }) => {
   const [imgUpload, setImageUpload] = useState(false);
   const [formErrors, setFormErrors] = useState({
     error: false,
@@ -83,12 +83,12 @@ const CreateGroupPage = ({ setGroupList, eventID, account, setOpen, setParent })
           join_status: "Accepted"
         }
         const memberRes = await api.postGroupMember(groupID, member)
-        group = {
-          ...group,
-          group_members: [memberRes.data]
-        }
-        setGroupList(prevState => { return [ ...prevState, group ] })
-        setParent(false)
+        // group = {
+        //   ...group,
+        //   group_members: [memberRes.data]
+        // }
+        // setGroupList(prevState => { return [ group, ...prevState ] }) // TODO invoke call API filter on event/user instead
+        setApiGetGroup(true)
         setTimeout(() => setOpen(true), 200)
       }
       catch (err) {

@@ -1,13 +1,15 @@
 import { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AccountAPI from '../../../utils/AccountAPIHelper';
+import GroupAPI from '../../../utils/GroupAPIHelper';
 import { Link } from 'react-router-dom';
 import { StoreContext } from '../../../utils/context';
 import { StandardModal, ModalBody, ModalTitle } from '../../styles/modal/modal.styled';
 import { FlexBox } from '../../styles/layouts.styled';
 import { Button, TextField, Typography } from '@mui/material';
 
-const api = new AccountAPI();
+const accountApi = new AccountAPI();
+const groupApi = new GroupAPI();
 
 const LogInModal = () => {
   const navigate = useNavigate();
@@ -15,6 +17,7 @@ const LogInModal = () => {
   const [nextPage, setRedirect] = context.redirect;
   const [, setLoggedIn] = context.login;
   const [, setAccount] = context.account;
+  const [, setAccountGroups] = context.groups;
   const [, setCard] = context.card;
   const [, setHostDetails] = context.host;
   const [open, setOpen] = context.logInModal;
@@ -43,6 +46,19 @@ const LogInModal = () => {
     handleClose()
   }
 
+  // TODO update global group state when: creating new group, accepting join request, leaving group, updating group (host only), approving group requests
+  const processGroups = (groups, accountID) => {
+    const accountGroups = {}
+    groups.forEach((group) => {
+      group.group_members.forEach((member) => {
+        if (member.account_id === accountID && member.join_status === 'Accepted') {
+          accountGroups[group.event_id] = group
+        }
+      })
+    })
+    return accountGroups;
+  }
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -66,21 +82,25 @@ const LogInModal = () => {
     }
 
     if (!formErrors.error) {
-      const param = {
+      let param = {
         'email': email
       }
       try {
-        const accountRes = await api.getAccounts(param)
+        const accountRes = await accountApi.getAccounts(param)
         const account = accountRes.data[0];
-
         if (!account || account.password !== password) {
           setLogInFail(true)
         }
         else {
+          param = {
+            account_id: account.account_id
+          }
+          const groupsRes = await groupApi.getGroupList(param)
+          setAccountGroups(processGroups(groupsRes.data, account.account_id))
           setAccount(account)
-          const cardDetails = await api.getAccountCard(account.account_id)
+          const cardDetails = await accountApi.getAccountCard(account.account_id)
           setCard(cardDetails.data)
-          const hostRes = await api.getHost(account.account_id) 
+          const hostRes = await accountApi.getHost(account.account_id) 
           const hostDetails = hostRes.data
           Object.keys(hostDetails).length === 0 ? setHostDetails(false) : setHostDetails(hostDetails)
           
