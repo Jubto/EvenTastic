@@ -6,7 +6,6 @@ import { Button, Chip, Stack, Tooltip, Typography } from "@mui/material"
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 
 const GroupCard = forwardRef(({
-    refresh,
     setPage,
     group,
     setRequestedGroupId,
@@ -48,7 +47,7 @@ const GroupCard = forwardRef(({
         break
       }
     }
-  }, [refresh])
+  }, [])
 
   return (
     <Stack direction="row" spacing={2}
@@ -134,7 +133,6 @@ const GroupCard = forwardRef(({
 })
 
 const GroupListingsPage = forwardRef(({
-    refresh,
     setPage,
     groupList,
     setRequestedGroupId,
@@ -150,7 +148,6 @@ const GroupListingsPage = forwardRef(({
       {groupList.map((group, idx) =>
         <GroupCard
           ref={ref}
-          refresh={refresh}
           key={idx}
           group={group}
           setRequestedGroupId={setRequestedGroupId}

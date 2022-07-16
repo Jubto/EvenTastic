@@ -1,8 +1,26 @@
-import React from 'react'
+import { useEffect, useContext } from "react"
+import { StoreContext } from "../../../utils/context"
+import GroupAPI from "../../../utils/GroupAPIHelper";
+import { FlexBox, ScrollContainer } from "../../styles/layouts.styled";
 
-const GroupRequestsPage = () => {
+const api = new GroupAPI()
+
+const GroupRequestsPage = ({ groupDetails, setGroupDetails, eventID }) => {
+  const context = useContext(StoreContext);
+  const [accountGroups, setAccountGroups] = context.groups;
+
+
+  useEffect(() => {
+    api.getGroup(groupDetails.group_id)
+    .then((res) => {
+      
+    })
+  }, [])
+
   return (
-    <div>GroupRequestsPage</div>
+    <ScrollContainer>
+      GroupRequestsPage
+    </ScrollContainer>
   )
 }
 

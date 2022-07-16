@@ -44,6 +44,7 @@ export const ModalBodyLarge = styled(Box)`
   padding-left: 1rem;
   padding-right: 1rem;
   padding-bottom: 1rem;
+  overflow: hidden;
 `
 
 export const ModalTitle = ( {title, close} ) => {

@@ -56,12 +56,12 @@ const EventScreen = () => {
     let params = {}
     if (eventID && !accountID) {
       params = {
-        event_id: eventDetails.event_id
+        event_id: eventID
       }
     }
     else if (eventID && accountID) {
       params = {
-        event_id: eventDetails.event_id,
+        event_id: eventID,
         account_id: account.account_id
       }
     }
@@ -84,7 +84,9 @@ const EventScreen = () => {
       }
       else {
         // get list of groups filtered by eventID
+        console.log('GETTING LIST OF EVENTS')
         const groups = await apiGroupsFilterBy(eventRes.data.event_id)
+        console.log(groups)
         setGroupList(groups)
       }
     }
@@ -261,6 +263,7 @@ const EventScreen = () => {
         groupDetails={groupDetails}
         setGroupDetails={setGroupDetails}
         setHasLeftGroup={setHasLeftGroup}
+        account={account}
       />
       <GroupCreatedModal
         open={openGroupCreatedModal}

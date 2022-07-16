@@ -46,7 +46,6 @@ const LogInModal = () => {
     handleClose()
   }
 
-  // TODO update global group state when: creating new group, accepting join request, leaving group, updating group (host only), approving group requests
   const processGroups = (groups, accountID) => {
     const accountGroups = {}
     groups.forEach((group) => {

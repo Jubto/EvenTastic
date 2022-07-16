@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import GroupAPI from "../../../utils/GroupAPIHelper";
 import InfoHeader from "../../account/styles/InfoHeader";
 import { FlexBox, ScrollContainer } from "../../styles/layouts.styled"
@@ -70,24 +70,33 @@ const RequestJoinPage = ({ setOpen, setPage, setGroupList, group, account }) => 
     }
   }
 
+  useEffect(() => {
+    group.group_members.forEach((member) => {
+      if (member.account_id === account.account_id && member.join_status === 'Pending') {
+        setPage('listGroups')
+      }
+    })
+  }, [])
+
   return (
     <ScrollContainer thin pr='1vw' height='97%'>
-      <FlexBox wrap='true' sx={{ mb: 2 }}>
+      <FlexBox wrap='wrap' sx={{ mb: 2 }}>
         <ImageHolder>
           <Image src={group.group_img} alt='group thumbnail' />
         </ImageHolder>
-        <FlexBox direction='column' sx={{ maxWidth: '900px', width: { sm: '100%', md: '60vw' } }} >
+        <FlexBox direction='column' sx={{ maxWidth: '900px', width: { sm: '100%', md: '55vw' } }} >
           <InfoHeader title='Group name' />
-          <FlexBox>
-            <Typography variant='subtitle1' sx={{ fontWeight: 1000, mb: 2, mr: 1 }}>
-              {group.group_name}
-            </Typography>
-            <Chip icon={<PeopleAltIcon />} label={group.group_members.reduce((total, member) => (
-              total + (member.join_status === 'Accepted' ? 1 : 0)), 0)}
-            />
-          </FlexBox>
+          <Typography variant='h4' sx={{ fontWeight: 1000, mb: 2, mr: 1 }}>
+            {group.group_name}
+          </Typography>
+          <InfoHeader title='Members' />
+          <Chip icon={<PeopleAltIcon />} sx={{ maxWidth: '80px', mb:2 }}
+            label={group.group_members.reduce(
+              (total, member) => (total + (member.join_status === 'Accepted' ? 1 : 0)), 0
+            )}
+          />
           <InfoHeader title='Group description' />
-          <Typography variant='body1'>
+          <Typography variant='body1' sx={{ mb: 2 }}>
             {group.group_desc}
           </Typography>
         </FlexBox>
@@ -108,10 +117,15 @@ const RequestJoinPage = ({ setOpen, setPage, setGroupList, group, account }) => 
           }}
           error={formErrors.joinRequest}
           helperText={formErrors.joinRequest ? 'Cannot be empty.' : ''}
-          sx={{mb:2}}
+          sx={{ mb: 2, width: { sm: '100%', md: '50%' } }}
         />
         <InfoHeader title='Choose Your Interests To Show' />
-        <ScrollContainer thin sx={{ height: '50px' }}>
+        <ScrollContainer thin
+          sx={{
+            height: '50px', border: '3px solid #ad9fa3',
+            borderRadius: '20px', width: { sm: '100%', md: '50%' }
+          }}
+        >
           {account.tags.map((tag, idx) => (
             <Chip key={idx} clickable label={tag.name}
               onClick={handleSelect} sx={{ m: 0.5 }} />

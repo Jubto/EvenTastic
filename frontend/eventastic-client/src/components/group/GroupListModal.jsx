@@ -28,7 +28,6 @@ const GroupListModal = ({
   const [requestedGroupId, setRequestedGroupId] = useState(false)
   const [redirect, setRedirect] = useState(false)
   const [page, setPage] = useState('listGroups')
-  const [refresh, setRefresh] = useState(false)
   const [openGroupRequestedModal, setGroupRequestedModal] = useState(false)
 
   const handleClose = () => {
@@ -60,25 +59,6 @@ const GroupListModal = ({
       // This will be reached if the login modal just got closed + user is logged in
       if (accountGroups[eventDetails.event_id]) {
         setApiGetGroup(true); // user already member of group, leave modal
-      }
-      else if (redirect === 'makeRequest') {
-        let alreadyPending = false
-        groupList.forEach((group) => {
-          group.group_members.forEach((member) => {
-            if (member.account_id === account.account_id
-              && member.join_status === 'Pending'
-              && requestedGroupId === group.group_id) {
-                alreadyPending = true // means user clicker 'request join', and upon login, they've already got pending with that event
-            }
-          })
-        })
-        if (alreadyPending) {
-          setRefresh(!refresh)
-          setPage('listGroups')  
-        }
-        else {
-          setPage(redirect)
-        }
       }
       else {
         setPage(redirect)
@@ -128,7 +108,6 @@ const GroupListModal = ({
             return (
               <GroupListingsPage
                 ref={refChild}
-                refresh={refresh}
                 setPage={setPage}
                 groupList={groupList}
                 setRequestedGroupId={setRequestedGroupId}

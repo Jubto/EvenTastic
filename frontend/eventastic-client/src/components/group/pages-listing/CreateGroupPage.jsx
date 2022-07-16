@@ -83,11 +83,6 @@ const CreateGroupPage = ({ eventID, account, setOpen, setApiGetGroup }) => {
           join_status: "Accepted"
         }
         const memberRes = await api.postGroupMember(groupID, member)
-        // group = {
-        //   ...group,
-        //   group_members: [memberRes.data]
-        // }
-        // setGroupList(prevState => { return [ group, ...prevState ] }) // TODO invoke call API filter on event/user instead
         setApiGetGroup(true)
         setTimeout(() => setOpen(true), 200)
       }
@@ -125,8 +120,8 @@ const CreateGroupPage = ({ eventID, account, setOpen, setApiGetGroup }) => {
             Group Thumbnail
           </Typography>
           <ImageHolder component='label'>
-            <input hidden type="file" name="profilePicture"
-              id="profilePicture" label="profilePicture" onChange={handleImage}
+            <input hidden type="file" name="GroupPicture"
+              id="GroupPicture" label="GroupPicture" onChange={handleImage}
             />
             {imgUpload
               ? <Image src={imgUpload} alt="Group thumbnail" />
