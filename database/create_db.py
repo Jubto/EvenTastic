@@ -163,12 +163,12 @@ cur.execute('CREATE TABLE reviews(\
             review_id SERIAL PRIMARY KEY,\
             event_id INT NOT NULL,\
             FOREIGN KEY (event_id) REFERENCES events (event_id),\
-            account_id INT NOT NULL,\
-            FOREIGN KEY (account_id) REFERENCES accounts (account_id),\
+            reviewer_account_id INT NOT NULL,\
+            FOREIGN KEY (reviewer_account_id) REFERENCES accounts (account_id),\
             upvote_count INT,\
             rating INT,\
             review_text TEXT,\
-            time_stamp TEXT,\
+            review_timestamp TEXT,\
             flag_count INT,\
             review_status TEXT, \
             reply_text TEXT \
@@ -185,8 +185,8 @@ cur.execute('CREATE TABLE interactions(\
             FOREIGN KEY (review_id) REFERENCES reviews (review_id),\
             interaction_account_id INT NOT NULL,\
             FOREIGN KEY (interaction_account_id) REFERENCES accounts (account_id),\
-            upvoted BOOLEAN,\
-            flagged BOOLEAN \
+            review_upvoted BOOLEAN,\
+            review_flagged BOOLEAN \
             );')
 
 # Enter dummy data here
@@ -383,7 +383,7 @@ for row in records:
 
 cur.execute('SELECT * FROM interactions')
 records = cur.fetchall()
-print("\Interaction details")
+print("\nInteraction details")
 for row in records:
     for j in range(len(row)):
         print(row[j], end=" ")
