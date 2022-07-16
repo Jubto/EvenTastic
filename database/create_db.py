@@ -157,7 +157,7 @@ cur.execute('CREATE TABLE group_members(id SERIAL PRIMARY KEY,\
                     interest_tags TEXT);')
 
 #Reviews Table
-# Review Status : Visible, Cancelled
+# Review Status : Active, Removed
 # Rating : User rating between 1 - 5
 cur.execute('CREATE TABLE reviews(\
             review_id SERIAL PRIMARY KEY,\
@@ -317,9 +317,9 @@ for v_id, e_id in [(2, 2), (3, 3), (4, 4), (5, 5), (6, 6)]:
             f"INSERT INTO tickets values (default, {v_id}, {e_id}, -1, 'B_{t_id}', 'Available', '1-1-1-B_{t_id}', 'Back', 100.0);")
 
 
-cur.execute("INSERT INTO reviews values (default, 1, 1, 0, 4, 'Amazing Event. Highly Recommend it', '2022-08-25T21:00:00+10:00', 0, 'Visible', '');")
-cur.execute("INSERT INTO reviews values (default, 1, 2, 0, 1, 'Poorly organised', '2022-08-26T21:00:00+10:00', 0, 'Visible', '');")
-cur.execute("INSERT INTO reviews values (default, 2, 2, 3, 5, 'Best event ever.', '2022-08-26T21:00:00+10:00', 0, 'Visible', 'Thanks for the feedback!');")
+cur.execute("INSERT INTO reviews values (default, 1, 1, 0, 4, 'Amazing Event. Highly Recommend it', '2022-08-25T21:00:00+10:00', 0, 'Active', '');")
+cur.execute("INSERT INTO reviews values (default, 1, 2, 0, 1, 'Poorly organised', '2022-08-26T21:00:00+10:00', 0, 'Active', '');")
+cur.execute("INSERT INTO reviews values (default, 2, 2, 3, 5, 'Best event ever.', '2022-08-26T21:00:00+10:00', 0, 'Active', 'Thanks for the feedback!');")
 
 cur.execute("INSERT INTO interactions values (default, 1, 1, True, False);")
 cur.execute("INSERT INTO interactions values (default, 2, 1, False, True);")
