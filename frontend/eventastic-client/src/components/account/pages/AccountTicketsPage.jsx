@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from "react"
 import { styled } from '@mui/material/styles';
 import { StoreContext } from '../../../utils/context';
 import EventAPI from "../../../utils/EventAPIHelper"
+import EmailAPI from '../../../utils/EmailAPIHelper';
 import CancelTicketModal from "../modals/CancelTicketModal";
 import SendTicketsModal from "../modals/SendTicketsModal";
 import { FlexBox, ScrollContainer } from "../../styles/layouts.styled"
@@ -10,6 +11,8 @@ import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 
 const api = new EventAPI()
+const emailAPI = new EmailAPI();
+const evenTasticEmail = 'eventastic.comp9900@gmail.com'
 
 const SaveButtonBox = styled('div')`
   display: flex;
@@ -65,7 +68,7 @@ const Ticket = ({ booking, handleCancelBooking, handleSendTicketsModal }) => {
   )
 }
 
-const pastTickets = ({ booking, handleCancelBooking }) => {
+const pastTickets = ({ booking }) => {
   return (
     <FlexBox id={booking.booking_id} sx={{ border: '1px solid black', borderRadius: '3px', m: 3 }}>
       <Stack
@@ -184,6 +187,19 @@ const AccountTicketsPage = ({ toggle }) => {
           seats += ' and '
       }
       setTicketString(seats)
+
+      const message = "Your seats for this booking are "+seats+"."
+      const emailTo = [{email_address : account.email}]
+        const sendTicketsEmail = {
+          email_subject: 'EvenTastic Booking tickets',
+          email_content: message,
+          email_from: {
+            email_address: evenTasticEmail,
+            name: "EvenTastic"
+          },
+          email_to: emailTo
+        }
+        const emailRes = await emailAPI.postEmails(sendTicketsEmail)
     }
     catch (err) {
       console.error(err)
