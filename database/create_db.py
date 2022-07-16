@@ -175,14 +175,16 @@ cur.execute('CREATE TABLE reviews(\
             );')
 
 #Interactions Table
-#viewing account id refers to the user currently logged in
+#interaction account id refers to the user currently logged in i.e. 
+# (user that is viewing the reviews)
+#It refers accounts table as this user may not have left a review
 #This table keeps a track of user interaction with reviews
 cur.execute('CREATE TABLE interactions(\
             interaction_id SERIAL PRIMARY KEY,\
             review_id INT NOT NULL,\
             FOREIGN KEY (review_id) REFERENCES reviews (review_id),\
-            viewing_account_id INT NOT NULL,\
-            FOREIGN KEY (viewing_account_id) REFERENCES accounts (account_id),\
+            interaction_account_id INT NOT NULL,\
+            FOREIGN KEY (interaction_account_id) REFERENCES accounts (account_id),\
             upvoted BOOLEAN,\
             flagged BOOLEAN \
             );')
@@ -317,8 +319,10 @@ for v_id, e_id in [(2, 2), (3, 3), (4, 4), (5, 5), (6, 6)]:
 
 cur.execute("INSERT INTO reviews values (default, 1, 1, 0, 4, 'Amazing Event. Highly Recommend it', '2022-08-25T21:00:00+10:00', 0, 'Visible', '');")
 cur.execute("INSERT INTO reviews values (default, 1, 2, 0, 1, 'Poorly organised', '2022-08-26T21:00:00+10:00', 0, 'Visible', '');")
+cur.execute("INSERT INTO reviews values (default, 2, 2, 3, 5, 'Best event ever.', '2022-08-26T21:00:00+10:00', 0, 'Visible', 'Thanks for the feedback!');")
 
 cur.execute("INSERT INTO interactions values (default, 1, 1, True, False);")
+cur.execute("INSERT INTO interactions values (default, 2, 1, False, True);")
 
 cur.execute('SELECT * FROM accounts')
 records = cur.fetchall()
