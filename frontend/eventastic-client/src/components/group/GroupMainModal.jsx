@@ -3,9 +3,8 @@ import GroupInfoPage from './pages-main/GroupInfoPage'
 import GroupChatPage from './pages-main/GroupChatPage';
 import GroupMembersPage from './pages-main/GroupMembersPage';
 import GroupRequestsPage from './pages-main/GroupRequestsPage';
-import { FlexBox } from '../styles/layouts.styled';
 import { StyledTitle, LargeModal, ModalBodyLarge } from '../styles/modal/modal.styled';
-import { Button, Divider, IconButton, Tabs, Tab, Typography } from '@mui/material';
+import { Divider, IconButton, Tabs, Tab } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import SubjectIcon from '@mui/icons-material/Subject';
 import ChatIcon from '@mui/icons-material/Chat';
@@ -69,7 +68,12 @@ const GroupMainModal = ({
           }
           else if (page === 'groupMembers') {
             return (
-              <GroupMembersPage setHasLeftGroup={setHasLeftGroup} />
+              <GroupMembersPage 
+                groupDetails={groupDetails}
+                setGroupDetails={setGroupDetails}
+                setHasLeftGroup={setHasLeftGroup}
+                setGroupMainModal={setOpen}
+              />
             )
           }
           else if (page === 'groupRequests') {

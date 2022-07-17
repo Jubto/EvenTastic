@@ -2,15 +2,15 @@ import { useContext, useEffect, forwardRef, useState } from "react";
 import { StoreContext } from "../../../utils/context";
 import { ScrollContainer } from "../../styles/layouts.styled"
 import GroupPendingModal from "../modals/GroupPendingModal";
-import { Button, Chip, Stack, Tooltip, Typography } from "@mui/material"
+import { Button, Card, CardMedia, Chip, Stack, Tooltip, Typography } from "@mui/material"
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 
 const GroupCard = forwardRef(({
-    setPage,
-    group,
-    setRequestedGroupId,
-    setGroupJoinedModal,
-    setApiGetGroup }, ref) => {
+  setPage,
+  group,
+  setRequestedGroupId,
+  setGroupJoinedModal,
+  setApiGetGroup }, ref) => {
   const context = useContext(StoreContext);
   const [account] = context.account;
   const [, setLoginModal] = context.logInModal;
@@ -29,9 +29,9 @@ const GroupCard = forwardRef(({
 
   const handleAcceptClick = () => {
     setApiGetGroup(true)
-    setTimeout(() => setGroupJoinedModal(true), 200) 
+    setTimeout(() => setGroupJoinedModal(true), 200)
   }
-  
+
   useEffect(() => {
     for (const member of group.group_members) {
       if (member.account_id === account.account_id) {
@@ -50,15 +50,15 @@ const GroupCard = forwardRef(({
   }, [])
 
   return (
-    <Stack direction="row" spacing={2}
-      sx={{ border: '3px solid #ad9fa3', borderRadius: '10px', bgcolor: 'antiquewhite', height: '10vh', m: 3, p: 1 }}
+    <Card sx={{
+      display: 'flex', borderRadius: '10px', height: '10vh',
+      bgcolor: '#fff7ec', m: 3, p: 1
+    }}
     >
-      <img
-        src={group.group_img}
-        width="15%" height='100%'
-        alt="Group picture"
-      >
-      </img>
+      <CardMedia component="img" image={group.group_img}
+        alt="User profile picture"
+        sx={{ width: '15%', height: '100%', borderRadius: '100px', mr: 2 }}
+      />
       <Stack direction="column" spacing={1} width="85%" >
         <Stack direction="row" justifyContent="space-between">
           <Stack direction="row" spacing={2}>
@@ -95,14 +95,10 @@ const GroupCard = forwardRef(({
             }
             else if (joinState === 'Rejected') {
               return (
-                <Tooltip title="Request Rejected, Try again" enterDelay={10}>
-                  <Button id={group.group_id} variant='contained' color='error'
-                    onClick={handleJoinRequest}
+                  <Button id={group.group_id} variant='contained' color='error' disabled
                   >
                     Rejected
                   </Button>
-                </Tooltip>
-
               )
             }
             else {
@@ -128,18 +124,18 @@ const GroupCard = forwardRef(({
         </ScrollContainer>
       </Stack>
       <GroupPendingModal open={openPendingModal} setOpen={setPendingModal} />
-    </Stack>
+    </Card>
   )
 })
 
 const GroupListingsPage = forwardRef(({
-    setPage,
-    groupList,
-    setRequestedGroupId,
-    eventTitle,
-    setGroupJoinedModal,
-    setApiGetGroup
-  }, ref) => {
+  setPage,
+  groupList,
+  setRequestedGroupId,
+  eventTitle,
+  setGroupJoinedModal,
+  setApiGetGroup
+}, ref) => {
   return (
     <ScrollContainer thin>
       <Typography variant='h6' align='center' sx={{ mb: 2 }}>

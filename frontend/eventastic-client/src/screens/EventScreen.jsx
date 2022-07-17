@@ -1,6 +1,6 @@
 import { useContext, useState, useEffect } from 'react';
 import { StoreContext } from '../utils/context';
-import { useParams } from 'react-router-dom';
+import { useParams, useLocation } from 'react-router-dom';
 import EventAPI from "../utils/EventAPIHelper";
 import GroupAPI from '../utils/GroupAPIHelper';
 import ReviewModal from '../components/review/ReviewModal'
@@ -34,12 +34,13 @@ function formatDate(datetime) {
 
 const EventScreen = () => {
   const { id } = useParams();
+  const location = useLocation();
   const context = useContext(StoreContext);
   const [account] = context.account;
   const [accountGroups, setAccountGroups] = context.groups;
   const [eventDetails, setEventDetails] = useState([])
   const [groupList, setGroupList] = useState([])
-  const [groupDetails, setGroupDetails] = useState(false)
+  const [groupDetails, setGroupDetails] = useState({})
   const [apiGetGroup, setApiGetGroup] = useState(false)
   const [hasLeftGroup, setHasLeftGroup] = useState(false)
 
@@ -81,6 +82,11 @@ const EventScreen = () => {
       if (account && accountGroups[eventRes.data.event_id]) {
         // user is logged in + already member of group
         setGroupDetails(accountGroups[eventRes.data.event_id])
+        console.log('TEST?')
+        console.log(groupDetails.length)
+        if (location.state && location.state.redirect === 'groups') {
+          setGroupMainModal(true)
+        }
       }
       else {
         // get list of groups filtered by eventID
@@ -98,7 +104,8 @@ const EventScreen = () => {
   useEffect(() => {
     // this is called in main group modal when you click leave group
     if (hasLeftGroup) {
-      setGroupDetails(false)
+      setGroupMainModal(false)
+      setGroupDetails({})
       const temp = accountGroups
       delete temp[eventDetails.event_id]
       setAccountGroups(temp) // update global account groups
@@ -185,7 +192,7 @@ const EventScreen = () => {
               >
                 Reviews
               </Button>
-              {groupDetails
+              {Object.keys(groupDetails).length !== 0
                 ? <Button
                   variant="contained"
                   href="#contained-buttons"

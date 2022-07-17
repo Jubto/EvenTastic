@@ -120,14 +120,14 @@ const RequestJoinPage = ({ setOpen, setPage, setGroupList, group, account }) => 
           sx={{ mb: 2, width: { sm: '100%', md: '50%' } }}
         />
         <InfoHeader title='Choose Your Interests To Show' />
-        <ScrollContainer thin
-          sx={{
-            height: '50px', border: '3px solid #ad9fa3',
-            borderRadius: '20px', width: { sm: '100%', md: '50%' }
+        <ScrollContainer thin horizontal='true'
+          sx={{ 
+            height: '45px', border: '3px solid #ad9fa3',
+            width: { sm: '100%', md: '50%' }
           }}
         >
           {account.tags.map((tag, idx) => (
-            <Chip key={idx} clickable label={tag.name}
+            <Chip key={idx} clickable  color='success' label={tag.name} 
               onClick={handleSelect} sx={{ m: 0.5 }} />
           ))}
         </ScrollContainer>

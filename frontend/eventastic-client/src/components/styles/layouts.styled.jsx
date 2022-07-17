@@ -44,6 +44,7 @@ export const ScrollContainer = styled(Box)`
   flex-wrap: ${({ wrap }) => wrap};
   align-items: ${({ align }) => align};
   padding-right: ${({ pr }) => pr ? pr : 0};
+  white-space: ${({ horizontal }) => horizontal ? 'nowrap' : 'normal'};
 
   ${({ hide }) => {
     if (hide) {
@@ -56,6 +57,7 @@ export const ScrollContainer = styled(Box)`
       return `
         ::-webkit-scrollbar {
         width: 0.5vw;
+        height: 0.5vh;
       }
 
       ::-webkit-scrollbar-thumb {

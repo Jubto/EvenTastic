@@ -122,18 +122,18 @@ const GroupInfoPage = ({ groupDetails, setGroupDetails, eventDetails, accountID 
             ? edit
               ? <FlexBox justify='space-between'>
                 <Button variant="contained" color='warning'
-                  startIcon={<SettingsIcon />} sx={{ width: '180px', mb: 2 }}
+                  startIcon={<SettingsIcon />} sx={{ width: '180px', mb: 2, mt:2 }}
                   onClick={() => setEdit(false)}
                 >
                   Cancel Edit
                 </Button>
-                <Button type='submit' variant="contained" color='success' sx={{ mb: 2 }}>
+                <Button type='submit' variant="contained" color='success' sx={{ mb: 2, mt:2 }}>
                   Confirm Changes
                 </Button>
               </FlexBox>
 
               : <Button variant="contained" color='info'
-                startIcon={<SettingsIcon />} sx={{ width: '150px', mb: 2 }}
+                startIcon={<SettingsIcon />} sx={{ width: '150px', mb: 2, mt:2 }}
                 onClick={() => setEdit(true)}
               >
                 Edit Group

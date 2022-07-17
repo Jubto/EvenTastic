@@ -34,6 +34,7 @@ export const LargeModal = styled(Dialog)`
     width: 95vw;
     height: 85vh;
     max-width: 1400px;
+    background-color: #f9f9f9;
   }
 `
 
@@ -45,6 +46,7 @@ export const ModalBodyLarge = styled(Box)`
   padding-right: 1rem;
   padding-bottom: 1rem;
   overflow: hidden;
+  
 `
 
 export const ModalTitle = ( {title, close} ) => {
