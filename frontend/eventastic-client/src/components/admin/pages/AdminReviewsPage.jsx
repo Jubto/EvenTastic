@@ -25,9 +25,16 @@ const ButtonBox = styled('div')`
   display: flex;
   flex-direction: row;
   width: 100%;
-  justify-content: space-evenly;
+  justify-content: center;
   margin-top: 20px;
   margin-bottom: 10px;
+`;
+
+const CountBoldBox = styled('b')`
+  background-color: grey;
+  color: white;
+  border-radius: 3px;
+  padding: 1px 4px 5px 3px;
 `;
 
 const CheckReviewBox = ({ review, setToRemove }) => {
@@ -61,8 +68,8 @@ const CheckReviewBox = ({ review, setToRemove }) => {
   }
 
   return (
-    <FlexBox id={review.review_id} sx={{ border: '1px solid black', borderRadius: '3px', m: 3 }}>
-      <div style={{ width: '100%' }}>
+    <FlexBox id={review.review_id} sx={{ border: '2px inset black', borderRadius: '5px', margin: '30px 20px'}}>
+      <div style={{ width: '100%', backgroundColor: '#B0B0B0' }}>
         <ItemBox>
           <b>Event:</b> {review.event_title}<br></br>
         </ItemBox>
@@ -81,7 +88,8 @@ const CheckReviewBox = ({ review, setToRemove }) => {
           </div>
         </FlaggedByBox>
         <ButtonBox>
-          <Button variant='contained' value={review.review_id} color="success" onClick={approveReview}>
+          <Button variant='contained' value={review.review_id} color="success" onClick={approveReview}
+          style= {{ marginRight: '20px' }}>
             Approve
           </Button>
           <Button variant='contained' value={review.review_id} color="error"  onClick={deleteReview}>

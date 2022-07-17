@@ -5,11 +5,11 @@ import Button from '@mui/material/Button';
 import AccountAPI from "../../utils/AccountAPIHelper";
 
 export const StyledHostCard = styled(Card)`
-  border: 1px solid black;
+  border: 0.1px solid black;
   border-radius: 5px;
   margin: 1rem;
-  height: 270px;
-  width: 300px;
+  min-height: 200;
+  min-width: 300px;
 `;
 
 const SaveButtonBox = styled('div')`
@@ -51,17 +51,20 @@ const HostRequestCard = ({ hostRequest, setRequests }) => {
 
   return (
     <StyledHostCard>
-      <CardHeader title={hostRequest.org_name} />
+      <CardHeader  style={{ backgroundColor: '#404040', color: 'white' }} title={hostRequest.org_name} />
       <CardContent>
-        <Typography variant="h6" component="div">
-          <b>Title:</b> {hostRequest.job_title}
-        </Typography>
-        <Typography variant="h6" component="div">
-          <b>Qualification:</b> {hostRequest.qualification}
-        </Typography>
-        <Typography variant="h6" component="div">
-          <b>Contact No:</b> {hostRequest.host_contact_no}
-        </Typography>
+        <div variant="h6" component="div">
+          <b style={{ color: '#484848' }}>Title:</b> {hostRequest.job_title}
+        </div>
+        <div variant="h6" component="div">
+          <b style={{ color: '#484848' }}>Qualification:</b> {hostRequest.qualification}
+        </div>
+        <div variant="h6" component="div">
+          <b style={{ color: '#484848' }}>Email:</b> {hostRequest.org_email}
+        </div>
+        <div variant="h6" component="div">
+          <b style={{ color: '#484848' }}>Mobile:</b> {hostRequest.host_contact_no}
+        </div>
         <SaveButtonBox>
           <Button variant="contained" value={hostRequest.account_id} color="success" onClick={(e) => ApproveHost(e.target.value)} >
             Approve

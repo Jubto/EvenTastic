@@ -63,7 +63,7 @@ const Ticket = ({ booking, handleCancelBooking, handleSendTicketsModal }) => {
   const daysToGo = parseInt(Math.abs(eventDate - currentDate)/ (1000 * 60 * 60 * 24))
 
   return (
-    <FlexBox id={booking.booking_id} sx={{ border: '1px solid black', borderRadius: '3px', m: 3 }}>
+    <FlexBox id={booking.booking_id} sx={{ border: '0.1px solid black', borderRadius: '3px', m: 3 }}>
       <MainBox>
         { booking.event_img.length < 70 ?
         <img style={{ cursor:'pointer' }}
@@ -86,14 +86,14 @@ const Ticket = ({ booking, handleCancelBooking, handleSendTicketsModal }) => {
         }
 
         <div width="60%" style={{ marginBottom: '10px' }}>
-          <Typography variant="h5"><b>{booking.event_title}</b></Typography>
-          <b>At:</b> {booking.event_location}<br></br>
-          <b>When:</b> {formatDate(booking.event_start_datetime)}<br></br>
-          <b>Seats</b>: {ticketSeats}<br></br>
-          <b>Cost</b>: A${booking.total_cost}<br></br>
+          <Typography variant="h5"><b style={{ color:'#202020' }}>{booking.event_title}</b></Typography>
+          <b style={{ color:'#404040' }}>At:</b> {booking.event_location}<br></br>
+          <b style={{ color:'#404040' }}>When:</b> {formatDate(booking.event_start_datetime)}<br></br>
+          <b style={{ color:'#404040' }}>Seats</b>: {ticketSeats}<br></br>
+          <b style={{ color:'#404040' }}>Cost</b>: A${booking.total_cost}<br></br>
         </div>
-        <div width="20%">
-          <div>
+        <div width="20%" style={{ color:'#505050' }}>
+          <div style={{ marginTop: '3px' }}>
             <b>Days to Go</b>
           </div>
           <div style={{ display: 'flex', justifyContent: 'center' }}>
