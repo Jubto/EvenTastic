@@ -327,6 +327,9 @@ cur.execute("INSERT INTO reviews values (default, 5, 4, 3, 5, 'Best event ever.'
 
 cur.execute("INSERT INTO interactions values (default, 1, 1, True, False);")
 cur.execute("INSERT INTO interactions values (default, 2, 1, False, True);")
+cur.execute("INSERT INTO interactions values (default, 3, 2, False, True);")
+cur.execute("INSERT INTO interactions values (default, 3, 1, False, True);")
+cur.execute("INSERT INTO interactions values (default, 2, 2, True, True);")
 
 cur.execute('SELECT * FROM accounts')
 records = cur.fetchall()

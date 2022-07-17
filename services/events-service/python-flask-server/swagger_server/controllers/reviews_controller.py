@@ -9,6 +9,7 @@ from swagger_server.models.review_interaction import ReviewInteraction  # noqa: 
 from swagger_server.models.review_interaction_not_found_error import ReviewInteractionNotFoundError  # noqa: E501
 from swagger_server.models.review_list import ReviewList  # noqa: E501
 from swagger_server.models.review_not_found_error import ReviewNotFoundError  # noqa: E501
+from swagger_server.models.review_interaction_not_found_error import ReviewInteractionNotFoundError  # noqa: E501
 from swagger_server.models.unexpected_service_error import UnexpectedServiceError  # noqa: E501
 from swagger_server import util
 
@@ -269,6 +270,51 @@ def update_review_interaction(interaction_id, body):  # noqa: E501
 
     :rtype: ReviewInteraction
     """
-    if connexion.request.is_json:
-        body = ReviewInteraction.from_dict(connexion.request.get_json())  # noqa: E501
-    return 'do some magic!'
+    try:
+        if connexion.request.is_json:
+            body = ReviewInteraction.from_dict(connexion.request.get_json())  # noqa: E501
+
+        con = psycopg2.connect(database= 'eventastic', user='postgres', password='postgrespw', host=host, port=port)
+        con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+        cur = con.cursor()
+
+        if (len(str(interaction_id)) == 0):
+            error = InvalidInputError(code=400, type="InvalidInputError",
+                                      message="The following mandatory fields were not provided: Interaction ID")
+            return error, 400, {'Access-Control-Allow-Origin': '*'}
+
+        cur.execute(f"SELECT interaction_id FROM interactions where interaction_id = {interaction_id}")
+        record = cur.fetchone()
+        if record == None:
+            error = ReviewInteractionNotFoundError(code=404, type="ReviewInteractionNotFoundError", 
+                    message="The following Interaction ID does not exist: " + str(interaction_id))
+            cur.close()
+            con.close()
+            return error, 404, {'Access-Control-Allow-Origin': '*'}
+
+        # Perform Update
+        update_string = "UPDATE interactions set "
+        if body.review_upvoted != None:
+            update_string += f" review_upvoted ='{body.review_upvoted}',"
+        if body.review_flagged != None:
+            update_string += f" review_flagged ='{body.review_flagged}',"
+
+        update_string = list(update_string)
+        update_string[-1] = " "
+        update_string = "".join(update_string)
+        update_string += f" where interaction_id = {interaction_id} RETURNING interaction_id;"
+        cur.execute(update_string)
+
+        body.interaction_id = cur.fetchone()[0]
+
+        cur.close()
+        con.close()
+        return body, 200, {'Access-Control-Allow-Origin': '*'}
+       
+        
+    except Exception as e:
+        # catch any unexpected runtime error and return as 500 error 
+        error = UnexpectedServiceError(code="500", type="UnexpectedServiceError", message=str(e))
+        cur.close()
+        con.close()
+        return error, 500, {'Access-Control-Allow-Origin': '*'}
