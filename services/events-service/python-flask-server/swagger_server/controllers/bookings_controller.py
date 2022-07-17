@@ -175,11 +175,13 @@ def list_bookings(account_id=None, booking_status=None, event_id=None):  # noqa:
         cur = con.cursor()
 
         select_string = "SELECT b.booking_id, b.account_id, b.event_id, b.booking_status, a.email, b.total_cost \
-            FROM bookings b join accounts a on a.account_id = b.account_id where "
+            FROM bookings b join accounts a on a.account_id = b.account_id join events e on e.event_id = b.event_id where "
         if account_id != None: select_string += f" b.account_id = {account_id} and "
         if event_id != None: select_string += f" b.event_id = {event_id} and "
         if booking_status != None: select_string += f" b.booking_status = '{booking_status}' and "
         select_string = select_string[:-4]
+        select_string += " order by e.event_start_datetime asc "
+
         cur.execute(select_string)
 
         records = cur.fetchall()

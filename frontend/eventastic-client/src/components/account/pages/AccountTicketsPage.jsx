@@ -15,6 +15,17 @@ const api = new EventAPI()
 const emailAPI = new EmailAPI();
 const evenTasticEmail = 'eventastic.comp9900@gmail.com'
 
+const MainBox = styled('div')`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+`;
+
+const PastMainBox = styled('div')`
+  display: flex;
+  flex-direction: row;
+`;
+
 const SaveButtonBox = styled('div')`
   display: flex;
   flex-direction: column;
@@ -37,12 +48,23 @@ const Ticket = ({ booking, handleCancelBooking, handleSendTicketsModal }) => {
     navigate("../event/"+eventId);
   }
 
+  
+  let ticketSeats = ""
+  const setTypes = ['General', 'Front', 'Middle', 'Back']
+  setTypes.forEach((item) => {
+    if (Object.keys(booking.ticket_details).includes(item)) {
+      ticketSeats += item+":"+booking.ticket_details[item]+", "
+    }
+  })
+  ticketSeats = ticketSeats.substring(0, ticketSeats.length-2)
+
+  const currentDate = new Date();
+  const eventDate = new Date(booking.event_start_datetime);
+  const daysToGo = parseInt(Math.abs(eventDate - currentDate)/ (1000 * 60 * 60 * 24))
+
   return (
     <FlexBox id={booking.booking_id} sx={{ border: '1px solid black', borderRadius: '3px', m: 3 }}>
-      <Stack
-        direction="row"
-        spacing={2}
-      >
+      <MainBox>
         { booking.event_img.length < 70 ?
         <img style={{ cursor:'pointer' }}
           src={process.env.PUBLIC_URL + '/img/event/' + booking.event_img}
@@ -63,19 +85,26 @@ const Ticket = ({ booking, handleCancelBooking, handleSendTicketsModal }) => {
         </img>
         }
 
-        <Typography variant="body1" component="div" width="50%">
-          <b>{booking.event_title}</b><br></br>
-          <b>Location:</b> {booking.event_location}<br></br>
-          <b>DateTime:</b> {formatDate(booking.event_start_datetime)}<br></br>
-          <b>Total Cost</b>: A$ {booking.total_cost}<br></br>
-        </Typography>
-        <Typography variant="body1" component="div" width="10%">
-        </Typography>
-        <SaveButtonBox  width="20%">
+        <div width="60%" style={{ marginBottom: '10px' }}>
+          <Typography variant="h5"><b>{booking.event_title}</b></Typography>
+          <b>At:</b> {booking.event_location}<br></br>
+          <b>When:</b> {formatDate(booking.event_start_datetime)}<br></br>
+          <b>Seats</b>: {ticketSeats}<br></br>
+          <b>Cost</b>: A${booking.total_cost}<br></br>
+        </div>
+        <div width="20%">
+          <div>
+            <b>Days to Go</b>
+          </div>
+          <div style={{ display: 'flex', justifyContent: 'center' }}>
+            <Typography variant="h3" mt={1} >{daysToGo}</Typography>
+          </div>
+        </div>
+        <SaveButtonBox  width="15%">
           <Button sx={{ height: '50%' }} variant="contained" value={booking.booking_id} onClick={(e) => handleSendTicketsModal(e.target.value)} >Send Tickets</Button> 
           <Button sx={{ height: '50%' }} variant="contained" color="error" value={booking.booking_id} onClick={(e) => handleCancelBooking(e.target.value)} >Cancel Booking</Button>
         </SaveButtonBox>
-      </Stack>
+      </MainBox>
     </FlexBox>
   )
 }
@@ -88,12 +117,18 @@ const PastTickets = ({ booking }) => {
     navigate("../event/"+eventId);
   }
 
+  let ticketSeats = ""
+  const setTypes = ['General', 'Front', 'Middle', 'Back']
+  setTypes.forEach((item) => {
+    if (Object.keys(booking.ticket_details).includes(item)) {
+      ticketSeats += item+":"+booking.ticket_details[item]+", "
+    }
+  })
+  ticketSeats = ticketSeats.substring(0, ticketSeats.length-2)
+
   return (
     <FlexBox id={booking.booking_id} sx={{ border: '1px solid black', borderRadius: '3px', m: 3 }}>
-      <Stack
-        direction="row"
-        spacing={2}
-      >
+      <PastMainBox>
         { booking.event_img.length < 70 ?
         <img style={{ cursor:'pointer' }}
           src={process.env.PUBLIC_URL + '/img/event/' + booking.event_img}
@@ -113,13 +148,15 @@ const PastTickets = ({ booking }) => {
         >
         </img>
         }
-        <Typography variant="body1" component="div" width="50%">
-          <b>{booking.event_title}</b><br></br>
-          <b>Location:</b> {booking.event_location}<br></br>
-          <b>DateTime:</b> {formatDate(booking.event_start_datetime)}<br></br>
-          <b>Total Cost</b>: A$ {booking.total_cost}<br></br>
-        </Typography>
-      </Stack>
+
+        <div width="60%" style={{ marginBottom: '10px', marginLeft: '30px' }}>
+          <Typography variant="h5"><b>{booking.event_title}</b></Typography>
+          <b>At:</b> {booking.event_location}<br></br>
+          <b>When:</b> {formatDate(booking.event_start_datetime)}<br></br>
+          <b>Seats</b>: {ticketSeats}<br></br>
+          <b>Cost</b>: A${booking.total_cost}<br></br>
+        </div>
+      </PastMainBox>
     </FlexBox>
   )
 }
@@ -154,7 +191,7 @@ const AccountTicketsPage = ({ toggle }) => {
           account_id: booking.account_id,
           event_id: booking.event_id,
           total_cost: booking.total_cost,
-          seats: booking.ticket_details,
+          ticket_details: booking.ticket_details,
           event_title: bookedEventsRes[idx].event_title,
           event_img: bookedEventsRes[idx].event_img,
           event_location: bookedEventsRes[idx].event_location,
@@ -183,6 +220,7 @@ const AccountTicketsPage = ({ toggle }) => {
           account_id: booking.account_id,
           event_id: booking.event_id,
           total_cost: booking.total_cost,
+          ticket_details: booking.ticket_details,
           event_title: pastBookedEvents[idx].event_title,
           event_img: pastBookedEvents[idx].event_img,
           event_location: pastBookedEvents[idx].event_location,
