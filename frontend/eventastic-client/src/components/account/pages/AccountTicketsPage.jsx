@@ -9,6 +9,7 @@ import { FlexBox, ScrollContainer } from "../../styles/layouts.styled"
 import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
+import { useNavigate } from "react-router-dom";
 
 const api = new EventAPI()
 const emailAPI = new EmailAPI();
@@ -29,6 +30,13 @@ function formatDate(datetime) {
 }
 
 const Ticket = ({ booking, handleCancelBooking, handleSendTicketsModal }) => {
+
+  let navigate = useNavigate();
+
+  const toEvent = (eventId) => {
+    navigate("../event/"+eventId);
+  }
+
   return (
     <FlexBox id={booking.booking_id} sx={{ border: '1px solid black', borderRadius: '3px', m: 3 }}>
       <Stack
@@ -36,17 +44,21 @@ const Ticket = ({ booking, handleCancelBooking, handleSendTicketsModal }) => {
         spacing={2}
       >
         { booking.event_img.length < 70 ?
-        <img
+        <img style={{ cursor:'pointer' }}
           src={process.env.PUBLIC_URL + '/img/event/' + booking.event_img}
           width="20%"
           alt="Event thumbnail"
+          id = {booking.event_id}
+          onClick={(e) => toEvent(e.target.id)}
         >
         </img>
         :
-        <img
+        <img style={{ cursor:'pointer' }}
           src={booking.event_img}
           width="20%"
           alt="Event thumbnail"
+          id = {booking.event_id}
+          onClick={(e) => toEvent(e.target.id)}
         >
         </img>
         }
@@ -68,19 +80,39 @@ const Ticket = ({ booking, handleCancelBooking, handleSendTicketsModal }) => {
   )
 }
 
-const pastTickets = ({ booking }) => {
+const PastTickets = ({ booking }) => {
+
+  let navigate = useNavigate();
+
+  const toEvent = (eventId) => {
+    navigate("../event/"+eventId);
+  }
+
   return (
     <FlexBox id={booking.booking_id} sx={{ border: '1px solid black', borderRadius: '3px', m: 3 }}>
       <Stack
         direction="row"
         spacing={2}
       >
-        <img
+        { booking.event_img.length < 70 ?
+        <img style={{ cursor:'pointer' }}
           src={process.env.PUBLIC_URL + '/img/event/' + booking.event_img}
           width="20%"
           alt="Event thumbnail"
+          id = {booking.event_id}
+          onClick={(e) => toEvent(e.target.id)}
         >
         </img>
+        :
+        <img style={{ cursor:'pointer' }}
+          src={booking.event_img}
+          width="20%"
+          alt="Event thumbnail"
+          id = {booking.event_id}
+          onClick={(e) => toEvent(e.target.id)}
+        >
+        </img>
+        }
         <Typography variant="body1" component="div" width="50%">
           <b>{booking.event_title}</b><br></br>
           <b>Location:</b> {booking.event_location}<br></br>
@@ -225,7 +257,7 @@ const AccountTicketsPage = ({ toggle }) => {
         : 
         <div>
           {PastBookings.map((booking, idx) => (
-            <pastTickets key={idx} booking={booking} />
+            <PastTickets key={idx} booking={booking} />
           ))}
         </div>
       }

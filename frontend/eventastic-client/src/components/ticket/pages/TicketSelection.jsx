@@ -9,7 +9,7 @@ const MainBox = styled('div')`
 `;
 
 const ContentBox = styled('div')`
-  width: 60%;
+  width: 100%;
   height: 70%;
   min-height: 350px;
 `;
@@ -24,8 +24,21 @@ const ButtonBox = styled('div')`
 const SeatsBox = styled('div')`
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
   margin-top: 20px;
+  width: 100%
+`;
+
+const PriceBox = styled('div')`
+  width: 60%
+`;
+
+const SelectionBox = styled('div')`
+  width: 10%
+`;
+
+const SoldOutBox = styled('div')`
+  width: 30%;
+  margin-top: 13px;
 `;
 
 const TicketSelection = ({ open, setPage, generalSeats, frontSeats, middleSeats, backSeats, 
@@ -60,94 +73,116 @@ const TicketSelection = ({ open, setPage, generalSeats, frontSeats, middleSeats,
           <div>
             { generalPrice >= 0 &&
             <SeatsBox>
-              <div>
+              <PriceBox>
                 General Seats: 
                 <br></br>
                 A$ {generalPrice}
-              </div>
-              <div>
+              </PriceBox>
+              <SelectionBox>
                 <Select
                   labelId="seats-select-label"
                   id="seats-select"
                   value={generalSeats}
+                  disabled={parseInt(maxGeneralSeats.length) === 0}
                   label="General Seats"
                   onChange={changeGeneralSelect}
                 >
                 <MenuItem value={0}>0</MenuItem>
                 {maxGeneralSeats.map((idx) => <MenuItem key={idx} value={idx}>{idx}</MenuItem>)}
                 </Select>
-              </div>
+              </SelectionBox> 
+              { parseInt(maxGeneralSeats.length) === 0 &&     
+              <SoldOutBox style={{ color: 'grey' }}>
+                *Sold Out
+              </SoldOutBox> 
+              }
             </SeatsBox>
             }
 
             { frontPrice >= 0 &&
             <SeatsBox>
-              <div>
+              <PriceBox>
                 Front Seats: 
                 <br></br>
                 A$ {frontPrice}
-              </div>
-              <div>
+              </PriceBox>
+              <SelectionBox>
                 <Select
                   labelId="front-seats-select-label"
                   id="front-seats-select"
                   value={frontSeats}
+                  disabled={parseInt(maxFrontSeats.length) === 0}
                   label="Front Seats"
                   onChange={changeFrontSelect}
                 >
                 <MenuItem value={0}>0</MenuItem>
                 {maxFrontSeats.map((idx) => <MenuItem key={idx} value={idx}>{idx}</MenuItem>)}
                 </Select>
-              </div>
+              </SelectionBox> 
+              { parseInt(maxFrontSeats.length) === 0 &&     
+              <SoldOutBox style={{ color: 'grey' }}>
+                *Sold Out
+              </SoldOutBox> 
+              }
             </SeatsBox>
             }
 
             { middlePrice >= 0 &&
             <SeatsBox>
-              <div>
+              <PriceBox>
                 Middle Seats: 
                 <br></br>
                 A$ {middlePrice}
-              </div>
-              <div>
+              </PriceBox>
+              <SelectionBox>
                 <Select
                   labelId="middle-seats-select-label"
                   id="middle-seats-select"
                   value={middleSeats}
+                  disabled={parseInt(maxMiddleSeats.length) === 0}
                   label="Middle Seats"
                   onChange={changeMiddleSelect}
                 >
                 <MenuItem value={0}>0</MenuItem>
                 {maxMiddleSeats.map((idx) => <MenuItem key={idx} value={idx}>{idx}</MenuItem>)}
                 </Select>
-              </div>
+              </SelectionBox> 
+              { parseInt(maxMiddleSeats.length) === 0 &&     
+              <SoldOutBox style={{ color: 'grey' }}>
+                *Sold Out
+              </SoldOutBox> 
+              }
             </SeatsBox>
             }
 
             { backPrice >= 0 &&
             <SeatsBox>
-              <div>
+              <PriceBox>
                 Back Seats: 
                 <br></br>
                 A$ {backPrice}
-              </div>
-              <div>
+              </PriceBox>
+              <SelectionBox>
                 <Select
                   labelId="back-seats-select-label"
                   id="back-seats-select"
                   value={backSeats}
+                  disabled={parseInt(maxBackSeats.length) === 0}
                   label="Back Seats"
                   onChange={changeBackSelect}
                 >
                 <MenuItem value={0}>0</MenuItem>
                 {maxBackSeats.map((idx) => <MenuItem key={idx} value={idx}>{idx}</MenuItem>)}
-                </Select>
-              </div>
+                </Select>               
+              </SelectionBox>  
+              { parseInt(maxBackSeats.length) === 0 &&     
+              <SoldOutBox style={{ color: 'grey' }}>
+                *Sold Out
+              </SoldOutBox> 
+              }
             </SeatsBox>
             }
-
           </div>
-          <br></br>
         </ContentBox>
         <ButtonBox>
           <Button variant='contained' onClick={() => setPage('paymentOptions')}>
