@@ -98,6 +98,9 @@ const AccountMenu = () => {
           else {
             return (
               <div>
+                <MenuItem component={Link} to={'/'} onClick={handleCloseMenu}>
+                  Home Page
+                </MenuItem>
                 <MenuItem component={Link} to={'/create-event'} onClick={handleCloseMenu}>
                   Create an Event
                 </MenuItem>

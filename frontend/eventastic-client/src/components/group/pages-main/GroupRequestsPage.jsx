@@ -20,7 +20,6 @@ const MemberCard = ({ groupDetails, setGroupDetails, eventID, member }) => {
         path: "/join_status",
         value: status
       }
-      console.log(body)
       const patchRes = await groupApi.patchGroupMember(
         groupDetails.group_id, member.group_membership_id, body
       )

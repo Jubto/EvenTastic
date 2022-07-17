@@ -17,10 +17,6 @@ const Group = ({ groupDetails, account }) => {
   }
 
   useEffect(() => {
-    console.log(`account`)
-    console.log(account)
-    console.log('group')
-    console.log(groupDetails)
     account.account_id === groupDetails.group_host_id && setIsAdmin(true)
     api.getEventDetails(groupDetails.event_id)
       .then((res) => {

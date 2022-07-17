@@ -38,6 +38,8 @@ const EventScreen = () => {
   const context = useContext(StoreContext);
   const [account] = context.account;
   const [accountGroups, setAccountGroups] = context.groups;
+  const [LogInModal, setLogInModal] = context.logInModal;
+  const [redirect, setRedirect] = useState(false)
   const [eventDetails, setEventDetails] = useState([])
   const [groupList, setGroupList] = useState([])
   const [groupDetails, setGroupDetails] = useState({})
@@ -52,6 +54,16 @@ const EventScreen = () => {
   const [openGroupCreatedModal, setGroupCreatedModal] = useState(false)
   const [openGroupJoinedModal, setGroupJoinedModal] = useState(false)
 
+
+  const handleTicketButton = () => {
+    if (account) {
+      setTicketModal(true)
+    }
+    else {
+      setRedirect('tickets')
+      setLogInModal(true)
+    }
+  }
 
   const apiGroupsFilterBy = (eventID, accountID = false) => {
     let params = {}
@@ -82,17 +94,13 @@ const EventScreen = () => {
       if (account && accountGroups[eventRes.data.event_id]) {
         // user is logged in + already member of group
         setGroupDetails(accountGroups[eventRes.data.event_id])
-        console.log('TEST?')
-        console.log(groupDetails.length)
         if (location.state && location.state.redirect === 'groups') {
           setGroupMainModal(true)
         }
       }
       else {
         // get list of groups filtered by eventID
-        console.log('GETTING LIST OF EVENTS')
         const groups = await apiGroupsFilterBy(eventRes.data.event_id)
-        console.log(groups)
         setGroupList(groups)
       }
     }
@@ -140,12 +148,19 @@ const EventScreen = () => {
       setGroupListModal(false) // close group listing modal
       setApiGetGroup(false)
     }
-    // TODO potentially spawn modal if it improves ux, not sure yet
   }, [apiGetGroup])
+
+  useEffect(() => {
+    if (!LogInModal) {
+      redirect === 'tickets' && setTicketModal(true) // redirect to ticket model after login modal
+      setRedirect(false)
+    }
+  }, [LogInModal])
 
   useEffect(() => {
     initApiCalls()
   }, [])
+
 
   return (
     <PageContainer maxWidth='lg'>
@@ -181,7 +196,7 @@ const EventScreen = () => {
               <Button
                 variant="contained"
                 href="#contained-buttons"
-                color="error" onClick={() => setTicketModal(true)}
+                color="error" onClick={handleTicketButton}
               >
                 Tickets
               </Button>
