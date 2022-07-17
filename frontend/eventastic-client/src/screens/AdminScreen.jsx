@@ -26,7 +26,7 @@ const AdminScreen = () => {
   }, [])
 
   return (
-    <PageContainer direction='row' maxWidth='xl'>
+    <PageContainer direction='row' maxWidth='lg'>
       <AdminSideBar />
       <AdminContainer>
       <Routes>

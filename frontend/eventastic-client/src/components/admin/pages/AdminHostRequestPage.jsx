@@ -19,7 +19,7 @@ const ApproveHostScreen = () => {
   }, [])
 
   return (
-    <ScrollContainer hide flex='true' wrap='true' align='start'>
+    <ScrollContainer hide flex='true' wrap='wrap' align='start'>
       {hostRequestsList.map((hostRequest, idx) => 
         <HostRequestCard 
           key={idx} hostRequest={hostRequest} setRequests={setHostRequestsList}

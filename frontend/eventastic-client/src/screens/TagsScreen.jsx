@@ -71,6 +71,7 @@ const TagsScreen = () => {
   const [savedTags, setSavedTags] = useState(account.tags.map((item) => item.name))
 
   const handleSubmit = () => {
+    // TODO FIX BACKEND
     const body = {
       ...account,
       'tags': savedTags.map((tag) => ({ 'name': tag }))
@@ -116,7 +117,7 @@ const TagsScreen = () => {
             your tags
           </Typography>
           <StyledContainer sx={{ mt: 2, minWidth: '280px', maxWidth: '300px', p: 1 }}>
-            <ScrollContainer thin height='100%' flex='true' wrap='true' align='start'>
+            <ScrollContainer thin height='100%' flex='true' wrap='wrap' align='start'>
               {savedTags.map((tag, idx) => (
                 <Chip key={idx} label={tag}
                   color={'success'}

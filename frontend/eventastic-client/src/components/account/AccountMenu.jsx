@@ -14,6 +14,7 @@ const AccountMenu = () => {
   const [, setRedirect] = context.redirect;
   const [loggedIn, setLoggedIn] = context.login;
   const [account, setAccount] = context.account;
+  const [, setAccountGroups] = context.groups;
   const [, setCard] = context.card;
   const [, setHostDetails] = context.host;
   const [, setLogInModal] = context.logInModal;
@@ -37,6 +38,7 @@ const AccountMenu = () => {
     handleCloseMenu();
     setLoggedIn(false);
     setAccount(false);
+    setAccountGroups({})
     setCard({});
     setHostDetails(false);
   };
@@ -46,7 +48,7 @@ const AccountMenu = () => {
       <Tooltip title="Open account menu" enterDelay={10}>
         <IconButton onClick={handleOpenMenu} sx={{ p: 0, mr:{ xs:'0.25rem', md:'1rem' } }}>
           <Avatar 
-            src={`${process.env.PUBLIC_URL}/img/profile-dp/${account.profile_pic}`}
+            src={account.profile_pic}
           />
         </IconButton>
       </Tooltip>
@@ -65,7 +67,7 @@ const AccountMenu = () => {
           if (!loggedIn) {
             return (
               <div>
-                <MenuItem id='logIn' onClick={() => handleLogInModal('/')}>
+                <MenuItem id='logIn' onClick={() => handleLogInModal(false)}>
                   Log in
                 </MenuItem>
                 <MenuItem component={Link} to={'/register'} onClick={handleCloseMenu}>
@@ -96,6 +98,9 @@ const AccountMenu = () => {
           else {
             return (
               <div>
+                <MenuItem component={Link} to={'/'} onClick={handleCloseMenu}>
+                  Home Page
+                </MenuItem>
                 <MenuItem component={Link} to={'/create-event'} onClick={handleCloseMenu}>
                   Create an Event
                 </MenuItem>

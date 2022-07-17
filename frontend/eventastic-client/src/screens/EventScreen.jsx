@@ -1,21 +1,20 @@
-import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import { PageContainer } from '../components/styles/layouts.styled'
+import { useContext, useState, useEffect } from 'react';
+import { StoreContext } from '../utils/context';
+import { useParams, useLocation } from 'react-router-dom';
+import EventAPI from "../utils/EventAPIHelper";
+import GroupAPI from '../utils/GroupAPIHelper';
 import ReviewModal from '../components/review/ReviewModal'
 import TicketPurchaseModal from '../components/ticket/TicketPurchaseModal';
 import GroupListModal from '../components/group/GroupListModal';
-import GroupMainModal  from '../components/group/GroupMainModal';
+import GroupMainModal from '../components/group/GroupMainModal';
+import GroupCreatedModal from '../components/group/modals/GroupCreatedModal';
+import GroupJoinedModal from '../components/group/modals/GroupJoinedModal';
 import PurchaseSuccessModal from '../components/ticket/PurchaseSuccessModal'
-import EventAPI from "../utils/EventAPIHelper";
-import Grid from '@mui/material/Grid';
-import { styled } from '@mui/material/styles';
-import Paper from '@mui/material/Paper';
-import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
-import Stack from '@mui/material/Stack';
-import Chip from '@mui/material/Chip';
+import { PageContainer } from '../components/styles/layouts.styled'
+import { Button, Chip, Grid, Paper, Typography, Stack, styled } from '@mui/material';
 
-const api = new EventAPI();
+const eventApi = new EventAPI();
+const groupApi = new GroupAPI()
 
 // formating for the Grid Items 
 export const GridItem = styled(Paper)`
@@ -36,19 +35,138 @@ function formatDate(datetime) {
 
 const EventScreen = () => {
   const { id } = useParams();
+  const location = useLocation();
+  const context = useContext(StoreContext);
+  const [account] = context.account;
+  const [accountGroups, setAccountGroups] = context.groups;
+  const [LogInModal, setLogInModal] = context.logInModal;
+  const [redirect, setRedirect] = useState(false)
   const [eventDetails, setEventDetails] = useState([])
-  const [openTicketModal, setOpenTicketModal] = useState(false)
-  const [openReviewModal, setOpenReviewModal] = useState(false)
-  const [openGroupListModal, setOpenGroupListModal] = useState(false)
-  const [openGroupMainModal, setOpenGroupMainModal] = useState(false)
+  const [groupList, setGroupList] = useState([])
+  const [groupDetails, setGroupDetails] = useState({})
+  const [apiGetGroup, setApiGetGroup] = useState(false)
+  const [hasLeftGroup, setHasLeftGroup] = useState(false)
+
+  // modals
+  const [openTicketModal, setTicketModal] = useState(false)
+  const [openReviewModal, setReviewModal] = useState(false)
+  const [openGroupListModal, setGroupListModal] = useState(false)
+  const [openGroupMainModal, setGroupMainModal] = useState(false)
+  const [openGroupCreatedModal, setGroupCreatedModal] = useState(false)
+  const [openGroupJoinedModal, setGroupJoinedModal] = useState(false)
   const [purchaseSuccessModal, setPurchaseSuccessModal] = useState(false)
 
+  const handleTicketButton = () => {
+    if (account) {
+      setTicketModal(true)
+    }
+    else {
+      setRedirect('tickets')
+      setLogInModal(true)
+    }
+  }
+
+  const apiGroupsFilterBy = (eventID, accountID = false) => {
+    let params = {}
+    if (eventID && !accountID) {
+      params = {
+        event_id: eventID
+      }
+    }
+    else if (eventID && accountID) {
+      params = {
+        event_id: eventID,
+        account_id: account.account_id
+      }
+    }
+    return new Promise((resolve, reject) => {
+      groupApi.getGroupList(params)
+        .then((res) => {
+          resolve(res.data)
+        })
+        .catch((err) => reject(err))
+    })
+  }
+
+  const initApiCalls = async () => {
+    try {
+      const eventRes = await eventApi.getEventDetails(id)
+      setEventDetails(eventRes.data)
+      if (account && accountGroups[eventRes.data.event_id]) {
+        // user is logged in + already member of group
+        setGroupDetails(accountGroups[eventRes.data.event_id])
+        if (location.state && location.state.redirect === 'groups') {
+          setGroupMainModal(true)
+        }
+      }
+      else {
+        // get list of groups filtered by eventID
+        const groups = await apiGroupsFilterBy(eventRes.data.event_id)
+        setGroupList(groups)
+      }
+    }
+    catch (err) {
+      console.log(err)
+    }
+  }
+
   useEffect(() => {
-    api
-      .getEventDetails(id)
-      .then((response) => setEventDetails(response.data))
-      .catch((err) => console.log(err));
+    // this is called in main group modal when you click leave group
+    if (hasLeftGroup) {
+      setGroupMainModal(false)
+      setGroupDetails({})
+      const temp = accountGroups
+      delete temp[eventDetails.event_id]
+      setAccountGroups(temp) // update global account groups
+      apiGroupsFilterBy(eventDetails.event_id)
+      .then((groupsRes) => {
+        setGroupList(groupsRes)
+      })
+      .catch((err) => console.error(err))
+    }
+  }, [hasLeftGroup])
+
+  useEffect(() => {
+    // This is called when:
+    // logging in while in listing modal when you're already part of group
+    // When creating a new group in listing modal
+    // When accepting to join a new group in the listing modal
+    if (apiGetGroup) {
+      if (accountGroups[eventDetails.event_id]){
+        setGroupDetails(accountGroups[eventDetails.event_id])
+      }
+      else {
+        apiGroupsFilterBy(eventDetails.event_id, account.account_id)
+        .then((groupRes) => {
+          groupRes.forEach((group) =>  {
+            group.group_members.forEach((member) => {
+              if (member.account_id === account.account_id && member.join_status === 'Accepted') {
+                setGroupDetails(group)
+                const temp = accountGroups
+                temp[eventDetails.event_id] = group
+                setAccountGroups(temp) // update global account groups
+              }
+            })
+          })
+        })
+        .catch((err) => console.error(err))
+      }
+      setGroupListModal(false) // close group listing modal
+      setApiGetGroup(false)
+    }
+  }, [apiGetGroup])
+
+  useEffect(() => {
+    if (!LogInModal && account) {
+      redirect === 'tickets' && setTicketModal(true) // redirect to ticket model after login modal
+      setRedirect(false)
+    }
+  }, [LogInModal])
+
+  useEffect(() => {
+    initApiCalls()
   }, [])
+
 
   return (
     <PageContainer maxWidth='lg'>
@@ -81,15 +199,39 @@ const EventScreen = () => {
               <b>What is the price range?</b> $20-$30
             </Typography>
             <Stack spacing={3}>
-              <Button variant="contained" href="#contained-buttons" color="error" onClick={() => setOpenTicketModal(true)}>
+              <Button
+                variant="contained"
+                href="#contained-buttons"
+                color="error" onClick={handleTicketButton}
+              >
                 Tickets
               </Button>
-              <Button variant="contained" href="#contained-buttons" color="warning" onClick={() => setOpenReviewModal(true)}>
+              <Button
+                variant="contained"
+                href="#contained-buttons"
+                color="warning" onClick={() => setReviewModal(true)}
+              >
                 Reviews
               </Button>
-              <Button variant="contained" href="#contained-buttons" color="info" onClick={() => setOpenGroupListModal(true)}>
-                Find Groups
-              </Button>
+              {Object.keys(groupDetails).length !== 0
+                ? <Button
+                  variant="contained"
+                  href="#contained-buttons"
+                  onClick={() => setGroupMainModal(true)}
+                  sx={{ bgcolor: 'evenTastic.purple', '&:hover': { backgroundColor: 'evenTastic.dark_purple' } }}
+                >
+                  View Your Group
+                </Button>
+                : <Button
+                  variant="contained"
+                  href="#contained-buttons"
+                  onClick={() => setGroupListModal(true)}
+                  sx={{ bgcolor: 'evenTastic.purple', '&:hover': { backgroundColor: 'evenTastic.dark_purple' } }}
+                >
+                  Find Groups
+                </Button>
+              }
+
             </Stack>
           </GridItem>
         </Grid>
@@ -121,11 +263,49 @@ const EventScreen = () => {
           </GridItem>
         </Grid>
       </Grid>
-      <TicketPurchaseModal open={openTicketModal} setOpen={setOpenTicketModal} eventDetails={eventDetails} setSuccessModal={setPurchaseSuccessModal} />
-      <PurchaseSuccessModal open={purchaseSuccessModal} setOpen={setPurchaseSuccessModal} />
-      <ReviewModal open={openReviewModal} setOpen={setOpenReviewModal} eventDetails={eventDetails}/>
-      <GroupListModal open={openGroupListModal} setOpen={setOpenGroupListModal} eventDetails={eventDetails} />
-      <GroupMainModal open={openGroupMainModal} setOpen={setOpenGroupMainModal} eventDetails={eventDetails} />
+      <TicketPurchaseModal
+        open={openTicketModal}
+        setOpen={setTicketModal}
+        eventDetails={eventDetails}
+        setSuccessModal={setPurchaseSuccessModal}
+      />
+      <PurchaseSuccessModal
+        open={purchaseSuccessModal}
+        setOpen={setPurchaseSuccessModal}
+      />
+      <ReviewModal
+        open={openReviewModal}
+        setOpen={setReviewModal}
+        eventDetails={eventDetails}
+      />
+      <GroupListModal
+        open={openGroupListModal}
+        setOpen={setGroupListModal}
+        eventDetails={eventDetails}
+        accountGroups={accountGroups}
+        groupList={groupList}
+        setGroupList={setGroupList}
+        setApiGetGroup={setApiGetGroup}
+        setGroupCreatedModal={setGroupCreatedModal}
+        setGroupJoinedModal={setGroupJoinedModal}
+      />
+      <GroupMainModal
+        open={openGroupMainModal}
+        setOpen={setGroupMainModal}
+        eventDetails={eventDetails}
+        groupDetails={groupDetails}
+        setGroupDetails={setGroupDetails}
+        setHasLeftGroup={setHasLeftGroup}
+        account={account}
+      />
+      <GroupCreatedModal
+        open={openGroupCreatedModal}
+        setOpen={setGroupCreatedModal}
+      />
+      <GroupJoinedModal
+        open={openGroupJoinedModal}
+        setOpen={setGroupJoinedModal}
+      />
     </PageContainer>
   )
 }

@@ -8,10 +8,12 @@ import { Button, Card, CardMedia, Chip, Typography } from "@mui/material";
 const accountApi = new AccountAPI()
 const groupApi = new GroupAPI()
 
-const MemberCard = ({ groupDetails, setGroupDetails, eventID, member }) => {
+const MemberCard = ({ groupDetails, member, setHasLeftGroup }) => {
   const context = useContext(StoreContext);
-  const [accountGroups, setAccountGroups] = context.groups;
-  const [account, setAccount] = useState(false)
+  const [account] = context.account;
+  const [memberAccount, setMemberAccount] = useState(false)
+  const [leaveButton, setLeaveButton] = useState(false)
+  const [groupAdmin, setGroupAdmin] = useState(false)
 
   const processRequest = async (status) => {
     try {
@@ -23,13 +25,7 @@ const MemberCard = ({ groupDetails, setGroupDetails, eventID, member }) => {
       const patchRes = await groupApi.patchGroupMember(
         groupDetails.group_id, member.group_membership_id, body
       )
-      let updatedMembers = groupDetails.group_members.filter((m) => m.account_id !== member.account_id)
-      updatedMembers.push(patchRes.data)
-      const updatedGroup = { ...groupDetails, group_members: updatedMembers }
-      setGroupDetails(updatedGroup) // update local account group
-      const temp = accountGroups
-      temp[eventID] = updatedGroup
-      setAccountGroups(temp) // update global account groups
+      setHasLeftGroup(true)
     }
     catch (err) {
       console.log(err)
@@ -37,9 +33,13 @@ const MemberCard = ({ groupDetails, setGroupDetails, eventID, member }) => {
   }
 
   useEffect(() => {
+    if (account.account_id === member.account_id && account.account_id !== groupDetails.group_host_id) {
+      setLeaveButton(true)
+    }
+    member.account_id === groupDetails.group_host_id && setGroupAdmin(true)
     accountApi.getAccount(member.account_id)
       .then((res) => {
-        setAccount(res.data)
+        setMemberAccount(res.data)
       })
       .catch((err) => console.error(err))
   }, [])
@@ -50,18 +50,18 @@ const MemberCard = ({ groupDetails, setGroupDetails, eventID, member }) => {
       bgcolor: '#fff7ec', m: 3, p: 1
     }}
     >
-      <CardMedia component="img" image={account.profile_pic}
+      <CardMedia component="img" image={memberAccount.profile_pic}
         alt="User profile picture"
         sx={{ width: '15%', height: '100%', borderRadius: '100px', mr: 2 }}
       />
       <FlexBox direction='column' width="85%" >
         <FlexBox>
-          <FlexBox direction='column' sx={{ minWidth: '15%' }}>
+          <FlexBox direction='column' sx={{ minWidth: '15%'  }}>
             <Typography variant="subtitle1" color="text.secondary">
               Name
             </Typography>
             <Typography>
-              {account.first_name} {account.last_name}
+              {memberAccount.first_name} {memberAccount.last_name}
             </Typography>
           </FlexBox>
           <FlexBox direction='column' sx={{ width: '65%' }}>
@@ -74,34 +74,33 @@ const MemberCard = ({ groupDetails, setGroupDetails, eventID, member }) => {
               ))}
             </ScrollContainer>
           </FlexBox>
-          <FlexBox sx={{ width: '10%', ml: 4 }}>
-            <Button variant='contained' color='success'
-              onClick={() => processRequest('Accepted')} sx={{ height: '3vh', mr: 2 }}
+          {leaveButton
+            ? <Button variant='contained' color='error'
+              onClick={() => processRequest('Rejected')} sx={{ width: '15%', height: '3vh', ml:2 }}
             >
-              Accept
+              Leave Group
             </Button>
-            <Button variant='contained' color='error'
-              onClick={() => processRequest('Rejected')} sx={{ height: '3vh' }}
-            >
-              Decline
-            </Button>
-          </FlexBox>
+            : ''
+          }
+          {groupAdmin
+            ? <FlexBox direction='column' sx={{ width: '12%', ml:4 }}>
+              <Typography variant="subtitle1" color="text.secondary">
+                Position
+              </Typography>
+              <Typography variant='h6' >
+                Group Admin
+              </Typography>
+            </FlexBox>
+            : ''
+          }
         </FlexBox>
-        <ScrollContainer thin flex='true' pr='1vw' sx={{ flexDirection: 'column', width: '97%' }} >
+        <ScrollContainer thin pr='1vw' sx={{ width: '97%' }} >
           <FlexBox direction='column' sx={{ mr: 2 }}>
             <Typography variant="subtitle1" color="text.secondary">
               My bio
             </Typography>
             <Typography>
-              {account.user_desc}
-            </Typography>
-          </FlexBox>
-          <FlexBox direction='column' sx={{ mr: 2 }}>
-            <Typography variant="subtitle1" color="text.secondary">
-              Join request
-            </Typography>
-            <Typography>
-              {member.join_desc}
+              {memberAccount.user_desc}
             </Typography>
           </FlexBox>
         </ScrollContainer>
@@ -111,37 +110,29 @@ const MemberCard = ({ groupDetails, setGroupDetails, eventID, member }) => {
 }
 
 
-const GroupRequestsPage = ({ groupDetails, setGroupDetails, eventID }) => {
-  const [isEmpty, setIsEmpty] = useState(0)
+const GroupMembersPage = ({ groupDetails, setGroupDetails, setHasLeftGroup }) => {
 
   useEffect(() => {
     groupApi.getGroup(groupDetails.group_id)
       .then((res) => {
         setGroupDetails(res.data)
-        setIsEmpty(res.data.group_members.filter((member) => member.join_status === 'Pending').length)
       })
       .catch((err) => console.error(err))
-  }, [groupDetails])
+  }, [])
 
   return (
     <ScrollContainer thin pr='1vw'>
-      {isEmpty
-        ? ''
-        : <Typography variant="h4" align='center' sx={{mt:5}}>
-          No new join requests
-        </Typography>
-      }
-      {groupDetails.group_members.filter((member) => member.join_status === 'Pending').map((member, idx) => (
+      {groupDetails.group_members &&
+      groupDetails.group_members.filter((member) => member.join_status === 'Accepted').map((member, idx) => (
         <MemberCard
           key={idx}
           groupDetails={groupDetails}
-          setGroupDetails={setGroupDetails}
-          eventID={eventID}
           member={member}
+          setHasLeftGroup={setHasLeftGroup}
         />
       ))}
     </ScrollContainer>
   )
 }
 
-export default GroupRequestsPage
+export default GroupMembersPage

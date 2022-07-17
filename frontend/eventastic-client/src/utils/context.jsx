@@ -7,6 +7,7 @@ const ContextProvider = ({ children }) => {
   const [redirect, setRedirect] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
   const [account, setAccount] = useState(false);
+  const [accountGroups, setAccountGroups] = useState({});
   const [card, setCard] = useState({});
   const [hostDetails, setHostDetails] = useState(false);
   const [LogInModal, setLogInModal] = useState(false);
@@ -15,6 +16,7 @@ const ContextProvider = ({ children }) => {
     redirect: [redirect, setRedirect],
     login: [loggedIn, setLoggedIn],
     account: [account, setAccount],
+    groups: [accountGroups, setAccountGroups],
     card: [card, setCard],
     host: [hostDetails, setHostDetails],
     logInModal: [LogInModal, setLogInModal]
