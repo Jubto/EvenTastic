@@ -56,7 +56,7 @@ const EventScreen = () => {
         <Grid item xs={6} md={6}>
           <div>
             <img
-              src={process.env.PUBLIC_URL + '/img/event/' + eventDetails.event_img}
+              src={eventDetails.event_img}
               width="100%"
               alt="A visulaisation of the Event"
             >

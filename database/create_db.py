@@ -1,4 +1,6 @@
 import psycopg2
+import base64
+import os
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
 
@@ -6,19 +8,20 @@ port = 5432
 host = "localhost"
 user = "postgres"
 password = "postgrespw"
-
+database='eventastic'
+event_img_dir='./test_img/event'
 
 con = psycopg2.connect(user=user, password=password, host=host, port=port)
 con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
 cur = con.cursor()
 print('\nDropping Database ...')
-cur.execute('DROP DATABASE IF EXISTS eventastic')
+cur.execute('DROP DATABASE IF EXISTS {}'.format(database))
 print('\nCreating Database ...')
-cur.execute('CREATE DATABASE eventastic')
+cur.execute('CREATE DATABASE {}'.format(database))
 cur.close()
 con.close()
 
-con = psycopg2.connect(database='eventastic', user='postgres', password='postgrespw', host=host, port=port)
+con = psycopg2.connect(database=database, user=user, password=password, host=host, port=port)
 con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
 cur = con.cursor()
 
@@ -261,6 +264,16 @@ cur.execute("INSERT INTO  events values(default, 2, 2, 3, 10.00, 100.00, 90.00, 
 cur.execute("INSERT INTO  events values(default, 2, 2, 4, 15.00, 110.00, 85.00, 55.00, 'Whisky Live Sydney 2022','Food','Sydney''s Premier Whisky Event.','WHISKY LIVE is Sydney''s premiere whisky sampling event, featuring high quality whiskies and spirits, all open under one roof for your tasting pleasure. Come along and learn while you taste.','2022-09-11T20:00:00+10:00','2022-09-11T22:00:00+10:00','Sydney Cove Passenger Terminal','b51a5319-f9ae-4191-aa95-fdf9a808e0fb.jpeg','UPCOMING','Spirits');")
 cur.execute("INSERT INTO  events values(default, 3, 3, 5, 20.00, 80.00, 70.00, 50.00, 'Jump for Joy','Kids Entertainment','Australia''s biggest inflatable park!','Jump for Joy will be back in town at Centennial Park with Australia''s biggest inflatable play-park!','2022-11-01T20:00:00+10:00','2022-11-01T22:00:00+10:00','Centennial Park Brazilian Fields','50407a37-7fce-4a17-97ba-2dbc68446db6.jpeg','UPCOMING', 'Family Friendly');")
 cur.execute("INSERT INTO  events values(default, 3, 3, 6, 20.00, 12.00, 100.00, 90.00, 'Venture & Capital 2022','Business','Come and be bored!','Everything we do is about connecting ventures with capital—this is why Wholesale Investor exists. In line with this, our 2022 Venture & Capital Conference focuses on empowering innovation, ambition, and capital.','2022-12-02T20:00:00+10:00','2022-12-02T22:00:00+10:00', 'The Venue Alexandria','39061bdb-9ace-45ed-9ddf-8b40223fc1b2.jpeg','UPCOMING','Startups Small Business,Investment');")
+
+# Update the event table with base64 images
+for filename in os.listdir(event_img_dir):
+    f = os.path.join(event_img_dir, filename)
+
+    with open(f, "rb") as image_file:
+        encoded_string = 'data:image/jpeg;base64,' + base64.b64encode(image_file.read()).decode()
+        sql = "UPDATE events SET event_img = '{}' where event_id = {}".format(encoded_string, int(filename.split('.')[0]))
+        cur.execute(sql)
+
 
 cur.execute("INSERT INTO bookings values (default, 1, 1, 'Booked', 500.0);")
 cur.execute("INSERT INTO bookings values (default, 1, 1, 'Booked', 200.0);")

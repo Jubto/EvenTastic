@@ -1,12 +1,43 @@
 import { useState } from 'react';
 import EventAPI from '../../../utils/EventAPIHelper';
+import { fileToDataUrl } from '../../../utils/helpers';
 import { StandardModal, ModalBody, ModalTitle } from '../../styles/modal/modal.styled';
 import { FlexBox } from '../../styles/layouts.styled';
-import { Button, TextField, Typography, styled } from '@mui/material';
+import { Button, TextField, Grid, styled } from '@mui/material';
+import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
 
 const eventAPI = new EventAPI();
 
+const ImageHolder = styled(Button)`
+  border: 1px solid black;
+  cursor: pointer;
+  height:100%;
+  width:100%;
+  max-height: 350px;
+  max-width: 350px;
+  ${({theme}) => theme.breakpoints.down("md")} {
+    max-width: 100%;
+  }
+  background-color: ${({ theme }) => theme.palette.evenTastic.dull};
+`
+
+const Image = styled('img')`
+  max-height: 100%;
+  max-width: 100%;
+`
+
 const UpdateEventModal = ({ open, setOpen, managedEventDetails, setManagedEventDetails, setSuccessModal }) => {
+
+  const [imgUpload, setImageUpload] = useState(false);
+
+  const handleImage = async (event) => {
+    const imageFile = event.target.files[0]
+    const imageBlob = await fileToDataUrl(imageFile)
+    console.log(imageBlob)
+    console.log(URL.createObjectURL(imageFile))
+    setImageUpload(imageBlob)
+  }
+
   const [formErrors, setFormErrors] = useState({
     event_title: false,
     event_short_desc: false,
@@ -54,7 +85,8 @@ const UpdateEventModal = ({ open, setOpen, managedEventDetails, setManagedEventD
           event_title: event_title,
           event_short_desc: event_short_desc,
           event_desc: event_desc,
-          event_location: event_location
+          event_location: event_location,
+          event_img: imgUpload ? imgUpload : managedEventDetails.event_img
         }
         const response = await eventAPI.putEvent(managedEventDetails.event_id, updatedEvent)
         setManagedEventDetails(prevState => { return { ...prevState, ...updatedEvent } })
@@ -72,6 +104,39 @@ const UpdateEventModal = ({ open, setOpen, managedEventDetails, setManagedEventD
     <StandardModal open={open} onClose={handleClose} aria-labelledby="Update Event Modal" maxWidth='lg'>
       <ModalTitle title='Update Event Details' close={handleClose} />
       <ModalBody id='form' component="form" noValidate onSubmit={handleSubmit}>
+      <Grid item sm={12} md={5}>
+          <ImageHolder component='label'>
+            <input
+              hidden type="file" name="eventPicture"
+              id="eventPicture" label="eventPicture" onChange={handleImage}
+            />
+            {(() => {
+              if (managedEventDetails.event_img && !imgUpload) {
+                return (
+                  <Image
+                    src={managedEventDetails.event_img}
+                    alt="Event picture"
+                    width="100%"
+                  />
+                )
+              } else if (imgUpload) {
+                return (
+                  <Image
+                    src={imgUpload}
+                    alt="Event picture"
+                    width="100%"
+                  />
+                )
+              } else {
+                return (
+                  <AddAPhotoIcon fontSize='large' color='disabled' sx={{ mt: '100%' }} />
+                )
+              }
+            })()}
+
+          </ImageHolder>
+        </Grid>
+        <br></br>
         <TextField
           name="event_title"
           required
