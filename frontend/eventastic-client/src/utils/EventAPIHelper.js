@@ -22,7 +22,9 @@ export default class EventAPI {
     return this.client;
   };
 
-
+  postEvent = (body) => {
+    return this.init().post("/events", body);
+  };
   
   getEventList = (params) => {
     return this.init().get("/events", { params: params });
@@ -36,9 +38,9 @@ export default class EventAPI {
     return this.init().put(`/events/${eventID}`, body);
   };
 
-  getTickets = (params) => {
-    return this.init().get("/tickets/", { params: params });
-  }; 
+  addBooking = (body) => {
+    return this.init().post("/bookings", body);
+  };
 
   getBookings = (params) => {
     return this.init().get('/bookings', { params: params });
@@ -50,6 +52,18 @@ export default class EventAPI {
 
   patchBookings = (bookingID, body) => {
     return this.init().patch(`/bookings/${bookingID}`, body);
+  };
+
+  getTickets = (params) => {
+    return this.init().get('/tickets', { params: params });
+  };
+
+  getReviews = (params) => {
+    return this.init().get('/reviews', { params: params });
+  };
+
+  putReviews = (reviewId, body) => {
+    return this.init().put(`/reviews/${reviewId}`, body);
   };
   
   // Add additional API call here as needed ...

@@ -9,6 +9,7 @@ import GroupListModal from '../components/group/GroupListModal';
 import GroupMainModal from '../components/group/GroupMainModal';
 import GroupCreatedModal from '../components/group/modals/GroupCreatedModal';
 import GroupJoinedModal from '../components/group/modals/GroupJoinedModal';
+import PurchaseSuccessModal from '../components/ticket/PurchaseSuccessModal'
 import { PageContainer } from '../components/styles/layouts.styled'
 import { Button, Chip, Grid, Paper, Typography, Stack, styled } from '@mui/material';
 
@@ -53,7 +54,7 @@ const EventScreen = () => {
   const [openGroupMainModal, setGroupMainModal] = useState(false)
   const [openGroupCreatedModal, setGroupCreatedModal] = useState(false)
   const [openGroupJoinedModal, setGroupJoinedModal] = useState(false)
-
+  const [purchaseSuccessModal, setPurchaseSuccessModal] = useState(false)
 
   const handleTicketButton = () => {
     if (account) {
@@ -137,11 +138,16 @@ const EventScreen = () => {
       else {
         apiGroupsFilterBy(eventDetails.event_id, account.account_id)
         .then((groupRes) => {
-          const group = groupRes[0]
-          setGroupDetails(group)
-          const temp = accountGroups
-          temp[eventDetails.event_id] = group
-          setAccountGroups(temp) // update global account groups
+          groupRes.forEach((group) =>  {
+            group.group_members.forEach((member) => {
+              if (member.account_id === account.account_id && member.join_status === 'Accepted') {
+                setGroupDetails(group)
+                const temp = accountGroups
+                temp[eventDetails.event_id] = group
+                setAccountGroups(temp) // update global account groups
+              }
+            })
+          })
         })
         .catch((err) => console.error(err))
       }
@@ -151,7 +157,7 @@ const EventScreen = () => {
   }, [apiGetGroup])
 
   useEffect(() => {
-    if (!LogInModal) {
+    if (!LogInModal && account) {
       redirect === 'tickets' && setTicketModal(true) // redirect to ticket model after login modal
       setRedirect(false)
     }
@@ -168,7 +174,7 @@ const EventScreen = () => {
         <Grid item xs={6} md={6}>
           <div>
             <img
-              src={process.env.PUBLIC_URL + '/img/event/' + eventDetails.event_img}
+              src={eventDetails.event_img}
               width="100%"
               alt="A visulaisation of the Event"
             >
@@ -261,6 +267,11 @@ const EventScreen = () => {
         open={openTicketModal}
         setOpen={setTicketModal}
         eventDetails={eventDetails}
+        setSuccessModal={setPurchaseSuccessModal}
+      />
+      <PurchaseSuccessModal
+        open={purchaseSuccessModal}
+        setOpen={setPurchaseSuccessModal}
       />
       <ReviewModal
         open={openReviewModal}
@@ -295,7 +306,6 @@ const EventScreen = () => {
         open={openGroupJoinedModal}
         setOpen={setGroupJoinedModal}
       />
-
     </PageContainer>
   )
 }

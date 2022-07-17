@@ -27,7 +27,7 @@ const EventCard = ( {eventData} ) => {
           <CardMedia
             component="img"
             height="140"
-            image={process.env.PUBLIC_URL + '/img/event/' + eventData.event_img}
+            image={eventData.event_img}
           />
           <CardContent>
             <Typography gutterBottom variant="h6" component="div">

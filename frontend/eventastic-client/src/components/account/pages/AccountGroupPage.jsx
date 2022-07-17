@@ -91,6 +91,12 @@ const AccountGroupPage = () => {
 
   return (
     <ScrollContainer thin pr='1vw'>
+      {Object.entries(accountGroups).length
+        ? ''
+        : <Typography variant="h4" align='center' sx={{mt:5}}>
+          You're not in any groups
+        </Typography>
+      }
       {Object.entries(accountGroups).map((group, idx) => (
         <Group key={idx} groupDetails={group[1]} account={account} />
       ))}
