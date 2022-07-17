@@ -375,9 +375,9 @@ def update_event_status(event_id, body):  # noqa: E501
         con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
         cur = con.cursor()
 
-        if (len(str(body.op)) == 0 or len(str(body.path)) == 0 or len(str(body.value)) == 0):
+        if (len(str(body.value)) == 0):
             error = InvalidInputError(code=400, type="InvalidInputError",
-                                      message="The following mandatory fields were not provided: operation or path or event-status value")
+                                      message="The following mandatory fields were not provided: event-status value")
             return error, 400, {'Access-Control-Allow-Origin': '*'}
 
         # to check if the event id exists or not
@@ -391,17 +391,15 @@ def update_event_status(event_id, body):  # noqa: E501
             return error, 404, {'Access-Control-Allow-Origin': '*'}
 
         # Perform Update
-        update_string = "UPDATE events set "
-        if body.value != None:
-            update_string += f" event_status='{body.value}',"
-
-        update_string = list(update_string)
-        update_string[-1] = " "
-        update_string = "".join(update_string)
-        update_string += f" where event_id = {event_id} RETURNING event_id;"
-        cur.execute(update_string)
-
+        cur.execute(f"UPDATE events set event_status='{body.value}' where event_id = {event_id} RETURNING event_id; ")
         event_id = cur.fetchone()[0]
+
+        if body.value == 'Cancelled': 
+            cur.execute(f"SELECT booking_id FROM bookings where event_id = {event_id} and booking_status= 'Booked' ")
+            records = cur.fetchall()
+            if len(records) > 0:
+                for booking in records:
+                    cur.execute(f"UPDATE bookings set booking_status = 'Cancelled' where booking_id = {booking[0]}") 
 
         cur.close()
         con.close()

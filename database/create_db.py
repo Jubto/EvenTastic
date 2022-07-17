@@ -55,7 +55,7 @@ cur.execute('CREATE TABLE accounts (\
             profile_pic TEXT,\
             reward_points VARCHAR(10),\
             tags TEXT, \
-            user_desc VARCHAR(100) \
+            user_desc TEXT \
             );')
 
 cur.execute('CREATE TABLE hosts(\
