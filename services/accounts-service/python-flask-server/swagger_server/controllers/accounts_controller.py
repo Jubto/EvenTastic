@@ -30,7 +30,7 @@ def create_account(body):  # noqa: E501
         if connexion.request.is_json:
             body = Account.from_dict(connexion.request.get_json())  # noqa: E501
 
-        if (len(body.email) == 0 or len(body.first_name) == 0 or len(body.last_name) == 0):
+        if (body.email == None or body.first_name == None or body.last_name == None):
             error = InvalidInputError(code=400, type="InvalidInputError", 
                     message="The following mandatory fields were not provided: email or first name or last name")
             return error, 400, {'Access-Control-Allow-Origin': '*'}
@@ -393,11 +393,6 @@ def update_account(account_id, body):  # noqa: E501
     try:
         if connexion.request.is_json:
             body = Account.from_dict(connexion.request.get_json())  # noqa: E501
-
-        if (len(body.email) == 0 or len(body.first_name) == 0 or len(body.last_name) == 0):
-            error = InvalidInputError(code=400, type="InvalidInputError", 
-                    message="The following mandatory fields were not provided: email or first name or last name")
-            return error, 400, {'Access-Control-Allow-Origin': '*'}
             
         con = psycopg2.connect(database= 'eventastic', user='postgres', password='postgrespw', host=host, port=port)
         con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
@@ -439,14 +434,12 @@ def update_account(account_id, body):  # noqa: E501
         if tags_string != "": update_string += f" tags='{tags_string}',"
         if body.user_desc != None: update_string += f" user_desc='{body.user_desc}',"
 
-        update_string = list(update_string)
-        update_string[-1] = " "
-        update_string = "".join(update_string)
-
-        update_string += f" where account_id = {account_id} RETURNING account_id;"
-            
-        cur.execute(update_string)
-        acc_id = cur.fetchone()[0]
+        if update_string != "UPDATE accounts set ":
+            update_string = update_string[:-1]
+            update_string += f" where account_id = {account_id} RETURNING account_id;"
+                
+            cur.execute(update_string)
+            acc_id = cur.fetchone()[0]
 
         cur.close()
         con.close()                    
@@ -494,7 +487,7 @@ def update_credit_card(account_id, body):  # noqa: E501
         if connexion.request.is_json:
             body = CreditCard.from_dict(connexion.request.get_json())  # noqa: E501
 
-        if (len(body.card_name) == 0 or len(body.card_number) == 0 or len(body.card_type) == 0 or len(body.card_expiry) == 0):
+        if (body.card_name == None or body.card_number == None or body.card_type == None or body.card_expiry == None):
             error = InvalidInputError(code=400, type="InvalidInputError", 
                     message="The following mandatory fields were not provided: card name or number or type or expiry")
             return error, 400, {'Access-Control-Allow-Origin': '*'}

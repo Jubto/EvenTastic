@@ -82,9 +82,35 @@ def create_review_interaction(body):  # noqa: E501
 
     :rtype: ReviewInteraction
     """
-    if connexion.request.is_json:
-        body = ReviewInteraction.from_dict(connexion.request.get_json())  # noqa: E501
-    return 'do some magic!'
+    
+    try:
+        if connexion.request.is_json:
+            body = ReviewInteraction.from_dict(connexion.request.get_json())  # noqa: E501
+    
+
+        if (len(str(body.interaction_account_id)) == 0):
+            error = InvalidInputError(code=400, type="InvalidInputError",
+                                      message="The following mandatory fields were not provided: Interaction Account ID. Please login")
+            return error, 400, {'Access-Control-Allow-Origin': '*'}
+
+        con = psycopg2.connect(database='eventastic', user='postgres',
+                               password='postgrespw', host=host, port=port)
+        con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+        cur = con.cursor()
+
+        insert_string = "INSERT INTO interactions VALUES (default, %s,%s,%s,%s) RETURNING interaction_id;"
+        cur.execute(insert_string, (body.review_id, body.interaction_account_id,body.review_upvoted,body.review_flagged))
+        body.interaction_id = cur.fetchone()[0]
+
+        cur.close()
+        con.close()
+        return body, 201, {'Access-Control-Allow-Origin': '*'}
+
+    except Exception as e:
+        # catch any unexpected runtime error and return as 500 error
+        error = UnexpectedServiceError(
+            code="500", type="UnexpectedServiceError", message=str(e))
+        return error, 500, {'Access-Control-Allow-Origin': '*'}
 
 
 def list_reviews(event_id=None, interaction_acount_id=None):  # noqa: E501
