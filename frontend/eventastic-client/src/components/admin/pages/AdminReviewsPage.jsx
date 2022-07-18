@@ -1,15 +1,18 @@
 import { useEffect, useState } from "react"
 import { styled } from '@mui/material/styles';
 import EventAPI from "../../../utils/EventAPIHelper"
+import AccountAPI from "../../../utils/AccountAPIHelper"
 import { ScrollContainer, FlexBox } from "../../styles/layouts.styled"
 import Button from '@mui/material/Button';
+import { Typography, Avatar } from "@mui/material";
 
 const api = new EventAPI()
+const apiAccount = new AccountAPI()
 
 const ItemBox = styled('div')`
-  width: 90%;
-  margin-top: 10px;
-  margin-left: 30px;
+  width: 93%;
+  margin-top: 8px;
+  margin-left: 20px;
 `;
 
 const FlaggedByBox = styled('div')`
@@ -68,13 +71,25 @@ const CheckReviewBox = ({ review, setToRemove }) => {
   }
 
   return (
-    <FlexBox id={review.review_id} sx={{ border: '2px inset black', borderRadius: '5px', margin: '30px 20px'}}>
-      <div style={{ width: '100%', backgroundColor: '#B0B0B0' }}>
-        <ItemBox>
-          <b>Event:</b> {review.event_title}<br></br>
+    <FlexBox id={review.review_id} sx={{ border: '5px inset white', margin: '30px 40px'}}>
+      <div style={{ width: '100%', backgroundColor: 'white' }}>
+        <ItemBox style={{ display:'flex', flexDirection: 'row' }}>
+            <img style={{ marginRight: '10px', borderRadius: '8px' }}
+            src={review.event_img}
+            width="7%"
+            alt="Event thumbnail"
+            id = {review.event_id}
+          >
+          </img>
+          <Typography variant="body" style={{ marginTop: '5px' }} >
+            <b>{review.event_title}</b> <br></br>
+          </Typography>
         </ItemBox>
-        <ItemBox>
-          <b>Review:</b> {review.review_text}<br></br>
+        <ItemBox style={{ display:'flex', flexDirection: 'row' }}>
+            <Avatar sx={{ width: 30, height: 30, marginLeft: '10px', marginRight: '10px' }}
+            src={review.account_img}
+            />
+          {review.review_text}<br></br>
         </ItemBox>
         <FlaggedByBox>
           <div>
@@ -112,6 +127,10 @@ const AdminReviewsPage = () => {
     let bookedEventsRes = await Promise.all(getReviews.data.map((review, idx) => {
       return api.getEventDetails(review.event_id).then((res) => res.data)
     }))
+
+    let accountRes = await Promise.all(getReviews.data.map((review, idx) => {
+      return apiAccount.getAccount(review.reviewer_account_id).then((res) => res.data)
+    }))
     
     const flaggedReviews = getReviews.data.map((review, idx) => (
       {
@@ -120,8 +139,12 @@ const AdminReviewsPage = () => {
         rating: review.rating,
         upvotes: review.upvotes,
         review_text: review.review_text,
+        event_id: review.event_id,
 
         event_title: bookedEventsRes[idx].event_title,
+        event_img: bookedEventsRes[idx].event_img,
+        
+        account_img: accountRes[idx].profile_pic,
       }
     ))
 
@@ -142,7 +165,7 @@ const AdminReviewsPage = () => {
   }, [toRemove])
 
   return (
-    <ScrollContainer>
+    <ScrollContainer id="Scroll" style={{ backgroundColor: '#DCDCDC', height: '100%' }}>
       <div>
         {reviews.map((review, idx) => (
             <CheckReviewBox key={idx} review={review} setToRemove={setToRemove} />

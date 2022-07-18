@@ -10,6 +10,8 @@ user = "postgres"
 password = "postgrespw"
 database = 'eventastic'
 event_img_dir = './test_img/event'
+account_img_dir='./test_img/account'
+
 
 con = psycopg2.connect(user=user, password=password, host=host, port=port)
 con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
@@ -277,6 +279,15 @@ for filename in os.listdir(event_img_dir):
             encoded_string, int(filename.split('.')[0]))
         cur.execute(sql)
 
+# Update the account table with base64 images
+for filename in os.listdir(account_img_dir):
+    f = os.path.join(account_img_dir, filename)
+
+    with open(f, "rb") as image_file:
+        encoded_string = 'data:image/jpeg;base64,' + base64.b64encode(image_file.read()).decode()
+        sql = "UPDATE accounts SET profile_pic = '{}' where account_id = {}".format(encoded_string, int(filename.split('.')[0]))
+        cur.execute(sql)
+
 
 cur.execute("INSERT INTO bookings values (default, 1, 1, 'Booked', 500.0);")
 cur.execute("INSERT INTO bookings values (default, 1, 1, 'Booked', 200.0);")
@@ -334,18 +345,29 @@ for v_id, e_id in [(2, 2), (3, 3), (4, 4), (5, 5), (6, 6)]:
 
 
 cur.execute("INSERT INTO reviews values (default, 1, 3, 0, 4, 'Amazing Event. Highly Recommend it', '2022-08-25T21:00:00+10:00', 0, 'Active', '');")
-cur.execute("INSERT INTO reviews values (default, 1, 2, 0, 1, 'Poorly organised', '2022-08-26T21:00:00+10:00', 0, 'Active', '');")
-cur.execute("INSERT INTO reviews values (default, 2, 2, 3, 5, 'Best event ever.', '2022-08-26T21:00:00+10:00', 0, 'Active', 'Thanks for the feedback!');")
-cur.execute("INSERT INTO reviews values (default, 3, 3, 0, 4, 'Amazing Event. Highly Recommend it', '2022-08-25T21:00:00+10:00', 1, 'Active', '');")
-cur.execute("INSERT INTO reviews values (default, 4, 3, 0, 1, 'Poorly organised', '2022-08-26T21:00:00+10:00', 3, 'Active', '');")
-cur.execute("INSERT INTO reviews values (default, 5, 4, 3, 5, 'Best event ever.', '2022-08-26T21:00:00+10:00', 2, 'Active', 'Thanks for the feedback!');")
+cur.execute("INSERT INTO reviews values (default, 2, 1, 0, 1, 'Poorly organised', '2022-08-26T21:00:00+10:00', 0, 'Active', '');")
+cur.execute("INSERT INTO reviews values (default, 3, 3, 3, 5, 'Best event ever.', '2022-08-26T21:00:00+10:00', 0, 'Active', 'Thanks for the feedback!');")
+
+cur.execute("INSERT INTO reviews values (default, 1, 2, 12, 4, 'Amazing Event. Highly Recommend it. I loved the event from start to finish. \
+            It was a very captivating event and all the people gave their best performances.\
+                It deserves many awards and recognition for its quality', '2022-08-25T21:00:00+10:00', 1, 'Active', '');")
+cur.execute("INSERT INTO reviews values (default, 2, 3, 6, 1, 'Very poorly organised event. No one in the event knew what they were doing and they just kept doing nothing.\
+            The management were not even a little bit concerned about the direction or quality of the event.\
+                They just wanted to earn money from the people.', '2022-08-26T21:00:00+10:00', 4, 'Active', '');")
+cur.execute("INSERT INTO reviews values (default, 3, 1, 2, 5, 'What a fucking disgrace of an event.', '2022-08-26T21:00:00+10:00', 2, 'Active', 'Thanks for the feedback!');")
+cur.execute("INSERT INTO reviews values (default, 4, 3, 28, 2, 'This event was a total disaster. It felt like I wasted \
+            the precious hours of my life. I want my money back.', '2022-08-26T21:00:00+10:00', 8, 'Active', 'Thanks for the feedback!');")
+cur.execute("INSERT INTO reviews values (default, 5, 1, 10, 3, 'Best event ever.', '2022-08-26T21:00:00+10:00', 3, 'Active', 'Thanks for the feedback!');")
+cur.execute("INSERT INTO reviews values (default, 6, 2, 6, 4, 'Best event ever. I really enjoyed the event. Me and my friends had a great time and we laughed a lot.\
+            These were the most entertaining performances I have ever seen in my life. Everyone in the event were totally engaged in it.\
+                It was money well spent.', '2022-08-26T21:00:00+10:00', 10, 'Active', 'Thanks for the feedback!');")
 
 
 cur.execute("INSERT INTO interactions values (default, 1, 1, True, False);")
 cur.execute("INSERT INTO interactions values (default, 2, 1, False, True);")
-cur.execute("INSERT INTO interactions values (default, 3, 2, False, True);")
-cur.execute("INSERT INTO interactions values (default, 3, 1, False, True);")
 cur.execute("INSERT INTO interactions values (default, 2, 2, True, True);")
+cur.execute("INSERT INTO interactions values (default, 3, 2, False, True);")
+cur.execute("INSERT INTO interactions values (default, 3, 3, False, True);")
 
 cur.execute('SELECT * FROM accounts')
 records = cur.fetchall()
