@@ -9,12 +9,14 @@ import Typography from '@mui/material/Typography';
 const api = new EventAPI();
 
 const createCard = (event) => {
-  return (
-    <EventCard
-      key={event.event_id}
-      eventData={event}
-    />
-  );
+  if (event.event_status !== "Cancelled") {
+    return (
+      <EventCard
+        key={event.event_id}
+        eventData={event}
+      />
+    );
+  }
 }
 
 const HomeScreen = () => {

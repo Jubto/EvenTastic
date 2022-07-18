@@ -4,6 +4,8 @@ import BroadcastModal from '../../event/modals/BroadcastModal';
 import BroadcastSentModal from '../../event/modals/BroadcastSentModal';
 import UpdateEventModal from '../../event/modals/UpdateEventModal';
 import UpdateEventSuccessModal from '../../event/modals/UpdateEventSuccessModal';
+import CancelEventModal from '../../event/modals/CancelEventModal';
+import CancelEventSuccessModal from '../../event/modals/CancelEventSuccessModal';
 import Grid from '@mui/material/Grid';
 import { styled } from '@mui/material/styles';
 import Paper from '@mui/material/Paper';
@@ -35,95 +37,107 @@ const ManageEventDetailsPage = ({ managedEventDetails, setManagedEventDetails, c
   const [openBroadcast, setOpenBroadcast] = useState(false)
   const [openEventUpdateModal, setOpenEventUpdateModal] = useState(false)
   const [openEventUpdateSuccessModal, setOpenEventUpdateSuccessModal] = useState(false)
+  const [openCancelEventModal, setOpenCancelEventModal] = useState(false)
+  const [openCancelEventSuccessModal, setOpenCancelEventSuccessModal] = useState(false)
 
   return (
     <ScrollContainer thin pr='1vw'>
-      <Grid container spacing={1}>
-        <Grid item xs={6} md={6}>
-          <div>
-            <img
-              src={managedEventDetails.event_img.length<70 ? process.env.PUBLIC_URL + '/img/event/' + managedEventDetails.event_img : managedEventDetails.event_img}
-              width="100%"
-              alt="A visulaisation of the Event"
-            >
-            </img>
-          </div>
-        </Grid>
-        <Grid item xs={6} md={6}>
-          <GridItem>
-            <Typography gutterBottom variant="h4" component="div">
-              {managedEventDetails.event_title}
-            </Typography>
-            <Typography gutterBottom variant="body1" component="div">
-              <b>Where is it?</b><br></br>{managedEventDetails.event_location}
-            </Typography>
-            <Typography gutterBottom variant="body1" component="div">
-              <b>When does it start?</b><br></br>{formatDate(managedEventDetails.event_start_datetime)}
-            </Typography>
-            <Typography gutterBottom variant="body1" component="div">
-              <b>When does it end?</b><br></br>{formatDate(managedEventDetails.event_end_datetime)}
-            </Typography>
-            <Typography gutterBottom variant="body1" component="div">
-              <b>What is the price range?</b> $20-$30
-            </Typography>
-            <Grid container spacing={2}>
-              <Grid item xs={6}>
-                <Button
-                  variant="contained" href="#contained-buttons" color="success" fullWidth
-                  onClick={() => setOpenEventUpdateModal(true)}
+      {managedEventDetails.event_status === "Cancelled"
+        ? 
+          <Typography gutterBottom variant="h4" component="div">
+            This Event has been Cancelled.
+          </Typography>
+        : 
+          <Grid container spacing={1}>
+            <Grid item xs={6} md={6}>
+              <div>
+                <img
+                  src={managedEventDetails.event_img.length<70 ? process.env.PUBLIC_URL + '/img/event/' + managedEventDetails.event_img : managedEventDetails.event_img}
+                  width="100%"
+                  alt="A visulaisation of the Event"
                 >
-                  Update Event
-                </Button>
-              </Grid>
-              <Grid item xs={6}>
-                <Button
-                  variant="contained" href="#contained-buttons" color="primary" fullWidth
-                  onClick={() => setOpenBroadcast(true)}
-                >
-                  Message All
-                </Button>
-              </Grid>
-              <Grid item xs={6}>
-                <Button variant="contained" href="#contained-buttons" color="warning" fullWidth>
-                  Event Reviews
-                </Button>
-              </Grid>
-              <Grid item xs={6}>
-                <Button variant="contained" href="#contained-buttons" color="error" fullWidth>
-                  Cancel Event
-                </Button>
-              </Grid>
+                </img>
+              </div>
             </Grid>
-          </GridItem>
-        </Grid>
-        <Grid item xs={12} md={12}>
-          <GridItem>
-            <Typography gutterBottom variant="h4" component="div">
-              Overview:
-            </Typography>
-            <Typography gutterBottom variant="body1" component="div">
-              {managedEventDetails.event_desc}
-            </Typography>
-          </GridItem>
-        </Grid>
-        <Grid item xs={12} md={12}>
-          <GridItem>
-            <Typography gutterBottom variant="h4" component="div">
-              Tags:
-            </Typography>
-            <Stack direction="row" spacing={2}>
-              {managedEventDetails.tags?.map(function (tag, i) {
-                return (
-                  <Chip
-                    key={i}
-                    label={tag.name}
-                  />
-                );
-              })}
-            </Stack>
-          </GridItem>
-        </Grid>
-      </Grid>
+            <Grid item xs={6} md={6}>
+              <GridItem>
+                <Typography gutterBottom variant="h4" component="div">
+                  {managedEventDetails.event_title}
+                </Typography>
+                <Typography gutterBottom variant="body1" component="div">
+                  <b>Where is it?</b><br></br>{managedEventDetails.event_location}
+                </Typography>
+                <Typography gutterBottom variant="body1" component="div">
+                  <b>When does it start?</b><br></br>{formatDate(managedEventDetails.event_start_datetime)}
+                </Typography>
+                <Typography gutterBottom variant="body1" component="div">
+                  <b>When does it end?</b><br></br>{formatDate(managedEventDetails.event_end_datetime)}
+                </Typography>
+                <Typography gutterBottom variant="body1" component="div">
+                  <b>What is the price range?</b> $20-$30
+                </Typography>
+                <Grid container spacing={2}>
+                  <Grid item xs={6}>
+                    <Button
+                      variant="contained" href="#contained-buttons" color="success" fullWidth
+                      onClick={() => setOpenEventUpdateModal(true)}
+                    >
+                      Update Event
+                    </Button>
+                  </Grid>
+                  <Grid item xs={6}>
+                    <Button
+                      variant="contained" href="#contained-buttons" color="primary" fullWidth
+                      onClick={() => setOpenBroadcast(true)}
+                    >
+                      Message All
+                    </Button>
+                  </Grid>
+                  <Grid item xs={6}>
+                    <Button variant="contained" href="#contained-buttons" color="warning" fullWidth>
+                      Event Reviews
+                    </Button>
+                  </Grid>
+                  <Grid item xs={6}>
+                    <Button 
+                      variant="contained" href="#contained-buttons" color="error" fullWidth
+                      onClick={() => setOpenCancelEventModal(true)}
+                    >
+                      Cancel Event
+                    </Button>
+                  </Grid>
+                </Grid>
+              </GridItem>
+            </Grid>
+            <Grid item xs={12} md={12}>
+              <GridItem>
+                <Typography gutterBottom variant="h4" component="div">
+                  Overview:
+                </Typography>
+                <Typography gutterBottom variant="body1" component="div">
+                  {managedEventDetails.event_desc}
+                </Typography>
+              </GridItem>
+            </Grid>
+            <Grid item xs={12} md={12}>
+              <GridItem>
+                <Typography gutterBottom variant="h4" component="div">
+                  Tags:
+                </Typography>
+                <Stack direction="row" spacing={2}>
+                  {managedEventDetails.tags?.map(function (tag, i) {
+                    return (
+                      <Chip
+                        key={i}
+                        label={tag.name}
+                      />
+                    );
+                  })}
+                </Stack>
+              </GridItem>
+            </Grid>
+          </Grid>
+      }
       <BroadcastModal
         open={openBroadcast}
         setOpen={setOpenBroadcast}
@@ -145,6 +159,17 @@ const ManageEventDetailsPage = ({ managedEventDetails, setManagedEventDetails, c
       <UpdateEventSuccessModal
         open={openEventUpdateSuccessModal}
         setOpen={setOpenEventUpdateSuccessModal}
+      />
+      <CancelEventModal
+        open={openCancelEventModal}
+        setOpen={setOpenCancelEventModal}
+        managedEventDetails={managedEventDetails}
+        setManagedEventDetails={setManagedEventDetails}
+        setSuccessModal={setOpenCancelEventSuccessModal}
+      />
+      <CancelEventSuccessModal
+        open={openCancelEventSuccessModal}
+        setOpen={setOpenCancelEventSuccessModal}
       />
     </ScrollContainer>
   )

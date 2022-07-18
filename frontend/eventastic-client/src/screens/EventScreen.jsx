@@ -119,10 +119,10 @@ const EventScreen = () => {
       delete temp[eventDetails.event_id]
       setAccountGroups(temp) // update global account groups
       apiGroupsFilterBy(eventDetails.event_id)
-      .then((groupsRes) => {
-        setGroupList(groupsRes)
-      })
-      .catch((err) => console.error(err))
+        .then((groupsRes) => {
+          setGroupList(groupsRes)
+        })
+        .catch((err) => console.error(err))
     }
   }, [hasLeftGroup])
 
@@ -132,24 +132,24 @@ const EventScreen = () => {
     // When creating a new group in listing modal
     // When accepting to join a new group in the listing modal
     if (apiGetGroup) {
-      if (accountGroups[eventDetails.event_id]){
+      if (accountGroups[eventDetails.event_id]) {
         setGroupDetails(accountGroups[eventDetails.event_id])
       }
       else {
         apiGroupsFilterBy(eventDetails.event_id, account.account_id)
-        .then((groupRes) => {
-          groupRes.forEach((group) =>  {
-            group.group_members.forEach((member) => {
-              if (member.account_id === account.account_id && member.join_status === 'Accepted') {
-                setGroupDetails(group)
-                const temp = accountGroups
-                temp[eventDetails.event_id] = group
-                setAccountGroups(temp) // update global account groups
-              }
+          .then((groupRes) => {
+            groupRes.forEach((group) => {
+              group.group_members.forEach((member) => {
+                if (member.account_id === account.account_id && member.join_status === 'Accepted') {
+                  setGroupDetails(group)
+                  const temp = accountGroups
+                  temp[eventDetails.event_id] = group
+                  setAccountGroups(temp) // update global account groups
+                }
+              })
             })
           })
-        })
-        .catch((err) => console.error(err))
+          .catch((err) => console.error(err))
       }
       setGroupListModal(false) // close group listing modal
       setApiGetGroup(false)
@@ -170,99 +170,106 @@ const EventScreen = () => {
 
   return (
     <PageContainer maxWidth='lg'>
-      <Grid container spacing={1}>
-        <Grid item xs={6} md={6}>
-          <div>
-            <img
-              src={eventDetails.event_img}
-              width="100%"
-              alt="A visulaisation of the Event"
-            >
-            </img>
-          </div>
-        </Grid>
-        <Grid item xs={6} md={6}>
-          <GridItem>
-            <Typography gutterBottom variant="h4" component="div">
-              {eventDetails.event_title}
-            </Typography>
-            <Typography gutterBottom variant="body1" component="div">
-              <b>Where is it?</b> {eventDetails.event_location}
-            </Typography>
-            <Typography gutterBottom variant="body1" component="div">
-              <b>When does it start?</b> {formatDate(eventDetails.event_start_datetime)}
-            </Typography>
-            <Typography gutterBottom variant="body1" component="div">
-              <b>When does it end?</b> {formatDate(eventDetails.event_end_datetime)}
-            </Typography>
-            <Typography gutterBottom variant="body1" component="div">
-              <b>What is the price range?</b> $20-$30
-            </Typography>
-            <Stack spacing={3}>
-              <Button
-                variant="contained"
-                href="#contained-buttons"
-                color="error" onClick={handleTicketButton}
+      {eventDetails.event_status === "Cancelled"
+        ?
+        <Typography gutterBottom variant="h4" component="div">
+          This Event has been Cancelled.
+        </Typography>
+        :
+        <Grid container spacing={1}>
+          <Grid item xs={6} md={6}>
+            <div>
+              <img
+                src={eventDetails.event_img}
+                width="100%"
+                alt="A visulaisation of the Event"
               >
-                Tickets
-              </Button>
-              <Button
-                variant="contained"
-                href="#contained-buttons"
-                color="warning" onClick={() => setReviewModal(true)}
-              >
-                Reviews
-              </Button>
-              {Object.keys(groupDetails).length !== 0
-                ? <Button
+              </img>
+            </div>
+          </Grid>
+          <Grid item xs={6} md={6}>
+            <GridItem>
+              <Typography gutterBottom variant="h4" component="div">
+                {eventDetails.event_title}
+              </Typography>
+              <Typography gutterBottom variant="body1" component="div">
+                <b>Where is it?</b> {eventDetails.event_location}
+              </Typography>
+              <Typography gutterBottom variant="body1" component="div">
+                <b>When does it start?</b> {formatDate(eventDetails.event_start_datetime)}
+              </Typography>
+              <Typography gutterBottom variant="body1" component="div">
+                <b>When does it end?</b> {formatDate(eventDetails.event_end_datetime)}
+              </Typography>
+              <Typography gutterBottom variant="body1" component="div">
+                <b>What is the price range?</b> $20-$30
+              </Typography>
+              <Stack spacing={3}>
+                <Button
                   variant="contained"
                   href="#contained-buttons"
-                  onClick={() => setGroupMainModal(true)}
-                  sx={{ bgcolor: 'evenTastic.purple', '&:hover': { backgroundColor: 'evenTastic.dark_purple' } }}
+                  color="error" onClick={handleTicketButton}
                 >
-                  View Your Group
+                  Tickets
                 </Button>
-                : <Button
+                <Button
                   variant="contained"
                   href="#contained-buttons"
-                  onClick={() => setGroupListModal(true)}
-                  sx={{ bgcolor: 'evenTastic.purple', '&:hover': { backgroundColor: 'evenTastic.dark_purple' } }}
+                  color="warning" onClick={() => setReviewModal(true)}
                 >
-                  Find Groups
+                  Reviews
                 </Button>
-              }
+                {Object.keys(groupDetails).length !== 0
+                  ? <Button
+                    variant="contained"
+                    href="#contained-buttons"
+                    onClick={() => setGroupMainModal(true)}
+                    sx={{ bgcolor: 'evenTastic.purple', '&:hover': { backgroundColor: 'evenTastic.dark_purple' } }}
+                  >
+                    View Your Group
+                  </Button>
+                  : <Button
+                    variant="contained"
+                    href="#contained-buttons"
+                    onClick={() => setGroupListModal(true)}
+                    sx={{ bgcolor: 'evenTastic.purple', '&:hover': { backgroundColor: 'evenTastic.dark_purple' } }}
+                  >
+                    Find Groups
+                  </Button>
+                }
 
-            </Stack>
-          </GridItem>
+              </Stack>
+            </GridItem>
+          </Grid>
+          <Grid item xs={12} md={12}>
+            <GridItem>
+              <Typography gutterBottom variant="h4" component="div">
+                Overview:
+              </Typography>
+              <Typography gutterBottom variant="body1" component="div">
+                {eventDetails.event_desc}
+              </Typography>
+            </GridItem>
+          </Grid>
+          <Grid item xs={12} md={12}>
+            <GridItem>
+              <Typography gutterBottom variant="h4" component="div">
+                Tags:
+              </Typography>
+              <Stack direction="row" spacing={2}>
+                {eventDetails.tags?.map(function (tag, i) {
+                  return (
+                    <Chip
+                      key={i}
+                      label={tag.name}
+                    />
+                  );
+                })}
+              </Stack>
+            </GridItem>
+          </Grid>
         </Grid>
-        <Grid item xs={12} md={12}>
-          <GridItem>
-            <Typography gutterBottom variant="h4" component="div">
-              Overview:
-            </Typography>
-            <Typography gutterBottom variant="body1" component="div">
-              {eventDetails.event_desc}
-            </Typography>
-          </GridItem>
-        </Grid>
-        <Grid item xs={12} md={12}>
-          <GridItem>
-            <Typography gutterBottom variant="h4" component="div">
-              Tags:
-            </Typography>
-            <Stack direction="row" spacing={2}>
-              {eventDetails.tags?.map(function (tag, i) {
-                return (
-                  <Chip
-                    key={i}
-                    label={tag.name}
-                  />
-                );
-              })}
-            </Stack>
-          </GridItem>
-        </Grid>
-      </Grid>
+      }
       <TicketPurchaseModal
         open={openTicketModal}
         setOpen={setTicketModal}
