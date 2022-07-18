@@ -8,8 +8,8 @@ port = 5432
 host = "localhost"
 user = "postgres"
 password = "postgrespw"
-database='eventastic'
-event_img_dir='./test_img/event'
+database = 'eventastic'
+event_img_dir = './test_img/event'
 
 con = psycopg2.connect(user=user, password=password, host=host, port=port)
 con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
@@ -21,7 +21,8 @@ cur.execute('CREATE DATABASE {}'.format(database))
 cur.close()
 con.close()
 
-con = psycopg2.connect(database=database, user=user, password=password, host=host, port=port)
+con = psycopg2.connect(database=database, user=user,
+                       password=password, host=host, port=port)
 con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
 cur = con.cursor()
 
@@ -159,7 +160,7 @@ cur.execute('CREATE TABLE group_members(id SERIAL PRIMARY KEY,\
                 join_desc TEXT,\
                     interest_tags TEXT);')
 
-#Reviews Table
+# Reviews Table
 # Review Status : Active, Removed
 # Rating : User rating between 1 - 5
 cur.execute('CREATE TABLE reviews(\
@@ -177,11 +178,11 @@ cur.execute('CREATE TABLE reviews(\
             reply_text TEXT \
             );')
 
-#Interactions Table
-#interaction account id refers to the user currently logged in i.e. 
+# Interactions Table
+# interaction account id refers to the user currently logged in i.e.
 # (user that is viewing the reviews)
-#It refers accounts table as this user may not have left a review
-#This table keeps a track of user interaction with reviews
+# It refers accounts table as this user may not have left a review
+# This table keeps a track of user interaction with reviews
 cur.execute('CREATE TABLE interactions(\
             interaction_id SERIAL PRIMARY KEY,\
             review_id INT NOT NULL,\
@@ -270,8 +271,10 @@ for filename in os.listdir(event_img_dir):
     f = os.path.join(event_img_dir, filename)
 
     with open(f, "rb") as image_file:
-        encoded_string = 'data:image/jpeg;base64,' + base64.b64encode(image_file.read()).decode()
-        sql = "UPDATE events SET event_img = '{}' where event_id = {}".format(encoded_string, int(filename.split('.')[0]))
+        encoded_string = 'data:image/jpeg;base64,' + \
+            base64.b64encode(image_file.read()).decode()
+        sql = "UPDATE events SET event_img = '{}' where event_id = {}".format(
+            encoded_string, int(filename.split('.')[0]))
         cur.execute(sql)
 
 
@@ -330,7 +333,7 @@ for v_id, e_id in [(2, 2), (3, 3), (4, 4), (5, 5), (6, 6)]:
             f"INSERT INTO tickets values (default, {v_id}, {e_id}, -1, 'B_{t_id}', 'Available', '1-1-1-B_{t_id}', 'Back', 100.0);")
 
 
-cur.execute("INSERT INTO reviews values (default, 1, 1, 0, 4, 'Amazing Event. Highly Recommend it', '2022-08-25T21:00:00+10:00', 0, 'Active', '');")
+cur.execute("INSERT INTO reviews values (default, 1, 3, 0, 4, 'Amazing Event. Highly Recommend it', '2022-08-25T21:00:00+10:00', 0, 'Active', '');")
 cur.execute("INSERT INTO reviews values (default, 1, 2, 0, 1, 'Poorly organised', '2022-08-26T21:00:00+10:00', 0, 'Active', '');")
 cur.execute("INSERT INTO reviews values (default, 2, 2, 3, 5, 'Best event ever.', '2022-08-26T21:00:00+10:00', 0, 'Active', 'Thanks for the feedback!');")
 cur.execute("INSERT INTO reviews values (default, 3, 3, 0, 4, 'Amazing Event. Highly Recommend it', '2022-08-25T21:00:00+10:00', 1, 'Active', '');")
