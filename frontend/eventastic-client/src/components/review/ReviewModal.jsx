@@ -79,7 +79,7 @@ const ReviewModal = ({ open, setOpen, eventDetails }) => {
         {(() => {
           if (page === 'listReviews') {
             return ( 
-                 <ReviewListPage reviews={reviews}/>
+                 <ReviewListPage reviews={reviews} setReviews={setReviews} account={account} />
             )
           }
           else if (page === 'makeReivew') {
