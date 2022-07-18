@@ -8,6 +8,9 @@ import { StyledTitle, LargeModal, ModalBodyLarge } from '../styles/modal/modal.s
 import { Button, Divider, IconButton, Typography } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
+import ReviewAPI from '../../utils/ReviewAPIHelper';
+
+const review_api = new ReviewAPI();
 
 const ReviewModal = ({ open, setOpen, eventDetails }) => {
   const context = useContext(StoreContext);
@@ -23,11 +26,19 @@ const ReviewModal = ({ open, setOpen, eventDetails }) => {
   }
 
   useEffect(() => {
+    if(eventDetails.length !== 0)
+    {
+      console.log({event_id:parseInt(eventDetails.event_id),interaction_acount_id:account.account_id})
+      review_api
+      .getReviewList({event_id:parseInt(eventDetails.event_id),interaction_acount_id:account.account_id})
+      .then((response)=>setReviews(response.data))
+      .catch((err)=>console.log(err));
+    }
     // api call: 
     // Get /bookings setReviews()
     // Determine all account_id review interactions
     // setMadeReivew() // Determine if account_id has made a reivew or not
-  }, [])
+  }, [eventDetails])
 
   return (
     <LargeModal open={open} onClose={handleClose} aria-labelledby="Review modal" maxWidth='lg'>
@@ -59,8 +70,8 @@ const ReviewModal = ({ open, setOpen, eventDetails }) => {
       <ModalBodyLarge>
         {(() => {
           if (page === 'listReviews') {
-            return (
-              <ReviewListPage />
+            return ( 
+                 <ReviewListPage reviews={reviews}/>
             )
           }
           else if (page === 'makeReivew') {

@@ -31,7 +31,7 @@ export default class ReviewAPI {
   };
 
   getReviewList = (params) => {
-    return this.init().get("/reviews", { params: params });
+    return this.init().get("/reviews", {params:params});
   };
 
   postReview = (body) => {
