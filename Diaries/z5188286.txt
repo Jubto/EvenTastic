@@ -29,3 +29,16 @@ Week 5:
   Event search results displaying on Home Page.
 - Debugging CORs issue between React Front End and Flask API layer.
 - End-to-end testing of Event Home, Event Details and Event Search Functionality. 
+
+Week 6:
+- Documented and submitted Retrospective A.
+- Designed and Implemented Email Service.
+
+Week 7:
+- Completed front-end implementation for User Story ZW9900-35, host update event.
+- Completed Swagger Design and Service Stub Generation for Manage Reviews.
+- Completed Swagger Design and Service Stub Generation for Manage Groups.
+- Completed Backend implementation for Manage Groups (indluding database changes).
+
+Week 8:
+- Completed front-end implementation for User Story ZW9900-17, host event cancellation.

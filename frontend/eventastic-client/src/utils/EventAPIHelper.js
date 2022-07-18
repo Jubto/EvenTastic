@@ -38,6 +38,10 @@ export default class EventAPI {
     return this.init().put(`/events/${eventID}`, body);
   };
 
+  patchEvent = (eventID, body) => {
+    return this.init().patch(`/events/${eventID}`, body);
+  };  
+
   addBooking = (body) => {
     return this.init().post("/bookings", body);
   };

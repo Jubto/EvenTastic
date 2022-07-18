@@ -185,7 +185,7 @@ const TicketSelection = ({ open, setPage, generalSeats, frontSeats, middleSeats,
           </div>
         </ContentBox>
         <ButtonBox>
-          <Button variant='contained' onClick={() => setPage('paymentOptions')}>
+          <Button variant='contained' disabled={generalSeats<1 && frontSeats<1 && middleSeats<1 && backSeats<1} onClick={() => setPage('paymentOptions')}>
             checkout
           </Button>
         </ButtonBox>

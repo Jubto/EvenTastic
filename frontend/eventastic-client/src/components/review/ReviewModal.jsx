@@ -40,12 +40,14 @@ const ReviewModal = ({ open, setOpen, eventDetails }) => {
     // setMadeReivew() // Determine if account_id has made a reivew or not
   }, [eventDetails])
 
+
+  //Reply button should be under each review and should be visible only to hosts
   return (
     <LargeModal open={open} onClose={handleClose} aria-labelledby="Review modal" maxWidth='lg'>
       <StyledTitle direction='column'>
         <FlexBox justify='center'>
           <Typography variant='h5' sx={{ml:'auto'}}>
-            Reivews for {eventDetails.event_title}
+            Reviews for {eventDetails.event_title}
           </Typography>
           <IconButton aria-label="close" onClick={handleClose} sx={{ml:'auto'}}>
             <CloseIcon />
@@ -58,10 +60,16 @@ const ReviewModal = ({ open, setOpen, eventDetails }) => {
               variant='contained' color='success' disabled={madeReivew ? true : false}
               onClick={() => setPage('makeReivew')}  
             >
-              Write a reivew
+              Write a review
             </Button>
-            <Button variant="contained" endIcon={<FilterAltIcon />}>
+            <Button variant="contained" endIcon={<FilterAltIcon />} 
+            >
               Filter by
+            </Button>
+            <Button variant="contained" color='success'
+             onClick={() => setPage('makeResponse')}  
+            >
+              Reply 
             </Button>
           </FlexBox>
         }
@@ -76,7 +84,7 @@ const ReviewModal = ({ open, setOpen, eventDetails }) => {
           }
           else if (page === 'makeReivew') {
             return (
-              <MakeReivewPage setPage={setPage} setReviews={setReviews} />
+              <MakeReivewPage setPage={setPage} setReviews={setReviews} eventDetails={eventDetails} account={account}/>
             )
           }
           else if (page === 'makeResponse') {

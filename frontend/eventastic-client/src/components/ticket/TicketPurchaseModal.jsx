@@ -76,6 +76,7 @@ const TicketPurchaseModal = ({ open, setOpen, eventDetails, setSuccessModal }) =
 
   const handleClose = () => {
     setOpen(false);
+    setPage('selection')
   }
 
   return (
