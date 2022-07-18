@@ -2,19 +2,30 @@ import { ScrollContainer } from "../../styles/layouts.styled"
 import { Box, Button, TextField } from "@mui/material"
 import { styled } from '@mui/material/styles';
 import * as React from 'react';
+import ReviewAPI from "../../../utils/ReviewAPIHelper";
 
-const RespondReviewPage = ({ setPage, setReviews }) => {
+const review_api = new ReviewAPI();
+
 const ContentBox = styled('div')`
   width: 60%;
   height: 70%;
   min-height: 350px;
 `;
+const RespondReviewPage = ({ setPage, setReviews }) => {
 const [replyText, setReplyText] = React.useState('');
   const handleSubmit = (event) => {
     // setReviews(prevState => { return { ...prevState, newReview } })
     event.preventDefault();
     setPage('listReviews')
-    
+    var data = {"reply_text":replyText}
+    var review_id = 1 //replace 1 with actual review ID
+    review_api
+        .putReview(review_id,data) 
+        .then((response) => {
+          console.log(response)
+          alert("Reply has been posted successfully")})
+        .catch((err) => console.log(err));
+    console.log(review_id,data)
   }
 
   return (
@@ -53,6 +64,7 @@ const [replyText, setReplyText] = React.useState('');
           Post Reply
         </Button>
       </Box>
+
     </ScrollContainer>
   )
 }

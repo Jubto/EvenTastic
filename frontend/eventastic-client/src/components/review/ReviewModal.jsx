@@ -29,6 +29,8 @@ const ReviewModal = ({ open, setOpen, eventDetails }) => {
     // setMadeReivew() // Determine if account_id has made a reivew or not
   }, [])
 
+
+  //Reply button should be under each review and should be visible only to hosts
   return (
     <LargeModal open={open} onClose={handleClose} aria-labelledby="Review modal" maxWidth='lg'>
       <StyledTitle direction='column'>
@@ -49,10 +51,14 @@ const ReviewModal = ({ open, setOpen, eventDetails }) => {
             >
               Write a review
             </Button>
-            <Button variant="contained" endIcon={<FilterAltIcon />}
-             onClick={() => setPage('makeResponse')}  
+            <Button variant="contained" endIcon={<FilterAltIcon />} 
             >
               Filter by
+            </Button>
+            <Button variant="contained" color='success'
+             onClick={() => setPage('makeResponse')}  
+            >
+              Reply 
             </Button>
           </FlexBox>
         }
