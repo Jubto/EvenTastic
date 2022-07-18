@@ -58,10 +58,12 @@ const CardDetails = ({ open, setOpen, setPage, setSuccessModal, totalCost, event
     try {
       const cardDetails = await accountAPI.getAccountCard(account_id)
       //console.log(cardDetails.data)
-      setCardName(cardDetails.data.card_name)
-      setCardNumber(cardDetails.data.card_number)
-      setCardType(cardDetails.data.card_type)
-      setCardExpiry(cardDetails.data.card_expiry)
+      if (cardDetails.data.card_number != undefined) {
+        setCardName(cardDetails.data.card_name)
+        setCardNumber(cardDetails.data.card_number)
+        setCardType(cardDetails.data.card_type)
+        setCardExpiry(cardDetails.data.card_expiry)
+      }
     }    
     catch (err) {
       console.error(err)
@@ -104,14 +106,11 @@ const CardDetails = ({ open, setOpen, setPage, setSuccessModal, totalCost, event
     try {
       if (cardName.length == 0){
         setFormErrors(prevState => { return { ...prevState, cardName: true } })
-      }
-      if (cardNumber.length != 16){
+      } else if (cardNumber.length != 16){
         setFormErrors(prevState => { return { ...prevState, cardNumber: true } })
-      }
-      if (cardType.length == 0){
+      } else if (cardType.length == 0){
         setFormErrors(prevState => { return { ...prevState, cardType: true } })
-      }
-      if (cardExpiry.length != 4){
+      } else if (cardExpiry.length != 4){
         setFormErrors(prevState => { return { ...prevState, cardExpiry: true } })
       } else {
         const bookingParams = {
