@@ -5,9 +5,13 @@ import { styled } from '@mui/material/styles';
 import { StoreContext } from '../../../utils/context';
 import AccountAPI from "../../../utils/AccountAPIHelper"
 import EventAPI from "../../../utils/EventAPIHelper"
+import EmailAPI from '../../../utils/EmailAPIHelper';
 
 const accountAPI = new AccountAPI()
 const eventAPI = new EventAPI()
+const emailAPI = new EmailAPI();
+const evenTasticEmail = 'eventastic.comp9900@gmail.com' 
+
 
 const MainBox = styled('div')`
   width: 100%;
@@ -123,9 +127,36 @@ const CardDetails = ({ open, setOpen, setPage, setSuccessModal, totalCost, event
         }
         //console.log(bookingParams)
         const makeBooking = await eventAPI.addBooking(bookingParams)
-        setPage('selection')
         setOpen(false)
+        setPage('selection')
         setSuccessModal(true)
+
+        const bookedParams = {
+          booking_id: makeBooking.data.booking_id
+        }
+        const ticketList = await eventAPI.getTickets(bookedParams)
+        let seats = ''
+        for (let i=0; i<ticketList.data.length; i++) {
+          seats += ticketList.data[i].ticket_ref
+          if (i < ticketList.data.length-2)
+            seats += ', '
+          if (i == ticketList.data.length-2)
+            seats += ' and '
+        }
+  
+        const message = "Your seats for this booking are "+seats+"."
+        const emailTo = [{email_address : account.email}]
+          const sendTicketsEmail = {
+            email_subject: 'EvenTastic Booking tickets',
+            email_content: message,
+            email_from: {
+              email_address: evenTasticEmail,
+              name: "EvenTastic"
+            },
+            email_to: emailTo
+          }
+          const emailRes = await emailAPI.postEmails(sendTicketsEmail)
+
       }
     }
     catch (err) {
