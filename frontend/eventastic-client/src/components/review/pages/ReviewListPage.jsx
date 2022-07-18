@@ -64,6 +64,36 @@ const ReviewListPage = ({reviews, setReviews, account}) => {
     setRefresh(!refresh)
   }
 
+  const handleFlag = (review,index) => {
+    var flag_count = review.flag_count;
+    if(Object.keys(review.review_interaction).length === 0)
+    {
+      flag_count = flag_count + 1;
+      const postBody = {"interaction_account_id":account.account_id, "review_flagged":true,"review_id":review.review_id,"review_upvoted":false}
+      review_api
+      .postReviewInteraction(postBody)
+      .catch((err)=>console.log(err))
+      reviews[index].review_interaction = postBody
+    }else{
+      if(review.review_interaction.review_flagged===false)
+      {
+        flag_count = flag_count + 1;
+      }else{
+        flag_count = flag_count - 1;
+      }
+      review_api
+      .putReviewInteraction(review.review_interaction.interaction_id,{"review_flagged":!review.review_interaction.review_flagged})
+      .catch((err)=>console.log(err))
+      reviews[index].review_interaction.review_flagged = !review.review_interaction.review_flagged
+    }
+    review_api
+    .putReview(review.review_id,{"flag_count":flag_count})
+    .catch((err)=>console.log(err)) 
+    reviews[index].flag_count = flag_count;
+    setReviews(reviews)
+    setRefresh(!refresh)
+  }
+
   return (
     <ScrollContainer thin>
       {
@@ -105,7 +135,8 @@ const ReviewListPage = ({reviews, setReviews, account}) => {
               <Typography style={{marginLeft:'20px'}}>
                 Flag Count:
               </Typography>
-              <Fab color='warning' style={{width:'55px',height:'25px',marginLeft:'5px'}} aria-label="like">
+              <Fab color='warning' style={{width:'55px',height:'25px',marginLeft:'5px'}} aria-label="like"
+                onClick={()=>handleFlag(review,index)}>
                 { Object.keys(review.review_interaction).length === 0 || review.review_interaction.review_flagged===false? 
                     <FlagSharpIcon style={{width:'20px',height:'20px'}} />
                     :
