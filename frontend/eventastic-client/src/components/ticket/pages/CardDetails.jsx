@@ -5,9 +5,13 @@ import { styled } from '@mui/material/styles';
 import { StoreContext } from '../../../utils/context';
 import AccountAPI from "../../../utils/AccountAPIHelper"
 import EventAPI from "../../../utils/EventAPIHelper"
+import EmailAPI from '../../../utils/EmailAPIHelper';
 
 const accountAPI = new AccountAPI()
 const eventAPI = new EventAPI()
+const emailAPI = new EmailAPI();
+const evenTasticEmail = 'eventastic.comp9900@gmail.com' 
+
 
 const MainBox = styled('div')`
   width: 100%;
@@ -54,10 +58,12 @@ const CardDetails = ({ open, setOpen, setPage, setSuccessModal, totalCost, event
     try {
       const cardDetails = await accountAPI.getAccountCard(account_id)
       //console.log(cardDetails.data)
-      setCardName(cardDetails.data.card_name)
-      setCardNumber(cardDetails.data.card_number)
-      setCardType(cardDetails.data.card_type)
-      setCardExpiry(cardDetails.data.card_expiry)
+      if (cardDetails.data.card_number != undefined) {
+        setCardName(cardDetails.data.card_name)
+        setCardNumber(cardDetails.data.card_number)
+        setCardType(cardDetails.data.card_type)
+        setCardExpiry(cardDetails.data.card_expiry)
+      }
     }    
     catch (err) {
       console.error(err)
@@ -100,14 +106,11 @@ const CardDetails = ({ open, setOpen, setPage, setSuccessModal, totalCost, event
     try {
       if (cardName.length == 0){
         setFormErrors(prevState => { return { ...prevState, cardName: true } })
-      }
-      if (cardNumber.length != 16){
+      } else if (cardNumber.length != 16){
         setFormErrors(prevState => { return { ...prevState, cardNumber: true } })
-      }
-      if (cardType.length == 0){
+      } else if (cardType.length == 0){
         setFormErrors(prevState => { return { ...prevState, cardType: true } })
-      }
-      if (cardExpiry.length != 4){
+      } else if (cardExpiry.length != 4){
         setFormErrors(prevState => { return { ...prevState, cardExpiry: true } })
       } else {
         const bookingParams = {
@@ -123,9 +126,36 @@ const CardDetails = ({ open, setOpen, setPage, setSuccessModal, totalCost, event
         }
         //console.log(bookingParams)
         const makeBooking = await eventAPI.addBooking(bookingParams)
-        setPage('selection')
         setOpen(false)
+        setPage('selection')
         setSuccessModal(true)
+
+        const bookedParams = {
+          booking_id: makeBooking.data.booking_id
+        }
+        const ticketList = await eventAPI.getTickets(bookedParams)
+        let seats = ''
+        for (let i=0; i<ticketList.data.length; i++) {
+          seats += ticketList.data[i].ticket_ref
+          if (i < ticketList.data.length-2)
+            seats += ', '
+          if (i == ticketList.data.length-2)
+            seats += ' and '
+        }
+  
+        const message = "Your seats for this booking are "+seats+"."
+        const emailTo = [{email_address : account.email}]
+          const sendTicketsEmail = {
+            email_subject: 'EvenTastic Booking tickets',
+            email_content: message,
+            email_from: {
+              email_address: evenTasticEmail,
+              name: "EvenTastic"
+            },
+            email_to: emailTo
+          }
+          const emailRes = await emailAPI.postEmails(sendTicketsEmail)
+
       }
     }
     catch (err) {

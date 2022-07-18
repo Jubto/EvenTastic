@@ -7,7 +7,6 @@ import CancelTicketModal from "../modals/CancelTicketModal";
 import SendTicketsModal from "../modals/SendTicketsModal";
 import { FlexBox, ScrollContainer } from "../../styles/layouts.styled"
 import Typography from '@mui/material/Typography';
-import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import { useNavigate } from "react-router-dom";
 
@@ -61,6 +60,7 @@ const Ticket = ({ booking, handleCancelBooking, handleSendTicketsModal }) => {
   const currentDate = new Date();
   const eventDate = new Date(booking.event_start_datetime);
   const daysToGo = parseInt(Math.abs(eventDate - currentDate)/ (1000 * 60 * 60 * 24))
+  const hoursToGo = parseInt(Math.abs(eventDate - currentDate)/ (1000 * 60 * 60))
 
   return (
     <FlexBox id={booking.booking_id} sx={{ border: '0.1px solid black', borderRadius: '3px', m: 3 }}>
@@ -94,10 +94,20 @@ const Ticket = ({ booking, handleCancelBooking, handleSendTicketsModal }) => {
         </div>
         <div width="20%" style={{ color:'#505050' }}>
           <div style={{ marginTop: '3px' }}>
+            {daysToGo > 0 &&
             <b>Days to Go</b>
+            }
+            {daysToGo < 1 &&
+            <b style={{ color: 'red' }}>HOURS TO GO</b>
+            }
           </div>
           <div style={{ display: 'flex', justifyContent: 'center' }}>
+            {daysToGo > 0 &&
             <Typography variant="h3" mt={1} >{daysToGo}</Typography>
+            }
+            {daysToGo < 1 &&
+            <Typography variant="h3" mt={1} color='red' >{hoursToGo}</Typography>
+            }
           </div>
         </div>
         <SaveButtonBox  width="15%">

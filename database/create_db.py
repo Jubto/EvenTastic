@@ -23,6 +23,7 @@ cur.execute('CREATE DATABASE {}'.format(database))
 cur.close()
 con.close()
 
+
 con = psycopg2.connect(database=database, user=user,
                        password=password, host=host, port=port)
 con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
@@ -262,7 +263,7 @@ cur.execute("INSERT INTO venue_seating values (default, 6,'middle',20);")
 cur.execute("INSERT INTO venue_seating values (default, 6,'back',20);")
 
 cur.execute("INSERT INTO  events values(default, 1, 1, 1, 20.00, 100.00, 80.00, 60.00, 'Sydney KPOP Party', 'Music','Sydney KPOP Party BTS Special!','STRICTLY KPOP & K-HIPHOP! KPOP ALBUM GIVEAWAYS! LIVE DJS!','2022-08-25T19:00:00+10:00','2022-08-25T21:00:00+10:00','Shark Hotel Sydney, NSW','1603dfd6-efb6-11ec-8ea0-0242ac120002.jpeg','UPCOMING','Pop Music');")
-cur.execute("INSERT INTO  events values(default, 1, 1, 2, 20.00, 120.00, 70.00, 50.00, 'Red Hot Chili Peppers Live', 'Music','RHCP Live ! Don''t miss out !', 'Catch Red Hot Chili Peppers live for the tour of their new album Unlimited Love ...', '2022-08-25T19:00:00+10:00', '2022-08-25T21:00:00+10:00','Sydney Entertainment Centre','1603dfd6-efb6-11ec-8ea0-0242ac120003.jpeg','UPCOMING','Rock,Funk');")
+cur.execute("INSERT INTO  events values(default, 1, 1, 2, 20.00, 120.00, 70.00, 50.00, 'Red Hot Chili Peppers Live', 'Music','RHCP Live ! Don''t miss out !', 'Catch Red Hot Chili Peppers live for the tour of their new album Unlimited Love ...', '2022-07-20T20:00:00+10:00', '2022-08-25T21:00:00+10:00','Sydney Entertainment Centre','1603dfd6-efb6-11ec-8ea0-0242ac120003.jpeg','UPCOMING','Rock,Funk');")
 cur.execute("INSERT INTO  events values(default, 2, 2, 3, 10.00, 100.00, 90.00, 80.00, 'Improv Comedy Night','Arts','Lots of laughs ! Don''t miss out !','Four of Sydney''s best improv comedy teams will battle for glory. You - the audience - will decide who wins on the night!','2022-10-10T20:00:00+10:00','2022-10-10T21:00:00+10:00','Potts Point Hotel, Potts Point, NSW','1603dfd6-efb6-11ec-8ea0-0242ac120004.jpeg','UPCOMING', 'Dance,Comedy');")
 cur.execute("INSERT INTO  events values(default, 2, 2, 4, 15.00, 110.00, 85.00, 55.00, 'Whisky Live Sydney 2022','Food','Sydney''s Premier Whisky Event.','WHISKY LIVE is Sydney''s premiere whisky sampling event, featuring high quality whiskies and spirits, all open under one roof for your tasting pleasure. Come along and learn while you taste.','2022-09-11T20:00:00+10:00','2022-09-11T22:00:00+10:00','Sydney Cove Passenger Terminal','b51a5319-f9ae-4191-aa95-fdf9a808e0fb.jpeg','UPCOMING','Spirits');")
 cur.execute("INSERT INTO  events values(default, 3, 3, 5, 20.00, 80.00, 70.00, 50.00, 'Jump for Joy','Kids Entertainment','Australia''s biggest inflatable park!','Jump for Joy will be back in town at Centennial Park with Australia''s biggest inflatable play-park!','2022-11-01T20:00:00+10:00','2022-11-01T22:00:00+10:00','Centennial Park Brazilian Fields','50407a37-7fce-4a17-97ba-2dbc68446db6.jpeg','UPCOMING', 'Family Friendly');")
