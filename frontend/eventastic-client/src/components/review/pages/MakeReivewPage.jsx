@@ -42,9 +42,6 @@ const handleSubmit = (event) => {
         .then((response) => {
           console.log(response)
           alert("Review has been posted successfully")})
-        .then(()=>{
-          window.location.href = '/';
-        })
         .catch((err) => console.log(err));
 
 }
