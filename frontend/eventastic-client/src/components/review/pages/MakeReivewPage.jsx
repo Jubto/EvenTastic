@@ -19,7 +19,7 @@ const ContentBox = styled('div')`
   min-height: 350px;
 `;
 
-const MakeReivewPage = ({ refresh, setRefresh ,reviews , setPage, setReviews, eventDetails, account }) => {
+const MakeReivewPage = ({setMadeReview,refresh, setRefresh ,reviews , setPage, setReviews, eventDetails, account }) => {
 
   
 
@@ -45,8 +45,20 @@ const handleSubmit = (event) => {
         .then((response) => {
           var new_review = response.data
           new_review['review_interaction'] = {}
-          setReviews([...reviews,new_review])
-          setRefresh(!refresh)
+          review_api
+            .getReviewList({event_id:parseInt(eventDetails.event_id),interaction_acount_id:account.account_id})
+            .then((response)=>{
+              var revs = response.data
+              revs.sort((r1,r2)=>{
+                return parseInt(r2.upvotes) - parseInt(r1.upvotes)
+              })
+              setReviews(revs)
+              setMadeReview(revs.filter((rev)=>rev.reviewer_account_id===account.account_id).length !== 0)
+              setRefresh(!refresh)
+            })
+            .catch((err)=>console.log(err));
+
+          
           //alert("Review has been posted successfully")
         })
         .catch((err) => console.log(err));

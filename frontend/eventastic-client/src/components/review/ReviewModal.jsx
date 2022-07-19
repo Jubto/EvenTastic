@@ -138,7 +138,7 @@ const ReviewModal = ({ open, setOpen, eventDetails }) => {
           }
           else if (page === 'makeReivew') {
             return (
-              <MakeReivewPage refresh={refresh} setRefresh={setRefresh} reviews={reviews} setPage={setPage} setReviews={setReviews} eventDetails={eventDetails} account={account}/>
+              <MakeReivewPage setMadeReview={setMadeReview} refresh={refresh} setRefresh={setRefresh} reviews={reviews} setPage={setPage} setReviews={setReviews} eventDetails={eventDetails} account={account}/>
             )
           }
           else if (page === 'makeResponse') {
