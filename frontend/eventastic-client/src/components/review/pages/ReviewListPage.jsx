@@ -175,7 +175,8 @@ const ReviewListPage = ({refresh, setRefresh, reviews, setReviews, account, opti
                 Upvotes:
               </Typography>
               <Fab color='secondary' style={{width:'55px',height:'25px',marginLeft:'5px'}} aria-label="like"
-                onClick={()=>handleUpvote(review,index)}>
+                onClick={()=>handleUpvote(review,index)}
+                disabled={review.reviewer_account_id===account.account_id}>
                 { Object.keys(review.review_interaction).length === 0 || review.review_interaction.review_upvoted===false ? 
                     <FavoriteIcon style={{width:'20px',height:'20px'}} />
                     :
@@ -190,7 +191,8 @@ const ReviewListPage = ({refresh, setRefresh, reviews, setReviews, account, opti
                 Flag Count:
               </Typography>
               <Fab color='warning' style={{width:'55px',height:'25px',marginLeft:'5px'}} aria-label="like"
-                onClick={()=>handleFlag(review,index)}>
+                onClick={()=>handleFlag(review,index)}
+                disabled={review.reviewer_account_id===account.account_id}>
                 { Object.keys(review.review_interaction).length === 0 || review.review_interaction.review_flagged===false? 
                     <FlagSharpIcon style={{width:'20px',height:'20px'}} />
                     :
