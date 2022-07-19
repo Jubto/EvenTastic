@@ -112,6 +112,10 @@ const CardDetails = ({ open, setOpen, setPage, setSuccessModal, totalCost, event
         setFormErrors(prevState => { return { ...prevState, cardType: true } })
       } else if (cardExpiry.length != 4){
         setFormErrors(prevState => { return { ...prevState, cardExpiry: true } })
+      } else if (parseInt(cardExpiry.substring(2, 4)) < 22){
+        setFormErrors(prevState => { return { ...prevState, cardExpiry: true } })
+      } else if (parseInt(cardExpiry.substring(0, 2)) < 1 || parseInt(cardExpiry.substring(0, 2)) > 12){
+        setFormErrors(prevState => { return { ...prevState, cardExpiry: true } })
       } else {
         const bookingParams = {
           account_id: parseInt(account.account_id),
@@ -124,7 +128,7 @@ const CardDetails = ({ open, setOpen, setPage, setSuccessModal, totalCost, event
           },
           total_cost: parseFloat(totalCost)
         }
-        //console.log(bookingParams)
+        
         const makeBooking = await eventAPI.addBooking(bookingParams)
         setOpen(false)
         setPage('selection')
