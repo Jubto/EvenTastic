@@ -12,14 +12,14 @@ import GroupsIcon from '@mui/icons-material/Groups';
 import GroupAddIcon from '@mui/icons-material/GroupAdd';
 
 const GroupMainModal = ({
-    open,
-    setOpen,
-    eventDetails,
-    groupDetails,
-    setGroupDetails,
-    setHasLeftGroup,
-    account
-  }) => {
+  open,
+  setOpen,
+  eventDetails,
+  groupDetails,
+  setGroupDetails,
+  setHasLeftGroup,
+  account
+}) => {
   const [page, setPage] = useState('groupInfo')
   const [value, setValue] = useState(0);
 
@@ -32,14 +32,14 @@ const GroupMainModal = ({
   }
 
   useEffect(() => {
-
+    console.log('Main i fire once');
   }, [])
 
   return (
     <LargeModal open={open} onClose={handleClose} aria-labelledby="Review modal" maxWidth='lg'>
       <StyledTitle justify='space-between'>
         <Tabs value={value} onChange={handleChange} aria-label="Group tabs">
-          <Tab icon={<SubjectIcon />} label="Group Info" onClick={() => setPage('groupInfo')}/>
+          <Tab icon={<SubjectIcon />} label="Group Info" onClick={() => setPage('groupInfo')} />
           <Tab icon={<ChatIcon />} label="Group Chat" onClick={() => setPage('groupChat')} />
           <Tab icon={<GroupsIcon />} label="Group Members" onClick={() => setPage('groupMembers')} />
           <Tab icon={<GroupAddIcon />} label="Join Requests" onClick={() => setPage('groupRequests')} />
@@ -63,12 +63,15 @@ const GroupMainModal = ({
           }
           else if (page === 'groupChat') {
             return (
-              <GroupChatPage />
+              <GroupChatPage
+                groupDetails={groupDetails}
+                account={account}
+              />
             )
           }
           else if (page === 'groupMembers') {
             return (
-              <GroupMembersPage 
+              <GroupMembersPage
                 groupDetails={groupDetails}
                 setGroupDetails={setGroupDetails}
                 setHasLeftGroup={setHasLeftGroup}
