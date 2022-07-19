@@ -123,11 +123,7 @@ const ReviewModal = ({ open, setOpen, eventDetails }) => {
                   </MenuItem>
                 ))}
             </Menu>
-            <Button variant="contained" color='success'
-             onClick={() => setPage('makeResponse')}  
-            >
-              Reply 
-            </Button>
+            
           </FlexBox>
         }
       </StyledTitle>
