@@ -23,11 +23,12 @@ const ReviewModal = ({ open, setOpen, eventDetails }) => {
   const [account, setAccount] = context.account;
   const [hostDetails, setHostDetails] = context.host;
   const [page, setPage] = useState('listReviews')
-  const [madeReivew, setMadeReivew] = useState(false)
+  const [madeReview, setMadeReview] = useState(false)
   const [reviews, setReviews] = useState([])
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const openMenu = Boolean(anchorEl);
+  const [refresh, setRefresh] = useState(false)
 
   const handleClickListItem = (event) => {
     setAnchorEl(event.currentTarget);
@@ -53,7 +54,14 @@ const ReviewModal = ({ open, setOpen, eventDetails }) => {
       console.log({event_id:parseInt(eventDetails.event_id),interaction_acount_id:account.account_id})
       review_api
       .getReviewList({event_id:parseInt(eventDetails.event_id),interaction_acount_id:account.account_id})
-      .then((response)=>setReviews(response.data))
+      .then((response)=>{
+        var revs = response.data
+        revs.sort((r1,r2)=>{
+          return parseInt(r2.upvotes) - parseInt(r1.upvotes)
+        })
+        setReviews(revs)
+        setMadeReview(revs.filter((rev)=>rev.reviewer_account_id===account.account_id).length !== 0)
+      })
       .catch((err)=>console.log(err));
     }
     // api call: 
@@ -79,7 +87,7 @@ const ReviewModal = ({ open, setOpen, eventDetails }) => {
           ? ''
           : <FlexBox justify='space-between' sx={{mt:2, mb:2}}>
             <Button 
-              variant='contained' color='success' disabled={parseInt(eventDetails.account_id) === parseInt(account.account_id)}
+              variant='contained' color='success' disabled={parseInt(eventDetails.account_id) === parseInt(account.account_id) || madeReview}
               onClick={() => setPage('makeReivew')}  
             >
               Write a review
@@ -127,12 +135,12 @@ const ReviewModal = ({ open, setOpen, eventDetails }) => {
         {(() => {
           if (page === 'listReviews') {
             return ( 
-                 <ReviewListPage reviews={reviews} setReviews={setReviews} account={account} options={options}  selectedIndex={selectedIndex}/>
+                 <ReviewListPage refresh={refresh} setRefresh={setRefresh} reviews={reviews} setReviews={setReviews} account={account} options={options}  selectedIndex={selectedIndex}/>
             )
           }
           else if (page === 'makeReivew') {
             return (
-              <MakeReivewPage setPage={setPage} setReviews={setReviews} eventDetails={eventDetails} account={account}/>
+              <MakeReivewPage refresh={refresh} setRefresh={setRefresh} reviews={reviews} setPage={setPage} setReviews={setReviews} eventDetails={eventDetails} account={account}/>
             )
           }
           else if (page === 'makeResponse') {

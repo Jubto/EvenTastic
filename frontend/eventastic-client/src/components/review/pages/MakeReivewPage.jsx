@@ -19,7 +19,7 @@ const ContentBox = styled('div')`
   min-height: 350px;
 `;
 
-const MakeReivewPage = ({ setPage, setReviews, eventDetails, account }) => {
+const MakeReivewPage = ({ refresh, setRefresh ,reviews , setPage, setReviews, eventDetails, account }) => {
 
   
 
@@ -28,22 +28,29 @@ const handleSubmit = (event) => {
   event.preventDefault();
   setPage('listReviews')
 
-  var current_datetime = new Date().toISOString().slice(0, -5);
+  var current_datetime = new Date();
+  var tzoffset = (new Date()).getTimezoneOffset() * 60000;
+  current_datetime = (new Date(current_datetime - tzoffset)).toISOString().slice(0, -5);
+  current_datetime = current_datetime + "+10:00"
   var data = {
               "event_id":parseInt(eventDetails.event_id),"reviewer_account_id":parseInt(account.account_id),
-              "upvote_count":"0","rating":parseInt(rating),"review_text":reviewText,
-              "review_timestamp":current_datetime, "review_status":"Active","reply_text":""
+              "upvotes":0,"rating":parseInt(rating),"review_text":reviewText,
+              "review_timestamp":current_datetime, "review_status":"Active","reply_text":"",
+              "flag_count":0
             }
-  console.log(data)
+  //console.log(data)
 
-
-  review_api
+    review_api
         .postReview(data)
         .then((response) => {
-          console.log(response)
-          alert("Review has been posted successfully")})
+          var new_review = response.data
+          new_review['review_interaction'] = {}
+          setReviews([...reviews,new_review])
+          setRefresh(!refresh)
+          //alert("Review has been posted successfully")
+        })
         .catch((err) => console.log(err));
-
+          
 }
 
 

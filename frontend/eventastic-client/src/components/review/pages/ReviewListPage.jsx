@@ -28,10 +28,10 @@ function formatDate(datetime) {
   return d.toLocaleDateString("en-US", dateFormat)
 }
 
-const ReviewListPage = ({reviews, setReviews, account, options, selectedIndex}) => {
+const ReviewListPage = ({refresh, setRefresh, reviews, setReviews, account, options, selectedIndex}) => {
 
   const [accDetails, setAccDetails] = useState([])
-  const [refresh, setRefresh] = useState(false)
+  
 
   useEffect(()=>{
     var acc_details = []

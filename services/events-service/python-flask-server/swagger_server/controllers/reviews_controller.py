@@ -61,7 +61,7 @@ def create_review(body):  # noqa: E501
                                     body.review_text, body.review_timestamp, body.flag_count,\
                                     body.review_status, body.reply_text))
         body.review_id = cur.fetchone()[0]
-
+        
         cur.close()
         con.close()
         return body, 201, {'Access-Control-Allow-Origin': '*'}
