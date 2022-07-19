@@ -12,6 +12,13 @@ import ReviewAPI from '../../utils/ReviewAPIHelper';
 
 const review_api = new ReviewAPI();
 
+const options = [
+  'Show some love to MUI',
+  'Show all notification content',
+  'Hide sensitive notification content',
+  'Hide all notification content',
+];
+
 const ReviewModal = ({ open, setOpen, eventDetails }) => {
   const context = useContext(StoreContext);
   const [account, setAccount] = context.account;
@@ -57,7 +64,7 @@ const ReviewModal = ({ open, setOpen, eventDetails }) => {
           ? ''
           : <FlexBox justify='space-between' sx={{mt:2, mb:2}}>
             <Button 
-              variant='contained' color='success' disabled={madeReivew ? true : false}
+              variant='contained' color='success' disabled={parseInt(eventDetails.account_id) === parseInt(account.account_id)}
               onClick={() => setPage('makeReivew')}  
             >
               Write a review

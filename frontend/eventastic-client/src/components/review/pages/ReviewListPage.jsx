@@ -1,6 +1,6 @@
 import { ScrollContainer } from "../../styles/layouts.styled"
 import {Card,CardHeader,Avatar,CardContent,Typography,Rating, CardActions,
-          Fab,Divider} from '@mui/material';
+          Fab,Divider,Stack,Paper} from '@mui/material';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FlagSharpIcon from '@mui/icons-material/FlagSharp';
 import DoneSharpIcon from '@mui/icons-material/DoneSharp';
@@ -8,9 +8,25 @@ import { red } from '@mui/material/colors';
 import { useEffect,useState } from "react";
 import AccountAPI from '../../../utils/AccountAPIHelper';
 import ReviewAPI from '../../../utils/ReviewAPIHelper';
+import { styled } from '@mui/material/styles';
+
+const Item = styled(Paper)(({ theme }) => ({
+  backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
+  ...theme.typography.body2,
+  padding: theme.spacing(1),
+  textAlign: 'center',
+  color: theme.palette.text.secondary,
+}));
 
 const account_api = new AccountAPI();
 const review_api = new ReviewAPI();
+
+const dateFormat = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' };
+
+function formatDate(datetime) {
+  let d = new Date(datetime);
+  return d.toLocaleDateString("en-US", dateFormat)
+}
 
 const ReviewListPage = ({reviews, setReviews, account}) => {
 
@@ -107,7 +123,22 @@ const ReviewListPage = ({reviews, setReviews, account}) => {
                     </Avatar>
 
                   }
-                  title={accDetails[index]['account_name']}
+                  title={ 
+                    <Stack
+                      direction="row"
+                      justifyContent="space-between"
+                      alignItems="center"
+                      spacing={2}
+                    >
+                      <Typography>
+                          {accDetails[index]['account_name']}
+                      </Typography>   
+                      
+                      <Item>
+                          {formatDate(review.review_timestamp)}
+                      </Item> 
+                    </Stack>
+          }
                   subheader={<Rating name="read-only" value={review.rating} readOnly />}
                 />
             <CardContent>
