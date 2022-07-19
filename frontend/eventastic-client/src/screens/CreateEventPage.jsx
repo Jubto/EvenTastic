@@ -27,7 +27,7 @@ import {
   Typography,
   styled,
 } from '@mui/material';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 
 
 // formating for the Grid Items 
@@ -67,6 +67,7 @@ const event_api = new EventAPI();
 
 const CreateEventPage = () => {
   const [venueList, setVenueList] = React.useState([])
+  const navigate = useNavigate()
   const [locationImg,setLocationImg] = React.useState("") 
   const [activeStep, setActiveStep] = React.useState(0);
   const context = React.useContext(StoreContext);
@@ -227,7 +228,7 @@ const CreateEventPage = () => {
         console.log(response)
         alert("Successfully Event is created done")})
       .then(()=>{
-        window.location.href = '/';
+        navigate('/');
       })
       .catch((err) => console.log(err));
       
