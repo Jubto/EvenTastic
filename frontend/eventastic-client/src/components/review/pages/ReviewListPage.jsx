@@ -1,6 +1,6 @@
 import { ScrollContainer } from "../../styles/layouts.styled"
 import {Card,CardHeader,Avatar,CardContent,Typography,Rating, CardActions,
-          Fab,Divider,Stack,Paper} from '@mui/material';
+          Fab,Divider,Stack,Paper, Link} from '@mui/material';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FlagSharpIcon from '@mui/icons-material/FlagSharp';
 import DoneSharpIcon from '@mui/icons-material/DoneSharp';
@@ -28,7 +28,7 @@ function formatDate(datetime) {
   return d.toLocaleDateString("en-US", dateFormat)
 }
 
-const ReviewListPage = ({refresh, setRefresh, reviews, setReviews, account, options, selectedIndex}) => {
+const ReviewListPage = ({setReplyReviewId,refresh, setRefresh, reviews, setReviews, account, selectedIndex, eventDetails, setPage}) => {
 
   const [accDetails, setAccDetails] = useState([])
   
@@ -133,6 +133,11 @@ const ReviewListPage = ({refresh, setRefresh, reviews, setReviews, account, opti
     setRefresh(!refresh)
   }
 
+  const handleReply = (review,index) => {
+    setReplyReviewId(review.review_id)
+    setPage("makeResponse")
+  }
+
   return (
     <ScrollContainer thin>
       {
@@ -202,6 +207,26 @@ const ReviewListPage = ({refresh, setRefresh, reviews, setReviews, account, opti
                   {review.flag_count}
                 </Typography>
               </Fab>
+              { parseInt(account.account_id) === parseInt(eventDetails.account_id) &&
+                review.reply_text.length === 0 &&
+                <Link
+                  component="button"
+                  variant="body2"
+                  onClick={() => {
+                    handleReply(review,index);
+                  }}
+                  underline="hover"
+                  style={{marginLeft:'20px'}}
+                >
+                  Write Reply
+                </Link>
+              }
+              {
+                review.reply_text.length !== 0 &&
+                <Item style={{marginLeft:'30px'}}>
+                  {"Reply from Host: "+review.reply_text}
+                </Item>
+              }
             </CardActions>
           </Card>
           )

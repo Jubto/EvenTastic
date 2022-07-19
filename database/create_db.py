@@ -10,7 +10,7 @@ user = "postgres"
 password = "postgrespw"
 database = 'eventastic'
 event_img_dir = './test_img/event'
-account_img_dir='./test_img/account'
+account_img_dir = './test_img/account'
 
 
 con = psycopg2.connect(user=user, password=password, host=host, port=port)
@@ -285,8 +285,10 @@ for filename in os.listdir(account_img_dir):
     f = os.path.join(account_img_dir, filename)
 
     with open(f, "rb") as image_file:
-        encoded_string = 'data:image/jpeg;base64,' + base64.b64encode(image_file.read()).decode()
-        sql = "UPDATE accounts SET profile_pic = '{}' where account_id = {}".format(encoded_string, int(filename.split('.')[0]))
+        encoded_string = 'data:image/jpeg;base64,' + \
+            base64.b64encode(image_file.read()).decode()
+        sql = "UPDATE accounts SET profile_pic = '{}' where account_id = {}".format(
+            encoded_string, int(filename.split('.')[0]))
         cur.execute(sql)
 
 
@@ -345,7 +347,7 @@ for v_id, e_id in [(2, 2), (3, 3), (4, 4), (5, 5), (6, 6)]:
             f"INSERT INTO tickets values (default, {v_id}, {e_id}, -1, 'B_{t_id}', 'Available', '1-1-1-B_{t_id}', 'Back', 100.0);")
 
 
-cur.execute("INSERT INTO reviews values (default, 1, 3, 0, 4, 'Amazing Event. Highly Recommend it', '2022-08-25T21:00:00+10:00', 0, 'Active', '');")
+cur.execute("INSERT INTO reviews values (default, 1, 3, 0, 4, 'Amazing Event. Highly Recommend it', '2022-08-25T21:00:00+10:00', 0, 'Active', 'Thanks for the feedback!');")
 cur.execute("INSERT INTO reviews values (default, 2, 1, 0, 1, 'Poorly organised', '2022-08-26T21:00:00+10:00', 0, 'Active', '');")
 cur.execute("INSERT INTO reviews values (default, 3, 3, 3, 5, 'Best event ever.', '2022-08-26T21:00:00+10:00', 0, 'Active', 'Thanks for the feedback!');")
 

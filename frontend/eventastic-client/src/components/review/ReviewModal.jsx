@@ -29,6 +29,7 @@ const ReviewModal = ({ open, setOpen, eventDetails }) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const openMenu = Boolean(anchorEl);
   const [refresh, setRefresh] = useState(false)
+  const [replyReviewId, setReplyReviewId] = useState(1);
 
   const handleClickListItem = (event) => {
     setAnchorEl(event.currentTarget);
@@ -135,7 +136,8 @@ const ReviewModal = ({ open, setOpen, eventDetails }) => {
         {(() => {
           if (page === 'listReviews') {
             return ( 
-                 <ReviewListPage refresh={refresh} setRefresh={setRefresh} reviews={reviews} setReviews={setReviews} account={account} options={options}  selectedIndex={selectedIndex}/>
+                 <ReviewListPage setReplyReviewId={setReplyReviewId} refresh={refresh} setRefresh={setRefresh} reviews={reviews} setReviews={setReviews} account={account} selectedIndex={selectedIndex}
+                 eventDetails={eventDetails} setPage={setPage}/>
             )
           }
           else if (page === 'makeReivew') {
@@ -145,7 +147,7 @@ const ReviewModal = ({ open, setOpen, eventDetails }) => {
           }
           else if (page === 'makeResponse') {
             return (
-              <RespondReviewPage setPage={setPage} setReviews={setReviews} />
+              <RespondReviewPage refresh={refresh} setRefresh={setRefresh} reviews={reviews} replyReviewId={replyReviewId} setPage={setPage} setReviews={setReviews} />
             )
           }
         })()}

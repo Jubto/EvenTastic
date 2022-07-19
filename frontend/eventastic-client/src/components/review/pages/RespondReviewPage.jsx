@@ -11,19 +11,27 @@ const ContentBox = styled('div')`
   height: 70%;
   min-height: 350px;
 `;
-const RespondReviewPage = ({ setPage, setReviews }) => {
+const RespondReviewPage = ({ refresh,setRefresh,reviews, replyReviewId, setPage, setReviews }) => {
 const [replyText, setReplyText] = React.useState('');
   const handleSubmit = (event) => {
     // setReviews(prevState => { return { ...prevState, newReview } })
     event.preventDefault();
     setPage('listReviews')
     var data = {"reply_text":replyText}
-    var review_id = 1 //replace 1 with actual review ID
+    var review_id = replyReviewId //replace 1 with actual review ID
     review_api
         .putReview(review_id,data) 
         .then((response) => {
-          console.log(response)
-          alert("Reply has been posted successfully")})
+          for (var i = 0; i < reviews.length; i++) {
+            if(reviews[i].review_id === replyReviewId )
+            {
+              reviews[i].reply_text = data.reply_text;
+              break;
+            }
+          }
+          setReviews(reviews)
+          setRefresh(!refresh)
+          })
         .catch((err) => console.log(err));
     console.log(review_id,data)
   }
