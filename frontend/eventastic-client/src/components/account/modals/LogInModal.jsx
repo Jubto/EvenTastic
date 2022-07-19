@@ -42,7 +42,7 @@ const LogInModal = () => {
   const adminLogin = () => {
     setLoggedIn(true)
     setAccount({ admin:true })
-    navigate('/admin/approveHosts')
+    navigate('/admin/createVenues') 
     handleClose()
   }
 

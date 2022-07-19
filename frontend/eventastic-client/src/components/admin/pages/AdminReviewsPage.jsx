@@ -126,13 +126,31 @@ const AdminReviewsPage = () => {
 
     let bookedEventsRes = await Promise.all(getReviews.data.map((review, idx) => {
       return api.getEventDetails(review.event_id).then((res) => res.data)
-    }))
+    }))    
+    
+    let flaggedReviews = getReviews.data.map((review, idx) => (
+      {
+        review_id: review.review_id,
+        flag_count: review.flag_count,
+        rating: review.rating,
+        upvotes: review.upvotes,
+        review_text: review.review_text,
+        event_id: review.event_id,
+
+        event_title: bookedEventsRes[idx].event_title,
+        event_img: bookedEventsRes[idx].event_img,
+        
+        account_img: '',
+      }
+    ))
+
+    setReviews(flaggedReviews)
 
     let accountRes = await Promise.all(getReviews.data.map((review, idx) => {
       return apiAccount.getAccount(review.reviewer_account_id).then((res) => res.data)
     }))
     
-    const flaggedReviews = getReviews.data.map((review, idx) => (
+    flaggedReviews = getReviews.data.map((review, idx) => (
       {
         review_id: review.review_id,
         flag_count: review.flag_count,

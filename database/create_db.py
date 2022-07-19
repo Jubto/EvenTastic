@@ -213,7 +213,7 @@ cur.execute("INSERT INTO accounts values(default, 'neo@matrix.com', 'Keanu', 'Re
 
 
 cur.execute("INSERT INTO hosts values(default, 1, 'Westpac', 'Westpac Banking Corp', '0469717341', \
-            'Software Engineer', 'Masters', False, 'Pending', 'vish@westpac.com' \
+            'Software Engineer', 'Masters', False, 'Approved', 'vish@westpac.com' \
             );")
 cur.execute("INSERT INTO hosts values(default, 2, 'Matrix', 'The Truth', '999999999', \
             'Superhero', 'The One', False, 'Pending', 'anderson@mat.com' \
