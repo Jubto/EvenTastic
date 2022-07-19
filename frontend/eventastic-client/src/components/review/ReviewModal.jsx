@@ -5,7 +5,7 @@ import MakeReivewPage from './pages/MakeReivewPage';
 import RespondReviewPage from './pages/RespondReviewPage';
 import { FlexBox } from '../styles/layouts.styled';
 import { StyledTitle, LargeModal, ModalBodyLarge } from '../styles/modal/modal.styled';
-import { Button, Divider, IconButton, Typography } from '@mui/material';
+import { Button, Divider, IconButton, Typography, Menu, MenuItem } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import ReviewAPI from '../../utils/ReviewAPIHelper';
@@ -13,10 +13,9 @@ import ReviewAPI from '../../utils/ReviewAPIHelper';
 const review_api = new ReviewAPI();
 
 const options = [
-  'Show some love to MUI',
-  'Show all notification content',
-  'Hide sensitive notification content',
-  'Hide all notification content',
+  'Most Upvoted',
+  'Most Recent',
+  'Most Rated'
 ];
 
 const ReviewModal = ({ open, setOpen, eventDetails }) => {
@@ -26,6 +25,22 @@ const ReviewModal = ({ open, setOpen, eventDetails }) => {
   const [page, setPage] = useState('listReviews')
   const [madeReivew, setMadeReivew] = useState(false)
   const [reviews, setReviews] = useState([])
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const openMenu = Boolean(anchorEl);
+
+  const handleClickListItem = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuItemClick = (event, index) => {
+    setSelectedIndex(index);
+    setAnchorEl(null);
+  };
+
+  const handleCloseMenu = () => {
+    setAnchorEl(null);
+  };
 
   const handleClose = () => {
     setOpen(false);
@@ -70,9 +85,35 @@ const ReviewModal = ({ open, setOpen, eventDetails }) => {
               Write a review
             </Button>
             <Button variant="contained" endIcon={<FilterAltIcon />} 
+                id="lock-button"
+                aria-haspopup="listbox"
+                aria-controls="lock-menu"
+                aria-label="filter by"
+                aria-expanded={openMenu ? 'true' : undefined}
+                onClick={handleClickListItem}
             >
-              Filter by
+                  Filter By: {options[selectedIndex]}
             </Button>
+            <Menu
+              id="lock-menu"
+              anchorEl={anchorEl}
+              open={openMenu}
+              onClose={handleCloseMenu}
+              MenuListProps={{
+                'aria-labelledby': 'lock-button',
+                role: 'listbox',
+              }}
+            >
+              {options.map((option, index) => (
+                  <MenuItem
+                    key={option}
+                    selected={index === selectedIndex}
+                    onClick={(event) => handleMenuItemClick(event, index)}
+                  >
+                    {option}
+                  </MenuItem>
+                ))}
+            </Menu>
             <Button variant="contained" color='success'
              onClick={() => setPage('makeResponse')}  
             >
@@ -86,7 +127,7 @@ const ReviewModal = ({ open, setOpen, eventDetails }) => {
         {(() => {
           if (page === 'listReviews') {
             return ( 
-                 <ReviewListPage reviews={reviews} setReviews={setReviews} account={account} />
+                 <ReviewListPage reviews={reviews} setReviews={setReviews} account={account} options={options}  selectedIndex={selectedIndex}/>
             )
           }
           else if (page === 'makeReivew') {

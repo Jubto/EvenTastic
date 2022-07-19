@@ -28,7 +28,7 @@ function formatDate(datetime) {
   return d.toLocaleDateString("en-US", dateFormat)
 }
 
-const ReviewListPage = ({reviews, setReviews, account}) => {
+const ReviewListPage = ({reviews, setReviews, account, options, selectedIndex}) => {
 
   const [accDetails, setAccDetails] = useState([])
   const [refresh, setRefresh] = useState(false)
@@ -48,6 +48,29 @@ const ReviewListPage = ({reviews, setReviews, account}) => {
       .catch((err)=>console.log(err))
     })
   },[reviews])
+
+  useEffect(()=>{
+    if(selectedIndex === 0){
+      //Most Upvotes
+      reviews.sort((r1,r2)=>{
+        return parseInt(r2.upvotes) - parseInt(r1.upvotes)
+      })
+    }else if(selectedIndex === 1){
+      //Most Recent
+      reviews.sort((r1,r2)=>{
+        var d1 = new Date(r1.review_timestamp);
+        var d2 = new Date(r2.review_timestamp)
+        if (d2 > d1) return 1;
+        else return -1; 
+      })
+    }else{
+      reviews.sort((r1,r2)=>{
+        return r2.rating - r1.rating
+      })
+    }
+    setReviews(reviews)
+    setRefresh(!refresh)
+  },[selectedIndex])
 
   const handleUpvote = (review,index) => {
     //console.log(review)
