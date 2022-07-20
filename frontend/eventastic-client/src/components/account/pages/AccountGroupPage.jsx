@@ -11,6 +11,7 @@ const Group = ({ groupDetails, account }) => {
   const navigate = useNavigate();
   const [eventDetails, setEventDetails] = useState(false)
   const [isAdmin, setIsAdmin] = useState(false)
+  const [eventCancelled, setEventCancelled] = useState(false)
 
   const redirect = () => {
     navigate(`/event/${groupDetails.event_id}`, { state: { redirect: 'groups' } })
@@ -21,11 +22,12 @@ const Group = ({ groupDetails, account }) => {
     api.getEventDetails(groupDetails.event_id)
       .then((res) => {
         setEventDetails(res.data)
+        res.data.event_status === "Cancelled" && setEventCancelled(true)
       })
   }, [])
 
   return (
-    <FlexBox direction='column'>
+    <FlexBox direction='column' sx={{display: eventCancelled ? 'hide' : 'flex'}}>
       <FlexBox sx={{ ml: 3, mb: -2 }}>
         <Typography variant="subtitle1" color="text.secondary" sx={{ mt: 0.25 }}>
           Event:
