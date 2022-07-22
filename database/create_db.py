@@ -42,7 +42,7 @@ cur.execute('drop TABLE IF EXISTS groups cascade;')
 cur.execute('drop TABLE IF EXISTS group_members cascade;')
 cur.execute('drop TABLE IF EXISTS reviews cascade;')
 cur.execute('drop TABLE IF EXISTS interactions cascade;')
-
+cur.execute('drop TABLE IF EXISTS rewardpoints cascade;')
 
 # Create Tables
 print('\nCreating Tables ...')
@@ -195,6 +195,19 @@ cur.execute('CREATE TABLE interactions(\
             review_upvoted BOOLEAN,\
             review_flagged BOOLEAN \
             );')
+
+# Reward Points table
+cur.execute('CREATE TABLE rewardpoints(\
+            reward_points_id SERIAL PRIMARY KEY,\
+            account_id INT NOT NULL,\
+            FOREIGN KEY (account_id) REFERENCES accounts (account_id),\
+            event_id INT NOT NULL,\
+            FOREIGN KEY (event_id) REFERENCES events (event_id),\
+            booking_id INT NOT NULL,\
+            FOREIGN KEY (booking_id) REFERENCES bookings (booking_id),\
+            reward_points_amount float8,\
+            reward_points_status TEXT \
+                );')
 
 # Enter dummy data here
 print('\nInserting dummy data ...')
