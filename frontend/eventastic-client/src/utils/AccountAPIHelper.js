@@ -30,28 +30,28 @@ export default class AccountAPI {
     return this.init().get("/accounts", { params: params })
   };
 
-  getAccount = (id) => {
-    return this.init().get(`/accounts/${id}`)
+  getAccount = (accountID) => {
+    return this.init().get(`/accounts/${accountID}`)
   };
 
-  putAccount = (id, body) => {
-    return this.init().put(`/accounts/${id}`, body)
+  putAccount = (accountID, body) => {
+    return this.init().put(`/accounts/${accountID}`, body)
   };
 
-  getAccountCard = (id) => {
-    return this.init().get(`/accounts/${id}/credit_card`)
+  getAccountCard = (accountID) => {
+    return this.init().get(`/accounts/${accountID}/credit_card`)
   };
 
-  putAccountCard = (id, body) => {
-    return this.init().put(`/accounts/${id}/credit_card`, body)
+  putAccountCard = (accountID, body) => {
+    return this.init().put(`/accounts/${accountID}/credit_card`, body)
   };
 
-  getHost = (id) => {
-    return this.init().get(`/accounts/${id}/host_details`)
+  getHost = (accountID) => {
+    return this.init().get(`/accounts/${accountID}/host_details`)
   };
 
-  putHost = (id, body) => {
-    return this.init().put(`/accounts/${id}/host_details`, body)
+  putHost = (accountID, body) => {
+    return this.init().put(`/accounts/${accountID}/host_details`, body)
   };
 
   getHostRequests = (params) => {

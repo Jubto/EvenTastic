@@ -1,15 +1,7 @@
 import { useContext } from 'react';
 import { StoreContext } from '../../utils/context';
-import {
-  Button,
-  Divider,
-  List,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-  Typography,
-  styled
-} from '@mui/material';
+import { FlexBox } from '../styles/layouts.styled';
+import { SideBar, SideBarTitle, SideBarItem } from '../styles/sidebar/sidebar.styled';
 import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import InterestsIcon from '@mui/icons-material/Interests';
 import LocalActivityIcon from '@mui/icons-material/LocalActivity';
@@ -17,42 +9,14 @@ import LoyaltyIcon from '@mui/icons-material/Loyalty';
 import GroupsIcon from '@mui/icons-material/Groups';
 import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
 import EventIcon from '@mui/icons-material/Event';
-import { FlexBox } from '../styles/layouts.styled';
+import { Button, Divider, List} from '@mui/material';
 
-const SideBar = styled('div')`
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-  border: 3px solid #ad9fa3;
-  margin-right: 1rem;
-  margin-bottom: 1rem;
-  max-width: 225px;
-  min-width: 225px;
-`;
-
-const SideBarTitle = styled(Typography)`
-  align-self: center;
-  margin-top: 1rem;
-`
-
-const SideBarItem = ({ title, onClick, children }) => {
-  return (
-    <ListItemButton onClick={onClick}>
-      <ListItemIcon>
-        {children}
-      </ListItemIcon>
-      <ListItemText primary={title} />
-    </ListItemButton>
-  )
-}
-
-const AccountSideBar = ({ changeScreen }) => {
+const AccountSideBar = ({ accountPage, changePage }) => {
   const context = useContext(StoreContext);
   const [hostDetails] = context.host;
 
-  const handleScreenChange = (change) => {
-    console.log(`change: ${change}`)
-    changeScreen(change);
+  const handleChangePage = (change) => {
+    changePage(change);
   }
 
   return (
@@ -62,19 +26,39 @@ const AccountSideBar = ({ changeScreen }) => {
       </SideBarTitle>
       <Divider variant="middle" sx={{ mb: 2 }} />
       <List component='nav'>
-        <SideBarItem title='Account details' onClick={() => handleScreenChange('account')}>
+        <SideBarItem
+          title='Account details'
+          selected={accountPage === 'account' ? true : false}
+          onClick={() => handleChangePage('account')}
+        >
           <AccountBoxIcon />
         </SideBarItem>
-        <SideBarItem title='My interests' onClick={() => handleScreenChange('interests')}>
+        <SideBarItem 
+          title='My interests' 
+          selected={accountPage === 'interests' ? true : false}
+          onClick={() => handleChangePage('interests')}
+        >
           <InterestsIcon />
         </SideBarItem>
-        <SideBarItem title='My tickets' onClick={() => handleScreenChange('tickets')}>
+        <SideBarItem 
+          title='My tickets' 
+          selected={accountPage === 'tickets' ? true : false}
+          onClick={() => handleChangePage('tickets')}
+        >
           <LocalActivityIcon />
         </SideBarItem>
-        <SideBarItem title='My reward points' onClick={() => handleScreenChange('points')}>
+        <SideBarItem 
+          title='My reward points' 
+          selected={accountPage === 'points' ? true : false}
+          onClick={() => handleChangePage('points')}
+        >
           <LoyaltyIcon />
         </SideBarItem>
-        <SideBarItem title='My groups' onClick={() => handleScreenChange('groups')}>
+        <SideBarItem 
+          title='My groups' 
+          selected={accountPage === 'groups' ? true : false}
+          onClick={() => handleChangePage('groups')}
+        >
           <GroupsIcon />
         </SideBarItem>
       </List>
@@ -86,7 +70,7 @@ const AccountSideBar = ({ changeScreen }) => {
               <Button
                 variant='contained' color='success' size='large'
                 sx={{ width: '80%', alignSelf: 'center' }}
-                onClick={() => handleScreenChange('host')}
+                onClick={() => handleChangePage('host')}
               >
                 Become a host
               </Button>
@@ -103,7 +87,11 @@ const AccountSideBar = ({ changeScreen }) => {
                 Host status {hostDetails.host_status === 'Pending' ? 'pending' : 'declined'}
               </SideBarTitle>
               <List component='nav'>
-                <SideBarItem title='My host details' onClick={() => handleScreenChange('host')}>
+                <SideBarItem
+                  title='My host details'
+                  selected={accountPage === 'host' ? true : false}
+                  onClick={() => handleChangePage('host')}
+                >
                   <AssignmentIndIcon />
                 </SideBarItem>
               </List>
@@ -118,10 +106,18 @@ const AccountSideBar = ({ changeScreen }) => {
               </SideBarTitle>
               <Divider variant="middle" sx={{ mb: 2 }} />
               <List component='nav'>
-                <SideBarItem title='My host details' onClick={() => handleScreenChange('host')}>
+                <SideBarItem
+                  title='My host details'
+                  selected={accountPage === 'host' ? true : false}
+                  onClick={() => handleChangePage('host')}
+                >
                   <AssignmentIndIcon />
                 </SideBarItem>
-                <SideBarItem title='My events' onClick={() => handleScreenChange('events')}>
+                <SideBarItem 
+                  title='My events'
+                  selected={accountPage === 'events' ? true : false}
+                  onClick={() => handleChangePage('events')}
+                >
                   <EventIcon />
                 </SideBarItem>
               </List>

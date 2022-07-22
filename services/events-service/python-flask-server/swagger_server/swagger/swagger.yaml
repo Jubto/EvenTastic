@@ -35,12 +35,52 @@ paths:
         description: "The Event Description to search for."
         required: false
         type: "string"
+      - name: "host_id"
+        in: "query"
+        description: "The Host ID to search for."
+        required: false
+        type: "string"
+      - name: "event_status"
+        in: "query"
+        description: "The Event Status to search for."
+        required: false
+        type: "string"
       responses:
         "200":
           description: "Returns a list of Events. Returns empty array if no Events\
             \ match the search criteria."
           schema:
             $ref: "#/definitions/EventList"
+        "500":
+          description: "Unexpected failure in the service layer."
+          schema:
+            $ref: "#/definitions/UnexpectedServiceError"
+      x-swagger-router-controller: "swagger_server.controllers.events_controller"
+    post:
+      tags:
+      - "Events"
+      summary: "Used to create an Event."
+      operationId: "create_event"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Event object containing the Event details."
+        required: true
+        schema:
+          $ref: "#/definitions/Event"
+      responses:
+        "201":
+          description: "Event created."
+          schema:
+            $ref: "#/definitions/Event"
+        "400":
+          description: "Invalid input."
+          schema:
+            $ref: "#/definitions/InvalidInputError"
         "500":
           description: "Unexpected failure in the service layer."
           schema:
@@ -74,6 +114,76 @@ paths:
           description: "Unexpected failure in the service layer."
           schema:
             $ref: "#/definitions/UnexpectedServiceError"
+      x-swagger-router-controller: "swagger_server.controllers.events_controller"
+    put:
+      tags:
+      - "Events"
+      summary: "Used to update the Event details. Replaces the Event resource."
+      operationId: "update_event"
+      consumes:
+      - "application/json"
+      parameters:
+      - name: "event_id"
+        in: "path"
+        description: "ID of the Event to be updated."
+        required: true
+        type: "integer"
+        format: "int64"
+      - in: "body"
+        name: "body"
+        description: "Event object to update. Performs a complete replace of the Event\
+          \ details."
+        required: true
+        schema:
+          $ref: "#/definitions/Event"
+      responses:
+        "200":
+          description: "Event successfully updated."
+          schema:
+            $ref: "#/definitions/Event"
+        "400":
+          description: "Invalid input."
+          schema:
+            $ref: "#/definitions/InvalidInputError"
+        "404":
+          description: "Event not found."
+          schema:
+            $ref: "#/definitions/EventNotFoundError"
+        "500":
+          description: "Unexpected failure in the service layer."
+          schema:
+            $ref: "#/definitions/UnexpectedServiceError"
+      x-swagger-router-controller: "swagger_server.controllers.events_controller"
+    patch:
+      tags:
+      - "Events"
+      summary: "Used to update the Status of a single Event e.g. Cancel an Event."
+      operationId: "update_event_status"
+      consumes:
+      - "application/json"
+      parameters:
+      - name: "event_id"
+        in: "path"
+        description: "ID of the Event to be updated."
+        required: true
+        type: "integer"
+        format: "int64"
+      - in: "body"
+        name: "body"
+        description: "The patch operation to perform. Only Event status update is\
+          \ supported."
+        required: true
+        schema:
+          $ref: "#/definitions/EventStatusUpdate"
+      responses:
+        "200":
+          description: "Event status successfully updated."
+          schema:
+            $ref: "#/definitions/Event"
+        "404":
+          description: "Timeslot not found."
+          schema:
+            $ref: "#/definitions/EventNotFoundError"
       x-swagger-router-controller: "swagger_server.controllers.events_controller"
   /venues:
     get:
@@ -159,6 +269,337 @@ paths:
           schema:
             $ref: "#/definitions/UnexpectedServiceError"
       x-swagger-router-controller: "swagger_server.controllers.venues_controller"
+  /tickets:
+    get:
+      tags:
+      - "Tickets"
+      summary: "Retrieve a List of Tickets. Search by Event ID and Ticket Status."
+      operationId: "list_tickets"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "event_id"
+        in: "query"
+        description: "The Event ID to search for."
+        required: false
+        type: "string"
+      - name: "ticket_status"
+        in: "query"
+        description: "The Ticket Status to search for."
+        required: false
+        type: "string"
+      - name: "booking_id"
+        in: "query"
+        description: "The Booking ID to search for."
+        required: false
+        type: "string"
+      responses:
+        "200":
+          description: "Returns a list of Tickets. Returns empty array if no Tickets\
+            \ match the search criteria."
+          schema:
+            $ref: "#/definitions/TicketList"
+        "500":
+          description: "Unexpected failure in the service layer."
+          schema:
+            $ref: "#/definitions/UnexpectedServiceError"
+      x-swagger-router-controller: "swagger_server.controllers.tickets_controller"
+  /bookings:
+    get:
+      tags:
+      - "Bookings"
+      summary: "Retrieve a List of Bookings. Search by Account ID and Booking Status."
+      operationId: "list_bookings"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "account_id"
+        in: "query"
+        description: "The Account ID to search for."
+        required: false
+        type: "string"
+      - name: "booking_status"
+        in: "query"
+        description: "The Booking Status to search for."
+        required: false
+        type: "string"
+      - name: "event_id"
+        in: "query"
+        description: "The Event ID to search for."
+        required: false
+        type: "string"
+      responses:
+        "200":
+          description: "Returns a list of Bookings. Returns empty array if no Bookings\
+            \ match the search criteria."
+          schema:
+            $ref: "#/definitions/BookingList"
+        "500":
+          description: "Unexpected failure in the service layer."
+          schema:
+            $ref: "#/definitions/UnexpectedServiceError"
+      x-swagger-router-controller: "swagger_server.controllers.bookings_controller"
+    post:
+      tags:
+      - "Bookings"
+      summary: "Used to create a Booking."
+      operationId: "create_booking"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Booking object containing the Booking details."
+        required: true
+        schema:
+          $ref: "#/definitions/Booking"
+      responses:
+        "201":
+          description: "Booking created."
+          schema:
+            $ref: "#/definitions/Booking"
+        "400":
+          description: "Invalid input."
+          schema:
+            $ref: "#/definitions/InvalidInputError"
+        "500":
+          description: "Unexpected failure in the service layer."
+          schema:
+            $ref: "#/definitions/UnexpectedServiceError"
+      x-swagger-router-controller: "swagger_server.controllers.bookings_controller"
+  /bookings/{booking_id}:
+    get:
+      tags:
+      - "Bookings"
+      summary: "Retrieve Booking details by Booking ID."
+      operationId: "get_booking_details"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "booking_id"
+        in: "path"
+        description: "ID of the Booking to be retrieved."
+        required: true
+        type: "integer"
+        format: "int64"
+      responses:
+        "200":
+          description: "Booking details successfully retrieved."
+          schema:
+            $ref: "#/definitions/Booking"
+        "404":
+          description: "Booking not found."
+          schema:
+            $ref: "#/definitions/BookingNotFoundError"
+        "500":
+          description: "Unexpected failure in the service layer."
+          schema:
+            $ref: "#/definitions/UnexpectedServiceError"
+      x-swagger-router-controller: "swagger_server.controllers.bookings_controller"
+    patch:
+      tags:
+      - "Bookings"
+      summary: "Used to update the Status of a single Booking e.g. Cancel a Booking."
+      operationId: "update_booking_status"
+      consumes:
+      - "application/json"
+      parameters:
+      - name: "booking_id"
+        in: "path"
+        description: "ID of the Booking to be updated."
+        required: true
+        type: "integer"
+        format: "int64"
+      - in: "body"
+        name: "body"
+        description: "The patch operation to perform. Only Booking status update is\
+          \ supported."
+        required: true
+        schema:
+          $ref: "#/definitions/BookingStatusUpdate"
+      responses:
+        "200":
+          description: "Booking status successfully updated."
+          schema:
+            $ref: "#/definitions/Booking"
+        "404":
+          description: "Booking not found."
+          schema:
+            $ref: "#/definitions/BookingNotFoundError"
+      x-swagger-router-controller: "swagger_server.controllers.bookings_controller"
+  /reviews:
+    get:
+      tags:
+      - "Reviews"
+      summary: "Retrieve a List of Reviews. Search by Event ID and Interaction Account\
+        \ ID."
+      operationId: "list_reviews"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "event_id"
+        in: "query"
+        description: "The Event to search."
+        required: false
+        type: "string"
+      - name: "interaction_acount_id"
+        in: "query"
+        description: "The ID of the user who is reading the review."
+        required: false
+        type: "string"
+      responses:
+        "200":
+          description: "Returns a list of Reviews. Returns empty array if no Reviews\
+            \ match the search criteria."
+          schema:
+            $ref: "#/definitions/ReviewList"
+        "500":
+          description: "Unexpected failure in the service layer."
+          schema:
+            $ref: "#/definitions/UnexpectedServiceError"
+      x-swagger-router-controller: "swagger_server.controllers.reviews_controller"
+    post:
+      tags:
+      - "Reviews"
+      summary: "Used to create a Review."
+      operationId: "create_review"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Review object containing the Review details."
+        required: true
+        schema:
+          $ref: "#/definitions/Review"
+      responses:
+        "201":
+          description: "Review created."
+          schema:
+            $ref: "#/definitions/Review"
+        "400":
+          description: "Invalid input."
+          schema:
+            $ref: "#/definitions/InvalidInputError"
+        "500":
+          description: "Unexpected failure in the service layer."
+          schema:
+            $ref: "#/definitions/UnexpectedServiceError"
+      x-swagger-router-controller: "swagger_server.controllers.reviews_controller"
+  /reviews/{review_id}:
+    put:
+      tags:
+      - "Reviews"
+      summary: "Used to update a Review. Replaces the Review resource."
+      operationId: "update_review"
+      consumes:
+      - "application/json"
+      parameters:
+      - name: "review_id"
+        in: "path"
+        description: "ID of the Review to be updated."
+        required: true
+        type: "integer"
+        format: "int64"
+      - in: "body"
+        name: "body"
+        description: "Review object to update."
+        required: true
+        schema:
+          $ref: "#/definitions/Review"
+      responses:
+        "200":
+          description: "Review successfully updated."
+          schema:
+            $ref: "#/definitions/Review"
+        "400":
+          description: "Invalid input."
+          schema:
+            $ref: "#/definitions/InvalidInputError"
+        "404":
+          description: "Review not found."
+          schema:
+            $ref: "#/definitions/ReviewNotFoundError"
+        "500":
+          description: "Unexpected failure in the service layer."
+          schema:
+            $ref: "#/definitions/UnexpectedServiceError"
+      x-swagger-router-controller: "swagger_server.controllers.reviews_controller"
+  /review_interaction:
+    post:
+      tags:
+      - "Reviews"
+      summary: "Used to create a Review Intercation record."
+      operationId: "create_review_interaction"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Review Interaction object containing the Review Interaction\
+          \ details."
+        required: true
+        schema:
+          $ref: "#/definitions/ReviewInteraction"
+      responses:
+        "201":
+          description: "Review Interaction Created."
+          schema:
+            $ref: "#/definitions/ReviewInteraction"
+        "400":
+          description: "Invalid input."
+          schema:
+            $ref: "#/definitions/InvalidInputError"
+        "500":
+          description: "Unexpected failure in the service layer."
+          schema:
+            $ref: "#/definitions/UnexpectedServiceError"
+      x-swagger-router-controller: "swagger_server.controllers.reviews_controller"
+  /review_interaction/{interaction_id}:
+    put:
+      tags:
+      - "Reviews"
+      summary: "Used to update a Review Interaction record."
+      operationId: "update_review_interaction"
+      consumes:
+      - "application/json"
+      parameters:
+      - name: "interaction_id"
+        in: "path"
+        description: "ID of the Review Interaction record to be updated."
+        required: true
+        type: "integer"
+        format: "int64"
+      - in: "body"
+        name: "body"
+        description: "Review Interaction object to update."
+        required: true
+        schema:
+          $ref: "#/definitions/ReviewInteraction"
+      responses:
+        "200":
+          description: "Review successfully updated."
+          schema:
+            $ref: "#/definitions/ReviewInteraction"
+        "400":
+          description: "Invalid input."
+          schema:
+            $ref: "#/definitions/InvalidInputError"
+        "404":
+          description: "Review Interaction not found."
+          schema:
+            $ref: "#/definitions/ReviewInteractionNotFoundError"
+        "500":
+          description: "Unexpected failure in the service layer."
+          schema:
+            $ref: "#/definitions/UnexpectedServiceError"
+      x-swagger-router-controller: "swagger_server.controllers.reviews_controller"
 definitions:
   VenueList:
     type: "array"
@@ -204,6 +645,210 @@ definitions:
     type: "array"
     items:
       $ref: "#/definitions/Event"
+  TicketList:
+    type: "array"
+    items:
+      $ref: "#/definitions/Ticket"
+  BookingList:
+    type: "array"
+    items:
+      $ref: "#/definitions/Booking"
+  ReviewList:
+    type: "array"
+    items:
+      $ref: "#/definitions/Review"
+  Booking:
+    type: "object"
+    properties:
+      booking_id:
+        type: "integer"
+        format: "int64"
+        example: 1
+      account_id:
+        type: "integer"
+        format: "int64"
+        example: 2
+      event_id:
+        type: "integer"
+        format: "int64"
+        example: 2
+      booking_status:
+        type: "string"
+        enum:
+        - "Booked"
+        - "Cancelled"
+        - "Completed"
+      booking_email:
+        type: "string"
+        example: "bob@gmail.com"
+      total_cost:
+        type: "number"
+        format: "float"
+        example: 200.0
+      ticket_details:
+        type: "object"
+        properties:
+          general:
+            type: "integer"
+            format: "int64"
+            example: 1
+          front:
+            type: "integer"
+            format: "int64"
+            example: 2
+          middle:
+            type: "integer"
+            format: "int64"
+            example: 3
+          back:
+            type: "integer"
+            format: "int64"
+            example: 4
+    example:
+      booking_id: 1
+      account_id: 2
+      event_id: 2
+      total_cost: 200.0
+      ticket_details: "{}"
+      booking_email: "bob@gmail.com"
+      booking_status: "Booked"
+  Ticket:
+    type: "object"
+    properties:
+      ticket_id:
+        type: "integer"
+        format: "int64"
+        example: 1
+      venue_id:
+        type: "integer"
+        format: "int64"
+        example: 3
+      event_id:
+        type: "integer"
+        format: "int64"
+        example: 3
+      booking_id:
+        type: "integer"
+        format: "int64"
+        example: 5
+      ticket_ref:
+        type: "string"
+        example: "general_1"
+      ticket_status:
+        type: "string"
+        enum:
+        - "Available"
+        - "Purchased"
+        - "Cancelled"
+      QR_code:
+        type: "string"
+        example: "bc7b098c-fb66-11ec-b939-0242ac120002"
+      ticket_type:
+        type: "string"
+        enum:
+        - "General"
+        - "Front"
+        - "Middle"
+        - "Back"
+      ticket_price:
+        type: "number"
+        format: "float"
+        example: 80.9
+  Review:
+    type: "object"
+    properties:
+      review_id:
+        type: "integer"
+        format: "int64"
+        example: 1
+      event_id:
+        type: "integer"
+        format: "int64"
+        example: 3
+      reviewer_account_id:
+        type: "integer"
+        format: "int64"
+        example: 3
+      upvotes:
+        type: "integer"
+        format: "int64"
+        example: 20
+      rating:
+        type: "integer"
+        format: "int64"
+        example: 5
+      flag_count:
+        type: "integer"
+        format: "int64"
+        example: 2
+      review_text:
+        type: "string"
+        example: "We had a great time. Fantastic Event. Highly recommended."
+      reply_text:
+        type: "string"
+        example: "Glad you had a great time."
+      review_timestamp:
+        type: "string"
+        example: "2015-03-25T19:00:00+10:00"
+      review_status:
+        type: "string"
+        enum:
+        - "Active"
+        - "Removed"
+      review_interaction:
+        type: "object"
+        example:
+          interaction_id: 1
+          review_id: 1
+          interaction_account_id: 2
+          review_upvoted: true
+          review_flagged: false
+        allOf:
+        - $ref: "#/definitions/ReviewInteraction"
+    example:
+      review_id: 1
+      review_timestamp: "2015-03-25T19:00:00+10:00"
+      event_id: 3
+      upvotes: 20
+      flag_count: 2
+      reviewer_account_id: 3
+      reply_text: "Glad you had a great time."
+      rating: 5
+      review_text: "We had a great time. Fantastic Event. Highly recommended."
+      review_status: "Active"
+      review_interaction:
+        interaction_id: 1
+        review_id: 1
+        interaction_account_id: 2
+        review_upvoted: true
+        review_flagged: false
+  ReviewInteraction:
+    type: "object"
+    properties:
+      interaction_id:
+        type: "integer"
+        format: "int64"
+        example: 1
+      review_id:
+        type: "integer"
+        format: "int64"
+        example: 2
+      interaction_account_id:
+        type: "integer"
+        format: "int64"
+        example: 2
+      review_upvoted:
+        type: "boolean"
+        example: true
+      review_flagged:
+        type: "boolean"
+        example: true
+    example:
+      review_upvoted: true
+      review_id: 2
+      interaction_account_id: 2
+      interaction_id: 1
+      review_flagged: true
   Event:
     type: "object"
     properties:
@@ -215,10 +860,30 @@ definitions:
         type: "integer"
         format: "int64"
         example: 12
+      account_id:
+        type: "integer"
+        format: "int64"
+        example: 10
       venue_id:
         type: "integer"
         format: "int64"
         example: 9
+      gen_seat_price:
+        type: "number"
+        format: "float"
+        example: 100.5
+      front_seat_price:
+        type: "number"
+        format: "float"
+        example: 80.9
+      mid_seat_price:
+        type: "number"
+        format: "float"
+        example: 70.9
+      back_seat_price:
+        type: "number"
+        format: "float"
+        example: 50.0
       event_title:
         type: "string"
         example: "Sydney KPOP Party"
@@ -243,25 +908,37 @@ definitions:
       event_img:
         type: "string"
         example: "1603dfd6-efb6-11ec-8ea0-0242ac120002.jpeg"
+      event_status:
+        type: "string"
+        enum:
+        - "Upcoming"
+        - "Cancelled"
+        - "Completed"
       tags:
         type: "array"
         items:
           $ref: "#/definitions/Tag"
     example:
-      event_short_desc: "Sydney KPOP Party BTS Special!"
-      event_desc: "STRICTLY KPOP & K-HIPHOP! KPOP ALBUM GIVEAWAYS! LIVE DJS!"
-      event_id: 1
+      gen_seat_price: 100.5
+      front_seat_price: 80.9
       event_end_datetime: "2015-03-25T23:00:00+10:00"
       event_location: "Shark Hotel Sydney, NSW"
       event_title: "Sydney KPOP Party"
-      event_img: "1603dfd6-efb6-11ec-8ea0-0242ac120002.jpeg"
+      mid_seat_price: 70.9
       event_category: "Music"
       event_start_datetime: "2015-03-25T19:00:00+10:00"
       host_id: 12
-      venue_id: 9
       tags:
       - name: "Jazz"
       - name: "Jazz"
+      event_short_desc: "Sydney KPOP Party BTS Special!"
+      event_desc: "STRICTLY KPOP & K-HIPHOP! KPOP ALBUM GIVEAWAYS! LIVE DJS!"
+      event_id: 1
+      account_id: 10
+      back_seat_price: 50.0
+      event_img: "1603dfd6-efb6-11ec-8ea0-0242ac120002.jpeg"
+      venue_id: 9
+      event_status: "Upcoming"
   Tag:
     type: "object"
     properties:
@@ -283,6 +960,60 @@ definitions:
     example:
       seating_type: "front"
       seating_number: 100
+  EventStatusUpdate:
+    type: "object"
+    required:
+    - "op"
+    - "path"
+    - "value"
+    properties:
+      op:
+        type: "string"
+        example: "replace"
+        enum:
+        - "replace"
+      path:
+        type: "string"
+        enum:
+        - "/event_status"
+      value:
+        type: "string"
+        example: "Cancelled"
+        enum:
+        - "Upcoming"
+        - "Completed"
+        - "Cancelled"
+    example:
+      op: "replace"
+      path: "/event_status"
+      value: "Cancelled"
+  BookingStatusUpdate:
+    type: "object"
+    required:
+    - "op"
+    - "path"
+    - "value"
+    properties:
+      op:
+        type: "string"
+        example: "replace"
+        enum:
+        - "replace"
+      path:
+        type: "string"
+        enum:
+        - "/booking_status"
+      value:
+        type: "string"
+        example: "Cancelled"
+        enum:
+        - "Booked"
+        - "Cancelled"
+        - "Completed"
+    example:
+      op: "replace"
+      path: "/booking_status"
+      value: "Cancelled"
   Error:
     type: "object"
     properties:
@@ -307,7 +1038,31 @@ definitions:
     example:
       code: 404
       type: "VenueNotFoundError"
-      message: "The following Venue does not exist: %event_id%"
+      message: "The following Venue does not exist: %venue_id%"
+  BookingNotFoundError:
+    allOf:
+    - $ref: "#/definitions/Error"
+    - {}
+    example:
+      code: 404
+      type: "BookingNotFoundError"
+      message: "The following Booking does not exist: %booking_id%"
+  ReviewNotFoundError:
+    allOf:
+    - $ref: "#/definitions/Error"
+    - {}
+    example:
+      code: 404
+      type: "ReviewNotFoundError"
+      message: "The following Review does not exist: %review_id%"
+  ReviewInteractionNotFoundError:
+    allOf:
+    - $ref: "#/definitions/Error"
+    - {}
+    example:
+      code: 404
+      type: "ReviewInteractionNotFoundError"
+      message: "The following Review Interaction does not exist: %review_interaction_id%"
   InvalidInputError:
     allOf:
     - $ref: "#/definitions/Error"

@@ -1,14 +1,9 @@
-import { styled } from '@mui/material/styles';
-import { useNavigate } from "react-router-dom";
-
-export const SideBar = styled('div')`
-  width: 200px;
-  display: flex;
-  flex-direction: column;
-  border: 1px solid black;
-  border-radius: 5px;
-  align-items: center;
-`;
+import { useNavigate, useLocation } from "react-router-dom";
+import { SideBar, SideBarTitle, SideBarItem } from "../styles/sidebar/sidebar.styled";
+import { Divider, List, styled } from '@mui/material';
+import DomainAddIcon from '@mui/icons-material/DomainAdd';
+import GradingIcon from '@mui/icons-material/Grading';
+import RequestQuoteIcon from '@mui/icons-material/RequestQuote';
 
 export const SideBarButton = styled('button')`
   width: 200px;
@@ -17,12 +12,37 @@ export const SideBarButton = styled('button')`
 `;
 
 const AccountSideBar = () => {
+  const location = useLocation();
   const navigate = useNavigate();
   return (
     <SideBar>
-        <div><b>Admin Menu</b></div>
-        <SideBarButton onClick={() => navigate("/admin/approveHosts")} >Host Requests</SideBarButton>
-        <SideBarButton onClick={() => navigate("/admin/createVenues")} >Create Venues</SideBarButton>
+        <SideBarTitle variant='h6'>
+          Admin Menu
+        </SideBarTitle>
+        <Divider variant="middle" sx={{ mb: 2 }} />
+        <List>
+          <SideBarItem 
+            title='Set Venues'
+            selected={location.pathname === '/admin/createVenues' ? true : false}
+            onClick={() => navigate("/admin/createVenues")}
+          >
+            <DomainAddIcon />
+          </SideBarItem>
+          <SideBarItem 
+            title='Manage reviews' 
+            selected={location.pathname === '/admin/approveReviews' ? true : false}
+            onClick={() => navigate("/admin/approveReviews")}
+          >
+            <GradingIcon />
+          </SideBarItem>
+          <SideBarItem 
+            title='Host requests' 
+            selected={location.pathname === '/admin/approveHosts' ? true : false}
+            onClick={() => navigate("/admin/approveHosts")}
+          >
+            <RequestQuoteIcon />
+          </SideBarItem>
+        </List>
     </SideBar>
   )
 }

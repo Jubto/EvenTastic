@@ -1,12 +1,14 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { FlexBox } from '../styles/layouts.styled';
-import AccountDetailsScreen from './page/AccountDetailsScreen';
-import AccountInterestScreen from './page/AccountInterestScreen'
-import AccountTicketsScreen from './page/AccountTicketsScreen'
-import AccountPointsScreen from './page/AccountPointsScreen'
-import AccountGroupScreen from './page/AccountGroupScreen'
-import HostDetailsScreen from './page/HostDetailsScreen'
-import HostEventsScreen from './page/HostEventsScreen'
+import AccountDetailsPage from './pages/AccountDetailsPage';
+import AccountInterestPage from './pages/AccountInterestPage'
+import AccountTicketsPage from './pages/AccountTicketsPage'
+import AccountPointsPage from './pages/AccountPointsPage'
+import AccountGroupPage from './pages/AccountGroupPage'
+import HostDetailsPage from './pages/HostDetailsPage'
+import HostEventsPage from './pages/HostEventsPage'
+import ManageEventDetailsPage from './pages/ManageEventDetailsPage';
 import { Button, Divider, Typography, styled } from '@mui/material';
 
 export const AccountContainer = styled('div')`
@@ -17,76 +19,150 @@ export const AccountContainer = styled('div')`
   overflow: hidden;
 `;
 
-const screenTitles = {
-  'account': 'My account details',
-  'interests': 'My interests',
-  'tickets': 'My tickets',
-  'points': 'My reward points',
-  'groups': 'My groups',
-  'host': 'Host details',
-  'events': 'My hosted events'
+const PageTitles = {
+  'account': 'My Account Details',
+  'interests': 'My Interests',
+  'tickets': 'My Tickets',
+  'points': 'My Reward Points',
+  'groups': 'My Groups',
+  'host': 'Host Details',
+  'events': 'My Hosted Events'
 }
 
-const AccountMain = ({ accountScreen }) => {
+const AccountMain = ({ accountPage, changePage }) => {
+  const navigate = useNavigate();
   const [accountChange, setAccountChange] = useState(false);
   const [hostChange, setHostChange] = useState('');
+  const [toggleTickets, setToggleTickets] = useState(true)
+  const [toggleEvents, setToggleEvents] = useState(false)
+  const [managedEventDetails, setManagedEventDetails] = useState({})
+
+  useEffect(() => {
+    accountPage !== 'managedEventDetails' && setManagedEventDetails({})
+  }, [accountPage])
+
+  useEffect(() => {
+    if (Object.keys(managedEventDetails).length !== 0 && accountPage !== 'managedEventDetails') {
+      changePage('managedEventDetails')
+    }
+  }, [managedEventDetails])
 
   return (
     <AccountContainer>
       <FlexBox justify='space-between'>
-        <Typography variant='h6'>{screenTitles[accountScreen]}</Typography>
+        <Typography variant='h6'>
+          {Object.keys(managedEventDetails).length === 0
+            ? PageTitles[accountPage]
+            : `Manage: ${managedEventDetails.event_title}`
+          }
+        </Typography>
         {(() => {
-          if (accountScreen === 'account') {
+          if (accountPage === 'account') {
             return (
-              <Button
-                form='accountForm' type='submit' disabled={!accountChange}
+              <Button form='accountForm' type='submit' disabled={!accountChange} color='success'
                 variant="contained" sx={{ bottom: '5px', backgroundColor: 'success.main' }}>
                 Save changes
               </Button>
             )
           }
-          else if (accountScreen === 'host') {
+          else if (accountPage === 'tickets') {
             return (
-              <Button
-                form='hostForm' type='submit' disabled={!hostChange}
+              <FlexBox sx={{ ml: 'auto', mr: 'auto' }}>                
+                <Button onClick={() => setToggleTickets(true)}
+                  variant="contained" color='success' sx={{
+                    top: '45px', mr: 10,
+                    backgroundColor: toggleTickets ? 'success.light' : 'success.main'
+                  }}>
+                  Upcoming
+                </Button>
+                <Button onClick={() => setToggleTickets(false)}
+                  variant="contained" color='success' sx={{
+                    top: '45px', width: '117px', mr: 7,
+                    backgroundColor: toggleTickets ? 'success.main' : 'success.light'
+                  }}>
+                  Past
+                </Button>
+              </FlexBox>
+            )
+          }
+          else if (accountPage === 'host') {
+            return (
+              <Button form='hostForm' type='submit' disabled={!hostChange} color='success'
                 variant="contained" sx={{ bottom: '5px', backgroundColor: 'success.main' }}>
                 {hostChange === 'register' ? 'Register' : 'Save changes'}
               </Button>
+            )
+          }
+          else if (accountPage === 'events') {
+            return (
+              // TODO negative margins on media mobile
+              <FlexBox justify='space-between' sx={{ ml: -50 }}>
+                <FlexBox sx={{ ml: 'auto', mr: 10 }}>
+                  <Button onClick={() => setToggleEvents(true)}
+                    variant="contained" color='success' sx={{
+                      top: '45px', width: '117px', mr: 7,
+                      backgroundColor: toggleEvents ? 'success.light' : 'success.main'
+                    }}>
+                    Past
+                  </Button>
+                  <Button onClick={() => setToggleEvents(false)}
+                    variant="contained" color='success' sx={{
+                      top: '45px', mr: 10,
+                      backgroundColor: toggleEvents ? 'success.main' : 'success.light'
+                    }}>
+                    Up-coming
+                  </Button>
+                </FlexBox>
+                <Button onClick={() => navigate('/create-event')} color='success'
+                  variant="contained" sx={{ bottom: '5px', backgroundColor: 'success.main' }}>
+                  Create event
+                </Button>
+              </FlexBox>
+
             )
           }
         })()}
       </FlexBox>
       <Divider variant="middle" sx={{ mb: 2 }} />
       {(() => {
-        if (accountScreen === 'account') {
+        if (accountPage === 'account') {
           return (
-            <AccountDetailsScreen change={accountChange} setChange={setAccountChange} />
+            <AccountDetailsPage change={accountChange} setChange={setAccountChange} />
           )
-        } else if (accountScreen === 'interests') {
+        } else if (accountPage === 'interests') {
           return (
-            <AccountInterestScreen />
+            <AccountInterestPage />
           )
-        } else if (accountScreen === 'tickets') {
+        } else if (accountPage === 'tickets') {
           return (
-            <AccountTicketsScreen />
+            <AccountTicketsPage toggle={toggleTickets} />
           )
-        } else if (accountScreen === 'points') {
+        } else if (accountPage === 'points') {
           return (
-            <AccountPointsScreen />
+            <AccountPointsPage />
           )
-        } else if (accountScreen === 'groups') {
+        } else if (accountPage === 'groups') {
           return (
-            <AccountGroupScreen />
+            <AccountGroupPage />
           )
-        } else if (accountScreen === 'host') {
+        } else if (accountPage === 'host') {
           return (
-            <HostDetailsScreen change={hostChange} setChange={setHostChange} />
+            <HostDetailsPage change={hostChange} setChange={setHostChange} />
           )
-        } else if (accountScreen === 'events') {
+        } else if (accountPage === 'events') {
           return (
-            <HostEventsScreen />
+            <HostEventsPage toggle={toggleEvents} setManagedEventDetails={setManagedEventDetails} />
+          )
+        } else if (accountPage === 'managedEventDetails') {
+          return (
+            <ManageEventDetailsPage
+              managedEventDetails={managedEventDetails}
+              setManagedEventDetails={setManagedEventDetails}
+              changePage={changePage}
+            />
           )
         }
+
       })()}
     </AccountContainer>
 

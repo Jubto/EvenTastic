@@ -1,16 +1,15 @@
 import { styled } from '@mui/material/styles';
-import { Link } from 'react-router-dom';
-import { Grid, Card, CardHeader, CardActionArea, CardContent } from '@mui/material'
+import { Card, CardHeader, CardContent } from '@mui/material'
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
-import { useNavigate } from "react-router-dom";
 import AccountAPI from "../../utils/AccountAPIHelper";
 
 export const StyledHostCard = styled(Card)`
-  border: 1px solid black;
+  border: 0.1px solid black;
   border-radius: 5px;
-  height: 270px;
-  width: 300px;
+  margin: 1rem;
+  min-height: 200;
+  min-width: 300px;
 `;
 
 const SaveButtonBox = styled('div')`
@@ -21,54 +20,61 @@ const SaveButtonBox = styled('div')`
 
 const api = new AccountAPI();
 
-const HostRequestCard = ( {hostData} ) => {
-
-  //let navigate = useNavigate();
-
+const HostRequestCard = ({ hostRequest, setRequests }) => {
   const ApproveHost = (account_id) => {
-    let body = {};
-    body["is_verified"] = true;
-    body["host_status"] = 'Approved';
-    api.putHost(account_id, body);
-    //navigate("/admin/approveHosts");     
-    window.location.href =  "/admin/approveHosts"; 
+    let body = {
+      is_verified: true,
+      host_status: 'Approved'
+    }
+    api.putHost(account_id, body)
+      .then((res) => {
+        console.log(res)
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+    setRequests(prevState => prevState.filter((request) =>
+      request.account_id !== account_id)
+    )
   }
 
   const DeclineHost = (account_id) => {
-    let body = {};
-    body["is_verified"] = false;
-    body["host_status"] = 'Declined';
+    let body = {
+      is_verified: false,
+      host_status: 'Declined'
+    }
     api.putHost(account_id, body);
-    //navigate("/admin/approveHosts");     
-    window.location.href =  "/admin/approveHosts";
+    setRequests(prevState => prevState.filter((request) =>
+      request.account_id !== account_id )
+    )
   }
 
-
   return (
-    <Grid item>
-      <StyledHostCard>
-          <CardHeader title={hostData.org_name} />
-          <CardContent>
-            <Typography variant="h6" component="div">
-              <b>Title:</b> {hostData.job_title}
-            </Typography>
-            <Typography variant="h6" component="div">
-            <b>Qualification:</b> {hostData.qualification}
-            </Typography>
-            <Typography variant="h6" component="div">
-            <b>Contact No:</b> {hostData.host_contact_no}
-            </Typography>
-              <SaveButtonBox>
-                <Button variant="contained" value={hostData.account_id} color="success" onClick={(e) => ApproveHost(e.target.value) } >
-                  Approve
-                </Button>
-                <Button variant="contained" value={hostData.account_id} color="error" onClick={(e) => DeclineHost(e.target.value) } >
-                  Decline
-                </Button>
-              </SaveButtonBox>
-          </CardContent>
-      </StyledHostCard>
-    </Grid>
+    <StyledHostCard>
+      <CardHeader  style={{ backgroundColor: '#404040', color: 'white' }} title={hostRequest.org_name} />
+      <CardContent>
+        <div variant="h6" component="div">
+          <b style={{ color: '#484848' }}>Title:</b> {hostRequest.job_title}
+        </div>
+        <div variant="h6" component="div">
+          <b style={{ color: '#484848' }}>Qualification:</b> {hostRequest.qualification}
+        </div>
+        <div variant="h6" component="div">
+          <b style={{ color: '#484848' }}>Email:</b> {hostRequest.org_email}
+        </div>
+        <div variant="h6" component="div">
+          <b style={{ color: '#484848' }}>Mobile:</b> {hostRequest.host_contact_no}
+        </div>
+        <SaveButtonBox>
+          <Button variant="contained" value={hostRequest.account_id} color="success" onClick={(e) => ApproveHost(e.target.value)} >
+            Approve
+          </Button>
+          <Button variant="contained" value={hostRequest.account_id} color="error" onClick={(e) => DeclineHost(e.target.value)} >
+            Decline
+          </Button>
+        </SaveButtonBox>
+      </CardContent>
+    </StyledHostCard>
   )
 }
 

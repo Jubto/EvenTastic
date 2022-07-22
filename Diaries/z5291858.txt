@@ -1,0 +1,19 @@
+Week 1:
+Participated in group discussion
+Read through project specifications
+Created a list of 3 preferred projects highlighting the pros and cons of each
+Added meeting minutes of the discussion highlighting next action times to be conducted
+Created a when2meet link to figure out preferred timings to schedule meetings throughout the week
+
+Week 2:
+Joined GitHub and Jira for the project. 
+Had a discussion with the team members on the approach and technical architecture of the project.
+Created User Stories for functionalities: 'View Event Details','Buy Tickets','Modify Booking','Cancel Booking'.
+Added acceptance criterion for the above functionalities.
+Had a meeting with the team to discuss and provide feedback on all user stories.
+
+Week 3:
+Completed User Stories and Sprints sections of the Proposal.
+Complted User Interface Mockups for View Events and View Recommendations functionalities.
+Submitted proposal by deadline.
+Completed API Specifiction for the Accounts API for Sprint 1.
