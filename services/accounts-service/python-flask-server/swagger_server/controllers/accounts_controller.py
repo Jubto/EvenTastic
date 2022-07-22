@@ -7,6 +7,7 @@ from swagger_server.models.account import Account  # noqa: E501
 from swagger_server.models.account_list import AccountList  # noqa: E501
 from swagger_server.models.account_not_found_error import AccountNotFoundError  # noqa: E501
 from swagger_server.models.credit_card import CreditCard  # noqa: E501
+from swagger_server.models.reward_points_update import RewardPointsUpdate  # noqa: E501
 from swagger_server.models.host_details import HostDetails  # noqa: E501
 from swagger_server.models.invalid_input_error import InvalidInputError  # noqa: E501
 from swagger_server.models.unexpected_service_error import UnexpectedServiceError  # noqa: E501
@@ -74,23 +75,6 @@ def create_account(body):  # noqa: E501
         # catch any unexpected runtime error and return as 500 error 
         error = UnexpectedServiceError(code="500", type="UnexpectedServiceError", message=str(e))
         return error, 500, {'Access-Control-Allow-Origin': '*'}
-
-
-def create_account_options():
-    """Used to respond to browser with Access-Control-Allow-Methods header. Required for POST.
-
-     # noqa: E501
-
-
-    :rtype: None
-    """
-    response_headers = {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': '*',
-        'Access-Control-Allow-Headers': '*',
-        'Access-Control-Max-Age': 86400 
-    }
-    return None, 200, response_headers
 
 
 def get_account_details(account_id):
@@ -451,25 +435,6 @@ def update_account(account_id, body):  # noqa: E501
         return error, 500, {'Access-Control-Allow-Origin': '*'}
 
 
-def update_account_options(account_id):  # noqa: E501
-    """Used to respond to browser with Access-Control-Allow-Methods header. Required for PUT.
-
-     # noqa: E501
-
-    :param account_id: ID of the Account to be updated.
-    :type account_id: int
-
-    :rtype: None
-    """
-    response_headers = {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': '*',
-        'Access-Control-Allow-Headers': '*',
-        'Access-Control-Max-Age': 86400 
-    }
-    return None, 200, response_headers
-
-
 def update_credit_card(account_id, body):  # noqa: E501
     """Used to update the Credit Card details for an Account.
 
@@ -527,25 +492,6 @@ def update_credit_card(account_id, body):  # noqa: E501
         # catch any unexpected runtime error and return as 500 error 
         error = UnexpectedServiceError(code="500", type="UnexpectedServiceError", message=str(e))
         return error, 500, {'Access-Control-Allow-Origin': '*'}
-
-
-def update_credit_card_options(account_id):  # noqa: E501
-    """Used to respond to browser with Access-Control-Allow-Methods header. Required for PUT.
-
-     # noqa: E501
-
-    :param account_id: ID of the Account to be updated.
-    :type account_id: int
-
-    :rtype: None
-    """
-    response_headers = {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': '*',
-        'Access-Control-Allow-Headers': '*',
-        'Access-Control-Max-Age': 86400 
-    }
-    return None, 200, response_headers
 
 
 def update_host_details(account_id, body):  # noqa: E501
@@ -622,26 +568,6 @@ def update_host_details(account_id, body):  # noqa: E501
         return error, 500, {'Access-Control-Allow-Origin': '*'}
 
 
-def update_host_details_options(account_id):  # noqa: E501
-    """Used to respond to browser with Access-Control-Allow-Methods header. Required for PUT.
-
-     # noqa: E501
-
-    :param account_id: ID of the Account to be updated.
-    :type account_id: int
-
-    :rtype: None
-    """
-    response_headers = {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': '*',
-        'Access-Control-Allow-Headers': '*',
-        'Access-Control-Max-Age': 86400 
-    }
-    return None, 200, response_headers
-
-
-
 def list_host_details(host_status=None):  # noqa: E501
     """Retrieve a List of Host Details. Filter by status.
 
@@ -689,3 +615,20 @@ def list_host_details(host_status=None):  # noqa: E501
         cur.close()
         con.close()
         return error, 500, {'Access-Control-Allow-Origin': '*'}
+
+
+def update_reward_points(account_id, body):  # noqa: E501
+    """Used to update the Reward Points total for an account.
+
+     # noqa: E501
+
+    :param account_id: ID of the Account to be updated.
+    :type account_id: int
+    :param body: The patch operation to perform. Only Reward Points update is supported.
+    :type body: dict | bytes
+
+    :rtype: Account
+    """
+    if connexion.request.is_json:
+        body = RewardPointsUpdate.from_dict(connexion.request.get_json())  # noqa: E501
+    return 'do some magic!'

@@ -600,6 +600,131 @@ paths:
           schema:
             $ref: "#/definitions/UnexpectedServiceError"
       x-swagger-router-controller: "swagger_server.controllers.reviews_controller"
+  /reward_points:
+    get:
+      tags:
+      - "RewardPoints"
+      summary: "Retrieve a List of Reward Points."
+      operationId: "list_reward_points"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "event_id"
+        in: "query"
+        description: "The Event ID to search for."
+        required: false
+        type: "string"
+      - name: "booking_id"
+        in: "query"
+        description: "The Booking ID to search for."
+        required: false
+        type: "string"
+      - name: "reward_points_status"
+        in: "query"
+        description: "The Reward Points Status to search for."
+        required: false
+        type: "string"
+      responses:
+        "200":
+          description: "Returns a list of Reward points. Returns empty array if no\
+            \ Events match the search criteria."
+          schema:
+            $ref: "#/definitions/RewardPointsList"
+        "500":
+          description: "Unexpected failure in the service layer."
+          schema:
+            $ref: "#/definitions/UnexpectedServiceError"
+      x-swagger-router-controller: "swagger_server.controllers.reward_points_controller"
+    post:
+      tags:
+      - "RewardPoints"
+      summary: "Used to create a Reward Points."
+      operationId: "create_reward_points"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Reward Points object containing the Reward Points details."
+        required: true
+        schema:
+          $ref: "#/definitions/RewardPoints"
+      responses:
+        "201":
+          description: "Reward Points created."
+          schema:
+            $ref: "#/definitions/RewardPoints"
+        "400":
+          description: "Invalid input."
+          schema:
+            $ref: "#/definitions/InvalidInputError"
+        "500":
+          description: "Unexpected failure in the service layer."
+          schema:
+            $ref: "#/definitions/UnexpectedServiceError"
+      x-swagger-router-controller: "swagger_server.controllers.reward_points_controller"
+  /reward_points/{reward_points_id}:
+    get:
+      tags:
+      - "RewardPoints"
+      summary: "Retrieve Reward Points details by Reward Points ID."
+      operationId: "get_reward_points_details"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "reward_points_id"
+        in: "path"
+        description: "ID of the Reward Points to be retrieved."
+        required: true
+        type: "integer"
+        format: "int64"
+      responses:
+        "200":
+          description: "Reward Points details successfully retrieved."
+          schema:
+            $ref: "#/definitions/RewardPoints"
+        "404":
+          description: "Reward Points not found."
+          schema:
+            $ref: "#/definitions/RewardPointsNotFoundError"
+        "500":
+          description: "Unexpected failure in the service layer."
+          schema:
+            $ref: "#/definitions/UnexpectedServiceError"
+      x-swagger-router-controller: "swagger_server.controllers.reward_points_controller"
+    patch:
+      tags:
+      - "RewardPoints"
+      summary: "Used to update the Status of a single Event e.g. Cancel an Event."
+      operationId: "update_reward_points_status"
+      consumes:
+      - "application/json"
+      parameters:
+      - name: "reward_points_id"
+        in: "path"
+        description: "ID of the Reward Points to be updated."
+        required: true
+        type: "integer"
+        format: "int64"
+      - in: "body"
+        name: "body"
+        description: "The patch operation to perform. Only Reward Points status update\
+          \ is supported."
+        required: true
+        schema:
+          $ref: "#/definitions/RewardPointsStatusUpdate"
+      responses:
+        "200":
+          description: "Reward Points status successfully updated."
+          schema:
+            $ref: "#/definitions/RewardPoints"
+        "404":
+          description: "Reward Points not found."
+          schema:
+            $ref: "#/definitions/RewardPointsNotFoundError"
+      x-swagger-router-controller: "swagger_server.controllers.reward_points_controller"
 definitions:
   VenueList:
     type: "array"
@@ -657,6 +782,45 @@ definitions:
     type: "array"
     items:
       $ref: "#/definitions/Review"
+  RewardPointsList:
+    type: "array"
+    items:
+      $ref: "#/definitions/RewardPoints"
+  RewardPoints:
+    type: "object"
+    properties:
+      reward_points_id:
+        type: "integer"
+        format: "int64"
+        example: 1
+      account_id:
+        type: "integer"
+        format: "int64"
+        example: 2
+      event_id:
+        type: "integer"
+        format: "int64"
+        example: 3
+      booking_id:
+        type: "integer"
+        format: "int64"
+        example: 4
+      reward_points_amount:
+        type: "number"
+        format: "float"
+        example: 200.0
+      reward_points_status:
+        type: "string"
+        enum:
+        - "Pending"
+        - "Approved"
+    example:
+      booking_id: 4
+      reward_points_id: 1
+      reward_points_status: "Pending"
+      account_id: 2
+      event_id: 3
+      reward_points_amount: 200.0
   Booking:
     type: "object"
     properties:
@@ -685,6 +849,15 @@ definitions:
         type: "number"
         format: "float"
         example: 200.0
+      card_name:
+        type: "string"
+        example: "Bob Smith"
+      card_number:
+        type: "string"
+        example: "1111222233334444"
+      qr_code:
+        type: "string"
+        example: "0012bdda-09a8-11ed-861d-0242ac120002"
       ticket_details:
         type: "object"
         properties:
@@ -709,8 +882,11 @@ definitions:
       account_id: 2
       event_id: 2
       total_cost: 200.0
+      card_number: "1111222233334444"
       ticket_details: "{}"
       booking_email: "bob@gmail.com"
+      card_name: "Bob Smith"
+      qr_code: "0012bdda-09a8-11ed-861d-0242ac120002"
       booking_status: "Booked"
   Ticket:
     type: "object"
@@ -1014,6 +1190,32 @@ definitions:
       op: "replace"
       path: "/booking_status"
       value: "Cancelled"
+  RewardPointsStatusUpdate:
+    type: "object"
+    required:
+    - "op"
+    - "path"
+    - "value"
+    properties:
+      op:
+        type: "string"
+        example: "replace"
+        enum:
+        - "replace"
+      path:
+        type: "string"
+        enum:
+        - "/reward_points_status"
+      value:
+        type: "string"
+        example: "Approved"
+        enum:
+        - "Pending"
+        - "Approved"
+    example:
+      op: "replace"
+      path: "/reward_points_status"
+      value: "Approved"
   Error:
     type: "object"
     properties:
@@ -1063,6 +1265,14 @@ definitions:
       code: 404
       type: "ReviewInteractionNotFoundError"
       message: "The following Review Interaction does not exist: %review_interaction_id%"
+  RewardPointsNotFoundError:
+    allOf:
+    - $ref: "#/definitions/Error"
+    - {}
+    example:
+      code: 404
+      type: "RewardPointsNotFoundError"
+      message: "The following Reward Points does not exist: %reward_points_id%"
   InvalidInputError:
     allOf:
     - $ref: "#/definitions/Error"

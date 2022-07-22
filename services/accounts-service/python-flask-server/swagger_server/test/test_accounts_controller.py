@@ -11,6 +11,7 @@ from swagger_server.models.account_not_found_error import AccountNotFoundError  
 from swagger_server.models.credit_card import CreditCard  # noqa: E501
 from swagger_server.models.host_details import HostDetails  # noqa: E501
 from swagger_server.models.invalid_input_error import InvalidInputError  # noqa: E501
+from swagger_server.models.reward_points_update import RewardPointsUpdate  # noqa: E501
 from swagger_server.models.unexpected_service_error import UnexpectedServiceError  # noqa: E501
 from swagger_server.test import BaseTestCase
 
@@ -29,17 +30,6 @@ class TestAccountsController(BaseTestCase):
             method='POST',
             data=json.dumps(body),
             content_type='application/json')
-        self.assert200(response,
-                       'Response body is : ' + response.data.decode('utf-8'))
-
-    def test_create_account_options(self):
-        """Test case for create_account_options
-
-        Used to respond to browser with Access-Control-Allow-Methods header. Required for POST.
-        """
-        response = self.client.open(
-            '/v1/accounts',
-            method='OPTIONS')
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
 
@@ -118,17 +108,6 @@ class TestAccountsController(BaseTestCase):
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
 
-    def test_update_account_options(self):
-        """Test case for update_account_options
-
-        Used to respond to browser with Access-Control-Allow-Methods header. Required for PUT.
-        """
-        response = self.client.open(
-            '/v1/accounts/{account_id}'.format(account_id=789),
-            method='OPTIONS')
-        self.assert200(response,
-                       'Response body is : ' + response.data.decode('utf-8'))
-
     def test_update_credit_card(self):
         """Test case for update_credit_card
 
@@ -140,17 +119,6 @@ class TestAccountsController(BaseTestCase):
             method='PUT',
             data=json.dumps(body),
             content_type='application/json')
-        self.assert200(response,
-                       'Response body is : ' + response.data.decode('utf-8'))
-
-    def test_update_credit_card_options(self):
-        """Test case for update_credit_card_options
-
-        Used to respond to browser with Access-Control-Allow-Methods header. Required for PUT.
-        """
-        response = self.client.open(
-            '/v1/accounts/{account_id}/credit_card'.format(account_id=789),
-            method='OPTIONS')
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
 
@@ -168,14 +136,17 @@ class TestAccountsController(BaseTestCase):
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
 
-    def test_update_host_details_options(self):
-        """Test case for update_host_details_options
+    def test_update_reward_points(self):
+        """Test case for update_reward_points
 
-        Used to respond to browser with Access-Control-Allow-Methods header. Required for PUT.
+        Used to update the Reward Points total for an account.
         """
+        body = RewardPointsUpdate()
         response = self.client.open(
-            '/v1/accounts/{account_id}/host_details'.format(account_id=789),
-            method='OPTIONS')
+            '/v1/accounts/{account_id}'.format(account_id=789),
+            method='PATCH',
+            data=json.dumps(body),
+            content_type='application/json')
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
 

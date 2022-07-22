@@ -76,17 +76,6 @@ paths:
           schema:
             $ref: "#/definitions/UnexpectedServiceError"
       x-swagger-router-controller: "swagger_server.controllers.accounts_controller"
-    options:
-      tags:
-      - "Accounts"
-      summary: "Used to respond to browser with Access-Control-Allow-Methods header.\
-        \ Required for POST."
-      operationId: "create_account_options"
-      parameters: []
-      responses:
-        "200":
-          description: "Response headers will indicate the allowable methods."
-      x-swagger-router-controller: "swagger_server.controllers.accounts_controller"
   /accounts/{account_id}:
     get:
       tags:
@@ -155,12 +144,13 @@ paths:
           schema:
             $ref: "#/definitions/UnexpectedServiceError"
       x-swagger-router-controller: "swagger_server.controllers.accounts_controller"
-    options:
+    patch:
       tags:
       - "Accounts"
-      summary: "Used to respond to browser with Access-Control-Allow-Methods header.\
-        \ Required for PUT."
-      operationId: "update_account_options"
+      summary: "Used to update the Reward Points total for an account."
+      operationId: "update_reward_points"
+      consumes:
+      - "application/json"
       parameters:
       - name: "account_id"
         in: "path"
@@ -168,9 +158,22 @@ paths:
         required: true
         type: "integer"
         format: "int64"
+      - in: "body"
+        name: "body"
+        description: "The patch operation to perform. Only Reward Points update is\
+          \ supported."
+        required: true
+        schema:
+          $ref: "#/definitions/RewardPointsUpdate"
       responses:
         "200":
-          description: "Response headers will indicate the allowable methods."
+          description: "Reward Points successfully updated."
+          schema:
+            $ref: "#/definitions/Account"
+        "404":
+          description: "Account not found."
+          schema:
+            $ref: "#/definitions/AccountNotFoundError"
       x-swagger-router-controller: "swagger_server.controllers.accounts_controller"
   /accounts/{account_id}/credit_card:
     get:
@@ -236,23 +239,6 @@ paths:
           schema:
             $ref: "#/definitions/UnexpectedServiceError"
       x-swagger-router-controller: "swagger_server.controllers.accounts_controller"
-    options:
-      tags:
-      - "Accounts"
-      summary: "Used to respond to browser with Access-Control-Allow-Methods header.\
-        \ Required for PUT."
-      operationId: "update_credit_card_options"
-      parameters:
-      - name: "account_id"
-        in: "path"
-        description: "ID of the Account to be updated."
-        required: true
-        type: "integer"
-        format: "int64"
-      responses:
-        "200":
-          description: "Response headers will indicate the allowable methods."
-      x-swagger-router-controller: "swagger_server.controllers.accounts_controller"
   /accounts/{account_id}/host_details:
     get:
       tags:
@@ -316,23 +302,6 @@ paths:
           description: "Unexpected failure in the service layer."
           schema:
             $ref: "#/definitions/UnexpectedServiceError"
-      x-swagger-router-controller: "swagger_server.controllers.accounts_controller"
-    options:
-      tags:
-      - "Accounts"
-      summary: "Used to respond to browser with Access-Control-Allow-Methods header.\
-        \ Required for PUT."
-      operationId: "update_host_details_options"
-      parameters:
-      - name: "account_id"
-        in: "path"
-        description: "ID of the Account to be updated."
-        required: true
-        type: "integer"
-        format: "int64"
-      responses:
-        "200":
-          description: "Response headers will indicate the allowable methods."
       x-swagger-router-controller: "swagger_server.controllers.accounts_controller"
   /host_details:
     get:
@@ -511,6 +480,30 @@ definitions:
       job_title: "Event Manager"
       host_status: "Pending"
       host_id: 1
+  RewardPointsUpdate:
+    type: "object"
+    required:
+    - "op"
+    - "path"
+    - "value"
+    properties:
+      op:
+        type: "string"
+        example: "replace"
+        enum:
+        - "replace"
+      path:
+        type: "string"
+        enum:
+        - "/reward_points"
+      value:
+        type: "number"
+        format: "float"
+        example: 100.0
+    example:
+      op: "replace"
+      path: "/reward_points"
+      value: 100.0
   Error:
     type: "object"
     properties:
