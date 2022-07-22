@@ -42,3 +42,4 @@ Week 7:
 
 Week 8:
 - Completed front-end implementation for User Story ZW9900-17, host event cancellation.
+- Implemented real time chat service capability
