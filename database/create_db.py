@@ -131,7 +131,11 @@ cur.execute('CREATE TABLE bookings (\
             event_id INT NOT NULL,\
             FOREIGN KEY (event_id) REFERENCES events (event_id),\
             booking_status VARCHAR(15),\
-            total_cost float8);')
+            total_cost float8,\
+            card_name VARCHAR(50),\
+            card_number VARCHAR(16),\
+            qr_code TEXT\
+            );')
 
 # Ticket type : General, Front, Middle, Back
 cur.execute('CREATE TABLE tickets (\
@@ -305,8 +309,8 @@ for filename in os.listdir(account_img_dir):
         cur.execute(sql)
 
 
-cur.execute("INSERT INTO bookings values (default, 1, 1, 'Booked', 500.0);")
-cur.execute("INSERT INTO bookings values (default, 1, 1, 'Booked', 200.0);")
+cur.execute("INSERT INTO bookings values (default, 1, 1, 'Booked', 500.0, 'Vishal', '9999333366668888', '1_1_230722011820');")
+cur.execute("INSERT INTO bookings values (default, 1, 1, 'Booked', 200.0, 'Vishal', '9999333366668888', '1_1_230722011846');")
 
 # QR-code : (Venueid-Eventid-accountid-type&number)
 for t_id in range(1, 31):
@@ -385,7 +389,9 @@ cur.execute("INSERT INTO interactions values (default, 2, 2, True, True);")
 cur.execute("INSERT INTO interactions values (default, 3, 2, False, True);")
 cur.execute("INSERT INTO interactions values (default, 3, 3, False, True);")
 
-cur.execute('SELECT * FROM accounts')
+"""
+cur.execute('SELECT account_id, email, first_name, last_name, age, mobile_no, location, \
+            password, account_type, reward_points, tags, user_desc   FROM accounts')
 records = cur.fetchall()
 print("\nAccount details")
 for row in records:
@@ -449,6 +455,8 @@ for row in records:
     for j in range(len(row)):
         print(row[j], end=" ")
     print()
+"""
+print("Database has been initialized.")
 
 cur.close()
 con.close()

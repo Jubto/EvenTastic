@@ -629,6 +629,34 @@ def update_reward_points(account_id, body):  # noqa: E501
 
     :rtype: Account
     """
-    if connexion.request.is_json:
-        body = RewardPointsUpdate.from_dict(connexion.request.get_json())  # noqa: E501
-    return 'do some magic!'
+    try:
+        if connexion.request.is_json:
+            body = RewardPointsUpdate.from_dict(connexion.request.get_json())  # noqa: E501
+
+        con = psycopg2.connect(database= 'eventastic', user='postgres', password='postgrespw', host=host, port=port)
+        con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+        cur = con.cursor()
+
+        # to check if the account id exists or not
+        cur.execute('SELECT * FROM accounts where account_id = ' + str(account_id))
+        record = cur.fetchone()
+        if record == None:
+            error = AccountNotFoundError(code=404, type="AccountNotFoundError", 
+                    message="The following Account ID does not exist: " + str(account_id))
+            cur.close()
+            con.close()
+            return error, 404, {'Access-Control-Allow-Origin': '*'}
+        
+        if body.path == '/reward_points':
+            cur.execute(f"UPDATE accounts set reward_points = {body.value} where account_id = {account_id}")    
+            
+        cur.close()
+        con.close()
+        return {"message": "Rewards points have been updated successfully."}, 200, {'Access-Control-Allow-Origin': '*'}
+
+    except Exception as e:
+        # catch any unexpected runtime error and return as 500 error 
+        error = UnexpectedServiceError(code="500", type="UnexpectedServiceError", message=str(e))
+        cur.close()
+        con.close()
+        return error, 500, {'Access-Control-Allow-Origin': '*'}
