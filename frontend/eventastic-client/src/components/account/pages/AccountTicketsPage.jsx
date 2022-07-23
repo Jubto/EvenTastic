@@ -112,7 +112,7 @@ const Ticket = ({ booking, handleCancelBooking, handleSendTicketsModal }) => {
         </div>
         <SaveButtonBox  width="15%">
           <Button sx={{ height: '50%' }} variant="contained" value={booking.booking_id} onClick={(e) => handleSendTicketsModal(e.target.value)} >Send Tickets</Button> 
-          <Button sx={{ height: '50%' }} variant="contained" color="error" value={booking.booking_id} onClick={(e) => handleCancelBooking(e.target.value)} >Cancel Booking</Button>
+          <Button sx={{ height: '50%' }} variant="contained" color="error" value={booking.card_number}  id={booking.booking_id} onClick={(e) => handleCancelBooking(e.target.id, e.target.value)} >Cancel Booking</Button>
         </SaveButtonBox>
       </MainBox>
     </FlexBox>
@@ -202,12 +202,17 @@ const AccountTicketsPage = ({ toggle }) => {
           event_id: booking.event_id,
           total_cost: booking.total_cost,
           ticket_details: booking.ticket_details,
+          card_number: booking.card_number,
+          reward_points_id: parseInt(booking.reward_points_id),
+          reward_points: parseFloat(booking.reward_points),
           event_title: bookedEventsRes[idx].event_title,
           event_img: bookedEventsRes[idx].event_img,
           event_location: bookedEventsRes[idx].event_location,
           event_start_datetime: bookedEventsRes[idx].event_start_datetime
         }
       ))
+
+      console.log(bookingMapping)
 
       setUpComingBookings(bookingMapping)
 
@@ -245,9 +250,10 @@ const AccountTicketsPage = ({ toggle }) => {
     }
   }
 
-  const handleCancelBooking = (booking_id) => {
+  const handleCancelBooking = (booking_id, card_number) => {
     setToCancel(booking_id)
     setOpenModal(true)
+    console.log(booking_id, card_number)
   }
 
   const handleSendTicketsModal = async (booking_id) => {

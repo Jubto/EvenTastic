@@ -126,14 +126,28 @@ const CardDetails = ({ open, setOpen, setPage, setSuccessModal, totalCost, event
             Middle: middleSeats,
             Back: backSeats,
           },
-          total_cost: parseFloat(totalCost)
+          total_cost: parseFloat(totalCost),
+          card_name: cardName,
+          card_number: cardNumber
         }
         
         const makeBooking = await eventAPI.addBooking(bookingParams)
         setOpen(false)
         setPage('selection')
         setSuccessModal(true)
+        
+        // to add reward points
+        const rewardPointsParams = {
+          account_id: parseInt(account.account_id),
+          booking_id: parseInt(makeBooking.data.booking_id),
+          event_id: parseInt(eventID),
+          reward_points_amount: parseFloat(totalCost/10.0),
+          reward_points_status: "Pending"
+        }
+        
+        const addRewardPoints = await eventAPI.postRewardPoints(rewardPointsParams)
 
+        // to get the list of seats
         const bookedParams = {
           booking_id: makeBooking.data.booking_id
         }

@@ -96,7 +96,7 @@ const TicketPurchaseModal = ({ open, setOpen, eventDetails, setSuccessModal }) =
             }
             else if (page === 'paymentOptions') {
               return (
-                <PaymentOptions setPage={setPage} />
+                <PaymentOptions setPage={setPage} totalCost={totalCost} />
               )
             }
             else if (page === 'cardDetails') {
@@ -108,7 +108,9 @@ const TicketPurchaseModal = ({ open, setOpen, eventDetails, setSuccessModal }) =
             }
             else if (page === 'points') {
               return (
-                <RewardPoints />
+                <RewardPoints open={open} setOpen={setOpen} setPage={setPage} setSuccessModal={setSuccessModal} 
+                totalCost={totalCost} eventID={eventDetails.event_id} generalSeats={generalSeats} frontSeats={frontSeats} 
+                middleSeats={middleSeats} backSeats={backSeats}  />
               )
             }
           })()}

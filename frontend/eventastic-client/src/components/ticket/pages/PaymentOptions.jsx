@@ -5,7 +5,8 @@ import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
-import { useState } from 'react';
+import { useState, useContext, useEffect } from 'react';
+import { StoreContext } from '../../../utils/context';
 
 const MainBox = styled('div')`
   width: 100%;
@@ -32,9 +33,12 @@ const SeatsBox = styled('div')`
   margin-top: 20px;
 `;
 
-const PaymentOptions = ({ setPage }) => {
+const PaymentOptions = ({ setPage, totalCost }) => {
 
-  const [paymentOption, setPaymentOption] = useState("Card")
+  const context = useContext(StoreContext);
+  const [account, setAccount] = context.account;
+
+  const [paymentOption, setPaymentOption] = useState("cardDetails")
 
   const changePaymentOption = (e) => {
     setPaymentOption(e.target.value)
@@ -53,17 +57,17 @@ const PaymentOptions = ({ setPage }) => {
                 aria-labelledby="payment-options-radio-buttons-group"
                 name="payment-options-radio-buttons"
                 value={paymentOption}
-                onChange={changePaymentOption}
+                onChange={changePaymentOption} 
               >
-                <FormControlLabel value="Card" control={<Radio />} label="Card" />
-                {/*<FormControlLabel value="Rewards" control={<Radio />} label="Rewards" />*/}
+                <FormControlLabel value="cardDetails" control={<Radio />} label="Card" />
+                <FormControlLabel value="points" disabled={parseFloat(account.reward_points) < parseFloat(totalCost)} control={<Radio />} label="Rewards" />
               </RadioGroup>
             </FormControl>
           </div>
 
         </ContentBox>
         <ButtonBox>
-          <Button variant='contained' onClick={() => setPage('cardDetails')}>
+          <Button variant='contained' onClick={() => setPage(paymentOption)}>
             next
           </Button>
           <Button variant='contained' onClick={() => setPage('selection')}>

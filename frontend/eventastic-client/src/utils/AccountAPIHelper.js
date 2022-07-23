@@ -34,6 +34,10 @@ export default class AccountAPI {
     return this.init().get(`/accounts/${accountID}`)
   };
 
+  patchAccount = (accountID, body) => {
+    return this.init().patch(`/accounts/${accountID}`, body)
+  };
+
   putAccount = (accountID, body) => {
     return this.init().put(`/accounts/${accountID}`, body)
   };

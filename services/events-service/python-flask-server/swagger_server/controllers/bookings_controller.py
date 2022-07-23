@@ -118,7 +118,8 @@ def get_booking_details(booking_id):  # noqa: E501
         cur = con.cursor()
 
         cur.execute(f"SELECT b.booking_id, b.account_id, b.event_id, b.booking_status, a.email, b.total_cost ,\
-            b.card_name, b.card_number, b.qr_code, rp.reward_points_id FROM bookings b join accounts a on a.account_id = b.account_id \
+            b.card_name, b.card_number, b.qr_code, rp.reward_points_id, rp.reward_points_amount \
+            FROM bookings b join accounts a on a.account_id = b.account_id \
             left join rewardpoints rp on b.booking_id = rp.booking_id where b.booking_id = {booking_id}")
         record = cur.fetchone()
         if record == None:
@@ -139,7 +140,13 @@ def get_booking_details(booking_id):  # noqa: E501
         booking['card_name'] = str(record[6])
         booking['card_number'] = str(record[7])
         booking['qr_code'] = str(record[8])
-        booking['reward_points_id'] = str(record[9])
+
+        if record[9] == None:
+            booking['reward_points_id'] = -1
+            booking['reward_points'] = -1
+        else:
+            booking['reward_points_id'] = int(record[9])
+            booking['reward_points'] = float(record[10])
 
         for item in booking.keys():
                 if booking[item] == "None":
@@ -189,7 +196,8 @@ def list_bookings(account_id=None, booking_status=None, event_id=None):  # noqa:
         cur = con.cursor()
 
         select_string = "SELECT b.booking_id, b.account_id, b.event_id, b.booking_status, a.email, b.total_cost, \
-            b.card_name, b.card_number, b.qr_code, rp.reward_points_id FROM bookings b join accounts a on a.account_id = b.account_id \
+            b.card_name, b.card_number, b.qr_code, rp.reward_points_id, rp.reward_points_amount \
+            FROM bookings b join accounts a on a.account_id = b.account_id \
             join events e on e.event_id = b.event_id left join rewardpoints rp on b.booking_id = rp.booking_id where "
         if account_id != None: select_string += f" b.account_id = {account_id} and "
         if event_id != None: select_string += f" b.event_id = {event_id} and "
@@ -213,7 +221,13 @@ def list_bookings(account_id=None, booking_status=None, event_id=None):  # noqa:
             booking['card_name'] = str(record[6])
             booking['card_number'] = str(record[7])
             booking['qr_code'] = str(record[8])
-            booking['reward_points_id'] = str(record[9])
+            
+            if record[9] == None:
+                booking['reward_points_id'] = -1
+                booking['reward_points'] = -1
+            else:
+                booking['reward_points_id'] = int(record[9])
+                booking['reward_points'] = float(record[10])
 
             for item in booking.keys():
                     if booking[item] == "None":
