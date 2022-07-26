@@ -83,8 +83,8 @@ const CreateGroupPage = ({ eventID, account, setOpen, setApiGetGroup }) => {
           join_status: "Accepted"
         }
         const memberRes = await api.postGroupMember(groupID, member)
+        setOpen(true)
         setApiGetGroup(true)
-        setTimeout(() => setOpen(true), 200)
       }
       catch (err) {
         console.log(err)

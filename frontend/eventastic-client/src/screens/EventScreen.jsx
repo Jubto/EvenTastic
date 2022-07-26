@@ -106,24 +106,29 @@ const EventScreen = () => {
 
   const initApiCalls = async () => {
     try {
+      let eventID = null
       if (!Object.entries(eventDetails).length) {
         const eventRes = await eventApi.getEventDetails(id)
         setEventDetails(eventRes.data)
+        eventID = eventRes.data.event_id
       }
-      if (account && accountGroups[eventRes.data.event_id]) {
+      else {
+        eventID = eventDetails.event_id
+      }
+      if (account && accountGroups[eventID]) {
         // user is logged in + already member of group
-        setGroupDetails(accountGroups[eventRes.data.event_id])
+        setGroupDetails(accountGroups[eventID])
         if (location.state?.redirect === 'groups') {
           setGroupMainModal(true)
         }
       }
       else {
         // get list of groups filtered by eventID
-        const groups = await apiGroupsFilterBy(eventRes.data.event_id)
+        const groups = await apiGroupsFilterBy(eventID)
         if (!isAccountAccepted(groups)){
           setGroupList(groups)
         }
-        else {
+        else if (!openGroupCreatedModal) {
           setTimeout(() => setGroupJoinedModal(true), 200)
         }
       }

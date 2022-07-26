@@ -68,10 +68,9 @@ const TagsScreen = () => {
   const location = useLocation();
   const context = useContext(StoreContext);
   const [account, setAccount] = context.account;
-  const [savedTags, setSavedTags] = useState(account.tags.map((item) => item.name))
+  const [savedTags, setSavedTags] = useState(() => account.tags.map((item) => item.name))
 
   const handleSubmit = () => {
-    // TODO FIX BACKEND
     const body = {
       ...account,
       'tags': savedTags.map((tag) => ({ 'name': tag }))

@@ -2,16 +2,19 @@ import { useEffect, useContext, useState } from "react"
 import { StoreContext } from "../../../utils/context"
 import { useNavigate } from 'react-router-dom';
 import EventAPI from "../../../utils/EventAPIHelper"
+import GroupAPI from "../../../utils/GroupAPIHelper";
 import { FlexBox, ScrollContainer } from "../../styles/layouts.styled"
-import { Button, Card, CardMedia, Typography } from "@mui/material"
+import { Badge, Button, Card, CardMedia, Typography } from "@mui/material"
 
-const api = new EventAPI()
+const eventApi = new EventAPI()
+const groupApi = new GroupAPI()
 
 const Group = ({ groupDetails, account }) => {
   const navigate = useNavigate();
   const [eventDetails, setEventDetails] = useState(false)
   const [isAdmin, setIsAdmin] = useState(false)
   const [eventCancelled, setEventCancelled] = useState(false)
+  const [newRequests, setNewRequests] = useState(0)
 
   const redirect = () => {
     navigate(`/event/${groupDetails.event_id}`, { state: { redirect: 'groups' } })
@@ -19,11 +22,17 @@ const Group = ({ groupDetails, account }) => {
 
   useEffect(() => {
     account.account_id === groupDetails.group_host_id && setIsAdmin(true)
-    api.getEventDetails(groupDetails.event_id)
+    eventApi.getEventDetails(groupDetails.event_id)
       .then((res) => {
         setEventDetails(res.data)
         res.data.event_status === "Cancelled" && setEventCancelled(true)
       })
+      .catch((err) => console.error(err))
+    groupApi.getGroup(groupDetails.group_id)
+    .then((res) => {
+      setNewRequests(res.data.group_members.filter((member) => member.join_status === 'Pending').length)
+    })
+    .catch((err) => console.error(err))
   }, [])
 
   return (
@@ -54,6 +63,7 @@ const Group = ({ groupDetails, account }) => {
                 {groupDetails.group_name}
               </Typography>
             </FlexBox>
+            <Badge badgeContent={newRequests} color='error' sx={{mt:0.5, mr:0.5}}>
             {isAdmin
               ? <Button variant='contained' color='success' sx={{ mr: 1 }} onClick={redirect} >
                 Manage My Group
@@ -62,6 +72,7 @@ const Group = ({ groupDetails, account }) => {
                 Go To Group
               </Button>
             }
+            </Badge>
           </FlexBox>
           <FlexBox direction='column' sx={{ mt: 2 }}>
             <Typography variant="subtitle1" color="text.secondary">

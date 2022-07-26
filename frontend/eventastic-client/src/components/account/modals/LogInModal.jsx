@@ -149,7 +149,7 @@ const LogInModal = () => {
           helperText={formErrors.password ? 'Cannot be empty.' : ''}
         />
         {logInFail
-          ? <Typography variant='subtitle2' sx={{ color: 'error.main', mt: -3 }}>
+          ? <Typography variant='subtitle2' sx={{ color: 'error.main', mt: -2 }}>
             Incorrect password or email .. Please try again
           </Typography>
           : ''

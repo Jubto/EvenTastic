@@ -68,6 +68,10 @@ const BroadcastModal = ({ open, setOpen, managedEventDetails, setSuccessModal, s
         handleClose(true)
       }
       catch(err) {
+        if (err.config.baseURL === eventAPI.api_url) {
+          handleClose(true)
+          setFailModal(true)
+        }
         console.log(err)
       }
     }

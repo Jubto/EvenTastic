@@ -145,6 +145,7 @@ const ManageEventDetailsPage = ({ managedEventDetails, setManagedEventDetails, c
         setOpen={setOpenBroadcast}
         managedEventDetails={managedEventDetails}
         setSuccessModal={setSentModal}
+        setFailModal={setFailModal}
       />
       <BroadcastSentModal
         open={openSentModal}
