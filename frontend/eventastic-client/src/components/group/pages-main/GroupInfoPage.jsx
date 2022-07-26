@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react"
+import { useContext, useState } from "react"
 import { StoreContext } from "../../../utils/context"
 import GroupAPI from "../../../utils/GroupAPIHelper"
 import { fileToDataUrl } from "../../../utils/helpers"
@@ -37,12 +37,11 @@ const Image = styled('img')`
   height: 100%;
 `
 
-const GroupInfoPage = ({ groupDetails, setGroupDetails, eventDetails, accountID }) => {
+const GroupInfoPage = ({ groupDetails, setGroupDetails, eventDetails, isGroupAdmin }) => {
   const context = useContext(StoreContext);
   const [accountGroups, setAccountGroups] = context.groups;
   const [open, setOpen] = useState(false);
   const [edit, setEdit] = useState(false)
-  const [editButton, setEditButton] = useState(false)
   const [imgUpload, setImageUpload] = useState(false);
   const [formErrors, setFormErrors] = useState({
     error: false,
@@ -95,10 +94,6 @@ const GroupInfoPage = ({ groupDetails, setGroupDetails, eventDetails, accountID 
     }
   }
 
-  useEffect(() => {
-    groupDetails.group_host_id === accountID && setEditButton(true)
-  }, [])
-
   return (
     <ScrollContainer thin pr='1vw' height='97%'>
       <FlexBox component="form" noValidate onSubmit={handleSubmit} wrap='wrap' sx={{ mb: 2 }}>
@@ -118,7 +113,7 @@ const GroupInfoPage = ({ groupDetails, setGroupDetails, eventDetails, accountID 
         }
 
         <FlexBox direction='column' sx={{ maxWidth: '900px', width: { sm: '100%', md: '55vw' } }} >
-          {editButton
+          {isGroupAdmin
             ? edit
               ? <FlexBox justify='space-between'>
                 <Button variant="contained" color='warning'

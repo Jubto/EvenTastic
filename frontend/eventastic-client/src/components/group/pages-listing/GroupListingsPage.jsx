@@ -28,6 +28,7 @@ const GroupCard = forwardRef(({
   }
 
   const handleAcceptClick = () => {
+    // deprecated - leave just incase we change api
     setApiGetGroup(true)
     setTimeout(() => setGroupJoinedModal(true), 200)
   }
@@ -36,7 +37,7 @@ const GroupCard = forwardRef(({
     for (const member of group.group_members) {
       if (member.account_id === account.account_id) {
         if (member.join_status === 'Accepted') {
-          setJoinState('Accepted')
+          setJoinState('Accepted') // deprecated - leave just incase we change api
         }
         else if (member.join_status === 'Pending') {
           setJoinState('Pending')
@@ -71,6 +72,7 @@ const GroupCard = forwardRef(({
           </Stack>
           {(() => {
             if (joinState === 'Accepted') {
+              // deprecated - leave just incase we change api
               return (
                 <Tooltip title="Accept Join Request" enterDelay={10}>
                   <Button id={group.group_id} variant='contained' color='success'

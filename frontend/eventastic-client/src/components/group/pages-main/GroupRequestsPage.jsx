@@ -8,7 +8,7 @@ import { Button, Card, CardMedia, Chip, Typography } from "@mui/material";
 const accountApi = new AccountAPI()
 const groupApi = new GroupAPI()
 
-const MemberCard = ({ groupDetails, setGroupDetails, eventID, member }) => {
+const MemberCard = ({ groupDetails, setGroupDetails, eventID, member, isGroupAdmin }) => {
   const context = useContext(StoreContext);
   const [accountGroups, setAccountGroups] = context.groups;
   const [account, setAccount] = useState(false)
@@ -74,18 +74,21 @@ const MemberCard = ({ groupDetails, setGroupDetails, eventID, member }) => {
               ))}
             </ScrollContainer>
           </FlexBox>
-          <FlexBox sx={{ width: '10%', ml: 4 }}>
-            <Button variant='contained' color='success'
-              onClick={() => processRequest('Accepted')} sx={{ height: '3vh', mr: 2 }}
-            >
-              Accept
-            </Button>
-            <Button variant='contained' color='error'
-              onClick={() => processRequest('Rejected')} sx={{ height: '3vh' }}
-            >
-              Decline
-            </Button>
-          </FlexBox>
+          {isGroupAdmin
+            ? <FlexBox sx={{ width: '10%', ml: 4 }}>
+              <Button variant='contained' color='success'
+                onClick={() => processRequest('Accepted')} sx={{ height: '3vh', mr: 2 }}
+              >
+                Accept
+              </Button>
+              <Button variant='contained' color='error'
+                onClick={() => processRequest('Rejected')} sx={{ height: '3vh' }}
+              >
+                Decline
+              </Button>
+            </FlexBox>
+            : ''
+          }
         </FlexBox>
         <ScrollContainer thin flex='true' pr='1vw' sx={{ flexDirection: 'column', width: '97%' }} >
           <FlexBox direction='column' sx={{ mr: 2 }}>
@@ -111,7 +114,7 @@ const MemberCard = ({ groupDetails, setGroupDetails, eventID, member }) => {
 }
 
 
-const GroupRequestsPage = ({ groupDetails, setGroupDetails, eventID }) => {
+const GroupRequestsPage = ({ groupDetails, setGroupDetails, eventID, isGroupAdmin }) => {
   const [isEmpty, setIsEmpty] = useState(0)
 
   useEffect(() => {
@@ -127,7 +130,7 @@ const GroupRequestsPage = ({ groupDetails, setGroupDetails, eventID }) => {
     <ScrollContainer thin pr='1vw'>
       {isEmpty
         ? ''
-        : <Typography variant="h4" align='center' sx={{mt:5}}>
+        : <Typography variant="h4" align='center' sx={{ mt: 5 }}>
           No new join requests
         </Typography>
       }
@@ -138,6 +141,7 @@ const GroupRequestsPage = ({ groupDetails, setGroupDetails, eventID }) => {
           setGroupDetails={setGroupDetails}
           eventID={eventID}
           member={member}
+          isGroupAdmin={isGroupAdmin}
         />
       ))}
     </ScrollContainer>

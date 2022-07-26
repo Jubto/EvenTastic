@@ -8,12 +8,11 @@ import { Button, Card, CardMedia, Chip, Typography } from "@mui/material";
 const accountApi = new AccountAPI()
 const groupApi = new GroupAPI()
 
-const MemberCard = ({ groupDetails, member, setHasLeftGroup }) => {
+const MemberCard = ({ groupDetails, member, setHasLeftGroup, isGroupAdmin }) => {
   const context = useContext(StoreContext);
   const [account] = context.account;
   const [memberAccount, setMemberAccount] = useState(false)
   const [leaveButton, setLeaveButton] = useState(false)
-  const [groupAdmin, setGroupAdmin] = useState(false)
 
   const processRequest = async (status) => {
     try {
@@ -36,7 +35,6 @@ const MemberCard = ({ groupDetails, member, setHasLeftGroup }) => {
     if (account.account_id === member.account_id && account.account_id !== groupDetails.group_host_id) {
       setLeaveButton(true)
     }
-    member.account_id === groupDetails.group_host_id && setGroupAdmin(true)
     accountApi.getAccount(member.account_id)
       .then((res) => {
         setMemberAccount(res.data)
@@ -82,7 +80,7 @@ const MemberCard = ({ groupDetails, member, setHasLeftGroup }) => {
             </Button>
             : ''
           }
-          {groupAdmin
+          {isGroupAdmin
             ? <FlexBox direction='column' sx={{ width: '12%', ml:4 }}>
               <Typography variant="subtitle1" color="text.secondary">
                 Position
@@ -110,7 +108,7 @@ const MemberCard = ({ groupDetails, member, setHasLeftGroup }) => {
 }
 
 
-const GroupMembersPage = ({ groupDetails, setGroupDetails, setHasLeftGroup }) => {
+const GroupMembersPage = ({ groupDetails, setGroupDetails, setHasLeftGroup, isGroupAdmin }) => {
 
   useEffect(() => {
     groupApi.getGroup(groupDetails.group_id)
@@ -129,6 +127,7 @@ const GroupMembersPage = ({ groupDetails, setGroupDetails, setHasLeftGroup }) =>
           groupDetails={groupDetails}
           member={member}
           setHasLeftGroup={setHasLeftGroup}
+          isGroupAdmin={isGroupAdmin}
         />
       ))}
     </ScrollContainer>

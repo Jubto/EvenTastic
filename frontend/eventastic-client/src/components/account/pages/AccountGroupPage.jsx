@@ -38,8 +38,7 @@ const Group = ({ groupDetails, account }) => {
       </FlexBox>
       <Card sx={{
         display: 'flex', borderRadius: '10px', height: '20vh',
-        bgcolor: '#fff7ec', m: 3, p: 1
-      }}
+        bgcolor: '#fff7ec', m: 3, p: 1 }}
       >
         <CardMedia component="img" image={groupDetails.group_img}
           alt="User profile picture"
@@ -95,7 +94,7 @@ const AccountGroupPage = () => {
     <ScrollContainer thin pr='1vw'>
       {Object.entries(accountGroups).length
         ? ''
-        : <Typography variant="h4" align='center' sx={{mt:5}}>
+        : <Typography variant="h5" align='center' sx={{mt:5}}>
           You're not in any groups
         </Typography>
       }

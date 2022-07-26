@@ -22,6 +22,7 @@ const GroupMainModal = ({
 }) => {
   const [page, setPage] = useState('groupInfo')
   const [value, setValue] = useState(0);
+  const [isGroupAdmin, setGroupAdmin] = useState(false)
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -32,7 +33,7 @@ const GroupMainModal = ({
   }
 
   useEffect(() => {
-    console.log('Main i fire once');
+    groupDetails.group_host_id === account.account_id && setGroupAdmin(true)
   }, [])
 
   return (
@@ -57,7 +58,7 @@ const GroupMainModal = ({
                 groupDetails={groupDetails}
                 setGroupDetails={setGroupDetails}
                 eventDetails={eventDetails}
-                accountID={account.account_id}
+                isGroupAdmin={isGroupAdmin}
               />
             )
           }
@@ -76,6 +77,7 @@ const GroupMainModal = ({
                 setGroupDetails={setGroupDetails}
                 setHasLeftGroup={setHasLeftGroup}
                 setGroupMainModal={setOpen}
+                isGroupAdmin={isGroupAdmin}
               />
             )
           }
@@ -85,6 +87,7 @@ const GroupMainModal = ({
                 groupDetails={groupDetails}
                 setGroupDetails={setGroupDetails}
                 eventID={eventDetails.event_id}
+                isGroupAdmin={isGroupAdmin}
               />
             )
           }
