@@ -19,14 +19,18 @@ const Image = styled('img')`
 `
 
 const RequestJoinPage = ({ setOpen, setPage, setGroupList, group, account }) => {
+  const [selectedTags, setSelectedTags] = useState([])
+  const [rePopulateTags, setRePopulateTags] = useState(false)
   const [formErrors, setFormErrors] = useState({
     error: false,
     joinRequest: false,
   })
 
-  const handleSelect = () => {
-    console.log('TODO remove tag')
+  const handleSelect = (event) => {
+    setSelectedTags(selectedTags.filter((tag) => tag.name !== event.currentTarget.id))
+    setRePopulateTags(true)
   }
+
 
   const handleSubmit = async (event) => {
     console.log('FORM')
@@ -45,7 +49,7 @@ const RequestJoinPage = ({ setOpen, setPage, setGroupList, group, account }) => 
         let request = {
           group_id: group.group_id,
           account_id: account.account_id,
-          interest_tags: account.tags,
+          interest_tags: selectedTags,
           join_desc: joinRequest,
           join_status: "Pending"
         }
@@ -73,9 +77,10 @@ const RequestJoinPage = ({ setOpen, setPage, setGroupList, group, account }) => 
   useEffect(() => {
     group.group_members.forEach((member) => {
       if (member.account_id === account.account_id && member.join_status === 'Pending') {
-        setPage('listGroups')
+        setPage('listGroups') // if redirected to request page via login modal when user already pending, send back
       }
     })
+    setSelectedTags(account.tags)
   }, [])
 
   return (
@@ -90,7 +95,7 @@ const RequestJoinPage = ({ setOpen, setPage, setGroupList, group, account }) => 
             {group.group_name}
           </Typography>
           <InfoHeader title='Members' />
-          <Chip icon={<PeopleAltIcon />} sx={{ maxWidth: '80px', mb:2 }}
+          <Chip icon={<PeopleAltIcon />} sx={{ maxWidth: '80px', mb: 2 }}
             label={group.group_members.reduce(
               (total, member) => (total + (member.join_status === 'Accepted' ? 1 : 0)), 0
             )}
@@ -119,18 +124,32 @@ const RequestJoinPage = ({ setOpen, setPage, setGroupList, group, account }) => 
           helperText={formErrors.joinRequest ? 'Cannot be empty.' : ''}
           sx={{ mb: 2, width: { sm: '100%', md: '50%' } }}
         />
-        <InfoHeader title='Choose Your Interests To Show' />
-        <ScrollContainer thin horizontal='true'
-          sx={{ 
-            height: '45px', border: '3px solid #ad9fa3',
-            width: { sm: '100%', md: '50%' }
-          }}
-        >
-          {account.tags.map((tag, idx) => (
-            <Chip key={idx} clickable  color='success' label={tag.name} 
-              onClick={handleSelect} sx={{ m: 0.5 }} />
-          ))}
-        </ScrollContainer>
+        <InfoHeader title='Select which Interests To Show' />
+        <Typography variant='subtitle1'>
+          These are your account's interests. Click to remove ones you don't want in your join request
+        </Typography>
+        <FlexBox>
+          <ScrollContainer thin horizontal='true'
+            sx={{
+              height: '45px', border: '3px solid #ad9fa3',
+              width: { sm: '100%', md: '50%' }
+            }}
+          >
+            {selectedTags.map((tag, idx) => (
+              <Chip id={tag.name} key={idx} clickable color='success' label={tag.name}
+                onClick={handleSelect} sx={{ m: 0.5 }} />
+            ))}
+          </ScrollContainer>
+          {rePopulateTags
+            ? <Button variant='contained' onClick={() => setSelectedTags(account.tags)}
+              size='small' color='info' sx={{ ml: 2, mt: 1, mb: 1 }}
+            >
+              Add tags back
+            </Button>
+            : ''
+          }
+        </FlexBox>
+
         <Button variant='contained' color='success' type='submit' sx={{ mt: 2 }}>
           Submit Join Request
         </Button>

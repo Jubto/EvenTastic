@@ -41,7 +41,7 @@ const EventScreen = () => {
   const [accountGroups, setAccountGroups] = context.groups;
   const [LogInModal, setLogInModal] = context.logInModal;
   const [redirect, setRedirect] = useState(false)
-  const [eventDetails, setEventDetails] = useState([])
+  const [eventDetails, setEventDetails] = useState({})
   const [groupList, setGroupList] = useState([])
   const [groupDetails, setGroupDetails] = useState({})
   const [apiGetGroup, setApiGetGroup] = useState(false)
@@ -88,21 +88,49 @@ const EventScreen = () => {
     })
   }
 
+  const isAccountAccepted = (groups) => {
+    for (const group of groups) {
+      for (const member of group.group_members) {
+        if (member.account_id === account.account_id && member.join_status === 'Accepted') {
+          setGroupListModal(false)
+          setGroupDetails(group)
+          const temp = accountGroups
+          temp[eventDetails.event_id] = group
+          setAccountGroups(temp) // update global account groups
+          return true
+        }
+      }
+    }
+    return false
+  }
+
   const initApiCalls = async () => {
     try {
-      const eventRes = await eventApi.getEventDetails(id)
-      setEventDetails(eventRes.data)
-      if (account && accountGroups[eventRes.data.event_id]) {
+      let eventID = null
+      if (!Object.entries(eventDetails).length) {
+        const eventRes = await eventApi.getEventDetails(id)
+        setEventDetails(eventRes.data)
+        eventID = eventRes.data.event_id
+      }
+      else {
+        eventID = eventDetails.event_id
+      }
+      if (account && accountGroups[eventID]) {
         // user is logged in + already member of group
-        setGroupDetails(accountGroups[eventRes.data.event_id])
-        if (location.state && location.state.redirect === 'groups') {
+        setGroupDetails(accountGroups[eventID])
+        if (location.state?.redirect === 'groups') {
           setGroupMainModal(true)
         }
       }
       else {
         // get list of groups filtered by eventID
-        const groups = await apiGroupsFilterBy(eventRes.data.event_id)
-        setGroupList(groups)
+        const groups = await apiGroupsFilterBy(eventID)
+        if (!isAccountAccepted(groups)){
+          setGroupList(groups)
+        }
+        else if (!openGroupCreatedModal) {
+          setTimeout(() => setGroupJoinedModal(true), 200)
+        }
       }
     }
     catch (err) {
@@ -127,28 +155,15 @@ const EventScreen = () => {
   }, [hasLeftGroup])
 
   useEffect(() => {
-    // This is called when:
-    // logging in while in listing modal when you're already part of group
-    // When creating a new group in listing modal
-    // When accepting to join a new group in the listing modal
+    // Called when: logging in while in listing modal when you're already part of group
+    // Called when: When creating a new group in listing modal
     if (apiGetGroup) {
       if (accountGroups[eventDetails.event_id]) {
         setGroupDetails(accountGroups[eventDetails.event_id])
       }
       else {
         apiGroupsFilterBy(eventDetails.event_id, account.account_id)
-          .then((groupRes) => {
-            groupRes.forEach((group) => {
-              group.group_members.forEach((member) => {
-                if (member.account_id === account.account_id && member.join_status === 'Accepted') {
-                  setGroupDetails(group)
-                  const temp = accountGroups
-                  temp[eventDetails.event_id] = group
-                  setAccountGroups(temp) // update global account groups
-                }
-              })
-            })
-          })
+          .then((groupRes) => { isAccountAccepted(groupRes) })
           .catch((err) => console.error(err))
       }
       setGroupListModal(false) // close group listing modal
@@ -157,7 +172,7 @@ const EventScreen = () => {
   }, [apiGetGroup])
 
   useEffect(() => {
-    if (!LogInModal && account) {
+    if (!LogInModal && !openGroupListModal && account) {
       redirect === 'tickets' && setTicketModal(true) // redirect to ticket model after login modal
       setRedirect(false)
     }
@@ -165,7 +180,7 @@ const EventScreen = () => {
 
   useEffect(() => {
     initApiCalls()
-  }, [])
+  }, [openGroupListModal])
 
 
   return (

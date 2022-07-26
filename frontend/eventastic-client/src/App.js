@@ -7,7 +7,6 @@ import RegisterScreen from './screens/RegisterScreen';
 import AccountScreen from './screens/AccountScreen';
 import TagsScreen from './screens/TagsScreen';
 import EventScreen from './screens/EventScreen';
-import CreateEventScreen from './screens/CreateEventScreen';
 import CreateEventPage from './screens/CreateEventPage';
 import AdminScreen from './screens/AdminScreen';
 import UnauthorizedScreen from './screens/UnauthorizedScreen';

@@ -138,7 +138,9 @@ const AccountDetailsPage = ({ change, setChange }) => {
         setFormErrors(prevState => { return { ...prevState, cardType: true } })
         formErrors.error = true
       }
-      if (!/\S+/.test(cardExpiry)) {
+      const month = parseInt(cardExpiry.slice(0, 2))
+      const day = parseInt(cardExpiry.slice(2, 4))
+      if (!/\d+/.test(cardExpiry) || cardExpiry.length < 4 || month > 12 || day > 32) {
         setFormErrors(prevState => { return { ...prevState, cardExpiry: true } })
         formErrors.error = true
       }
@@ -451,6 +453,7 @@ const AccountDetailsPage = ({ change, setChange }) => {
             fullWidth
             id="cardNumber"
             label="Card number"
+            inputProps={{ maxLength: 16 }}
             InputLabelProps={{ shrink: true }}
             value={changeCard ? undefined : card.card_number}
             disabled={!changeCard}
@@ -469,6 +472,7 @@ const AccountDetailsPage = ({ change, setChange }) => {
             fullWidth
             id="cardType"
             label="Card type"
+            inputProps={{ maxLength: 10 }}
             InputLabelProps={{ shrink: true }}
             value={changeCard ? undefined : card.card_type}
             disabled={!changeCard}
@@ -487,6 +491,7 @@ const AccountDetailsPage = ({ change, setChange }) => {
             fullWidth
             id="cardExpiry"
             label="Card expiry"
+            inputProps={{ maxLength: 4 }}
             InputLabelProps={{ shrink: true }}
             value={changeCard ? undefined : card.card_expiry}
             disabled={!changeCard}
@@ -494,7 +499,7 @@ const AccountDetailsPage = ({ change, setChange }) => {
               formErrors.cardExpiry && setFormErrors(prevState => { return { ...prevState, cardExpiry: false } })
             }}
             error={formErrors.cardExpiry}
-            helperText={formErrors.cardExpiry ? 'Must be a valid card expiry date.' : ''}
+            helperText={formErrors.cardExpiry ? 'Must be a valid card expiry date (MMDD)' : ''}
           />
         </ToggleGrid>
       </Grid>

@@ -15,7 +15,7 @@ const BroadcastTitle = styled(Typography)`
   font-weight: 1000;
 `
 
-const BroadcastModal = ({ open, setOpen, managedEventDetails, setSuccessModal }) => {
+const BroadcastModal = ({ open, setOpen, managedEventDetails, setSuccessModal, setFailModal }) => {
   const [formErrors, setFormErrors] = useState({
     title: false,
     message: false
@@ -48,21 +48,30 @@ const BroadcastModal = ({ open, setOpen, managedEventDetails, setSuccessModal })
           'booking_status': 'Booked'
         }
         const bookingRes = await eventAPI.getBookings(param)
-        const emailsToBroadcast = bookingRes.data.map((booking) => ({email_address : booking.booking_email}))
-        const sendgridBroadcast = {
-          email_subject: title,
-          email_content: message,
-          email_from: {
-            email_address: evenTasticEmail,
-            name: "EvenTastic"
-          },
-          email_to: emailsToBroadcast
+        if (bookingRes.data.length) {
+          const emailsToBroadcast = bookingRes.data.map((booking) => ({email_address : booking.booking_email}))
+          const sendgridBroadcast = {
+            email_subject: title,
+            email_content: message,
+            email_from: {
+              email_address: evenTasticEmail,
+              name: "EvenTastic"
+            },
+            email_to: emailsToBroadcast
+          }
+          const emailRes = await emailAPI.postEmails(sendgridBroadcast)
+          setSuccessModal(true)
         }
-        const emailRes = await emailAPI.postEmails(sendgridBroadcast)
+        else {
+          setFailModal(true)
+        }
         handleClose(true)
-        setSuccessModal(true)
       }
       catch(err) {
+        if (err.config.baseURL === eventAPI.api_url) {
+          handleClose(true)
+          setFailModal(true)
+        }
         console.log(err)
       }
     }

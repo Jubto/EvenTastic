@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { ScrollContainer } from '../../../components/styles/layouts.styled'
 import BroadcastModal from '../../event/modals/BroadcastModal';
 import BroadcastSentModal from '../../event/modals/BroadcastSentModal';
+import BroadcastFailedModal from '../../event/modals/BroadcastFailedModal';
 import UpdateEventModal from '../../event/modals/UpdateEventModal';
 import UpdateEventSuccessModal from '../../event/modals/UpdateEventSuccessModal';
 import CancelEventModal from '../../event/modals/CancelEventModal';
@@ -34,6 +35,7 @@ function formatDate(datetime) {
 
 const ManageEventDetailsPage = ({ managedEventDetails, setManagedEventDetails, changePage }) => {
   const [openSentModal, setSentModal] = useState(false)
+  const [openFailModal, setFailModal] = useState(false)
   const [openBroadcast, setOpenBroadcast] = useState(false)
   const [openEventUpdateModal, setOpenEventUpdateModal] = useState(false)
   const [openEventUpdateSuccessModal, setOpenEventUpdateSuccessModal] = useState(false)
@@ -143,10 +145,16 @@ const ManageEventDetailsPage = ({ managedEventDetails, setManagedEventDetails, c
         setOpen={setOpenBroadcast}
         managedEventDetails={managedEventDetails}
         setSuccessModal={setSentModal}
+        setFailModal={setFailModal}
       />
       <BroadcastSentModal
         open={openSentModal}
         setOpen={setSentModal}
+        managedEventDetails={managedEventDetails}
+      />
+      <BroadcastFailedModal
+        open={openFailModal}
+        setOpen={setFailModal}
         managedEventDetails={managedEventDetails}
       />
       <UpdateEventModal

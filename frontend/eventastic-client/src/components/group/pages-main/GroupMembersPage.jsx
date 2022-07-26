@@ -13,7 +13,7 @@ const MemberCard = ({ groupDetails, member, setHasLeftGroup }) => {
   const [account] = context.account;
   const [memberAccount, setMemberAccount] = useState(false)
   const [leaveButton, setLeaveButton] = useState(false)
-  const [groupAdmin, setGroupAdmin] = useState(false)
+  const [isGroupAdmin, setGroupAdmin] = useState(false)
 
   const processRequest = async (status) => {
     try {
@@ -36,7 +36,7 @@ const MemberCard = ({ groupDetails, member, setHasLeftGroup }) => {
     if (account.account_id === member.account_id && account.account_id !== groupDetails.group_host_id) {
       setLeaveButton(true)
     }
-    member.account_id === groupDetails.group_host_id && setGroupAdmin(true)
+    groupDetails.group_host_id === member.account_id && setGroupAdmin(true)
     accountApi.getAccount(member.account_id)
       .then((res) => {
         setMemberAccount(res.data)
@@ -82,7 +82,7 @@ const MemberCard = ({ groupDetails, member, setHasLeftGroup }) => {
             </Button>
             : ''
           }
-          {groupAdmin
+          {isGroupAdmin
             ? <FlexBox direction='column' sx={{ width: '12%', ml:4 }}>
               <Typography variant="subtitle1" color="text.secondary">
                 Position
