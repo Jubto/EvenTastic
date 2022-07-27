@@ -28,6 +28,7 @@ def get_connection():
 def create_group(body):
     if connexion.request.is_json:
         body = Group.from_dict(connexion.request.get_json())
+        print(body)
     try:
         con = get_connection()
         cur = con.cursor()
@@ -201,6 +202,7 @@ def update_group(group_id, body):
                     " {} = '{}',".format(tmp_attr, value.replace("'", "''"))
         sql = sql[:-1] + " WHERE id = {}".format(group_id)
 
+        print(sql)
         # Execute the sql update statement
         con = get_connection()
         cur = con.cursor()

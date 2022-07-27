@@ -190,7 +190,7 @@ class RewardPoints(Model):
         :param reward_points_status: The reward_points_status of this RewardPoints.
         :type reward_points_status: str
         """
-        allowed_values = ["Pending", "Approved"]  # noqa: E501
+        allowed_values = ["Pending", "Approved", "Cancelled"]  # noqa: E501
         if reward_points_status not in allowed_values:
             raise ValueError(
                 "Invalid value for `reward_points_status` ({0}), must be one of {1}"

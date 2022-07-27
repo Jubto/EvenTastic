@@ -594,6 +594,11 @@ paths:
         description: "The Reward Points Status to search for."
         required: false
         type: "string"
+      - name: "account_id"
+        in: "query"
+        description: "The Account ID to search for."
+        required: false
+        type: "string"
       responses:
         "200":
           description: "Returns a list of Reward points. Returns empty array if no Events match the search criteria."
@@ -762,7 +767,7 @@ definitions:
         example: 200.00
       reward_points_status:
         type: string
-        enum: ["Pending", "Approved"]
+        enum: ["Pending", "Approved", "Cancelled"]
   Booking:
     type: object
     properties:
@@ -1051,7 +1056,7 @@ definitions:
       value:
         type: string
         example: "Approved"
-        enum: ["Pending", "Approved"]
+        enum: ["Pending", "Approved", "Cancelled"]
     required: 
       - op
       - path

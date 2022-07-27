@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import EventAPI from '../../../utils/EventAPIHelper';
+import EmailAPI from '../../../utils/EmailAPIHelper';
 import { fileToDataUrl } from '../../../utils/helpers';
 import { StandardModal, ModalBody, ModalTitle } from '../../styles/modal/modal.styled';
 import { FlexBox } from '../../styles/layouts.styled';
@@ -7,6 +8,8 @@ import { Button, TextField, Grid, styled } from '@mui/material';
 import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
 
 const eventAPI = new EventAPI();
+const emailAPI = new EmailAPI();
+const evenTasticEmail = 'eventastic.comp9900@gmail.com'
 
 const ImageHolder = styled(Button)`
   border: 1px solid black;
@@ -88,11 +91,33 @@ const UpdateEventModal = ({ open, setOpen, managedEventDetails, setManagedEventD
           event_location: event_location,
           event_img: imgUpload ? imgUpload : managedEventDetails.event_img
         }
-        const response = await eventAPI.putEvent(managedEventDetails.event_id, updatedEvent)
+        const eventResponse = await eventAPI.putEvent(managedEventDetails.event_id, updatedEvent)
         setManagedEventDetails(prevState => { return { ...prevState, ...updatedEvent } })
-        console.log(response)
+        console.log(eventResponse)
         handleClose(true)
         setSuccessModal(true)
+
+        // send Event Updated Email notifiction
+        const param = {
+          'event_id': managedEventDetails.event_id,
+          'booking_status': 'Booked'
+        }
+        const bookingRes = await eventAPI.getBookings(param)
+        const emailsToBroadcast = bookingRes.data.map((booking) => ({ email_address: booking.booking_email }))
+        
+        if (emailsToBroadcast.length > 0) {
+          const sendgridBroadcast = {
+            email_subject: "Your Event Details have been Updated",
+            email_content: emailAPI.format_event_updated_email(eventResponse.data),
+            email_from: {
+              email_address: evenTasticEmail,
+              name: "EvenTastic"
+            },
+            email_to: emailsToBroadcast
+          }
+          const emailRes = await emailAPI.postEmails(sendgridBroadcast)
+          console.log(emailRes)
+        }
       }
       catch (err) {
         console.log(err)

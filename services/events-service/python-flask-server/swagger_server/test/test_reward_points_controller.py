@@ -49,7 +49,8 @@ class TestRewardPointsController(BaseTestCase):
         """
         query_string = [('event_id', 'event_id_example'),
                         ('booking_id', 'booking_id_example'),
-                        ('reward_points_status', 'reward_points_status_example')]
+                        ('reward_points_status', 'reward_points_status_example'),
+                        ('account_id', 'account_id_example')]
         response = self.client.open(
             '/v1/reward_points',
             method='GET',

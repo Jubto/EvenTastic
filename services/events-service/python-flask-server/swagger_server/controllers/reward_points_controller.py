@@ -107,7 +107,7 @@ def get_reward_points_details(reward_points_id):  # noqa: E501
         return error, 500, {'Access-Control-Allow-Origin': '*'}
 
 
-def list_reward_points(event_id=None, booking_id=None, reward_points_status=None):  # noqa: E501
+def list_reward_points(event_id=None, booking_id=None, reward_points_status=None, account_id=None):  # noqa: E501
     """Retrieve a List of Reward Points.
 
      # noqa: E501

@@ -33,6 +33,23 @@ function formatDate(datetime) {
   return d.toLocaleDateString("en-US", dateFormat)
 }
 
+function formatEventPrice(gen, front, mid, back) {
+  let formatted = ""
+  if (parseInt(gen) >= 0) {
+    formatted = formatted + "General: $" + gen + " "
+  } 
+  if (parseInt(front) >= 0)  {
+    formatted = formatted + "Front: $" + front + " "
+  } 
+  if (parseInt(mid) >= 0)  {
+    formatted = formatted + "Middle: $" + mid + " "
+  } 
+  if (parseInt(back) >= 0)  {
+    formatted = formatted + "Back: $" + back + " "
+  }
+  return formatted
+}
+
 const ManageEventDetailsPage = ({ managedEventDetails, setManagedEventDetails, changePage }) => {
   const [openSentModal, setSentModal] = useState(false)
   const [openFailModal, setFailModal] = useState(false)
@@ -76,7 +93,12 @@ const ManageEventDetailsPage = ({ managedEventDetails, setManagedEventDetails, c
                   <b>When does it end?</b><br></br>{formatDate(managedEventDetails.event_end_datetime)}
                 </Typography>
                 <Typography gutterBottom variant="body1" component="div">
-                  <b>What is the price range?</b> $20-$30
+                  <b>What is the price range?</b><br></br>
+                  {formatEventPrice(
+                  managedEventDetails.gen_seat_price, 
+                  managedEventDetails.front_seat_price, 
+                  managedEventDetails.mid_seat_price,
+                  managedEventDetails.back_seat_price)} 
                 </Typography>
                 <Grid container spacing={2}>
                   <Grid item xs={6}>

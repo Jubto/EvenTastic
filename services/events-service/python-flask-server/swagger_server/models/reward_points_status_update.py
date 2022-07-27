@@ -124,7 +124,7 @@ class RewardPointsStatusUpdate(Model):
         :param value: The value of this RewardPointsStatusUpdate.
         :type value: str
         """
-        allowed_values = ["Pending", "Approved"]  # noqa: E501
+        allowed_values = ["Pending", "Approved", "Cancelled"]  # noqa: E501
         if value not in allowed_values:
             raise ValueError(
                 "Invalid value for `value` ({0}), must be one of {1}"

@@ -25,4 +25,24 @@ export default class EmailAPI {
   postEmails = (body) => {
     return this.init().post("/email", body);
   };
+
+  format_event_updated_email = (event) => {
+    let template = "<html>\
+    <h1>Here are the latest details for your Event:</h1>\
+    <h2>" + event.event_title + "</h2>\
+    <p>" + event.event_short_desc + "</p>\
+    <p>" + event.event_desc + "</p>\
+    <p><b>Location:</b> " + event.event_location + "</p>\
+    <p><b>When does it start?</b> " + formatDate(event.event_start_datetime) + "</p>\
+    <p><b>When does it end?</b> " + formatDate(event.event_end_datetime) + "</p>\
+    </html>"
+    return template
+  };
+}
+
+function formatDate(dateTime) {
+  let d = new Date(dateTime);
+  return d.toLocaleDateString("en-US", { 
+    weekday: 'long', year: 'numeric', month: 'long', 
+    day: 'numeric', hour: 'numeric', minute: 'numeric' })
 }

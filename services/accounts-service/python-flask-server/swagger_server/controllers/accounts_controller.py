@@ -430,6 +430,7 @@ def update_account(account_id, body):  # noqa: E501
         return body, 200, {'Access-Control-Allow-Origin': '*'}
 
     except Exception as e:
+        print(str(e))
         # catch any unexpected runtime error and return as 500 error 
         error = UnexpectedServiceError(code="500", type="UnexpectedServiceError", message=str(e))
         return error, 500, {'Access-Control-Allow-Origin': '*'}

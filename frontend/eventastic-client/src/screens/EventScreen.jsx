@@ -33,6 +33,23 @@ function formatDate(datetime) {
   return d.toLocaleDateString("en-US", dateFormat)
 }
 
+function formatEventPrice(gen, front, mid, back) {
+  let formatted = ""
+  if (parseInt(gen) >= 0) {
+    formatted = formatted + "General: $" + gen + " "
+  } 
+  if (parseInt(front) >= 0)  {
+    formatted = formatted + "Front: $" + front + " "
+  } 
+  if (parseInt(mid) >= 0)  {
+    formatted = formatted + "Middle: $" + mid + " "
+  } 
+  if (parseInt(back) >= 0)  {
+    formatted = formatted + "Back: $" + back + " "
+  }
+  return formatted
+}
+
 const EventScreen = () => {
   const { id } = useParams();
   const location = useLocation();
@@ -217,7 +234,12 @@ const EventScreen = () => {
                 <b>When does it end?</b> {formatDate(eventDetails.event_end_datetime)}
               </Typography>
               <Typography gutterBottom variant="body1" component="div">
-                <b>What is the price range?</b> $20-$30
+                <b>What is the price range?</b> <br></br>
+                {formatEventPrice(
+                  eventDetails.gen_seat_price, 
+                  eventDetails.front_seat_price, 
+                  eventDetails.mid_seat_price,
+                  eventDetails.back_seat_price)} 
               </Typography>
               <Stack spacing={3}>
                 <Button
