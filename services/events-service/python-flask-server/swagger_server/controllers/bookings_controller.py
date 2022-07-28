@@ -54,8 +54,6 @@ def create_booking(body):  # noqa: E501
         con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
         cur = con.cursor()
 
-        ### could add database calls to check if account id or event id exists ###
-
         # to check that tickets table has enough number of seats available
         for key in body.ticket_details:
             cur.execute(f"SELECT count(ticket_id) FROM tickets WHERE ticket_status = 'Available' and \
@@ -68,6 +66,8 @@ def create_booking(body):  # noqa: E501
         
         date_string = datetime.now().strftime("%d%m%y%H%M%S")
         qr_code = str(body.account_id) + "_" + str(body.event_id) + "_" + date_string
+
+        body.card_name = body.card_name.replace("'", "''")
 
         # inserting into bookings table
         cur.execute(f"INSERT INTO bookings values (default, {body.account_id}, {body.event_id}, 'Booked', {body.total_cost}, \

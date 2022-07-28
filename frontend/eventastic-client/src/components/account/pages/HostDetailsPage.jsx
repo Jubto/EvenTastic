@@ -83,7 +83,7 @@ const HostDetailsPage = ({ change, setChange }) => {
       let body = {
         host_contact_no: hostMobile,
         host_status: hostDetails ? hostDetails.host_status : 'Pending',
-        isVerified: hostDetails ? hostDetails.host_status : false,
+        isVerified: hostDetails ? true : false,
         job_title: orgJobTitle,
         org_desc: orgDesc,
         org_name: orgName ? orgName : hostDetails.org_name,

@@ -1,3 +1,4 @@
+from pickle import FALSE
 import connexion
 import six
 import psycopg2
@@ -53,7 +54,8 @@ def create_account(body):  # noqa: E501
         con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
         cur = con.cursor()
 
-        cur.execute("SELECT * FROM accounts where email = '"+str(body.email)+"';")
+        cur.execute("SELECT * FROM accounts where email = '"+str(body.email.replace("'", "''"))+"';")
+
         record = cur.fetchone()
         if record != None:
             error = InvalidInputError(code=409, type="InvalidInputError", 
@@ -63,8 +65,9 @@ def create_account(body):  # noqa: E501
             return error, 400, {'Access-Control-Allow-Origin': '*'}
         
         insert_string = "INSERT INTO accounts VALUES (default, %s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) RETURNING account_id;"
-        cur.execute(insert_string, (body.email, body.first_name, body.last_name, body.age, body.mobile, \
-            body.location, body.password, body.account_type, body.profile_pic, body.reward_points, tags_string, body.user_desc))
+        cur.execute(insert_string, (body.email, body.first_name, body.last_name,\
+            body.age, body.mobile, body.location, body.password, body.account_type, \
+            body.profile_pic, body.reward_points, tags_string, body.user_desc))        
         body.account_id = cur.fetchone()[0]
 
         cur.close()
@@ -312,8 +315,7 @@ def list_accounts(email=None, first_name=None, last_name=None):  # noqa: E501
             con.close()
             return acc_list, 200, {'Access-Control-Allow-Origin': '*'}
 
-
-        cur.execute("SELECT * FROM accounts where email = '"+str(email)+"';")
+        cur.execute("SELECT * FROM accounts where email = '"+str(email.replace("'", "''"))+"';")
         record = cur.fetchone()
         if record != None:
             account = dict()
@@ -405,24 +407,55 @@ def update_account(account_id, body):  # noqa: E501
                 i+=1
 
         update_string = "UPDATE accounts set "
-        if body.email != None: update_string += f" email='{body.email}',"
-        if body.first_name != None: update_string += f" first_name='{body.first_name}',"
-        if body.last_name != None: update_string += f" last_name='{body.last_name}',"
-        if body.age != None: update_string += f" age={body.age},"
-        if body.mobile != None: update_string += f" mobile_no='{body.mobile}',"
-        if body.location != None: update_string += f" location='{body.location}',"
-        if body.password != None: update_string += f" password='{body.password}',"
-        if body.account_type != None: update_string += f" account_type='{body.account_type}',"
-        if body.profile_pic != None: update_string += f" profile_pic='{body.profile_pic}',"
-        if body.reward_points != None: update_string += f" reward_points='{body.reward_points}',"
+        update_list = list()
+
+        if body.email != None: 
+            update_string += " email=%s,"
+            update_list.append(body.email)
+
+        if body.first_name != None: 
+            update_string += " first_name=%s,"
+            update_list.append(body.first_name)
+
+        if body.last_name != None: 
+            update_string += " last_name=%s,"
+            update_list.append(body.last_name)
+
+        if body.age != None: 
+            update_string += f" age={body.age},"
+
+        if body.mobile != None: 
+            update_string += " mobile_no=%s,"
+            update_list.append(body.mobile)
+
+        if body.location != None: 
+            update_string += " location=%s,"
+            update_list.append(body.location)
+
+        if body.password != None: 
+            update_string += " password=%s,"
+            update_list.append(body.password)
+
+        if body.account_type != None: 
+            update_string += f" account_type='{body.account_type}',"
+
+        if body.profile_pic != None: 
+            update_string += f" profile_pic='{body.profile_pic}',"
+
+        if body.reward_points != None: 
+            update_string += f" reward_points='{body.reward_points}',"
+
         if tags_string != "": update_string += f" tags='{tags_string}',"
-        if body.user_desc != None: update_string += f" user_desc='{body.user_desc}',"
+
+        if body.user_desc != None: 
+            update_string += " user_desc=%s,"
+            update_list.append(body.user_desc)
 
         if update_string != "UPDATE accounts set ":
             update_string = update_string[:-1]
             update_string += f" where account_id = {account_id} RETURNING account_id;"
                 
-            cur.execute(update_string)
+            cur.execute(update_string, update_list)
             acc_id = cur.fetchone()[0]
 
         cur.close()
@@ -512,11 +545,6 @@ def update_host_details(account_id, body):  # noqa: E501
         if connexion.request.is_json:
             body = HostDetails.from_dict(connexion.request.get_json())  # noqa: E501
 
-        #if (len(body.org_name) == 0 or len(body.host_contact_no) == 0 or len(body.job_title) == 0 or len(body.qualification) == 0):
-        #    error = InvalidInputError(code=400, type="InvalidInputError", 
-        #            message="The following mandatory fields were not provided: organisation name or contact number or title or qualification")
-        #    return error, 400, {'Access-Control-Allow-Origin': '*'}
-
         con = psycopg2.connect(database= 'eventastic', user='postgres', password='postgrespw', host=host, port=port)
         con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
         cur = con.cursor()
@@ -534,29 +562,50 @@ def update_host_details(account_id, body):  # noqa: E501
         cur.execute('SELECT * FROM hosts where account_id = ' + str(account_id))
         record = cur.fetchone()
         if record == None: # to add the host details if it doesn't exists
+            body.is_verified = False
             insert_string = "INSERT INTO hosts VALUES (default, %s,%s,%s,%s,%s,%s,%s,%s,%s) RETURNING id;"
             cur.execute(insert_string, (account_id, body.org_name, body.org_desc, body.host_contact_no, body.job_title, \
                         body.qualification, body.is_verified, body.host_status, body.org_email))
             host_id = cur.fetchone()[0]
         else: # to update the host details if it already  exists
             update_string = "UPDATE hosts set "
-            if body.org_name != None: update_string += f" organisation_name='{body.org_name}',"
-            if body.org_desc != None: update_string += f" organisation_desc='{body.org_desc}',"
-            if body.host_contact_no != None: update_string += f" host_contact_no='{body.host_contact_no}',"
-            if body.job_title != None: update_string += f" job_title='{body.job_title}',"
-            if body.qualification != None: update_string += f" qualification='{body.qualification}',"
-            if body.is_verified != None: update_string += f" is_verified={body.is_verified},"
-            if body.host_status != None: update_string += f" host_status='{body.host_status}',"
-            if body.org_email != None: update_string += f" org_email='{body.org_email}',"
+            update_list = list()
 
-            update_string = list(update_string)
-            update_string[-1] = " "
-            update_string = "".join(update_string)
+            if body.org_name != None: 
+                update_string += " organisation_name=%s,"
+                update_list.append(body.org_name)        
 
-            update_string += f" where account_id = {account_id} RETURNING account_id;"
-            
-            cur.execute(update_string)
-            acc_id = cur.fetchone()[0]
+            if body.org_desc != None: 
+                update_string += " organisation_desc=%s,"
+                update_list.append(body.org_desc)        
+                
+            if body.host_contact_no != None: 
+                update_string += " host_contact_no=%s,"
+                update_list.append(body.host_contact_no)        
+
+            if body.job_title != None: 
+                update_string += " job_title=%s,"
+                update_list.append(body.job_title)        
+
+            if body.qualification != None: 
+                update_string += " qualification=%s,"
+                update_list.append(body.qualification)        
+
+            if body.is_verified != None: 
+                update_string += f" is_verified={body.is_verified},"
+
+            if body.host_status != None: 
+                update_string += f" host_status='{body.host_status}',"
+
+            if body.org_email != None: 
+                update_string += " org_email=%s,"
+                update_list.append(body.org_email)  
+
+            if update_string != "UPDATE hosts set ":
+                update_string = update_string[:-1]
+                update_string += f" where account_id = {account_id} RETURNING account_id;"            
+                cur.execute(update_string, update_list)
+                acc_id = cur.fetchone()[0]
 
         cur.close()
         con.close()
@@ -580,7 +629,6 @@ def list_host_details(host_status=None):  # noqa: E501
     :rtype: HostDetails
     """
     try:
-        print('host_status:', host_status)
         con = psycopg2.connect(database= 'eventastic', user='postgres', password='postgrespw', host=host, port=port)
         con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
         cur = con.cursor()
