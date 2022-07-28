@@ -128,13 +128,14 @@ def list_reward_points(event_id=None, booking_id=None, reward_points_status=None
         cur = con.cursor()
 
         select_string = "SELECT * FROM rewardpoints"
-        if event_id != None or booking_id != None or reward_points_status != None: select_string += " where"
+        if event_id != None or booking_id != None or reward_points_status != None or account_id != None: select_string += " where"
 
         if event_id != None: select_string += f" event_id = {event_id} and "
+        if account_id != None: select_string += f" account_id = {account_id} and "
         if booking_id != None: select_string += f" booking_id = {booking_id} and "
         if reward_points_status != None: select_string += f" reward_points_status  = '{reward_points_status}' and "
         
-        if event_id != None or booking_id != None or reward_points_status != None: select_string = select_string[:-4]
+        if event_id != None or booking_id != None or reward_points_status != None or account_id != None: select_string = select_string[:-4]
 
         cur.execute(select_string)
 
