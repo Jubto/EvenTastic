@@ -63,7 +63,7 @@ def create_account(body):  # noqa: E501
             cur.close()
             con.close()
             return error, 400, {'Access-Control-Allow-Origin': '*'}
-        
+        body.reward_points = 0 #New users will have 0 reward points
         insert_string = "INSERT INTO accounts VALUES (default, %s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) RETURNING account_id;"
         cur.execute(insert_string, (body.email, body.first_name, body.last_name,\
             body.age, body.mobile, body.location, body.password, body.account_type, \
