@@ -83,6 +83,16 @@ const EventScreen = () => {
     }
   }
 
+  const handleReviewButton = () => {
+    if (account) {
+      setReviewModal(true)
+    }
+    else {
+      setRedirect('reviews')
+      setLogInModal(true)
+    }
+  }
+
   const apiGroupsFilterBy = (eventID, accountID = false) => {
     let params = {}
     if (eventID && !accountID) {
@@ -252,7 +262,7 @@ const EventScreen = () => {
                 <Button
                   variant="contained"
                   href="#contained-buttons"
-                  color="warning" onClick={() => setReviewModal(true)}
+                  color="warning" onClick={handleReviewButton}
                 >
                   Reviews
                 </Button>

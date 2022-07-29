@@ -40,12 +40,15 @@ const GroupMainModal = ({
       setNewRequests(0)
     }
     else {
-      groupApi.getGroup(groupDetails.group_id)
-      .then((res) => {
-        setGroupDetails(res.data)
-        setNewRequests(res.data.group_members.filter((member) => member.join_status === 'Pending').length)
-      })
-      .catch((err) => console.error(err))
+      if(Object.keys(groupDetails).length !== 0){
+        console.log(groupDetails)
+        groupApi.getGroup(groupDetails.group_id)
+        .then((res) => {
+          setGroupDetails(res.data)
+          setNewRequests(res.data.group_members.filter((member) => member.join_status === 'Pending').length)
+        })
+        .catch((err) => console.error(err))
+      }
     }
   }, [page])
 
