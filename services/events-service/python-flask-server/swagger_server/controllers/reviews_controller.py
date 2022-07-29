@@ -61,7 +61,13 @@ def create_review(body):  # noqa: E501
                                     body.review_text, body.review_timestamp, body.flag_count,\
                                     body.review_status, body.reply_text))
         body.review_id = cur.fetchone()[0]
-        
+        cur.execute('SELECT reward_points FROM accounts where account_id = ' + str(body.reviewer_account_id))
+        record = cur.fetchone()
+        if record != None:
+            reward_points = int(record[0])
+            # print(reward_points)
+            new_reward_points = str(reward_points + 1)
+            cur.execute(f"UPDATE accounts set reward_points = {new_reward_points} where account_id = {body.reviewer_account_id}")
         cur.close()
         con.close()
         return body, 201, {'Access-Control-Allow-Origin': '*'}
@@ -134,7 +140,7 @@ def list_reviews(event_id=None, interaction_acount_id=None):  # noqa: E501
         reviews_list = list()
 
         if event_id == None and interaction_acount_id == None:
-            cur.execute(f"SELECT * FROM reviews where flag_count > 0 and review_status = 'Active' ")
+            cur.execute(f"SELECT * FROM reviews where flag_count >= 0 and review_status = 'Active' ")
             records = cur.fetchall()
             if len(records) > 0:
                 for record in records:
@@ -223,7 +229,7 @@ def update_review(review_id, body):  # noqa: E501
         con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
         cur = con.cursor()
 
-        cur.execute(f"SELECT review_id FROM reviews where review_id = {review_id}")
+        cur.execute(f"SELECT reviewer_account_id FROM reviews where review_id = {review_id}")
         record = cur.fetchone()
         if record == None:
             error = ReviewNotFoundError(code=404, type="ReviewNotFoundError", 
@@ -231,6 +237,7 @@ def update_review(review_id, body):  # noqa: E501
             cur.close()
             con.close()
             return error, 404, {'Access-Control-Allow-Origin': '*'}
+        reviewer_account_id = str(record[0])
 
         update_string = "UPDATE reviews set "
         if body.upvotes != None: update_string += f" upvote_count={int(body.upvotes)},"
@@ -243,7 +250,13 @@ def update_review(review_id, body):  # noqa: E501
         update_string += f" where review_id = {review_id} RETURNING review_id;"
             
         cur.execute(update_string)
-        rev_id = cur.fetchone()[0]                   
+        body.review_id = cur.fetchone()[0]   
+        if body.review_status == 'Removed':
+            cur.execute('SELECT reward_points FROM accounts where account_id = ' + (reviewer_account_id))
+            record = cur.fetchone()
+            reward_points = int(record[0])
+            new_reward_points = str(reward_points - 1)
+            cur.execute(f"UPDATE accounts set reward_points = {new_reward_points} where account_id = {reviewer_account_id}")               
 
         cur.close()
         con.close()

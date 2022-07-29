@@ -19,7 +19,7 @@ const ContentBox = styled('div')`
   min-height: 350px;
 `;
 
-const MakeReivewPage = ({setMadeReview,refresh, setRefresh ,reviews , setPage, setReviews, eventDetails, account }) => {
+const MakeReivewPage = ({setMadeReview,refresh, setRefresh ,reviews , setPage, setReviews, eventDetails, account, setReviewSuccessModal }) => {
 
   
 
@@ -38,7 +38,7 @@ const handleSubmit = (event) => {
               "review_timestamp":current_datetime, "review_status":"Active","reply_text":"",
               "flag_count":0
             }
-  //console.log(data)
+  console.log(data)
 
     review_api
         .postReview(data)
@@ -55,6 +55,7 @@ const handleSubmit = (event) => {
               setReviews(revs)
               setMadeReview(revs.filter((rev)=>rev.reviewer_account_id===account.account_id).length !== 0)
               setRefresh(!refresh)
+              setReviewSuccessModal(true)
             })
             .catch((err)=>console.log(err));
 
