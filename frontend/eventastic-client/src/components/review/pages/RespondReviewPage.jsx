@@ -38,7 +38,7 @@ const [replyText, setReplyText] = React.useState('');
 
   return (
     <ScrollContainer thin>
-      <Box id='form' component="form" noValidate onSubmit={handleSubmit}>
+      <Box id='form' component="form" onSubmit={handleSubmit}>
       <ContentBox >
           <div style={{  marginBottom: '50px'}}>
             <h2>My Response:</h2>
