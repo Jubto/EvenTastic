@@ -78,5 +78,8 @@ export default class EventAPI {
     return this.init().patch(`/reward_points/${reward_points_id}`, body);
   };
   
+  getRecommendations = (accountID, params) => {
+    return this.init().get(`/recommendations/${accountID}`, { params: params });
+  };  
   // Add additional API call here as needed ...
 }
