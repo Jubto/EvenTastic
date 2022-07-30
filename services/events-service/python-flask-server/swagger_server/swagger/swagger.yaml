@@ -730,6 +730,36 @@ paths:
           schema:
             $ref: "#/definitions/RewardPointsNotFoundError"
       x-swagger-router-controller: "swagger_server.controllers.reward_points_controller"
+  /recommendations/{account_id}:
+    get:
+      tags:
+      - "Recommendations"
+      summary: "Retrieve Recommendations for the provided Account ID."
+      operationId: "get_recommendations"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "account_id"
+        in: "path"
+        description: "The Account ID to retrieve recommendations for."
+        required: true
+        type: "integer"
+        format: "int64"
+      - name: "max_limit"
+        in: "query"
+        description: "The maximum number of results to be returned."
+        required: false
+        type: "string"
+      responses:
+        "200":
+          description: "Recommendations successfully retrieved."
+          schema:
+            $ref: "#/definitions/EventList"
+        "500":
+          description: "Unexpected failure in the service layer."
+          schema:
+            $ref: "#/definitions/UnexpectedServiceError"
+      x-swagger-router-controller: "swagger_server.controllers.recommendations_controller"
 definitions:
   VenueList:
     type: "array"
