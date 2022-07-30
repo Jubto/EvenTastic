@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useContext, useState, useEffect } from 'react';
+import { StoreContext } from '../utils/context';
 import { useLocation } from "react-router-dom";
 import { PageContainer } from '../components/styles/layouts.styled'
 import EventCard from '../components/event/EventCard'
@@ -21,9 +22,13 @@ const createCard = (event) => {
 
 const HomeScreen = () => {
 
+  const context = useContext(StoreContext);
+  const [account] = context.account;
+
   const [eventsList, setEventsList] = useState([])
   const [searchResults, setSearchResults] = useState([])
   const [searchVisible, setSearchVisible] = useState(false)
+  const [recommendationsList, setRecommendations] = useState([])
 
   const search = useLocation().search;
   // access the query params to see if search has been performed
@@ -32,6 +37,14 @@ const HomeScreen = () => {
   let event_category = new URLSearchParams(search).get('event_category');
 
   useEffect(() => {
+
+    if (account) {
+      api
+      .getRecommendations(account.account_id, {max_limit:3})
+      .then((response) => setRecommendations(response.data))
+      .catch((err) => console.log(err));
+    }
+
     if (event_title != null || event_desc != null || event_category != null) {
       api
         .getEventList({
@@ -81,6 +94,19 @@ const HomeScreen = () => {
   return (
     <PageContainer maxWidth='lg' align='center'>
       {searchVisible && getSearchResults()}
+      {recommendationsList.length > 0
+        ?
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <Typography variant="h4" component="div" align='left'>
+              Recommended for you:
+            </Typography>
+          </Grid>
+          {recommendationsList.map(createCard)}
+        </Grid>
+        :
+        <div></div>
+      }
       <Grid container spacing={2}>
         <Grid item xs={12}>
           <Typography variant="h4" component="div" align='left'>
