@@ -187,6 +187,7 @@ const HostDetailsPage = ({ change, setChange }) => {
             fullWidth
             id="orgName"
             label="Organisation name"
+            inputProps={{ maxLength: 50 }}
             InputLabelProps={{ shrink: true }}
             value={changeOrgName ? undefined : hostDetails ? hostDetails.org_name : undefined}
             disabled={hostDetails ? !changeOrgName : false}
@@ -229,6 +230,7 @@ const HostDetailsPage = ({ change, setChange }) => {
             fullWidth
             id="orgEmail"
             label="Organisation email"
+            inputProps={{ maxLength: 30 }}
             InputLabelProps={{ shrink: true }}
             value={changeEmail ? undefined : hostDetails ? hostDetails.org_email : undefined}
             disabled={hostDetails ? !changeEmail : false}
@@ -259,6 +261,7 @@ const HostDetailsPage = ({ change, setChange }) => {
             type="tel"
             id="orgJobTitle"
             label="Job title"
+            inputProps={{ maxLength: 30 }}
             defaultValue={hostDetails ? hostDetails.job_title : ''}
             disabled={hostStatus === 'Pending' || hostStatus === 'Declined'}
             onChange={() => {
@@ -275,6 +278,7 @@ const HostDetailsPage = ({ change, setChange }) => {
             type="tel"
             id="qualification"
             label="Qualification"
+            inputProps={{ maxLength: 50 }}
             defaultValue={hostDetails ? hostDetails.qualification : ''}
             disabled={hostStatus === 'Pending' || hostStatus === 'Declined'}
             onChange={() => {
@@ -292,6 +296,7 @@ const HostDetailsPage = ({ change, setChange }) => {
             type="tel"
             id="hostMobile"
             label="Host mobile"
+            inputProps={{ maxLength: 20 }}
             defaultValue={hostDetails ? hostDetails.host_contact_no : ''}
             disabled={hostStatus === 'Pending' || hostStatus === 'Declined'}
             onChange={() => {

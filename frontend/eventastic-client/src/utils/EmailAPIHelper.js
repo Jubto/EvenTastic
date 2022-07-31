@@ -38,6 +38,16 @@ export default class EmailAPI {
     </html>"
     return template
   };
+
+  send_tickets_email = (booking_code, seating_details) => {
+    let template = "<html>\
+    <h1>Here are the details for your booking:</h1>\
+    <p> <b>Booking Code: </b>" + booking_code + "</p>\
+    <p> <b>Seat Numbers: </b>" + seating_details + "</p>\
+    </html>"
+    return template
+  };
+
 }
 
 function formatDate(dateTime) {

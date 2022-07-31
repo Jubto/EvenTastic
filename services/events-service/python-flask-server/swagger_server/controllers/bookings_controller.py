@@ -66,7 +66,7 @@ def create_booking(body):  # noqa: E501
         
         date_string = datetime.now().strftime("%d%m%y%H%M%S")
         qr_code = str(body.account_id) + "_" + str(body.event_id) + "_" + date_string
-
+        body.qr_code = qr_code
         body.card_name = body.card_name.replace("'", "''")
 
         # inserting into bookings table

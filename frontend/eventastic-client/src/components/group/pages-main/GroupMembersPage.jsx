@@ -1,17 +1,14 @@
 import { useEffect, useContext, useState } from "react"
 import { StoreContext } from "../../../utils/context"
-import AccountAPI from "../../../utils/AccountAPIHelper";
 import GroupAPI from "../../../utils/GroupAPIHelper";
 import { FlexBox, ScrollContainer } from "../../styles/layouts.styled";
 import { Button, Card, CardMedia, Chip, Typography } from "@mui/material";
 
-const accountApi = new AccountAPI()
 const groupApi = new GroupAPI()
 
-const MemberCard = ({ groupDetails, member, setHasLeftGroup }) => {
+const MemberCard = ({ groupDetails, member, setHasLeftGroup, groupMemberDetails }) => {
   const context = useContext(StoreContext);
   const [account] = context.account;
-  const [memberAccount, setMemberAccount] = useState(false)
   const [leaveButton, setLeaveButton] = useState(false)
   const [isGroupAdmin, setGroupAdmin] = useState(false)
 
@@ -37,11 +34,6 @@ const MemberCard = ({ groupDetails, member, setHasLeftGroup }) => {
       setLeaveButton(true)
     }
     groupDetails.group_host_id === member.account_id && setGroupAdmin(true)
-    accountApi.getAccount(member.account_id)
-      .then((res) => {
-        setMemberAccount(res.data)
-      })
-      .catch((err) => console.error(err))
   }, [])
 
   return (
@@ -50,7 +42,8 @@ const MemberCard = ({ groupDetails, member, setHasLeftGroup }) => {
       bgcolor: '#fff7ec', m: 3, p: 1
     }}
     >
-      <CardMedia component="img" image={memberAccount.profile_pic}
+      <CardMedia component="img"
+        image={groupMemberDetails[member.account_id].profile_pic && groupMemberDetails[member.account_id].profile_pic}
         alt="User profile picture"
         sx={{ width: '15%', height: '100%', borderRadius: '100px', mr: 2 }}
       />
@@ -61,7 +54,7 @@ const MemberCard = ({ groupDetails, member, setHasLeftGroup }) => {
               Name
             </Typography>
             <Typography>
-              {memberAccount.first_name} {memberAccount.last_name}
+              {groupMemberDetails[member.account_id].first_name} {groupMemberDetails[member.account_id].last_name}
             </Typography>
           </FlexBox>
           <FlexBox direction='column' sx={{ width: '65%' }}>
@@ -100,7 +93,7 @@ const MemberCard = ({ groupDetails, member, setHasLeftGroup }) => {
               My bio
             </Typography>
             <Typography>
-              {memberAccount.user_desc}
+              {groupMemberDetails[member.account_id].user_desc}
             </Typography>
           </FlexBox>
         </ScrollContainer>
@@ -110,7 +103,7 @@ const MemberCard = ({ groupDetails, member, setHasLeftGroup }) => {
 }
 
 
-const GroupMembersPage = ({ groupDetails, setGroupDetails, setHasLeftGroup }) => {
+const GroupMembersPage = ({ groupDetails, setGroupDetails, setHasLeftGroup, groupMemberDetails }) => {
 
   useEffect(() => {
     groupApi.getGroup(groupDetails.group_id)
@@ -129,6 +122,7 @@ const GroupMembersPage = ({ groupDetails, setGroupDetails, setHasLeftGroup }) =>
           groupDetails={groupDetails}
           member={member}
           setHasLeftGroup={setHasLeftGroup}
+          groupMemberDetails={groupMemberDetails}
         />
       ))}
     </ScrollContainer>

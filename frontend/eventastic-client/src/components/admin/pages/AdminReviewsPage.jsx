@@ -122,52 +122,58 @@ const AdminReviewsPage = () => {
 
   const getFlaggedReviews = async () => {
     try {
-    const getReviews = await api.getReviews()
+    let getReviews = await api.getReviews()
 
-    let bookedEventsRes = await Promise.all(getReviews.data.map((review, idx) => {
-      return api.getEventDetails(review.event_id).then((res) => res.data)
-    }))    
-    
-    let flaggedReviews = getReviews.data.map((review, idx) => (
-      {
-        review_id: review.review_id,
-        flag_count: review.flag_count,
-        rating: review.rating,
-        upvotes: review.upvotes,
-        review_text: review.review_text,
-        event_id: review.event_id,
+    if (getReviews.data.length > 0) {
+      getReviews.data = getReviews.data.filter((review) => review.flag_count > 2)
+    }      
 
-        event_title: bookedEventsRes[idx].event_title,
-        event_img: bookedEventsRes[idx].event_img,
-        
-        account_img: '',
+    if (getReviews.data.length > 0) {
+
+      let bookedEventsRes = await Promise.all(getReviews.data.map((review, idx) => {
+        return api.getEventDetails(review.event_id).then((res) => res.data)
+      }))    
+      
+      let flaggedReviews = getReviews.data.map((review, idx) => (
+        {
+          review_id: review.review_id,
+          flag_count: review.flag_count,
+          rating: review.rating,
+          upvotes: review.upvotes,
+          review_text: review.review_text,
+          event_id: review.event_id,
+
+          event_title: bookedEventsRes[idx].event_title,
+          event_img: bookedEventsRes[idx].event_img,
+          
+          account_img: '',
+        }
+      ))
+
+      setReviews(flaggedReviews)
+
+      let accountRes = await Promise.all(getReviews.data.map((review, idx) => {
+        return apiAccount.getAccount(review.reviewer_account_id).then((res) => res.data)
+      }))
+      
+      flaggedReviews = getReviews.data.map((review, idx) => (
+        {
+          review_id: review.review_id,
+          flag_count: review.flag_count,
+          rating: review.rating,
+          upvotes: review.upvotes,
+          review_text: review.review_text,
+          event_id: review.event_id,
+
+          event_title: bookedEventsRes[idx].event_title,
+          event_img: bookedEventsRes[idx].event_img,
+          
+          account_img: accountRes[idx].profile_pic,
+        }
+      ))
+
+      setReviews(flaggedReviews)
       }
-    ))
-
-    setReviews(flaggedReviews)
-
-    let accountRes = await Promise.all(getReviews.data.map((review, idx) => {
-      return apiAccount.getAccount(review.reviewer_account_id).then((res) => res.data)
-    }))
-    
-    flaggedReviews = getReviews.data.map((review, idx) => (
-      {
-        review_id: review.review_id,
-        flag_count: review.flag_count,
-        rating: review.rating,
-        upvotes: review.upvotes,
-        review_text: review.review_text,
-        event_id: review.event_id,
-
-        event_title: bookedEventsRes[idx].event_title,
-        event_img: bookedEventsRes[idx].event_img,
-        
-        account_img: accountRes[idx].profile_pic,
-      }
-    ))
-
-    setReviews(flaggedReviews)
-
     }
     catch (err) {
       console.error(err)

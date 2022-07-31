@@ -251,6 +251,7 @@ const AccountDetailsPage = ({ change, setChange }) => {
             fullWidth
             id="firstName"
             label="First Name"
+            inputProps={{ maxLength: 50 }}
             defaultValue={account.first_name}
             onChange={() => {
               formErrors.firstName && setFormErrors(prevState => { return { ...prevState, firstName: false } })
@@ -266,6 +267,7 @@ const AccountDetailsPage = ({ change, setChange }) => {
             fullWidth
             id="lastName"
             label="Last Name"
+            inputProps={{ maxLength: 50 }}
             defaultValue={account.last_name}
             onChange={() => {
               formErrors.lastName && setFormErrors(prevState => { return { ...prevState, lastName: false } })
@@ -276,19 +278,12 @@ const AccountDetailsPage = ({ change, setChange }) => {
         </Grid>
         <Grid item sm={12} md={6}>
           <TextField
-            name="gender"
-            fullWidth
-            defaultValue={'none'}
-            id="gender"
-            label="Gender"
-          />
-        </Grid>
-        <Grid item sm={12} md={6}>
-          <TextField
             name="age"
             fullWidth
             id="age"
             label="Age"
+            type='number'
+            inputProps={{ min: 1, max: 120 }}
             defaultValue={account.age}
             onChange={() => {
               formErrors.age && setFormErrors(prevState => { return { ...prevState, age: false } })
@@ -304,6 +299,7 @@ const AccountDetailsPage = ({ change, setChange }) => {
             type="tel"
             id="mobile"
             label="Mobile"
+            inputProps={{ maxLength: 20 }}
             defaultValue={account.mobile}
             onChange={() => {
               formErrors.mobile && setFormErrors(prevState => { return { ...prevState, mobile: false } })
@@ -312,13 +308,15 @@ const AccountDetailsPage = ({ change, setChange }) => {
             helperText={formErrors.mobile ? 'Must be a valid mobile.' : ''}
           />
         </Grid>
-        <Grid item sm={12} md={6}>
+        <Grid item sm={12} md={12} >
           <TextField
             name="location"
             fullWidth
             id="location"
             label="Location"
+            inputProps={{ maxLength: 50 }}
             defaultValue={account.location}
+            sx={{ width: { sm: '100%', md: '49%' } }}
           />
         </Grid>
 
@@ -332,6 +330,7 @@ const AccountDetailsPage = ({ change, setChange }) => {
             fullWidth
             id="email"
             label="Email"
+            inputProps={{ maxLength: 50 }}
             InputLabelProps={{ shrink: true }}
             value={changeEmail ? undefined : account.email}
             disabled={!changeEmail}
@@ -364,6 +363,7 @@ const AccountDetailsPage = ({ change, setChange }) => {
             id="password1"
             label="Change password"
             autoComplete="new-password"
+            inputProps={{ maxLength: 50 }}
             disabled={!changePassword}
             onChange={() => {
               formErrors.password1 && setFormErrors(prevState => { return { ...prevState, password1: false } })
@@ -392,6 +392,7 @@ const AccountDetailsPage = ({ change, setChange }) => {
               id="password2"
               label="Confirm password"
               autoComplete="new-password"
+              inputProps={{ maxLength: 50 }}
               onChange={() => {
                 formErrors.password2 && setFormErrors(prevState => { return { ...prevState, password2: false } })
               }}
@@ -435,6 +436,7 @@ const AccountDetailsPage = ({ change, setChange }) => {
             fullWidth
             id="cardName"
             label="Card holder name"
+            inputProps={{ maxLength: 50 }}
             InputLabelProps={{ shrink: true }}
             value={changeCard ? undefined : card.card_name}
             disabled={!changeCard}

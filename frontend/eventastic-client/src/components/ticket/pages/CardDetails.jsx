@@ -38,7 +38,7 @@ const SeatsBox = styled('div')`
   margin-top: 20px;
 `;
 
-const CardDetails = ({ open, setOpen, setPage, setSuccessModal, totalCost, eventID, generalSeats, frontSeats, middleSeats, backSeats }) => {
+const CardDetails = ({ open, setOpen, setPage, setSuccessModal, totalCost, eventID, generalSeats, frontSeats, middleSeats, backSeats, setPurchaseQRCode }) => {
 
   const context = useContext(StoreContext);
   const [account, setAccount] = context.account;
@@ -132,6 +132,7 @@ const CardDetails = ({ open, setOpen, setPage, setSuccessModal, totalCost, event
         }
         
         const makeBooking = await eventAPI.addBooking(bookingParams)
+        setPurchaseQRCode(makeBooking.data.qr_code)
         setOpen(false)
         setPage('selection')
         setSuccessModal(true)
@@ -141,7 +142,7 @@ const CardDetails = ({ open, setOpen, setPage, setSuccessModal, totalCost, event
           account_id: parseInt(account.account_id),
           booking_id: parseInt(makeBooking.data.booking_id),
           event_id: parseInt(eventID),
-          reward_points_amount: parseFloat(totalCost/10.0),
+          reward_points_amount: parseFloat((totalCost/10.0).toFixed(2)),
           reward_points_status: "Pending"
         }
         
@@ -161,11 +162,11 @@ const CardDetails = ({ open, setOpen, setPage, setSuccessModal, totalCost, event
             seats += ' and '
         }
   
-        const message = "Your seats for this booking are "+seats+"."
+        //const message = "Your seats for this booking are "+seats+"."
         const emailTo = [{email_address : account.email}]
           const sendTicketsEmail = {
-            email_subject: 'EvenTastic Booking tickets',
-            email_content: message,
+            email_subject: 'EvenTastic Booking Tickets',
+            email_content: emailAPI.send_tickets_email(makeBooking.data.qr_code, seats),
             email_from: {
               email_address: evenTasticEmail,
               name: "EvenTastic"
