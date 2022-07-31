@@ -11,7 +11,7 @@ import EventAPI from "../../utils/EventAPIHelper"
 
 const api = new EventAPI()
 
-const TicketPurchaseModal = ({ open, setOpen, eventDetails, setSuccessModal }) => {
+const TicketPurchaseModal = ({ open, setOpen, eventDetails, setSuccessModal, setPurchaseQRCode  }) => {
   const [page, setPage] = useState('selection')
   
   const [generalPrice, setGeneralPrice] = useState(0.0)
@@ -103,14 +103,14 @@ const TicketPurchaseModal = ({ open, setOpen, eventDetails, setSuccessModal }) =
               return (
                 <CardDetails open={open} setOpen={setOpen} setPage={setPage} setSuccessModal={setSuccessModal} 
                 totalCost={totalCost} eventID={eventDetails.event_id} generalSeats={generalSeats} frontSeats={frontSeats} 
-                middleSeats={middleSeats} backSeats={backSeats}  />
+                middleSeats={middleSeats} backSeats={backSeats} setPurchaseQRCode={setPurchaseQRCode}  />
               )
             }
             else if (page === 'points') {
               return (
                 <RewardPoints open={open} setOpen={setOpen} setPage={setPage} setSuccessModal={setSuccessModal} 
                 totalCost={totalCost} eventID={eventDetails.event_id} generalSeats={generalSeats} frontSeats={frontSeats} 
-                middleSeats={middleSeats} backSeats={backSeats}  />
+                middleSeats={middleSeats} backSeats={backSeats} setPurchaseQRCode={setPurchaseQRCode} />
               )
             }
           })()}

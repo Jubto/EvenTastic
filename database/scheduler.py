@@ -19,10 +19,11 @@ def call_me():
     CurrentDate = datetime.datetime.now()
     records = cur.fetchall()
     for row in records:
-        end_time = row[13]
+        end_time = row[13][:-6]
         end_time = datetime.datetime.strptime(end_time, '%Y-%m-%dT%H:%M:%S')
         event_id = row[0]
         if CurrentDate > end_time:
+            print(f"Event:{event_id} is completed")
             cur.execute(
                 f"Update events SET event_status='COMPLETED' where event_id={event_id};")
 
@@ -36,12 +37,13 @@ def call_me():
                 account_id = reward[1]
                 cur.execute(
                     f"Select reward_points from accounts where account_id={account_id}")
-                prev_reward_point = int(cur.fetchall()[0])
+                prev_reward_point = float(cur.fetchall()[0])
                 cur.execute(
                     f"Update rewardpoints SET reward_points_status='Approved' where reward_points_id={reward_id}")
                 cur.execute(
                     f"Select reward_points_amount from rewardpoints where reward_points_id={reward_id}")
-                new_reward_points = prev_reward_point + int(cur.fetchall()[0])
+                new_reward_points = prev_reward_point + \
+                    float(cur.fetchall()[0])
                 cur.execute(
                     f"Update accounts SET reward_points={new_reward_points} where account_id={account_id}")
 
@@ -49,7 +51,7 @@ def call_me():
     con.close()
 
 
-schedule.every().hour.do(call_me)
+schedule.every.hour.do(call_me)
 
 while True:
     schedule.run_pending()
