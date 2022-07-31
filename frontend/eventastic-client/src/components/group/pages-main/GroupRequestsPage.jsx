@@ -1,18 +1,15 @@
 import { useEffect, useContext, useState } from "react"
 import { StoreContext } from "../../../utils/context"
-import AccountAPI from "../../../utils/AccountAPIHelper";
 import GroupAPI from "../../../utils/GroupAPIHelper";
 import { FlexBox, ScrollContainer } from "../../styles/layouts.styled";
 import { Button, Card, CardMedia, Chip, Typography } from "@mui/material";
 
-const accountApi = new AccountAPI()
 const groupApi = new GroupAPI()
 
-const MemberCard = ({ groupDetails, setGroupDetails, eventID, member }) => {
+const MemberCard = ({ groupDetails, setGroupDetails, eventID, member, groupMemberDetails }) => {
   const context = useContext(StoreContext);
   const [accountGroups, setAccountGroups] = context.groups;
   const [account] = context.account;
-  const [memberAccount, setMemberAccount] = useState(false)
   const [isGroupAdmin, setGroupAdmin] = useState(false)
 
   const processRequest = async (status) => {
@@ -40,11 +37,6 @@ const MemberCard = ({ groupDetails, setGroupDetails, eventID, member }) => {
 
   useEffect(() => {
     groupDetails.group_host_id === account.account_id && setGroupAdmin(true)
-    accountApi.getAccount(member.account_id)
-      .then((res) => {
-        setMemberAccount(res.data)
-      })
-      .catch((err) => console.error(err))
   }, [])
 
   return (
@@ -53,7 +45,11 @@ const MemberCard = ({ groupDetails, setGroupDetails, eventID, member }) => {
       bgcolor: '#fff7ec', m: 3, p: 1
     }}
     >
-      <CardMedia component="img" image={memberAccount.profile_pic}
+      <CardMedia component="img"
+        image={groupMemberDetails[member.account_id].profile_pic 
+          ? groupMemberDetails[member.account_id].profile_pic
+          : '/img/stock/user.jpg'
+        }
         alt="User profile picture"
         sx={{ width: '15%', height: '100%', borderRadius: '100px', mr: 2 }}
       />
@@ -64,7 +60,7 @@ const MemberCard = ({ groupDetails, setGroupDetails, eventID, member }) => {
               Name
             </Typography>
             <Typography>
-              {memberAccount.first_name} {memberAccount.last_name}
+              {groupMemberDetails[member.account_id].first_name} {groupMemberDetails[member.account_id].last_name}
             </Typography>
           </FlexBox>
           <FlexBox direction='column' sx={{ width: '60%', ml:3 }}>
@@ -99,7 +95,7 @@ const MemberCard = ({ groupDetails, setGroupDetails, eventID, member }) => {
               My bio
             </Typography>
             <Typography>
-              {memberAccount.user_desc}
+              {groupMemberDetails[member.account_id].user_desc}
             </Typography>
           </FlexBox>
           <FlexBox direction='column' sx={{ mr: 2 }}>
@@ -116,7 +112,7 @@ const MemberCard = ({ groupDetails, setGroupDetails, eventID, member }) => {
   )
 }
 
-const GroupRequestsPage = ({ groupDetails, setGroupDetails, eventID, newRequests }) => {
+const GroupRequestsPage = ({ groupDetails, setGroupDetails, eventID, newRequests, groupMemberDetails }) => {
   return (
     <ScrollContainer thin pr='1vw'>
       {newRequests
@@ -132,6 +128,7 @@ const GroupRequestsPage = ({ groupDetails, setGroupDetails, eventID, newRequests
           setGroupDetails={setGroupDetails}
           eventID={eventID}
           member={member}
+          groupMemberDetails={groupMemberDetails}
         />
       ))}
     </ScrollContainer>
