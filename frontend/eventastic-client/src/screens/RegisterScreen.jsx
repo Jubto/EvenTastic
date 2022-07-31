@@ -200,6 +200,7 @@ const RegisterScreen = () => {
                 id="firstName"
                 label="First Name"
                 autoFocus
+                inputProps={{ maxLength: 50 }}
                 onChange={() => {
                   formErrors.firstName && setFormErrors(prevState => { return { ...prevState, firstName: false } })
                 }}
@@ -214,7 +215,7 @@ const RegisterScreen = () => {
                 fullWidth
                 id="lastName"
                 label="Last Name"
-                autoFocus
+                inputProps={{ maxLength: 50 }}
                 onChange={() => {
                   formErrors.lastName && setFormErrors(prevState => { return { ...prevState, lastName: false } })
                 }}
@@ -229,7 +230,7 @@ const RegisterScreen = () => {
                 fullWidth
                 id="email"
                 label="Email"
-                autoFocus
+                inputProps={{ maxLength: 50 }}
                 onChange={() => {
                   formErrors.email && setFormErrors(prevState => { return { ...prevState, email: false } })
                 }}
@@ -245,7 +246,7 @@ const RegisterScreen = () => {
                 type="password"
                 id="password1"
                 label="Password"
-                autoFocus
+                inputProps={{ maxLength: 50 }}
                 onChange={() => {
                   formErrors.password1 && setFormErrors(prevState => { return { ...prevState, password1: false } })
                 }}
@@ -261,7 +262,7 @@ const RegisterScreen = () => {
                 type="password"
                 id="password2"
                 label="Confirm password"
-                autoFocus
+                inputProps={{ maxLength: 50 }}
                 onChange={() => {
                   formErrors.password2 && setFormErrors(prevState => { return { ...prevState, password2: false } })
                 }}
@@ -289,7 +290,7 @@ const RegisterScreen = () => {
                 fullWidth
                 id="orgName"
                 label="Organisation"
-                autoFocus
+                inputProps={{ maxLength: 50 }}
                 onChange={() => {
                   formErrors.orgName && setFormErrors(prevState => { return { ...prevState, orgName: false } })
                 }}
@@ -304,7 +305,7 @@ const RegisterScreen = () => {
                 fullWidth
                 id="orgEmail"
                 label="Organisation email"
-                autoFocus
+                inputProps={{ maxLength: 30 }}
                 sx={{mt:{xs:0, sm:4.2}}}
                 onChange={() => {
                   formErrors.orgEmail && setFormErrors(prevState => { return { ...prevState, orgEmail: false } })
@@ -320,7 +321,7 @@ const RegisterScreen = () => {
                 fullWidth
                 id="orgJobTitle"
                 label="Job title"
-                autoFocus
+                inputProps={{ maxLength: 30 }}
                 onChange={() => {
                   formErrors.orgJobTitle && setFormErrors(prevState => { return { ...prevState, orgJobTitle: false } })
                 }}
@@ -335,7 +336,7 @@ const RegisterScreen = () => {
                 fullWidth
                 id="qualification"
                 label="Qualification"
-                autoFocus
+                inputProps={{ maxLength: 50 }}
                 onChange={() => {
                   formErrors.qualification && setFormErrors(prevState => { return { ...prevState, qualification: false } })
                 }}
@@ -351,7 +352,7 @@ const RegisterScreen = () => {
                 id="hostMobile"
                 label="Your host mobile"
                 type="tel"
-                autoFocus
+                inputProps={{ maxLength: 20 }}
                 onChange={() => {
                   formErrors.hostMobile && setFormErrors(prevState => { return { ...prevState, hostMobile: false } })
                 }}

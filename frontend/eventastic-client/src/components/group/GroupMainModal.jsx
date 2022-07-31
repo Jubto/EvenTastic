@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import GroupAPI from '../../utils/GroupAPIHelper';
+import AccountAPI from '../../utils/AccountAPIHelper';
 import GroupInfoPage from './pages-main/GroupInfoPage'
 import GroupChatPage from './pages-main/GroupChatPage';
 import GroupMembersPage from './pages-main/GroupMembersPage';
@@ -13,6 +14,7 @@ import GroupsIcon from '@mui/icons-material/Groups';
 import GroupAddIcon from '@mui/icons-material/GroupAdd';
 
 const groupApi = new GroupAPI()
+const accountApi = new AccountAPI()
 
 const GroupMainModal = ({
   open,
@@ -26,6 +28,7 @@ const GroupMainModal = ({
   const [page, setPage] = useState('groupInfo')
   const [value, setValue] = useState(0);
   const [newRequests, setNewRequests] = useState(0);
+  const [groupMemberDetails, setGroupMemberDetails] = useState([])
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -40,8 +43,8 @@ const GroupMainModal = ({
       setNewRequests(0)
     }
     else {
+      // Each page change check for new join requests
       if(Object.keys(groupDetails).length !== 0){
-        console.log(groupDetails)
         groupApi.getGroup(groupDetails.group_id)
         .then((res) => {
           setGroupDetails(res.data)
@@ -49,6 +52,19 @@ const GroupMainModal = ({
         })
         .catch((err) => console.error(err))
       }
+    }
+    // Each page change update all member details
+    if (groupDetails.group_members) {
+      Promise.all(groupDetails.group_members?.map((member, idx) => {
+        return accountApi.getAccount(member.account_id).then((res) => res.data)
+      }))
+      .then((res) => {
+        let groupMemberDetailsTemp = {}
+        res.map((member) => {
+          groupMemberDetailsTemp[member.account_id] = member
+        })
+        setGroupMemberDetails(groupMemberDetailsTemp)
+      })
     }
   }, [page])
 
@@ -85,6 +101,7 @@ const GroupMainModal = ({
               <GroupChatPage
                 groupDetails={groupDetails}
                 account={account}
+                groupMemberDetails={groupMemberDetails}
               />
             )
           }
@@ -95,6 +112,7 @@ const GroupMainModal = ({
                 setGroupDetails={setGroupDetails}
                 setHasLeftGroup={setHasLeftGroup}
                 setGroupMainModal={setOpen}
+                groupMemberDetails={groupMemberDetails}
               />
             )
           }

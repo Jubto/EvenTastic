@@ -184,7 +184,7 @@ const GroupInfoPage = ({ groupDetails, setGroupDetails, eventDetails, accountID 
               required
               fullWidth
               multiline
-              rows={11}
+              rows={6}
               id="groupDesc"
               label="Group Description"
               placeholder='Enticing group description'
