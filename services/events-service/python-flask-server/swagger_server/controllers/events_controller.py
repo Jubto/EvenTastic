@@ -402,6 +402,12 @@ def update_event_status(event_id, body):  # noqa: E501
                 for booking in records:
                     cur.execute(f"UPDATE bookings set booking_status = 'Cancelled' where booking_id = {booking[0]}") 
 
+            cur.execute(f"SELECT booking_id FROM rewardpoints where event_id = {event_id} and reward_points_status= 'Pending' ")
+            records = cur.fetchall()
+            if len(records) > 0:
+                for booking in records:
+                    cur.execute(f"UPDATE rewardpoints set reward_points_status = 'Cancelled' where booking_id = {booking[0]}") 
+
         cur.close()
         con.close()
         return body, 200, {'Access-Control-Allow-Origin': '*'}

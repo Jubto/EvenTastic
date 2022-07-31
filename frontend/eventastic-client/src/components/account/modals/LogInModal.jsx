@@ -127,6 +127,7 @@ const LogInModal = () => {
           label="Account email"
           sx={{ mb: 4, mr:2, width: '100%', maxWidth: '300px' }}
           autoFocus
+          inputProps={{ maxLength: 50 }}
           onChange={() => {
             formErrors.email && setFormErrors(prevState => { return { ...prevState, email: false } })
             logInFail && setLogInFail(false)
@@ -140,7 +141,7 @@ const LogInModal = () => {
           label="Password"
           type="password"
           sx={{ mb: 2, mr:2, width: '100%', maxWidth: '300px' }}
-          autoFocus
+          inputProps={{ maxLength: 50 }}
           onChange={() => {
             formErrors.password && setFormErrors(prevState => { return { ...prevState, password: false } })
             logInFail && setLogInFail(false)

@@ -63,6 +63,7 @@ const EventScreen = () => {
   const [groupDetails, setGroupDetails] = useState({})
   const [apiGetGroup, setApiGetGroup] = useState(false)
   const [hasLeftGroup, setHasLeftGroup] = useState(false)
+  const [purchaseQRCode, setPurchaseQRCode] = useState(false)
 
   // modals
   const [openTicketModal, setTicketModal] = useState(false)
@@ -322,10 +323,12 @@ const EventScreen = () => {
         setOpen={setTicketModal}
         eventDetails={eventDetails}
         setSuccessModal={setPurchaseSuccessModal}
+        setPurchaseQRCode={setPurchaseQRCode}
       />
       <PurchaseSuccessModal
         open={purchaseSuccessModal}
         setOpen={setPurchaseSuccessModal}
+        purchaseQRCode={purchaseQRCode}
       />
       <ReviewModal
         open={openReviewModal}
