@@ -162,7 +162,7 @@ const RegisterScreen = () => {
         }
       }
       catch(error) {
-        // TODO account already exists error handle
+        // TODO account already exists error handle 409 The provided email address already exists in database.
         console.error(error)
       }
     }

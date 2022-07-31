@@ -48,8 +48,8 @@ const Message = ({ self, user, text, userDetails, groupMemberDetails }) => {
         else {
           return (
             <FlexBox>
-              <Tooltip title={user === 'evenTastic' ? 'evenTastic' : userDetails.first_name} enterDelay={10}>
-                <Avatar src={user === 'evenTastic' ? '' : userDetails.profile_pic} />
+              <Tooltip title={userDetails.first_name} enterDelay={10}>
+                <Avatar src={userDetails.profile_pic && userDetails.profile_pic} />
               </Tooltip>
               <MsgBody sx={{ ml: 1.5, bgcolor: '#b7b7b7' }}>
                 <Typography sx={{ ml: 1, mt: 1, color: 'white' }}>
