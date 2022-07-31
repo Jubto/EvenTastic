@@ -64,9 +64,11 @@ const GroupMainModal = ({
           groupMemberDetailsTemp[member.account_id] = member
         })
         setGroupMemberDetails(groupMemberDetailsTemp)
+        console.log('SET MEMBERS')
+        console.log(groupMemberDetailsTemp)
       })
     }
-  }, [page])
+  }, [open, page])
 
   return (
     <LargeModal open={open} onClose={handleClose} aria-labelledby="Review modal" maxWidth='lg'>
