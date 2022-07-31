@@ -43,7 +43,7 @@ const SeatsBox = styled('div')`
   margin-top: 20px;
 `;
 
-const RewardPoints = ({ open, setOpen, setPage, setSuccessModal, totalCost, eventID, generalSeats, frontSeats, middleSeats, backSeats, setPurchaseQRCode }) => {
+const RewardPoints = ({ open, setOpen, setPage, setSuccessModal, totalCost, eventID, generalSeats, frontSeats, middleSeats, backSeats, setPurchaseQRCode, eventDetails, setBookingPoints }) => {
 
   const context = useContext(StoreContext);
   const [account, setAccount] = context.account;
@@ -64,6 +64,7 @@ const RewardPoints = ({ open, setOpen, setPage, setSuccessModal, totalCost, even
         card_number: "-100"
       }
         
+      setBookingPoints('0')
       const makeBooking = await eventAPI.addBooking(bookingParams)
       setPurchaseQRCode(makeBooking.data.qr_code)
       setOpen(false)
@@ -100,7 +101,7 @@ const RewardPoints = ({ open, setOpen, setPage, setSuccessModal, totalCost, even
       const emailTo = [{email_address : account.email}]
         const sendTicketsEmail = {
           email_subject: 'EvenTastic Booking Tickets',
-          email_content: emailAPI.send_tickets_email(makeBooking.data.qr_code, seats),
+          email_content: emailAPI.send_bookings_email(makeBooking.data.qr_code, seats, eventDetails.event_title, eventDetails.event_short_desc, eventDetails.event_desc, eventDetails.event_location, eventDetails.event_start_datetime, eventDetails.event_end_datetime ),
           email_from: {
             email_address: evenTasticEmail,
             name: "EvenTastic"

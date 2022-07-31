@@ -111,8 +111,8 @@ const Ticket = ({ booking, handleCancelBooking, handleSendTicketsModal }) => {
           </div>
         </div>
         <SaveButtonBox  width="15%">
-          <Button sx={{ height: '50%' }} variant="contained" value={booking.booking_id} onClick={(e) => handleSendTicketsModal(e.target.value, booking.qr_code)} >Send Tickets</Button> 
-          <Button sx={{ height: '50%' }} variant="contained" color="error" id={booking.booking_id} onClick={(e) => handleCancelBooking(e.target.id, booking.card_number, booking.total_cost, booking.reward_points_id, booking.qr_code)} >Cancel Booking</Button>
+          <Button sx={{ height: '50%' }} variant="contained" value={booking.booking_id} onClick={(e) => handleSendTicketsModal(e.target.value, booking.qr_code, booking.event_title, booking.event_short_desc, booking.event_desc, booking.event_location, booking.event_start_datetime, booking.event_end_datetime)} >Send Tickets</Button> 
+          <Button sx={{ height: '50%' }} variant="contained" color="error" id={booking.booking_id} onClick={(e) => handleCancelBooking(e.target.id, booking.card_number, booking.total_cost, booking.reward_points_id, booking.qr_code, booking.event_title, booking.event_short_desc, booking.event_desc, booking.event_location, booking.event_start_datetime, booking.event_end_datetime)} >Cancel Booking</Button>
         </SaveButtonBox>
       </MainBox>
     </FlexBox>
@@ -188,6 +188,13 @@ const AccountTicketsPage = ({ toggle }) => {
   const [toCancelPointsID, setToCancelPointsID] = useState(null)
   const [toCancelQRCode, setToCancelQRCode] = useState(null)
 
+  const [eventTitle, setEventTitle] = useState('')
+  const [shortDesc, setShortDesc] = useState('')
+  const [fullDesc, setFullDesc] = useState('')
+  const [eventLocation, setEventLocation] = useState('')
+  const [eventStartTime, setEventStartTime] = useState('')
+  const [eventEndTime, setEventEndTime] = useState('')
+
   const getBookings = async () => {
     try {
       const booking_params = {
@@ -215,7 +222,10 @@ const AccountTicketsPage = ({ toggle }) => {
           event_title: bookedEventsRes[idx].event_title,
           event_img: bookedEventsRes[idx].event_img,
           event_location: bookedEventsRes[idx].event_location,
-          event_start_datetime: bookedEventsRes[idx].event_start_datetime
+          event_desc: bookedEventsRes[idx].event_desc,
+          event_short_desc: bookedEventsRes[idx].event_short_desc,
+          event_start_datetime: bookedEventsRes[idx].event_start_datetime,
+          event_end_datetime: bookedEventsRes[idx].event_end_datetime
         }
       ))
 
@@ -257,17 +267,24 @@ const AccountTicketsPage = ({ toggle }) => {
     }
   }
 
-  const handleCancelBooking = (booking_id, card_number, total_cost, reward_points_id, qr_code) => {
+  const handleCancelBooking = (booking_id, card_number, total_cost, reward_points_id, qr_code, event_title, event_short_desc, event_desc, event_location, event_start_datetime, event_end_datetime) => {
     setToCancel(booking_id)
     setToCancelCard(card_number)
     setToCancelPoints(parseFloat(total_cost).toFixed(2))
     setToCancelPointsID(reward_points_id)
     setToCancelQRCode(qr_code)
+
+    setEventTitle(event_title)
+    setShortDesc(event_short_desc)
+    setFullDesc(event_desc)
+    setEventLocation(event_location)
+    setEventStartTime(event_start_datetime)
+    setEventEndTime(event_end_datetime)
+
     setOpenModal(true)
-    //console.log(booking_id, card_number, parseFloat(total_cost/10.0).toFixed(2), reward_points_id) 
   }
 
-  const handleSendTicketsModal = async (booking_id, qr_code) => {
+  const handleSendTicketsModal = async (booking_id, qr_code, event_title, event_short_desc, event_desc, event_location, event_start_datetime, event_end_datetime) => {
     try {
       setSendTicketsModal(true)
       setSendTicketQRCode(qr_code)
@@ -290,7 +307,7 @@ const AccountTicketsPage = ({ toggle }) => {
       const emailTo = [{email_address : account.email}]
         const sendTicketsEmail = {
           email_subject: 'EvenTastic Booking Tickets',
-          email_content: emailAPI.send_tickets_email(qr_code, seats),
+          email_content: emailAPI.send_bookings_email(qr_code, seats, event_title, event_short_desc, event_desc, event_location, event_start_datetime, event_end_datetime),
           email_from: {
             email_address: evenTasticEmail,
             name: "EvenTastic"
@@ -329,7 +346,9 @@ const AccountTicketsPage = ({ toggle }) => {
       }
       <div style={{ height:'50px' }}></div>
       <CancelTicketModal open={openModal} setOpen={setOpenModal} toCancel={toCancel} setCancelBooking={setCancelBooking}
-      toCancelCard={toCancelCard} toCancelPoints={toCancelPoints} toCancelPointsID={toCancelPointsID} toCancelQRCode={toCancelQRCode} />
+      toCancelCard={toCancelCard} toCancelPoints={toCancelPoints} toCancelPointsID={toCancelPointsID}
+      toCancelQRCode={toCancelQRCode} eventTitle={eventTitle} shortDesc={shortDesc} fullDesc={fullDesc}
+      eventLocation={eventLocation} eventStartTime={eventStartTime} eventEndTime={eventEndTime} />
       <SendTicketsModal open={sendTicketsModal} setOpen={setSendTicketsModal} ticketString={ticketString} sendTicketQRCode={sendTicketQRCode} />
     </ScrollContainer>
   )

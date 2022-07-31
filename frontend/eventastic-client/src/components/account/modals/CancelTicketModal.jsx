@@ -12,7 +12,7 @@ const accountAPI = new AccountAPI()
 const emailAPI = new EmailAPI();
 const evenTasticEmail = 'eventastic.comp9900@gmail.com'
 
-const CancelTicketModal = ({ open, setOpen, toCancel, setCancelBooking, toCancelCard, toCancelPoints, toCancelPointsID, toCancelQRCode }) => {
+const CancelTicketModal = ({ open, setOpen, toCancel, setCancelBooking, toCancelCard, toCancelPoints, toCancelPointsID, toCancelQRCode, eventTitle, shortDesc, fullDesc, eventLocation, eventStartTime, eventEndTime }) => {
   
   const context = useContext(StoreContext);
   const [account, setAccount] = context.account;
@@ -27,11 +27,10 @@ const CancelTicketModal = ({ open, setOpen, toCancel, setCancelBooking, toCancel
       .then()
       .catch((err) => console.error(err))
 
-    const message = "Your tickets have been cancelled for the booking: "+qrCode+"."
     const emailTo = [{email_address : account.email}]
       const sendCancelEmail = {
         email_subject: 'EvenTastic Booking Cancellation',
-        email_content: message,
+        email_content: emailAPI.send_cancellation_email(qrCode, eventTitle, shortDesc, fullDesc, eventLocation, eventStartTime, eventEndTime),
         email_from: {
           email_address: evenTasticEmail,
           name: "EvenTastic"

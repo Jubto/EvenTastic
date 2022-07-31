@@ -395,6 +395,17 @@ def update_account(account_id, body):  # noqa: E501
             con.close()
             return error, 404, {'Access-Control-Allow-Origin': '*'}
 
+        if body.email != None:
+            cur.execute("SELECT * FROM accounts where email = '"+str(body.email.replace("'", "''"))+"' and account_id !="+str(account_id)+";")
+
+            record = cur.fetchone()
+            if record != None:
+                error = InvalidInputError(code=409, type="InvalidInputError", 
+                        message="The provided email address already exists in database.")
+                cur.close()
+                con.close()
+                return error, 400, {'Access-Control-Allow-Origin': '*'}
+
         if body.tags is None: tags_string = ""
         else:
             tags_string = ""

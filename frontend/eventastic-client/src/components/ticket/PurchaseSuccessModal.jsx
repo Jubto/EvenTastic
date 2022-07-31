@@ -3,7 +3,7 @@ import { FlexBox } from '../styles/layouts.styled';
 import { Button } from '@mui/material';
 import QRCode from "react-qr-code";
 
-const PurchaseSuccessModal = ({ open, setOpen, purchaseQRCode }) => {
+const PurchaseSuccessModal = ({ open, setOpen, purchaseQRCode, bookingPoints }) => {
   const handleClose = () => {
     setOpen(false);
   }
@@ -11,9 +11,18 @@ const PurchaseSuccessModal = ({ open, setOpen, purchaseQRCode }) => {
     <StandardModal open={open} onClose={handleClose} aria-labelledby="purchase success modal" maxWidth='lg'>
       <ModalTitle title='Booking Successful!' close={handleClose} />
       <ModalBody>
-        <div>
-          Your booking has been completed successfully. An email will be sent to your registered email ID with the ticket details.
-        </div>
+        {bookingPoints === '0' &&
+          <div>
+            Your booking has been completed successfully. 
+            An email will be sent to your registered email ID with the ticket details.
+          </div>
+        }
+        {bookingPoints !== '0' &&
+          <div>
+            Your booking has been completed successfully and {bookingPoints} reward points will be added to your account upon event completion. 
+            An email will be sent to your registered email ID with the ticket details.
+          </div>
+        }
         <br></br>
         <div style={{ width:'100%', display:'flex', flexDirection:'column', alignItems:'center' }}>
           <div>
