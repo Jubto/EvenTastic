@@ -62,7 +62,6 @@ const TagContainer = ({ categoryAndTags, savedTags, setSavedTags }) => {
   )
 }
 
-
 const TagsScreen = () => {
   const navigate = useNavigate()
   const location = useLocation();

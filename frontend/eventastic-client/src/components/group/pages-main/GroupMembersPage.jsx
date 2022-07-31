@@ -42,7 +42,8 @@ const MemberCard = ({ groupDetails, member, setHasLeftGroup, groupMemberDetails 
       bgcolor: '#fff7ec', m: 3, p: 1
     }}
     >
-      <CardMedia component="img" image={groupMemberDetails[member.account_id].profile_pic}
+      <CardMedia component="img"
+        image={groupMemberDetails[member.account_id].profile_pic && groupMemberDetails[member.account_id].profile_pic}
         alt="User profile picture"
         sx={{ width: '15%', height: '100%', borderRadius: '100px', mr: 2 }}
       />
