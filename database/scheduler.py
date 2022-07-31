@@ -23,6 +23,7 @@ def call_me():
         end_time = datetime.datetime.strptime(end_time, '%Y-%m-%dT%H:%M:%S')
         event_id = row[0]
         if CurrentDate > end_time:
+            print(f"Event:{event_id} is completed")
             cur.execute(
                 f"Update events SET event_status='COMPLETED' where event_id={event_id};")
 
