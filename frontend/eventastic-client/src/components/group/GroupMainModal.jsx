@@ -42,31 +42,28 @@ const GroupMainModal = ({
     if (page === 'groupRequests') {
       setNewRequests(0)
     }
-    else {
-      // Each page change check for new join requests
-      if(Object.keys(groupDetails).length !== 0){
-        groupApi.getGroup(groupDetails.group_id)
-        .then((res) => {
-          setGroupDetails(res.data)
-          setNewRequests(res.data.group_members.filter((member) => member.join_status === 'Pending').length)
-        })
-        .catch((err) => console.error(err))
-      }
-    }
-    // Each page change update all member details
-    if (groupDetails.group_members) {
-      Promise.all(groupDetails.group_members?.map((member, idx) => {
-        return accountApi.getAccount(member.account_id).then((res) => res.data)
-      }))
-      .then((res) => {
-        let groupMemberDetailsTemp = {}
-        res.map((member) => {
-          groupMemberDetailsTemp[member.account_id] = member
-        })
-        setGroupMemberDetails(groupMemberDetailsTemp)
-        console.log('SET MEMBERS')
-        console.log(groupMemberDetailsTemp)
-      })
+    else if (Object.keys(groupDetails).length !== 0) {
+      // Each page change update all member details
+      (async () => {
+        try {
+          const groupRes = await groupApi.getGroup(groupDetails.group_id)
+          setGroupDetails(groupRes.data)
+          setNewRequests(groupRes.data.group_members.filter((member) => member.join_status === 'Pending').length)
+
+          const groupMemRes = await Promise.all(groupRes.data.group_members.map((member, idx) => {
+            return accountApi.getAccount(member.account_id).then((res) => res.data)
+          }))
+
+          let groupMemberDetailsTemp = {}
+          groupMemRes.map((member) => {
+            groupMemberDetailsTemp[member.account_id] = member
+          })
+          setGroupMemberDetails(groupMemberDetailsTemp)
+        }
+        catch(err) {
+          console.error(err)
+        } 
+      })()
     }
   }, [open, page])
 
@@ -125,6 +122,7 @@ const GroupMainModal = ({
                 setGroupDetails={setGroupDetails}
                 eventID={eventDetails.event_id}
                 newRequests={newRequests}
+                groupMemberDetails={groupMemberDetails}
               />
             )
           }

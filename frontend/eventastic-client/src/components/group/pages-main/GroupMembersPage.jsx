@@ -2,8 +2,7 @@ import { useEffect, useContext, useState } from "react"
 import { StoreContext } from "../../../utils/context"
 import GroupAPI from "../../../utils/GroupAPIHelper";
 import { FlexBox, ScrollContainer } from "../../styles/layouts.styled";
-import { Avatar, Button, Card, CardMedia, Chip, Typography } from "@mui/material";
-import PersonIcon from '@mui/icons-material/Person';
+import { Button, Card, CardMedia, Chip, Typography } from "@mui/material";
 
 const groupApi = new GroupAPI()
 
@@ -44,7 +43,10 @@ const MemberCard = ({ groupDetails, member, setHasLeftGroup, groupMemberDetails 
     }}
     >
       <CardMedia component="img"
-        image={groupMemberDetails[member.account_id].profile_pic}
+        image={groupMemberDetails[member.account_id].profile_pic 
+            ? groupMemberDetails[member.account_id].profile_pic
+            : '/img/stock/user.jpg'
+        }
         alt="User profile picture"
         sx={{ width: '15%', height: '100%', borderRadius: '100px', mr: 2 }}
       />
