@@ -64,7 +64,7 @@ def create_review(body):  # noqa: E501
         cur.execute('SELECT reward_points FROM accounts where account_id = ' + str(body.reviewer_account_id))
         record = cur.fetchone()
         if record != None:
-            reward_points = int(record[0])
+            reward_points = float(record[0])
             # print(reward_points)
             new_reward_points = str(reward_points + 1)
             cur.execute(f"UPDATE accounts set reward_points = {new_reward_points} where account_id = {body.reviewer_account_id}")
@@ -188,7 +188,7 @@ def list_reviews(event_id=None, interaction_acount_id=None):  # noqa: E501
                             interaction['review_flagged'] = bool(inter_record[4])
 
                     review['review_interaction'] = interaction
-                    
+
                     reviews_list.append(review)        
                     
 
@@ -254,7 +254,7 @@ def update_review(review_id, body):  # noqa: E501
         if body.review_status == 'Removed':
             cur.execute('SELECT reward_points FROM accounts where account_id = ' + (reviewer_account_id))
             record = cur.fetchone()
-            reward_points = int(record[0])
+            reward_points = float(record[0])
             new_reward_points = str(reward_points - 1)
             cur.execute(f"UPDATE accounts set reward_points = {new_reward_points} where account_id = {reviewer_account_id}")               
 
