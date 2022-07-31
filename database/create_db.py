@@ -67,7 +67,7 @@ cur.execute('CREATE TABLE hosts(\
             account_id INT NOT NULL,\
             FOREIGN KEY (account_id) REFERENCES accounts (account_id),\
             organisation_name VARCHAR(50),\
-            organisation_desc VARCHAR(50),\
+            organisation_desc TEXT,\
             host_contact_no VARCHAR(20),\
             job_title VARCHAR(30),\
             qualification VARCHAR(50),\
