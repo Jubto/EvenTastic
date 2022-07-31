@@ -15,7 +15,8 @@ from swagger_server.models.unexpected_service_error import UnexpectedServiceErro
 from swagger_server import util
 
 port=5432 # update port of postgres running in Docker here
-host='localhost'
+#host='localhost'
+host='eventastic-db'
 
 def create_account(body):  # noqa: E501
     """Used to create an Account.

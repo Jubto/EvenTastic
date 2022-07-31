@@ -11,7 +11,8 @@ from swagger_server import util
 
 
 port = 5432
-host = 'localhost'
+#host = 'localhost'
+host='eventastic-db'
 user ='postgres'
 password='postgrespw'
 database='eventastic'

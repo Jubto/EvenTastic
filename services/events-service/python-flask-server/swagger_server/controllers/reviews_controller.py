@@ -14,7 +14,8 @@ from swagger_server.models.unexpected_service_error import UnexpectedServiceErro
 from swagger_server import util
 
 port = 5432  # Change according to port in Docker
-host = 'localhost'
+#host = 'localhost'
+host='eventastic-db'
 
 def create_review(body):  # noqa: E501
     """Used to create a Review.

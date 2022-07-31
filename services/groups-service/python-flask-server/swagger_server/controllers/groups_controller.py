@@ -10,7 +10,8 @@ from swagger_server.models.group_status_update import GroupStatusUpdate
 from swagger_server.models.unexpected_service_error import UnexpectedServiceError
 
 port = 5432
-host = 'localhost'
+#host = 'localhost'
+host='eventastic-db'
 user ='postgres'
 password='postgrespw'
 database='eventastic'

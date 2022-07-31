@@ -8,7 +8,8 @@ from swagger_server.models.unexpected_service_error import UnexpectedServiceErro
 from swagger_server import util
 
 port = 5432  # Change according to port in Docker
-host = 'localhost'
+#host = 'localhost'
+host='eventastic-db'
 
 def list_tickets(event_id=None, ticket_status=None, booking_id=None):  # noqa: E501
     """Retrieve a List of Tickets. Search by Event ID and Ticket Status.
