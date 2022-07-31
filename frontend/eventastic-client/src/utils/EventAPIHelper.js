@@ -70,6 +70,10 @@ export default class EventAPI {
     return this.init().put(`/reviews/${reviewId}`, body);
   };
 
+  getRewardPoints = (param) => {
+    return this.init().get("/reward_points", { params: param });
+  };
+
   postRewardPoints = (body) => {
     return this.init().post("/reward_points", body);
   };
