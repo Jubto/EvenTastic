@@ -116,7 +116,7 @@ const AdminVenueScreen = () => {
     }
 
     if(formErrors.error === false){
-      const data = {'seating':[{'seating_type':'General','seating_number':parseInt(General_seats)},{'seating_type':'Front','seating_number':parseInt(Front_seats)},{'seating_type':'Middle','seating_number':parseInt(Middle_seats)},{'seating_type':'Back','seating_number':parseInt(Back_seats)}], 
+      const data = {'seating':[{'seating_type':'general','seating_number':parseInt(General_seats)},{'seating_type':'front','seating_number':parseInt(Front_seats)},{'seating_type':'middle','seating_number':parseInt(Middle_seats)},{'seating_type':'back','seating_number':parseInt(Back_seats)}], 
                       'venue_name':name, 'venue_desc':desc, 'venue_address':address, 'venue_img':image}
       //console.log(data)
       

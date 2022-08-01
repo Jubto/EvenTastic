@@ -15,6 +15,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import NotHostErrorModal from "../components/event/modals/NotHostErrorModal";
 import { fileToDataUrl } from '../utils/helpers';
+import CreateEventSuccessModal from '../components/event/modals/CreateEventSuccessModal';
 import {
   Button, Card, Checkbox,
   Grid,  Stack,
@@ -27,7 +28,7 @@ import {
   Typography,
   styled,
 } from '@mui/material';
-import { Navigate, useNavigate } from 'react-router-dom';
+
 
 
 // formating for the Grid Items 
@@ -67,7 +68,7 @@ const event_api = new EventAPI();
 
 const CreateEventPage = () => {
   const [venueList, setVenueList] = React.useState([])
-  const navigate = useNavigate()
+  
   const [locationImg,setLocationImg] = React.useState("") 
   const [activeStep, setActiveStep] = React.useState(0);
   const context = React.useContext(StoreContext);
@@ -75,6 +76,7 @@ const CreateEventPage = () => {
   const [datevalue, setDateValue] = React.useState(new Date());
   const [enddatevalue, setEndDateValue] = React.useState(new Date());
   const [open, setOpen] = React.useState(false);
+  const [createEventSuccess,setCreateEventSuccess] = React.useState(false);
   const [seatCount, setSeatCount] = React.useState({
     gen_count:0, front_count:0,middle_count:0, back_count:0
   })
@@ -244,16 +246,14 @@ const CreateEventPage = () => {
     data = {...data,"tags":formDetails.event_tags.map((tag_name)=>{
       return {"name":tag_name}
     })}
-    //console.log(data)
+    console.log(data)
     
     event_api
       .postEvent(data)
       .then((response) => {
         //console.log(response)
-        alert("Successfully Event is created done")
-      })
-      .then(()=>{
-        navigate('/');
+        //alert("Successfully Event is created done")
+        setCreateEventSuccess(true);
       })
       .catch((err) => console.log(err));
       
@@ -376,8 +376,8 @@ const CreateEventPage = () => {
                                 input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
                                 renderValue={(selected) => (
                                   <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                                    {selected.map((value) => (
-                                      <Chip key={value} label={value} />
+                                    {selected.map((value,index) => (
+                                      <Chip key={index} label={value} />
                                     ))}
                                   </Box>
                                 )}
@@ -412,10 +412,10 @@ const CreateEventPage = () => {
                                 label="Venue"
                                 onChange={(event)=>{
                                   var val = event.target.value
-                                  console.log(val)
+                                  //console.log(val)
 
                                   var selected_venue = venueList.filter((venue)=>venue.venue_name === val)[0]
-                                  console.log(selected_venue)
+                                  //console.log(selected_venue)
                                   selected_venue.seating.map((seat)=>{
                                     if(seat.seating_type.toLowerCase() === 'general') setSeatCount((prev)=>{return {...prev,gen_count:seat.seating_number}})
                                     else if(seat.seating_type.toLowerCase() === 'front') setSeatCount((prev)=>{return {...prev,front_count:seat.seating_number}})
@@ -1036,6 +1036,7 @@ const CreateEventPage = () => {
               </Grid>
         </Grid>
         <NotHostErrorModal open={open} setOpen={setOpen}/>
+        <CreateEventSuccessModal open={createEventSuccess} setOpen={setCreateEventSuccess} />
     </Box>
   )
 }
