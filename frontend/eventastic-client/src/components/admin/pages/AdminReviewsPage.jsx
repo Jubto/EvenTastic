@@ -185,7 +185,7 @@ const AdminReviewsPage = () => {
   }, [])
 
   useEffect(() => {
-    setReviews(reviews.filter((review) => review.review_id != toRemove))
+    setReviews(reviews.filter((review) => review.review_id !== toRemove))
   }, [toRemove])
 
   return (

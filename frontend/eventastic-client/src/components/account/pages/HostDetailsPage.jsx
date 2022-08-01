@@ -5,6 +5,7 @@ import HostRegisterModal2 from '../modals/HostRegisterModal2';
 import { FlexBox, ScrollContainer } from '../../styles/layouts.styled';
 import InfoHeader from '../styles/InfoHeader';
 import {
+  Box,
   Button,
   Grid,
   TextField,
@@ -12,7 +13,7 @@ import {
   styled
 } from '@mui/material';
 
-const api = new AccountAPI();
+const accountApi = new AccountAPI();
 
 const StatusBox = styled(FlexBox)`
   border: 1px solid darkgrey;
@@ -30,6 +31,7 @@ const HostDetailsPage = ({ change, setChange }) => {
   const [hostDetails, setHostDetails] = context.host;
   const [OpenModal, setOpenModal] = useState(false);
   const [hostStatus, setHostStatus] = useState(false);
+  const [submit, setSubmit] = useState(false);
   const [changeOrgName, setChangeOrgName] = useState(false);
   const [changeEmail, setChangeEmail] = useState(false);
   const [formErrors, setFormErrors] = useState({
@@ -57,29 +59,43 @@ const HostDetailsPage = ({ change, setChange }) => {
     const qualification = data.get('qualification')
     const hostMobile = data.get('hostMobile')
     formErrors.error = false;
+    console.log(orgName)
 
-    if (!/\S+/.test(orgName) && !hostDetails) {
+    if ((!hostDetails && !orgName) || /\W+/.test(orgName) || (changeOrgName && !orgName)) {
       setFormErrors(prevState => { return { ...prevState, orgName: true } })
       formErrors.error = true
     }
-    if (!/\S+@\S+\.\S+/.test(orgEmail) && !hostDetails) {
+    if ((!hostDetails && !orgEmail) || (!/^[\w]+@[\w]+\.[\w]+$/.test(orgEmail) && orgEmail) || (changeEmail && !orgEmail)) {
       setFormErrors(prevState => { return { ...prevState, orgEmail: true } })
       formErrors.error = true
     }
-    if (!/\S+/.test(orgJobTitle)) {
+    if (!orgJobTitle || /\W+/.test(orgJobTitle)) {
       setFormErrors(prevState => { return { ...prevState, orgJobTitle: true } })
       formErrors.error = true
     }
-    if (!/\S+/.test(qualification)) {
+    if (!qualification || /\W+/.test(qualification)) {
       setFormErrors(prevState => { return { ...prevState, qualification: true } })
       formErrors.error = true
     }
-    if (!/\d+/.test(hostMobile) || hostMobile.length < 9) {
+    if (hostMobile && hostMobile[0] === '+') {
+      // I had to do this becasue for some reason, the regex /^[\+]?\D+$/.test(hostMobile) fails to work properly..
+      if (/\D+/.test(hostMobile.slice(1)) || hostMobile.length < 9) {
+        setFormErrors(prevState => { return { ...prevState, hostMobile: true } })
+        formErrors.error = true
+      }
+    }
+    else if (hostMobile) {
+      if (/\D+/.test(hostMobile) || hostMobile.length < 9) {
+        setFormErrors(prevState => { return { ...prevState, hostMobile: true } })
+        formErrors.error = true
+      }
+    }
+    else {
       setFormErrors(prevState => { return { ...prevState, hostMobile: true } })
       formErrors.error = true
     }
-
     if (!formErrors.error) {
+      console.log('test')
       let body = {
         host_contact_no: hostMobile,
         host_status: hostDetails ? hostDetails.host_status : 'Pending',
@@ -93,14 +109,17 @@ const HostDetailsPage = ({ change, setChange }) => {
       if (changeOrgName || changeEmail) {
         body = { ...body, host_status: 'Pending', isVerified: false }
       }
-      console.log('body is:', body)
       try {
-        const hostRes = await api.putHost(account.account_id, body)
+        const hostRes = await accountApi.putHost(account.account_id, body)
         setHostDetails(hostRes.data)
         setChangeOrgName(false)
         setChangeEmail(false)
         setChange('')
-        setOpenModal(true)
+        setSubmit(true)
+        if (changeOrgName || changeEmail) {
+          body = { ...body, host_status: 'Pending', isVerified: false }
+          setOpenModal(true)
+        }
       }
       catch (error) {
         console.error(error)
@@ -109,21 +128,29 @@ const HostDetailsPage = ({ change, setChange }) => {
   }
 
   useEffect(() => {
-    console.log(hostDetails)
     if (!hostDetails) {
       setChange('register')
       setHostStatus(false)
     }
-    else if (hostDetails.host_status === 'Pending') {
-      setHostStatus('Pending')
-    }
-    else if (hostDetails.host_status === 'Declined') {
-      setHostStatus('Declined')
-    }
     else {
-      setHostStatus('Approved')
+      accountApi.getHost(account.account_id)
+      .then((res) => {
+        setHostDetails(res.data)
+        const host_status = res.data.host_status
+        if (host_status === 'Pending') {
+          setHostStatus('Pending')
+        }
+        else if (host_status === 'Declined') {
+          setHostStatus('Declined')
+        }
+        else {
+          setHostStatus('Approved')
+        }
+      })
+      .catch((err) => console.error(err))
     }
-  }, [hostDetails])
+    setSubmit(false)
+  }, [submit])
 
   return (
     <ScrollContainer thin pr='1vw'>
@@ -181,34 +208,56 @@ const HostDetailsPage = ({ change, setChange }) => {
             Note: changing organisation name or email will result in your host status reverted to pending,
             until the admin team approves the changes.
           </Typography>
-          <TextField
-            name="orgName"
-            required
-            fullWidth
-            id="orgName"
-            label="Organisation name"
-            inputProps={{ maxLength: 50 }}
-            InputLabelProps={{ shrink: true }}
-            value={changeOrgName ? undefined : hostDetails ? hostDetails.org_name : undefined}
-            disabled={hostDetails ? !changeOrgName : false}
-            onChange={() => {
-              formErrors.orgName && setFormErrors(prevState => { return { ...prevState, orgName: false } })
-            }}
-            error={formErrors.orgName}
-            helperText={formErrors.orgName ? 'Must be a valid organisation name.' : ''}
-            sx={{ width: { sm: '100%', md: '59%' } }}
-          />
-          <Button
-            component='span' variant="contained"
-            sx={{
-              mt: { sm: 2, md: 1 }, ml: { sm: 0, md: 2 }, width: '220px',
-              backgroundColor: changeOrgName ? 'evenTastic.dull' : 'info.main',
-              display: hostStatus === 'Approved' ? 'initial' : 'none'
-            }}
-            onClick={() => setChangeOrgName(!changeOrgName)}
-          >
-            {changeOrgName ? 'Undo change' : 'Rename Organisation?'}
-          </Button>
+          <FlexBox>
+            {(() => {
+              if (changeOrgName || !hostDetails) {
+                return (
+                  <TextField
+                    name="orgName"
+                    required
+                    fullWidth
+                    id="orgName"
+                    label="Organisation name"
+                    inputProps={{ maxLength: 50 }}
+                    InputLabelProps={{ shrink: true }}
+                    defaultValue={hostDetails?.org_name}
+                    onChange={() => {
+                      formErrors.orgName && setFormErrors(prevState => { return { ...prevState, orgName: false } })
+                    }}
+                    error={formErrors.orgName}
+                    helperText={formErrors.orgName ? 'Must be a valid organisation name.' : ''}
+                    sx={{ width: { sm: '100%', md: '59%' } }}
+                  />
+                )
+              }
+              else if (hostDetails) {
+                return (
+                  <FlexBox sx={{ mt: 2, mb: 0.5 }}>
+                    <Typography variant="subtitle1" color="text.secondary" sx={{ mr: 2, fontWeight: 1000 }}>
+                      Organisation name:
+                    </Typography>
+                    <Typography variant='subtitle1' sx={{ fontWeight: 700 }}>
+                      {hostDetails.org_name}
+                    </Typography>
+                  </FlexBox>
+                )
+              }
+            })()}
+            {hostDetails
+              ? <Button
+                component='span' variant="contained"
+                sx={{
+                  mt: { sm: 2, md: 2 }, ml: { sm: 0, md: 8 }, width: '220px',
+                  backgroundColor: changeOrgName ? 'evenTastic.dull' : 'info.main',
+                  display: hostStatus === 'Approved' ? 'initial' : 'none'
+                }}
+                onClick={() => setChangeOrgName(!changeOrgName)}
+              >
+                {changeOrgName ? 'Undo change' : 'Rename Organisation?'}
+              </Button>
+              : ''
+            }
+          </FlexBox>
         </Grid>
         <Grid item sm={12}>
           <TextField
@@ -224,34 +273,56 @@ const HostDetailsPage = ({ change, setChange }) => {
           />
         </Grid>
         <Grid item sm={12}>
-          <TextField
-            name="orgEmail"
-            required
-            fullWidth
-            id="orgEmail"
-            label="Organisation email"
-            inputProps={{ maxLength: 30 }}
-            InputLabelProps={{ shrink: true }}
-            value={changeEmail ? undefined : hostDetails ? hostDetails.org_email : undefined}
-            disabled={hostDetails ? !changeEmail : false}
-            onChange={() => {
-              formErrors.orgEmail && setFormErrors(prevState => { return { ...prevState, orgEmail: false } })
-            }}
-            error={formErrors.orgEmail}
-            helperText={formErrors.orgEmail ? 'Must be a valid email.' : ''}
-            sx={{ width: { sm: '100%', md: '59%' } }}
-          />
-          <Button
-            component='span' variant="contained"
-            sx={{
-              mt: { sm: 2, md: 1 }, ml: { sm: 0, md: 2 }, width: '220px',
-              backgroundColor: changeEmail ? 'evenTastic.dull' : 'info.main',
-              display: hostStatus === 'Approved' ? 'initial' : 'none'
-            }}
-            onClick={() => setChangeEmail(!changeEmail)}
-          >
-            {changeEmail ? 'Undo change' : 'Change email?'}
-          </Button>
+          <FlexBox>
+          {(() => {
+            if (changeEmail || !hostDetails) {
+              return (
+                <TextField
+                  name="orgEmail"
+                  required
+                  fullWidth
+                  id="orgEmail"
+                  label="Organisation email"
+                  inputProps={{ maxLength: 30 }}
+                  InputLabelProps={{ shrink: true }}
+                  defaultValue={hostDetails?.org_email}
+                  onChange={() => {
+                    formErrors.orgEmail && setFormErrors(prevState => { return { ...prevState, orgEmail: false } })
+                  }}
+                  error={formErrors.orgEmail}
+                  helperText={formErrors.orgEmail ? 'Must be a valid email.' : ''}
+                  sx={{ width: { sm: '100%', md: '59%' } }}
+                />
+              )
+            }
+            else if (hostDetails) {
+              return (
+                <FlexBox sx={{ mt: 2, mb: 0.5 }}>
+                  <Typography variant="subtitle1" color="text.secondary" sx={{ mr: 2, fontWeight: 1000 }}>
+                    Organisation email:
+                  </Typography>
+                  <Typography variant='subtitle1' sx={{ fontWeight: 700 }}>
+                    {hostDetails.org_email}
+                  </Typography>
+                </FlexBox>
+              )
+            }
+          })()}
+          {hostDetails
+            ? <Button
+              component='span' variant="contained"
+              sx={{
+                mt: { sm: 2, md: 2 }, ml: { sm: 0, md: 8 }, mb: 2, width: '220px',
+                backgroundColor: changeEmail ? 'evenTastic.dull' : 'info.main',
+                display: hostStatus === 'Approved' ? 'initial' : 'none'
+              }}
+              onClick={() => setChangeEmail(!changeEmail)}
+            >
+              {changeEmail ? 'Undo change' : 'Change email?'}
+            </Button>
+            : ''
+          }
+          </FlexBox>
         </Grid>
         <Grid item sm={12} md={6}>
           <InfoHeader title='Host details' />
@@ -296,7 +367,7 @@ const HostDetailsPage = ({ change, setChange }) => {
             type="tel"
             id="hostMobile"
             label="Host mobile"
-            inputProps={{ maxLength: 20 }}
+            inputProps={{ maxLength: 17 }}
             defaultValue={hostDetails ? hostDetails.host_contact_no : ''}
             disabled={hostStatus === 'Pending' || hostStatus === 'Declined'}
             onChange={() => {

@@ -5,6 +5,7 @@ import { StoreContext } from '../utils/context'
 import { FlexBox, PageContainer } from '../components/styles/layouts.styled'
 import CustomerRegisterModal from '../components/account/modals/CustomerRegisterModal';
 import HostRegisterModal from '../components/account/modals/HostRegisterModal';
+import EmailExistsModal from '../components/account/modals/EmailExistsModal';
 import UndoIcon from '@mui/icons-material/Undo';
 import {
   Button,
@@ -49,6 +50,8 @@ const RegisterScreen = () => {
   const [, setHostDetails] = context.host;
   const [openCustomerModal, setCustomerModal] = useState(false);
   const [openHostModal, setHostModal] = useState(false);
+  const [openEmailModal, setEmailModal] = useState(false);
+  const [emailErr, setEmailErr] = useState(null);
   const [hostInputs, setHostInputs] = useState('Customer');
   const [formErrors, setFormErrors] = useState({
     error: false,
@@ -80,15 +83,15 @@ const RegisterScreen = () => {
 
     formErrors.error = false;
 
-    if (!/[a-zA-Z]+/.test(firstName)) {
+    if (/[\W|\d]+/.test(firstName)) {
       setFormErrors(prevState => { return { ...prevState, firstName: true } })
       formErrors.error = true
     }
-    if (!/[a-zA-Z]+/.test(lastName)) {
+    if (/[\W|\d]+/.test(lastName)) {
       setFormErrors(prevState => { return { ...prevState, lastName: true } })
       formErrors.error = true
     }
-    if (!/\S+@\S+\.\S+/.test(email)) {
+    if (!/^[\w]+@[\w]+\.[\w]+$/.test(email)) {
       setFormErrors(prevState => { return { ...prevState, email: true } })
       formErrors.error = true
     }
@@ -101,23 +104,36 @@ const RegisterScreen = () => {
       formErrors.error = true
     }
     if (hostInputs === 'Host') {
-      if (!/\S+/.test(orgName)) {
+      if (!orgName || /\W+/.test(orgName)) {
         setFormErrors(prevState => { return { ...prevState, orgName: true } })
         formErrors.error = true
       }
-      if (!/\S+@\S+\.\S+/.test(orgEmail)) {
+      if (!orgEmail || !/^[\w]+@[\w]+\.[\w]+$/.test(orgEmail)) {
         setFormErrors(prevState => { return { ...prevState, orgEmail: true } })
         formErrors.error = true
       }
-      if (!/\S+/.test(orgJobTitle)) {
+      if (!orgJobTitle || /\W+/.test(orgJobTitle)) {
         setFormErrors(prevState => { return { ...prevState, orgJobTitle: true } })
         formErrors.error = true
       }
-      if (!/\S+/.test(qualification)) {
+      if (!qualification || /\W+/.test(qualification)) {
         setFormErrors(prevState => { return { ...prevState, qualification: true } })
         formErrors.error = true
       }
-      if (!/\d+/.test(hostMobile) || hostMobile.length < 9) {
+      if (hostMobile && hostMobile[0] === '+') {
+        // I had to do this becasue for some reason, the regex /^[\+]?\D+$/.test(hostMobile) fails to work properly..
+        if (/\D+/.test(hostMobile.slice(1)) || hostMobile.length < 9) {
+          setFormErrors(prevState => { return { ...prevState, hostMobile: true } })
+          formErrors.error = true
+        }
+      }
+      else if (hostMobile) {
+        if (/\D+/.test(hostMobile) || hostMobile.length < 9) {
+          setFormErrors(prevState => { return { ...prevState, hostMobile: true } })
+          formErrors.error = true
+        }
+      }
+      else {
         setFormErrors(prevState => { return { ...prevState, hostMobile: true } })
         formErrors.error = true
       }
@@ -137,7 +153,6 @@ const RegisterScreen = () => {
         const accountRes = await api.addAccount(body)
         setLoggedIn(true)
         setAccount(accountRes.data)
-        console.log(accountRes.data)
         if (hostInputs === 'Host') {
           const accountID = accountRes.data.account_id
           const hostDetails = {
@@ -152,17 +167,16 @@ const RegisterScreen = () => {
           const HostRes = await api.putHost(accountID, hostDetails)
           setHostDetails(HostRes.data)
           setHostModal(true)
-          console.log("HOST REGISTER")
-          console.log(HostRes.data)
         }
         else {
-          console.log('ACCOUNT REGISTER')
-          console.log(accountRes.data)
           setCustomerModal(true)
         }
       }
       catch(error) {
-        // TODO account already exists error handle 409 The provided email address already exists in database.
+        if (error.response?.status === 400) {
+          setEmailErr(email)
+          setEmailModal(true)
+        }
         console.error(error)
       }
     }
@@ -388,6 +402,7 @@ const RegisterScreen = () => {
       <ImageBanner pos='right' ml='3.5'/>
       <CustomerRegisterModal open={openCustomerModal} setOpen={setCustomerModal}/>
       <HostRegisterModal open={openHostModal} setOpen={setHostModal}/>
+      <EmailExistsModal open={openEmailModal} setOpen={setEmailModal} email={emailErr} />
     </PageContainer>
   )
 }

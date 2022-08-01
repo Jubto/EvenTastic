@@ -149,7 +149,7 @@ const ReviewListPage = ({setReplyReviewId,refresh, setRefresh, reviews, setRevie
                   avatar={
                     <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
                       {accDetails.map((accDetail ) => {
-                        if (accDetail.account_id == review.reviewer_account_id){
+                        if (accDetail.account_id === review.reviewer_account_id){
                           return accDetail.account_name.toUpperCase()[0]
                         }
                       })
@@ -166,7 +166,7 @@ const ReviewListPage = ({setReplyReviewId,refresh, setRefresh, reviews, setRevie
                     >
                       <Typography>
                       {accDetails.map((accDetail) => {
-                        if (accDetail.account_id == review.reviewer_account_id){
+                        if (accDetail.account_id === review.reviewer_account_id){
                           return accDetail.account_name
                         }
                       })

@@ -77,7 +77,7 @@ const CancelTicketModal = ({ open, setOpen, toCancel, setCancelBooking, toCancel
 
     if (toCancelCard === '-100') {
       addRewardPointsBack(toCancelPoints)
-    } else if (parseInt(toCancelPointsID) != -1) {
+    } else if (parseInt(toCancelPointsID) !== -1) {
       cancelRewardPointsStatus(toCancelPointsID)
     }
 

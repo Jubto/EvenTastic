@@ -45,7 +45,7 @@ const HomeScreen = () => {
       .catch((err) => console.log(err));
     }
 
-    if (event_title != null || event_desc != null || event_category != null) {
+    if (event_title !== null || event_desc !== null || event_category !== null) {
       api
         .getEventList({
           event_title: event_title,
