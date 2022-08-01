@@ -29,6 +29,7 @@ import InputLabel from '@mui/material/InputLabel';
 import DialogActions from '@mui/material/DialogActions';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import { fileToDataUrl } from '../../../utils/helpers';
+import AdminVenueSuccessModal from './AdminVenueSuccessModal';
 
 const Input = styled('input')({
   display:'none'
@@ -68,6 +69,7 @@ const AdminVenueScreen = () => {
   const [Middle_seats,setMiddleSeats] = React.useState('');
   const [Back_seats,setBackSeats] = React.useState('');
   const [General_seats,setGeneralSeats] = React.useState('');
+  const [venueSuccessModal, setVenueSuccessModal] = useState(false);
   const [formErrors, setformErrors] = React.useState({
     error: false,
     venue_title: false,
@@ -120,12 +122,12 @@ const AdminVenueScreen = () => {
       
       api
         .addVenue(data)
-        .then((response) => alert("Successfully done"))
         .then(() => {
           setName(''); setDesc(''); setAddress(''); setImage(''); setFrontSeats('');
           setMiddleSeats(''); setBackSeats('');setGeneralSeats(''); setImageName('');
           setVenueList([...venueList,data]);
           setOpen(false);
+          setVenueSuccessModal(true);
         })
         .catch((err) => console.log(err));
     }
@@ -409,6 +411,10 @@ const AdminVenueScreen = () => {
         }
         
       </Box>
+      <AdminVenueSuccessModal
+        open={venueSuccessModal}
+        setOpen={setVenueSuccessModal}
+        />
     </ScrollContainer>
   )
 }
