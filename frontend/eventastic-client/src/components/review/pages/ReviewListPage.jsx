@@ -81,8 +81,9 @@ const ReviewListPage = ({setReplyReviewId,refresh, setRefresh, reviews, setRevie
       const postBody = {"interaction_account_id":account.account_id, "review_flagged":false,"review_id":review.review_id,"review_upvoted":true}
       review_api
       .postReviewInteraction(postBody)
+      .then((response) => reviews[index].review_interaction = response.data)
       .catch((err)=>console.log(err))
-      reviews[index].review_interaction = postBody
+      
     }else{
       if(review.review_interaction.review_upvoted===false)
       {
@@ -90,7 +91,7 @@ const ReviewListPage = ({setReplyReviewId,refresh, setRefresh, reviews, setRevie
       }else{
         upvote_count = upvote_count - 1;
       }
-      // console.log(review)
+       //console.log(review)
       review_api
       .putReviewInteraction(review.review_interaction.interaction_id,{"review_upvoted":!review.review_interaction.review_upvoted})
       .catch((err)=>console.log(err))
@@ -112,8 +113,8 @@ const ReviewListPage = ({setReplyReviewId,refresh, setRefresh, reviews, setRevie
       const postBody = {"interaction_account_id":account.account_id, "review_flagged":true,"review_id":review.review_id,"review_upvoted":false}
       review_api
       .postReviewInteraction(postBody)
+      .then((response) => reviews[index].review_interaction = response.data)
       .catch((err)=>console.log(err))
-      reviews[index].review_interaction = postBody
     }else{
       if(review.review_interaction.review_flagged===false)
       {
@@ -144,7 +145,9 @@ const ReviewListPage = ({setReplyReviewId,refresh, setRefresh, reviews, setRevie
       {
         (refresh || !refresh) && accDetails.length===reviews.length && reviews.map((review,index)=>{
           return (
+            
           <Card key={index} style={{margin:'20px'}} elevation={3}>
+            
             <CardHeader
                   avatar={
                     <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
