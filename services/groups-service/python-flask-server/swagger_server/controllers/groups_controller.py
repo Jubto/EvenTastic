@@ -35,8 +35,8 @@ def create_group(body):
         cur = con.cursor()
         sql = "INSERT INTO groups VALUES (default, %s,%s,%s,%s,%s) RETURNING id;"
         cur.execute(sql, (
-            body.group_host_id, body.event_id, body.group_name.replace("'", "''"), 
-                body.group_desc.replace("'", "''"), body.group_img))
+            body.group_host_id, body.event_id, body.group_name, 
+                body.group_desc, body.group_img))
         body.group_id = cur.fetchone()[0]
         con.close()
         return body, 201, {'Access-Control-Allow-Origin': '*'}
@@ -64,7 +64,7 @@ def create_group_member(group_id, body):
         sql = "INSERT INTO group_members VALUES (default, %s,%s,%s,%s,%s) RETURNING id;"
         cur.execute(sql, (
             body.account_id, group_id, body.join_status, 
-                body.join_desc.replace("'", "''"), tags_to_string(body.interest_tags)))
+                body.join_desc, tags_to_string(body.interest_tags)))
         body.group_membership_id = cur.fetchone()[0]
         con.close()
         return body, 201, {'Access-Control-Allow-Origin': '*'}
@@ -196,18 +196,19 @@ def update_group(group_id, body):
 
         # Create the sql update statement
         sql = "UPDATE groups SET"
+        value_list = []
         for attr, value in body.__dict__.items():
             tmp_attr = attr[1:]
             if tmp_attr in _update_allow_list and value:
-                sql = sql + \
-                    " {} = '{}',".format(tmp_attr, value.replace("'", "''"))
+                sql = sql + " {}=%s,".format(tmp_attr)
+                value_list.append(value)
         sql = sql[:-1] + " WHERE id = {}".format(group_id)
 
         print(sql)
         # Execute the sql update statement
         con = get_connection()
         cur = con.cursor()
-        cur.execute(sql)
+        cur.execute(sql, value_list)
         con.close()
     except Exception as e:
         # catch any unexpected runtime error and return as 500 error
