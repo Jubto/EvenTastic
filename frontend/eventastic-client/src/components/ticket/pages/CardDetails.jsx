@@ -78,7 +78,7 @@ const CardDetails = ({ open, setOpen, setPage, setSuccessModal, totalCost, event
   const isNumbers = (str) => /^[0-9]*$/.test(str);
   
   const changeCardName = (e) => {
-    if (isLetters(e.target.value)) {
+    if (isLetters(e.target.value.slice(-1)) || e.target.value.slice(-1) === ' ') {
       setCardName(e.target.value);
       setFormErrors(prevState => { return { ...prevState, cardName: false } })
     }
