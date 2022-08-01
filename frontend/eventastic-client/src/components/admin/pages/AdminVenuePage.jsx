@@ -7,6 +7,7 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
+import FormHelperText from '@mui/material/FormHelperText'
 import Divider from '@mui/material/Divider';
 import { useState, useEffect } from 'react';
 import Avatar from '@mui/material/Avatar';
@@ -67,28 +68,74 @@ const AdminVenueScreen = () => {
   const [Middle_seats,setMiddleSeats] = React.useState('');
   const [Back_seats,setBackSeats] = React.useState('');
   const [General_seats,setGeneralSeats] = React.useState('');
+  const [formErrors, setformErrors] = React.useState({
+    error: false,
+    venue_title: false,
+    venue_address: false,
+    venue_desc: false,
+    venue_image:false,
+    seat_numerical_error:false,
+    all_seats_filled : false
+  })
 
   const handleCreate = () => {
-    const data = {'seating':[{'seating_type':'General','seating_number':parseInt(General_seats)},{'seating_type':'Front','seating_number':parseInt(Front_seats)},{'seating_type':'Middle','seating_number':parseInt(Middle_seats)},{'seating_type':'Back','seating_number':parseInt(Back_seats)}], 
-                    'venue_name':name, 'venue_desc':desc, 'venue_address':address, 'venue_img':image}
-    console.log(data)
-    
-    api
-      .addVenue(data)
-      .then((response) => alert("Successfully done"))
-      .then(() => {
-        setName(''); setDesc(''); setAddress(''); setImage(''); setFrontSeats('');
-        setMiddleSeats(''); setBackSeats('');setGeneralSeats(''); setImageName('');
-        setVenueList([...venueList,data]);
-        setOpen(false);
-      })
-      .catch((err) => console.log(err));
-    
+
+    formErrors.error = false;
+    formErrors.all_seats_filled = false;
+    formErrors.seat_numerical_error = false;
+    if (!/\S+/.test(name)) {
+        setformErrors(prevState => { return { ...prevState, venue_title: true } })
+        formErrors.error = true
+    }
+
+    if (!/\S+/.test(address)) {
+        setformErrors(prevState => { return { ...prevState, venue_address: true } })
+        formErrors.error = true
+    }
+
+    if (!/\S+/.test(desc)) {
+        setformErrors(prevState => { return { ...prevState, venue_desc: true } })
+        formErrors.error = true
+    }
+
+    if(imageName.length === 0) {
+        setformErrors(prevState => { return { ...prevState, venue_image: true } })
+        formErrors.error = true
+    }
+
+    if(Front_seats.length === 0 || Middle_seats.length===0 || Back_seats.length === 0 || General_seats === 0){
+        setformErrors(prevState => { return { ...prevState, all_seats_filled: true } })
+        formErrors.error = true
+    }else{
+      if(!/^[1-9][0-9]*$/.test(Front_seats) || !/^[1-9][0-9]*$/.test(Middle_seats) || !/^[1-9][0-9]*$/.test(Back_seats) || !/^[1-9][0-9]*$/.test(General_seats)){
+        setformErrors(prevState => { return { ...prevState, seat_numerical_error: true } })
+        formErrors.error = true
+      }
+    }
+
+    if(formErrors.error === false){
+      const data = {'seating':[{'seating_type':'General','seating_number':parseInt(General_seats)},{'seating_type':'Front','seating_number':parseInt(Front_seats)},{'seating_type':'Middle','seating_number':parseInt(Middle_seats)},{'seating_type':'Back','seating_number':parseInt(Back_seats)}], 
+                      'venue_name':name, 'venue_desc':desc, 'venue_address':address, 'venue_img':image}
+      //console.log(data)
+      
+      api
+        .addVenue(data)
+        .then((response) => alert("Successfully done"))
+        .then(() => {
+          setName(''); setDesc(''); setAddress(''); setImage(''); setFrontSeats('');
+          setMiddleSeats(''); setBackSeats('');setGeneralSeats(''); setImageName('');
+          setVenueList([...venueList,data]);
+          setOpen(false);
+        })
+        .catch((err) => console.log(err));
+    }
   }
 
   const onFileChange = async (event) => {
     
       // Update the state
+      if(formErrors.venue_image)
+        setformErrors(prevState => { return { ...prevState, venue_image: false } })
       const imageFile = event.target.files[0]
       const imageBlob = await fileToDataUrl(imageFile)
       setImageName(imageFile.name);
@@ -114,14 +161,20 @@ const AdminVenueScreen = () => {
   };
 
   const handleChangeAddress = (event) => {
+    if(formErrors.venue_address)
+      setformErrors(prevState => { return { ...prevState, venue_address: false } })
     setAddress(event.target.value);
   };
 
   const handleChangeDesc = (event) => {
+    if(formErrors.venue_desc)
+      setformErrors(prevState => { return { ...prevState, venue_desc: false } })
     setDesc(event.target.value);
   };
 
   const handleChangeName = (event) => {
+    if(formErrors.venue_title)
+      setformErrors(prevState => { return { ...prevState, venue_title: false } })
     setName(event.target.value);
   };
 
@@ -172,8 +225,8 @@ const AdminVenueScreen = () => {
                   noValidate
                   autoComplete="off"
                 >
-                  <div>
-                    <FormControl>
+                  
+                    <FormControl style={{width:'50%'}} error={formErrors.venue_title}>
                       <InputLabel htmlFor="component-outlined">Name</InputLabel>
                       <OutlinedInput
                         id="component-outlined"
@@ -181,8 +234,9 @@ const AdminVenueScreen = () => {
                         onChange={handleChangeName}
                         label="Name"
                       />
+                      {formErrors.venue_title && <FormHelperText>Please fill out Venue Name properly</FormHelperText> }
                     </FormControl>
-                    <FormControl style={{marginLeft:'10px', width:'300px'}}>
+                    <FormControl fullWidth style={{marginLeft:'10px'}} error={formErrors.venue_address}>
                       <InputLabel htmlFor="component-outlined">Address</InputLabel>
                       <OutlinedInput
                         id="component-outlined"
@@ -190,30 +244,38 @@ const AdminVenueScreen = () => {
                         onChange={handleChangeAddress}
                         label="Address"
                       />
+                      {formErrors.venue_address && <FormHelperText>Please fill out Venue Address properly</FormHelperText> }
                     </FormControl>
-                  </div>
-                  <div>
-                    <TextField
-                      id="outlined-multiline-flexible"
-                      label="Description"
-                      multiline
-                      rows={3}
-                      value={desc}
-                      onChange={handleChangeDesc}
-                      fullWidth
-                    />
-                  </div>
-                  <div>
-                    <label htmlFor="contained-button-file">
-                      <Input accept="image/*" id="contained-button-file" type="file" onChange={onFileChange}/>
-                      <Button variant="contained" component="span">
-                        Upload Image
-                      </Button>
-                    </label>
-                    <Typography variant="caption"  style={{marginLeft:'10px'}}gutterBottom>
-                      {image && imageName}
-                    </Typography>
-                  </div>
+                  
+                  
+                    <FormControl fullWidth error={formErrors.venue_desc}>
+                      <TextField
+                        id="outlined-multiline-flexible"
+                        label="Description"
+                        multiline
+                        rows={3}
+                        value={desc}
+                        onChange={handleChangeDesc}
+                        fullWidth
+                        error={formErrors.venue_desc}
+                        helperText={formErrors.venue_desc ? 'Please fill out Venue Description properly' : ''}
+                      />
+                    </FormControl>
+                  
+                  
+                    <FormControl fullWidth error={formErrors.venue_image}>
+                      <label htmlFor="contained-button-file">
+                        <Input accept="image/*" id="contained-button-file" type="file" onChange={onFileChange}/>
+                        <Button variant="contained" component="span">
+                          Upload Image
+                        </Button>
+                      </label>
+                      <Typography variant="caption"  style={{marginLeft:'10px'}} gutterBottom>
+                        {image && imageName}
+                      </Typography>
+                      {formErrors.venue_image && <FormHelperText>Please Upload a venue image</FormHelperText> }
+                    </FormControl>
+                  
                   <div style ={{'marginTop':'20px'}}>
                     <Typography variant="h6"  style={{marginTop:'10px'}}gutterBottom>
                       Venue Seatings
@@ -264,8 +326,12 @@ const AdminVenueScreen = () => {
                           label="Back Seats"
                         />
                       </FormControl>
-                    
+                      
                   </Stack>
+                  <FormControl error={formErrors.all_seats_filled || formErrors.seat_numerical_error}>
+                      {formErrors.all_seats_filled ? <FormHelperText>All seat values are required</FormHelperText> :
+                        formErrors.seat_numerical_error && <FormHelperText>Seat numbers must be in numerical format and must be greater than 0</FormHelperText>}
+                  </FormControl>
                 </Box>
             </DialogContent>
             <DialogActions>
@@ -274,9 +340,9 @@ const AdminVenueScreen = () => {
             </DialogActions>
         </Dialog>
         {
-          venueList.map((venue) => {
+          venueList.map((venue,ind) => {
             return (
-              <Card key={venue.venue_id} sx={{ maxWidth: 450 }} style={{margin:'20px'}}>
+              <Card key={ind} sx={{ maxWidth: 450 }} style={{margin:'20px'}}>
                 <CardHeader
                   avatar={
                     <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">

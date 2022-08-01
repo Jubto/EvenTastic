@@ -121,7 +121,7 @@ const CreateEventPage = () => {
   };
 
   const handleNext = () => {
-    console.log(formDetails)
+    //console.log(formDetails)
     //console.log(seatCount)
     formErrors.error = false;
     if(activeStep === 0)
