@@ -12,8 +12,7 @@ const GroupJoinRequestedModal = ({ open, setOpen }) => {
     <StandardModal open={open} onClose={handleClose} aria-labelledby="Group Join requested!" maxWidth='lg'>
       <ModalTitle title='Join request sent!' close={handleClose} />
       <ModalBody>
-        The group owner will review your request, if successful, you will see an 'accept' button next
-        to the group card which will let you join in!
+        The group owner will review your request, if they approve, you will be automatically added to the group!
       </ModalBody>
       <FlexBox justify='space-between'>
         <Button
