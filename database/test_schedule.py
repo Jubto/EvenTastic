@@ -45,13 +45,13 @@ for row in records:
                 account_id = reward[1]
                 cur.execute(
                     f"Select reward_points from accounts where account_id={account_id}")
-                prev_reward_point = float(cur.fetchall()[0])
+                prev_reward_point = float(cur.fetchall()[0][0])
                 cur.execute(
                     f"Update rewardpoints SET reward_points_status='Approved' where reward_points_id={reward_id}")
                 cur.execute(
                     f"Select reward_points_amount from rewardpoints where reward_points_id={reward_id}")
                 new_reward_points = prev_reward_point + \
-                    float(cur.fetchall()[0])
+                    float(cur.fetchall()[0][0])
                 cur.execute(
                     f"Update accounts SET reward_points={new_reward_points} where account_id={account_id}")
                 print(
