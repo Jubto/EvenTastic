@@ -2,9 +2,8 @@ import { StandardModal, ModalBody, ModalTitle } from '../../styles/modal/modal.s
 import { FlexBox } from '../../styles/layouts.styled';
 import { Button } from '@mui/material';
 import { useState } from 'react';
-import { set } from 'date-fns';
 import { useEffect } from 'react';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const CreateEventSuccessModal = ({ open, setOpen }) => {
     const [max_seconds_before_close,set_max_seconds_before_close] = useState(5);
