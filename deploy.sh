@@ -24,8 +24,8 @@ docker run --net eventastic-net --name eventastic-db -d -p 5432:5432 -e POSTGRES
 echo -e "\n6. Creating Database..."
 sleep 5
 cd database
-pip install -r requirements.txt
-python create_db.py
+pip3 install -r requirements.txt
+python3 create_db.py
 
 echo -e "\n7. Building Account Service Image..."
 cd ../services/accounts-service/python-flask-server
