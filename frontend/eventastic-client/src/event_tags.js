@@ -53,7 +53,6 @@ const eventTagsByCategory = [
             { "tag_name": "Non Profit & NGOs"},
             { "tag_name": "Sales & Marketing"},
             { "tag_name": "Media"},
-            { "tag_name": "Design"},
             { "tag_name": "Career"},
             { "tag_name": "Investment"},
             { "tag_name": "Other Business"} 

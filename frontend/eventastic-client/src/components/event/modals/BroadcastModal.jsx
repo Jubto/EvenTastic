@@ -52,7 +52,7 @@ const BroadcastModal = ({ open, setOpen, managedEventDetails, setSuccessModal, s
           const emailsToBroadcast = bookingRes.data.map((booking) => ({email_address : booking.booking_email}))
           const sendgridBroadcast = {
             email_subject: title,
-            email_content: message,
+            email_content: emailAPI.broadcast_message_email(managedEventDetails, title, message),
             email_from: {
               email_address: evenTasticEmail,
               name: "EvenTastic"

@@ -14,6 +14,11 @@ const MainScreenContainer = styled(PageContainer)`
   margin-bottom: 1rem;
 `
 
+const MainScreenTitle = styled(Typography)`
+  color: lightsalmon;
+  font-weight: 1000;
+`
+
 const createCard = (event) => {
   if (event.event_status !== "Cancelled") {
     return (
@@ -68,16 +73,17 @@ const HomeScreen = () => {
   }, [account])
 
   return (
-    <MainScreenContainer maxWidth='lg'>
+    <MainScreenContainer maxWidth='lg' sx={{mb:5}}>
+      <MainScreenTitle variant="h5">
+        Search or browse for upcoming events!
+      </MainScreenTitle>
       <SearchBar setQuery={setQuery} />
-      {/* {searchVisible && getSearchResults()} */}
-
       {searchResults.length
         ? <Grid container spacing={2}>
           <Grid item xs={12}>
-            <Typography variant="h5" component="div" align='left' sx={{ mt: 2 }}>
+            <MainScreenTitle variant="h5" component="div" align='left' sx={{ mt: 2 }}>
               Search Results:
-            </Typography>
+            </MainScreenTitle>
           </Grid>
           {searchResults.map(createCard)}
         </Grid>
@@ -85,7 +91,7 @@ const HomeScreen = () => {
         ?  ''
         : <Grid container spacing={2}>
         <Grid item xs={12}>
-          <Typography variant="h5" component="div" align='left' sx={{ mt: 2 }}>
+          <Typography variant="subtitle2" component="div" align='left' sx={{ mt: 2 }}>
             Search Results: No Results found
           </Typography>
         </Grid>
@@ -95,9 +101,9 @@ const HomeScreen = () => {
         ?
         <Grid container spacing={2}>
           <Grid item xs={12}>
-            <Typography variant="h5" component="div" align='left' sx={{ mt: 5 }}>
+            <MainScreenTitle variant="h5" component="div" align='left' sx={{ mt: 5}} >
               Recommended for you:
-            </Typography>
+            </MainScreenTitle>
           </Grid>
           {recommendationsList.map(createCard)}
         </Grid>
@@ -106,9 +112,9 @@ const HomeScreen = () => {
       }
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          <Typography variant="h5" component="div" align='left' sx={{ mt: 5 }}>
+          <MainScreenTitle variant="h5" component="div" align='left' sx={{ mt: 5}}>
             Upcoming Events:
-          </Typography>
+          </MainScreenTitle>
         </Grid>
         {eventsList.map(createCard)}
       </Grid>
