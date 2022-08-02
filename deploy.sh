@@ -12,13 +12,13 @@ docker rmi events-service-image
 docker rmi front-end-image
 docker rmi chat-server-image
 docker rmi groups-service-image
-#docker rmi postgres
+docker rmi postgres
 
 echo -e "\n4. Creating EvenTastic Docker Network..."
 docker network create eventastic-net
 
 echo -e "\n5. Builing Postgres Image..."
-#docker pull postgres 
+docker pull postgres 
 docker run --net eventastic-net --name eventastic-db -d -p 5432:5432 -e POSTGRES_PASSWORD=postgrespw postgres
 
 echo -e "\n6. Creating Database..."
