@@ -15,6 +15,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import NotHostErrorModal from "../components/event/modals/NotHostErrorModal";
 import { fileToDataUrl } from '../utils/helpers';
+import CreateEventSuccessModal from '../components/event/modals/CreateEventSuccessModal';
 import {
   Button, Card, Checkbox,
   Grid,  Stack,
@@ -27,7 +28,7 @@ import {
   Typography,
   styled,
 } from '@mui/material';
-import { Navigate, useNavigate } from 'react-router-dom';
+
 
 
 // formating for the Grid Items 
@@ -67,7 +68,7 @@ const event_api = new EventAPI();
 
 const CreateEventPage = () => {
   const [venueList, setVenueList] = React.useState([])
-  const navigate = useNavigate()
+  
   const [locationImg,setLocationImg] = React.useState("") 
   const [activeStep, setActiveStep] = React.useState(0);
   const context = React.useContext(StoreContext);
@@ -75,6 +76,7 @@ const CreateEventPage = () => {
   const [datevalue, setDateValue] = React.useState(new Date());
   const [enddatevalue, setEndDateValue] = React.useState(new Date());
   const [open, setOpen] = React.useState(false);
+  const [createEventSuccess,setCreateEventSuccess] = React.useState(false);
   const [seatCount, setSeatCount] = React.useState({
     gen_count:0, front_count:0,middle_count:0, back_count:0
   })
@@ -113,7 +115,11 @@ const CreateEventPage = () => {
     gen_seat_price:false,
     front_seat_price:false,
     mid_seat_price:false,
-    back_seat_price:false
+    back_seat_price:false,
+    start_date_exist:false,
+    end_date_exist: false,
+    start_date_before_today: false,
+    end_date_before_start:false
   })
 
   const handleBack = () => {
@@ -121,12 +127,15 @@ const CreateEventPage = () => {
   };
 
   const handleNext = () => {
-    console.log(formDetails)
+    //console.log(formDetails)
     //console.log(seatCount)
     formErrors.error = false;
     if(activeStep === 0)
     {
-      
+      formErrors.start_date_exist = false;
+      formErrors.end_date_exist = false;
+      formErrors.start_date_before_today = false;
+      formErrors.end_date_before_start=false;
       if (!/\S+/.test(formDetails.event_title)) {
         setformErrors(prevState => { return { ...prevState, event_title: true } })
         formErrors.error = true
@@ -147,9 +156,26 @@ const CreateEventPage = () => {
         formErrors.error = true
       }
       
-      if (formDetails.event_start_datetime === "") {
-        setformErrors(prevState => { return { ...prevState, event_start_datetime: true } })
-        formErrors.error = true
+      if (formDetails.event_start_datetime === "" || formDetails.event_end_datetime === "") {
+        formErrors.error = true;
+        if(formDetails.event_start_datetime === "")
+          setformErrors(prevState => { return { ...prevState, start_date_exist: true } })
+
+        if(formDetails.event_end_datetime === "")
+          setformErrors(prevState => { return { ...prevState, end_date_exist: true } })
+      }else{
+        var start_d = new Date(formDetails.event_start_datetime);
+        var end_d = new Date(formDetails.event_end_datetime);
+        var now_d = new Date();
+        if(start_d <= now_d){
+          setformErrors(prevState => { return { ...prevState, start_date_before_today: true } })
+          formErrors.error = true;
+        }
+
+        if(end_d <= start_d){
+          setformErrors(prevState => { return { ...prevState, end_date_before_start: true } })
+          formErrors.error = true;
+        }
       }
     
     }
@@ -220,15 +246,14 @@ const CreateEventPage = () => {
     data = {...data,"tags":formDetails.event_tags.map((tag_name)=>{
       return {"name":tag_name}
     })}
-    //console.log(data)
+    console.log(data)
     
     event_api
       .postEvent(data)
       .then((response) => {
-        console.log(response)
-        alert("Successfully Event is created done")})
-      .then(()=>{
-        navigate('/');
+        //console.log(response)
+        //alert("Successfully Event is created done")
+        setCreateEventSuccess(true);
       })
       .catch((err) => console.log(err));
       
@@ -241,7 +266,7 @@ const CreateEventPage = () => {
     else{
       venue_api
       .getVenueList()
-      .then((response) => setVenueList(response.data))
+      .then((response) => { setVenueList(response.data);})
       .catch((err) => console.log(err));
     }
     
@@ -320,8 +345,8 @@ const CreateEventPage = () => {
                                 }}
                               >
                                 {
-                                  eventTags.eventCategories.map((category)=>{
-                                    return <MenuItem value={category}>{category}</MenuItem>
+                                  eventTags.eventCategories.map((category,i)=>{
+                                    return <MenuItem key={i} value={category}>{category}</MenuItem>
                                   })
                                 }
     
@@ -354,8 +379,8 @@ const CreateEventPage = () => {
                                 input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
                                 renderValue={(selected) => (
                                   <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                                    {selected.map((value) => (
-                                      <Chip key={value} label={value} />
+                                    {selected.map((value,index) => (
+                                      <Chip key={index} label={value} />
                                     ))}
                                   </Box>
                                 )}
@@ -395,10 +420,10 @@ const CreateEventPage = () => {
                                   var selected_venue = venueList.filter((venue)=>venue.venue_name === val)[0]
                                   //console.log(selected_venue)
                                   selected_venue.seating.map((seat)=>{
-                                    if(seat.seating_type === 'general') setSeatCount((prev)=>{return {...prev,gen_count:seat.seating_number}})
-                                    else if(seat.seating_type === 'front') setSeatCount((prev)=>{return {...prev,front_count:seat.seating_number}})
-                                    else if(seat.seating_type === 'middle') setSeatCount((prev)=>{return {...prev,middle_count:seat.seating_number}})
-                                    else if(seat.seating_type === 'back') setSeatCount((prev)=>{return {...prev,back_count:seat.seating_number}})
+                                    if(seat.seating_type.toLowerCase() === 'general') setSeatCount((prev)=>{return {...prev,gen_count:seat.seating_number}})
+                                    else if(seat.seating_type.toLowerCase() === 'front') setSeatCount((prev)=>{return {...prev,front_count:seat.seating_number}})
+                                    else if(seat.seating_type.toLowerCase() === 'middle') setSeatCount((prev)=>{return {...prev,middle_count:seat.seating_number}})
+                                    else if(seat.seating_type.toLowerCase() === 'back') setSeatCount((prev)=>{return {...prev,back_count:seat.seating_number}})
                                     return seat;
                                   })
                                   setFormDetails((prevState)=>{return {...prevState,event_location:selected_venue.venue_name,venue_id:selected_venue.venue_id}})
@@ -474,6 +499,14 @@ const CreateEventPage = () => {
                             </LocalizationProvider>
                             
                           </Grid>
+                          <Grid item xs={4}>
+                                <FormControl error={formErrors.start_date_exist || formErrors.start_date_before_today } style={{marginTop:"10%"}}>
+                                { 
+                                  formErrors.start_date_exist ?  <FormHelperText>Please Select Event Start Date</FormHelperText> :
+                                  formErrors.start_date_before_today && <FormHelperText>Please Select a future start date for the event</FormHelperText>
+                                }
+                              </FormControl>
+                          </Grid>
                         </Grid>
                         
                         <Grid container direction='row' sx={{width:'100%',margin:'25px',marginBottom:'1px'}}>
@@ -499,8 +532,16 @@ const CreateEventPage = () => {
                             </LocalizationProvider>
                             
                           </Grid>
+                          <Grid item xs={4}>
+                            <FormControl error={formErrors.end_date_exist || formErrors.end_date_before_start} style={{marginTop:"10%"}}>
+                          { 
+                            formErrors.end_date_exist ? <FormHelperText>Please Select Event End Date</FormHelperText> :
+                            formErrors.end_date_before_start && <FormHelperText> Event's end date should come after start date</FormHelperText>
+                          }
+                        </FormControl>
+                          </Grid>
                         </Grid>
-
+                        
                       </Grid> 
                 :     
                 activeStep === 1 ?
@@ -877,7 +918,7 @@ const CreateEventPage = () => {
                                 <img
                                   src={formDetails.event_img}
                                   width="100%"
-                                  alt="A visulaisation of the Event"
+                                  alt="No Photo for this event yet"
                                 >
                                 </img>
                               </div>
@@ -998,6 +1039,7 @@ const CreateEventPage = () => {
               </Grid>
         </Grid>
         <NotHostErrorModal open={open} setOpen={setOpen}/>
+        <CreateEventSuccessModal open={createEventSuccess} setOpen={setCreateEventSuccess} />
     </Box>
   )
 }
