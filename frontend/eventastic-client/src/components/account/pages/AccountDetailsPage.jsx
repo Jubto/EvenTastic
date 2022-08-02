@@ -72,8 +72,6 @@ const AccountDetailsPage = ({ change, setChange }) => {
   const handleImage = async (event) => {
     const imageFile = event.target.files[0]
     const imageBlob = await fileToDataUrl(imageFile)
-    console.log(imageBlob)
-    console.log(URL.createObjectURL(imageFile))
     setImageUpload(imageBlob)
   }
 
@@ -99,9 +97,6 @@ const AccountDetailsPage = ({ change, setChange }) => {
     const cardExpiry = data.get('cardExpiry')
 
     formErrors.error = false;
-
-    console.log(`=================== ${lastName} `)
-    console.log(!/^[a-zA-Z]+(\s[a-zA-Z]+)*$/.test(lastName))
 
     if (!firstName || !/^[a-zA-Z]+(\s[a-zA-Z]+)*$/.test(firstName)) {
       setFormErrors(prevState => { return { ...prevState, firstName: true } })
@@ -260,7 +255,6 @@ const AccountDetailsPage = ({ change, setChange }) => {
             id="blurb"
             label="Your blurb"
             defaultValue={account.user_desc}
-            onBlur={() => console.log("TODO blur event")}
           />
         </Grid>
         <Grid item sm={12} md={6}>

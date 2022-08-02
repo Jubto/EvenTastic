@@ -122,7 +122,7 @@ const GroupInfoPage = ({ groupDetails, setGroupDetails, eventDetails, accountID 
             ? edit
               ? <FlexBox justify='space-between'>
                 <Button variant="contained" color='warning'
-                  startIcon={<SettingsIcon />} sx={{ width: '180px', mb: 2, mt: 2 }}
+                  startIcon={<SettingsIcon />} sx={{ width: '180px', mb: 3, mt: 2 }}
                   onClick={() => setEdit(false)}
                 >
                   Cancel Edit
@@ -165,7 +165,7 @@ const GroupInfoPage = ({ groupDetails, setGroupDetails, eventDetails, accountID 
               </Typography>
             }
           </FlexBox>
-          <FlexBox>
+          <FlexBox sx={{mt:2, mb:1}}>
           <Typography variant='subtitle1' sx={{ color: 'evenTastic.grey', fontWeight: 1000, mr:2 }}>
             Members:
           </Typography>

@@ -39,6 +39,16 @@ export default class EmailAPI {
     return template
   };
 
+  broadcast_message_email = (eventDetails, title, message) => {
+    let template = "<html>\
+    <h1>Immportant message broadcast for your event:</h1>\
+    <h2>" + eventDetails.event_title + "</h2>\
+    <h2>" + title + "</h2>\
+    <p>" + message + "</p>\
+    </html>"
+    return template
+  };
+
   send_bookings_email = (booking_code, seating_details, event_title, event_short_desc, event_desc, event_location, event_start_datetime, event_end_datetime) => {
     let template = "<html>\
     <h1>Here are the details for your booking:</h1>\

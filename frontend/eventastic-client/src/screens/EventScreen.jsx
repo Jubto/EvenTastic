@@ -311,6 +311,7 @@ const EventScreen = () => {
                     <Chip
                       key={i}
                       label={tag.name}
+                      color='success'
                     />
                   );
                 })}

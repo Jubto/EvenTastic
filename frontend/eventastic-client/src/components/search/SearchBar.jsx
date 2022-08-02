@@ -20,7 +20,7 @@ import {
 const eventCategories = ["Music", "Business", "Food & Drink", "Community", "Arts", "Film & Media",
   "Sports & Fitness", "Health", "Science & Tech", "Travel & Outdoor", "Charity & Causes",
   "Spirituality", "Family & Education", "Seasonal", "Government", "Fashion", "Home & Lifestyle",
-  "Auto, Boat & Air", "Hobbies", "School Activities"]
+  "Auto, Boat & Air", "Hobbies", "School Activities", "Kids Entertainment"]
 
 const EventasticSearchBar = styled(Paper)`
   width: 450px;
@@ -43,7 +43,6 @@ const SearchBar = ({ setQuery }) => {
   const handleTagSelect = (event) => {
     const tagNode = event.currentTarget
     const tagName = tagNode.children[0].innerHTML.replace('&amp;', '&')
-    console.log(tagName)
     if (savedTag === tagName) {
       setSavedTag(null)
     } else {
@@ -70,6 +69,7 @@ const SearchBar = ({ setQuery }) => {
     }
     setSavedTag(null)
     setEventDesc('')
+    handleClose(event)
   };
 
   return (
@@ -129,7 +129,8 @@ const SearchBar = ({ setQuery }) => {
                       type="text"
                       sx={{ width: '100%' }}
                       value={eventDesc}
-                      onChange={((e) => setEventDesc(e.target.value))}
+                      onKeyDown={(e) => e.key === 'Enter' && handleSubmit(e)}
+                      onChange={(e) => setEventDesc(e.target.value)}
                     />
                   </SearchMenuItem>
                   <SearchMenuItem id="selectEventTags333">
@@ -137,7 +138,7 @@ const SearchBar = ({ setQuery }) => {
                       Search by Event Category
                     </Typography>
                   </SearchMenuItem>
-                  <SearchMenuItem wrap='wrap'>
+                  <SearchMenuItem wrap='wrap' onKeyDown={(e) => e.key === 'Enter' && handleSubmit(e)}>
                     {eventCategories.map((tag, idx) => (
                       <Chip key={idx} clickable label={tag}
                         onClick={handleTagSelect} sx={{ m: 0.5 }}
