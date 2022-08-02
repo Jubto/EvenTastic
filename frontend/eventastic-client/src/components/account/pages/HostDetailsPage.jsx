@@ -61,7 +61,7 @@ const HostDetailsPage = ({ change, setChange }) => {
     formErrors.error = false;
     console.log(orgName)
 
-    if ((!hostDetails && !orgName) || /\W+/.test(orgName) || (changeOrgName && !orgName)) {
+    if ((!hostDetails && !orgName) || !/^[a-zA-Z0-9]+(\s[a-zA-Z0-9]+)*$/.test(orgName) || (changeOrgName && !orgName)) {
       setFormErrors(prevState => { return { ...prevState, orgName: true } })
       formErrors.error = true
     }
@@ -69,11 +69,11 @@ const HostDetailsPage = ({ change, setChange }) => {
       setFormErrors(prevState => { return { ...prevState, orgEmail: true } })
       formErrors.error = true
     }
-    if (!orgJobTitle || /\W+/.test(orgJobTitle)) {
+    if (!orgJobTitle || !/^[a-zA-Z0-9]+(\s[a-zA-Z0-9]+)*$/.test(orgJobTitle)) {
       setFormErrors(prevState => { return { ...prevState, orgJobTitle: true } })
       formErrors.error = true
     }
-    if (!qualification || /\W+/.test(qualification)) {
+    if (!qualification || !/^[a-zA-Z0-9]+(\s[a-zA-Z0-9]+)*$/.test(qualification)) {
       setFormErrors(prevState => { return { ...prevState, qualification: true } })
       formErrors.error = true
     }
