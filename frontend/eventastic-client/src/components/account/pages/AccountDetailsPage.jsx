@@ -162,8 +162,7 @@ const AccountDetailsPage = ({ change, setChange }) => {
         formErrors.error = true
       }
     }
-    // if (!formErrors.error) {
-      if (0) {
+    if (!formErrors.error) {
       const body = {
         "user_desc": blurb ? blurb : account.user_desc,
         "age": age ? parseInt(age) : account.age ? parseInt(account.age) : 0,
@@ -479,7 +478,7 @@ const AccountDetailsPage = ({ change, setChange }) => {
               helperText={formErrors.cardName ? 'Must be a valid card holder name.' : ''}
               sx={{ display: addCard ? 'inherit' : 'none', mt: 2 }}
             />
-            : <Box sx={{mt: 2}}>
+            : <Box sx={{mt: 2, display: changeCard ? 'initial' : 'none' }}>
               <Typography variant="subtitle1" color="text.secondary">
                 Card name
               </Typography>
