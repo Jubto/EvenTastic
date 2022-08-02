@@ -272,6 +272,8 @@ const CreateEventPage = () => {
     
   }, [])
 
+  console.log(formDetails.event_tags)
+
   return (
     <Box sx={{ flexGrow: 1, paddingLeft:'15%',paddingRight:'15%' }}>
         <Grid container direction="column" spacing={2}>
@@ -364,6 +366,7 @@ const CreateEventPage = () => {
                                 multiple
                                 value={formDetails.event_tags}
                                 onChange={(event)=>{
+                                  console.log('TEST')
                                   const {
                                     target: { value },
                                   } = event;

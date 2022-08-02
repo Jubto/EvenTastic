@@ -1,12 +1,29 @@
 import { styled } from '@mui/material/styles';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Grid, Card, CardHeader, CardMedia, CardContent, CardActionArea } from '@mui/material'
 import Typography from '@mui/material/Typography';
 
 export const StyledEventCard = styled(Card)`
-  border: 1px solid black;
-  border-radius: 5px;
+  width: 300px;
+  height: 400px;
+  border: none;
+  cursor: pointer;
+  &:hover {
+    background-color: #dbdbdb;
+  }
 `;
+
+const CardTitle = styled('h3')`
+  margin-top: 4px;
+  margin-bottom: -10px;
+  margin-left: 1rem;
+`
+
+export const CardSummary = styled(Typography)`
+  height: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`
 
 const dateFormat = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
 
@@ -15,29 +32,28 @@ function formatDate(datetime) {
   return d.toLocaleDateString("en-US", dateFormat)
 }
 
-const EventCard = ( {eventData} ) => {
+const EventCard = ({ eventData }) => {
+  const navigate = useNavigate()
+
   return (
-    <Grid item xs={12} sm={6} md={6} lg={4}>
-      <StyledEventCard>
-        <CardActionArea 
-          component={Link} 
-          to={"/event/" + eventData.event_id}
-        >
-          <CardHeader title={eventData.event_title} />
+    <Grid item xs={12} sm={4} md={4} lg={4}>
+      <StyledEventCard  onClick={() => navigate(`/event/${eventData.event_id}`)}>
           <CardMedia
             component="img"
             height="140"
             image={eventData.event_img}
           />
+          <CardTitle>
+            {eventData.event_title}
+          </CardTitle>
           <CardContent>
-            <Typography gutterBottom variant="h6" component="div">
-              {eventData.event_short_desc}
-            </Typography>
-            <Typography gutterBottom variant="h6" component="div">
+            <Typography gutterBottom variant="subtitle2" component="div">
               {formatDate(eventData.event_start_datetime)}
             </Typography>
+            <CardSummary gutterBottom variant="h6" component="div" >
+              {eventData.event_short_desc} @@@@@ @@@@ @@@@@@ @@@@ @@@@ @@@ @@@@ @@@@ @@@@@@ @@@@@ @@@@@ @@@@ @@@@@@@@@@@@@@@ @@@@@@@@@@@@ @@@@@@@@@@@@@ @@@@@@@ @@@@@@@@@@@@@@@@@@@ @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+            </CardSummary> 
           </CardContent>
-        </CardActionArea>
       </StyledEventCard>
     </Grid>
   )
