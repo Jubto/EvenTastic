@@ -384,8 +384,8 @@ const CreateEventPage = () => {
                                 MenuProps={MenuProps}
                               >
                                 {
-                                  eventTags.eventTagsByCategory.filter((cat)=>cat.cat_name === formDetails.event_category)[0].tags.map((tag)=>{
-                                    return <MenuItem value={tag.tag_name}>{tag.tag_name}</MenuItem>
+                                  eventTags.eventTagsByCategory.filter((cat)=>cat.cat_name === formDetails.event_category)[0].tags.map((tag,ind)=>{
+                                    return <MenuItem key={ind} value={tag.tag_name}>{tag.tag_name}</MenuItem>
                                   })
                                 }
                                 
