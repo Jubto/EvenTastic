@@ -128,7 +128,7 @@ const AccountDetailsPage = ({ change, setChange }) => {
         formErrors.error = true
       }
     }
-    if (changeEmail && !/^[\w]+(\.?[\w]+)*@[\w]+\.[\w]+$/.test(email)) {
+    if (changeEmail && !/^[\w]+(\.?[\w]+)*@[\w]+\.[a-zA-Z]+$/.test(email)) {
       setFormErrors(prevState => { return { ...prevState, email: true } })
       formErrors.error = true
     }

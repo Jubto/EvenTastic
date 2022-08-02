@@ -91,7 +91,7 @@ const RegisterScreen = () => {
       setFormErrors(prevState => { return { ...prevState, lastName: true } })
       formErrors.error = true
     }
-    if (!/^[\w]+(\.?[\w]+)*@[\w]+\.[\w]+$/.test(email)) {
+    if (!/^[\w]+(\.?[\w]+)*@[\w]+\.[a-zA-Z]+$/.test(email)) {
       setFormErrors(prevState => { return { ...prevState, email: true } })
       formErrors.error = true
     }
@@ -108,7 +108,7 @@ const RegisterScreen = () => {
         setFormErrors(prevState => { return { ...prevState, orgName: true } })
         formErrors.error = true
       }
-      if (!orgEmail || !/^[\w]+(\.?[\w]+)*@[\w]+\.[\w]+$/.test(orgEmail)) {
+      if (!orgEmail || !/^[\w]+(\.?[\w]+)*@[\w]+\.[a-zA-Z]+$/.test(orgEmail)) {
         setFormErrors(prevState => { return { ...prevState, orgEmail: true } })
         formErrors.error = true
       }

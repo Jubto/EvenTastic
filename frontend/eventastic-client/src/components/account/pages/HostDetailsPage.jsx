@@ -65,7 +65,7 @@ const HostDetailsPage = ({ change, setChange }) => {
       setFormErrors(prevState => { return { ...prevState, orgName: true } })
       formErrors.error = true
     }
-    if ((!hostDetails && !orgEmail) || (!/^[\w]+(\.?[\w]+)*@[\w]+\.[\w]+$/.test(orgEmail) && orgEmail) || (changeEmail && !orgEmail)) {
+    if ((!hostDetails && !orgEmail) || (!/^[\w]+(\.?[\w]+)*@[\w]+\.[a-zA-Z]+$/.test(orgEmail) && orgEmail) || (changeEmail && !orgEmail)) {
       setFormErrors(prevState => { return { ...prevState, orgEmail: true } })
       formErrors.error = true
     }

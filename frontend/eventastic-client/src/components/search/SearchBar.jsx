@@ -25,23 +25,18 @@ const eventCategories = ["Music", "Business", "Food & Drink", "Community", "Arts
 const EventasticSearchBar = styled(Paper)`
   width: 450px;
   display: flex;
-  position: sticky;
-  top: 70px;
-  left: auto;
-  right: 0;
-  z-index: 100;
+  margin-top: 1rem;
 `
 
 const SearchMenuItem = styled(FlexBox)`
   padding: 8px 16px 0px 16px;
 `
 
-const SearchBar = () => {
+const SearchBar = ({ setQuery }) => {
   const [openMenu, setOpenMenu] = useState(false)
-  const [formValues, setFormValues] = useState([]);
   const [savedTag, setSavedTag] = useState(null)
+  const [eventDesc, setEventDesc] = useState('')
   const searchTitle = useRef('')
-  const searchDesc = useRef('')
   const anchorRef = useRef(null);
 
 
@@ -65,11 +60,16 @@ const SearchBar = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault()
-    console.log(searchTitle.current.value)
-    console.log(searchDesc.current.value)
-    searchTitle.current.value = ''
-    searchDesc.current.value = ''
-
+    setQuery({
+      event_title: searchTitle?.current?.value || '',
+      event_desc: eventDesc,
+      event_category: savedTag
+    })
+    if (searchTitle.current) {
+      searchTitle.current.value = ''
+    }
+    setSavedTag(null)
+    setEventDesc('')
   };
 
   return (
@@ -128,7 +128,8 @@ const SearchBar = () => {
                       label="Event Description"
                       type="text"
                       sx={{ width: '100%' }}
-                      inputRef={searchDesc}
+                      value={eventDesc}
+                      onChange={((e) => setEventDesc(e.target.value))}
                     />
                   </SearchMenuItem>
                   <SearchMenuItem id="selectEventTags333">
