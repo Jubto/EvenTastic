@@ -54,3 +54,11 @@ Week9:
 	• Add reward points related UI to account page
 	• Fixed more issues
 	• Added UI to group chat interface
+
+
+Week10:
+        • Fixed and improved various textfield validation
+        • UI/UX for email database integrty error
+        • Improved UI/UX of search bar and homepage
+        • Various bug fixes and preventing warnings
+        • Several meetings with team
