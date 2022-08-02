@@ -83,11 +83,11 @@ const RegisterScreen = () => {
 
     formErrors.error = false;
 
-    if (/[\W|\d]+/.test(firstName)) {
+    if (!/^[a-zA-Z]+(\s[a-zA-Z]+)*$/.test(firstName)) {
       setFormErrors(prevState => { return { ...prevState, firstName: true } })
       formErrors.error = true
     }
-    if (/[\W|\d]+/.test(lastName)) {
+    if (!/^[a-zA-Z]+(\s[a-zA-Z]+)*$/.test(lastName)) {
       setFormErrors(prevState => { return { ...prevState, lastName: true } })
       formErrors.error = true
     }
@@ -104,7 +104,7 @@ const RegisterScreen = () => {
       formErrors.error = true
     }
     if (hostInputs === 'Host') {
-      if (!orgName || /\W+/.test(orgName)) {
+      if (!orgName || !/^[a-zA-Z0-9]+(\s[a-zA-Z0-9]+)*$/.test(orgName)) {
         setFormErrors(prevState => { return { ...prevState, orgName: true } })
         formErrors.error = true
       }
@@ -112,11 +112,11 @@ const RegisterScreen = () => {
         setFormErrors(prevState => { return { ...prevState, orgEmail: true } })
         formErrors.error = true
       }
-      if (!orgJobTitle || /\W+/.test(orgJobTitle)) {
+      if (!orgJobTitle || !/^[a-zA-Z0-9]+(\s[a-zA-Z0-9]+)*$/.test(orgJobTitle)) {
         setFormErrors(prevState => { return { ...prevState, orgJobTitle: true } })
         formErrors.error = true
       }
-      if (!qualification || /\W+/.test(qualification)) {
+      if (!qualification || !/^[a-zA-Z0-9]+(\s[a-zA-Z0-9]+)*$/.test(qualification)) {
         setFormErrors(prevState => { return { ...prevState, qualification: true } })
         formErrors.error = true
       }

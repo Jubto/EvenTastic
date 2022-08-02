@@ -1,6 +1,6 @@
 import { styled } from '@mui/material/styles';
-import { Link, useNavigate } from 'react-router-dom';
-import { Grid, Card, CardHeader, CardMedia, CardContent, CardActionArea } from '@mui/material'
+import { useNavigate } from 'react-router-dom';
+import { Grid, Card, CardMedia, CardContent } from '@mui/material'
 import Typography from '@mui/material/Typography';
 
 export const StyledEventCard = styled(Card)`
@@ -51,7 +51,7 @@ const EventCard = ({ eventData }) => {
               {formatDate(eventData.event_start_datetime)}
             </Typography>
             <CardSummary gutterBottom variant="h6" component="div" >
-              {eventData.event_short_desc} @@@@@ @@@@ @@@@@@ @@@@ @@@@ @@@ @@@@ @@@@ @@@@@@ @@@@@ @@@@@ @@@@ @@@@@@@@@@@@@@@ @@@@@@@@@@@@ @@@@@@@@@@@@@ @@@@@@@ @@@@@@@@@@@@@@@@@@@ @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+              {eventData.event_short_desc}
             </CardSummary> 
           </CardContent>
       </StyledEventCard>

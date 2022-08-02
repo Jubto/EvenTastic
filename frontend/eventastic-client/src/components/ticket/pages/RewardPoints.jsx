@@ -1,7 +1,7 @@
 import { ScrollContainer } from "../../styles/layouts.styled"
 import { Button } from "@mui/material"
 import { styled } from '@mui/material/styles';
-import { useState, useContext, useEffect } from 'react';
+import { useContext } from 'react';
 import { StoreContext } from '../../../utils/context';
 import AccountAPI from "../../../utils/AccountAPIHelper"
 import EventAPI from "../../../utils/EventAPIHelper"

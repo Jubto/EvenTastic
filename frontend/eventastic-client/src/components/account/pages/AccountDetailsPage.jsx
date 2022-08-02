@@ -78,7 +78,7 @@ const AccountDetailsPage = ({ change, setChange }) => {
   }
 
   const scrollTo = () => {
-    ref.current.scrollIntoView()
+    ref?.current?.scrollIntoView()
   }
 
   const handleSubmit = async (event) => {
@@ -100,11 +100,14 @@ const AccountDetailsPage = ({ change, setChange }) => {
 
     formErrors.error = false;
 
-    if (/[\W|\d]+/.test(firstName)) {
+    console.log(`=================== ${lastName} `)
+    console.log(!/^[a-zA-Z]+(\s[a-zA-Z]+)*$/.test(lastName))
+
+    if (!firstName || !/^[a-zA-Z]+(\s[a-zA-Z]+)*$/.test(firstName)) {
       setFormErrors(prevState => { return { ...prevState, firstName: true } })
       formErrors.error = true
     }
-    if (/[\W|\d]+/.test(lastName)) {
+    if (!lastName || !/^[a-zA-Z]+(\s[a-zA-Z]+)*$/.test(lastName)) {
       setFormErrors(prevState => { return { ...prevState, lastName: true } })
       formErrors.error = true
     }
@@ -140,7 +143,7 @@ const AccountDetailsPage = ({ change, setChange }) => {
       }
     }
     if (changeCard) {
-      if (!cardName || /\W+/.test(cardName)) {
+      if (!cardName || !/^[a-zA-Z0-9]+(\s[a-zA-Z0-9]+)*$/.test(cardName)) {
         setFormErrors(prevState => { return { ...prevState, cardName: true } })
         formErrors.error = true
       }
@@ -148,7 +151,7 @@ const AccountDetailsPage = ({ change, setChange }) => {
         setFormErrors(prevState => { return { ...prevState, cardNumber: true } })
         formErrors.error = true
       }
-      if (!cardType || /\W+/.test(cardType)) {
+      if (!cardType || !/^[a-zA-Z0-9]+(\s[a-zA-Z0-9]+)*$/.test(cardType)) {
         setFormErrors(prevState => { return { ...prevState, cardType: true } })
         formErrors.error = true
       }
@@ -475,7 +478,7 @@ const AccountDetailsPage = ({ change, setChange }) => {
               helperText={formErrors.cardName ? 'Must be a valid card holder name.' : ''}
               sx={{ display: addCard ? 'inherit' : 'none', mt: 2 }}
             />
-            : <Box sx={{mt: 2}}>
+            : <Box sx={{mt: 2, display: changeCard ? 'initial' : 'none' }}>
               <Typography variant="subtitle1" color="text.secondary">
                 Card name
               </Typography>
