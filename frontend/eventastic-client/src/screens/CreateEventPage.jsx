@@ -246,7 +246,7 @@ const CreateEventPage = () => {
     data = {...data,"tags":formDetails.event_tags.map((tag_name)=>{
       return {"name":tag_name}
     })}
-    console.log(data)
+    //console.log(data)
     
     event_api
       .postEvent(data)
@@ -272,7 +272,7 @@ const CreateEventPage = () => {
     
   }, [])
 
-  console.log(formDetails.event_tags)
+  //console.log(formDetails.event_tags)
 
   return (
     <Box sx={{ flexGrow: 1, paddingLeft:'15%',paddingRight:'15%' }}>
@@ -366,7 +366,7 @@ const CreateEventPage = () => {
                                 multiple
                                 value={formDetails.event_tags}
                                 onChange={(event)=>{
-                                  console.log('TEST')
+                                  //console.log('TEST')
                                   const {
                                     target: { value },
                                   } = event;
