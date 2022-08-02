@@ -42,7 +42,7 @@ cur.execute('drop TABLE IF EXISTS groups cascade;')
 cur.execute('drop TABLE IF EXISTS group_members cascade;')
 cur.execute('drop TABLE IF EXISTS reviews cascade;')
 cur.execute('drop TABLE IF EXISTS interactions cascade;')
-
+cur.execute('drop TABLE IF EXISTS rewardpoints cascade;')
 
 # Create Tables
 print('\nCreating Tables ...')
@@ -57,7 +57,7 @@ cur.execute('CREATE TABLE accounts (\
             password VARCHAR(50),\
             account_type VARCHAR(20),\
             profile_pic TEXT,\
-            reward_points VARCHAR(10),\
+            reward_points VARCHAR(30),\
             tags TEXT, \
             user_desc TEXT \
             );')
@@ -67,7 +67,7 @@ cur.execute('CREATE TABLE hosts(\
             account_id INT NOT NULL,\
             FOREIGN KEY (account_id) REFERENCES accounts (account_id),\
             organisation_name VARCHAR(50),\
-            organisation_desc VARCHAR(50),\
+            organisation_desc TEXT,\
             host_contact_no VARCHAR(20),\
             job_title VARCHAR(30),\
             qualification VARCHAR(50),\
@@ -131,7 +131,11 @@ cur.execute('CREATE TABLE bookings (\
             event_id INT NOT NULL,\
             FOREIGN KEY (event_id) REFERENCES events (event_id),\
             booking_status VARCHAR(15),\
-            total_cost float8);')
+            total_cost float8,\
+            card_name VARCHAR(50),\
+            card_number VARCHAR(16),\
+            qr_code TEXT\
+            );')
 
 # Ticket type : General, Front, Middle, Back
 cur.execute('CREATE TABLE tickets (\
@@ -195,6 +199,19 @@ cur.execute('CREATE TABLE interactions(\
             review_upvoted BOOLEAN,\
             review_flagged BOOLEAN \
             );')
+
+# Reward Points table
+cur.execute('CREATE TABLE rewardpoints(\
+            reward_points_id SERIAL PRIMARY KEY,\
+            account_id INT NOT NULL,\
+            FOREIGN KEY (account_id) REFERENCES accounts (account_id),\
+            event_id INT NOT NULL,\
+            FOREIGN KEY (event_id) REFERENCES events (event_id),\
+            booking_id INT NOT NULL,\
+            FOREIGN KEY (booking_id) REFERENCES bookings (booking_id),\
+            reward_points_amount float8,\
+            reward_points_status TEXT \
+                );')
 
 # Enter dummy data here
 print('\nInserting dummy data ...')
@@ -292,8 +309,8 @@ for filename in os.listdir(account_img_dir):
         cur.execute(sql)
 
 
-cur.execute("INSERT INTO bookings values (default, 1, 1, 'Booked', 500.0);")
-cur.execute("INSERT INTO bookings values (default, 1, 1, 'Booked', 200.0);")
+cur.execute("INSERT INTO bookings values (default, 1, 1, 'Booked', 500.0, 'Vishal', '9999333366668888', '1_1_230722011820');")
+cur.execute("INSERT INTO bookings values (default, 1, 1, 'Booked', 200.0, 'Vishal', '9999333366668888', '1_1_230722011846');")
 
 # QR-code : (Venueid-Eventid-accountid-type&number)
 for t_id in range(1, 31):
@@ -372,7 +389,9 @@ cur.execute("INSERT INTO interactions values (default, 2, 2, True, True);")
 cur.execute("INSERT INTO interactions values (default, 3, 2, False, True);")
 cur.execute("INSERT INTO interactions values (default, 3, 3, False, True);")
 
-cur.execute('SELECT * FROM accounts')
+"""
+cur.execute('SELECT account_id, email, first_name, last_name, age, mobile_no, location, \
+            password, account_type, reward_points, tags, user_desc   FROM accounts')
 records = cur.fetchall()
 print("\nAccount details")
 for row in records:
@@ -436,6 +455,8 @@ for row in records:
     for j in range(len(row)):
         print(row[j], end=" ")
     print()
+"""
+print("Database has been initialized.")
 
 cur.close()
 con.close()

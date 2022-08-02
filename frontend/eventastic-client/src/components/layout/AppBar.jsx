@@ -3,7 +3,6 @@ import { StoreContext } from '../../utils/context';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { FlexBox, Container } from '../styles/layouts.styled';
 import AccountMenu from '../account/AccountMenu';
-import SearchBar from '../search/SearchBar'
 import AppBar from '@mui/material/AppBar';
 import { Typography, styled } from '@mui/material';
 
@@ -25,11 +24,9 @@ const AppTitle = styled(Typography)`
     if (!admin) {
       return `
       cursor: pointer;
-
       &:hover {
         background-color: #e9d1d9;
       }
-
       `
     }
   }};
@@ -71,7 +68,7 @@ const EvenTasticAppBar = () => {
   }, [location])
 
   return (
-    <AppBar position="static" sx={{ backgroundColor: 'evenTastic.layout', mb:2, pl:0 }}>
+    <AppBar id='appbar' position="sticky" sx={{ backgroundColor: 'evenTastic.layout', mb:2, pl:0 }}>
 
         <FlexBox justify='space-between'>
           <FlexBox>
@@ -80,7 +77,6 @@ const EvenTasticAppBar = () => {
             >
               EvenTastic
             </AppTitle>
-            {(hide || hideSearch) ? '' : <SearchBar/>}
           </FlexBox>
           <FlexBox>
             {account

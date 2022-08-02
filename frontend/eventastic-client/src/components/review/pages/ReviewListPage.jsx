@@ -42,7 +42,7 @@ const ReviewListPage = ({setReplyReviewId,refresh, setRefresh, reviews, setRevie
       getAccount(id)
       .then((response)=>{
         const data = response.data;
-        acc_details = [...acc_details,{account_name:data.first_name+" "+data.last_name}]
+        acc_details = [...acc_details,{account_id: data.account_id, account_name:data.first_name+" "+data.last_name}]
         setAccDetails(acc_details)
       })
       .catch((err)=>console.log(err))
@@ -81,8 +81,9 @@ const ReviewListPage = ({setReplyReviewId,refresh, setRefresh, reviews, setRevie
       const postBody = {"interaction_account_id":account.account_id, "review_flagged":false,"review_id":review.review_id,"review_upvoted":true}
       review_api
       .postReviewInteraction(postBody)
+      .then((response) => reviews[index].review_interaction = response.data)
       .catch((err)=>console.log(err))
-      reviews[index].review_interaction = postBody
+      
     }else{
       if(review.review_interaction.review_upvoted===false)
       {
@@ -90,6 +91,7 @@ const ReviewListPage = ({setReplyReviewId,refresh, setRefresh, reviews, setRevie
       }else{
         upvote_count = upvote_count - 1;
       }
+       //console.log(review)
       review_api
       .putReviewInteraction(review.review_interaction.interaction_id,{"review_upvoted":!review.review_interaction.review_upvoted})
       .catch((err)=>console.log(err))
@@ -111,8 +113,8 @@ const ReviewListPage = ({setReplyReviewId,refresh, setRefresh, reviews, setRevie
       const postBody = {"interaction_account_id":account.account_id, "review_flagged":true,"review_id":review.review_id,"review_upvoted":false}
       review_api
       .postReviewInteraction(postBody)
+      .then((response) => reviews[index].review_interaction = response.data)
       .catch((err)=>console.log(err))
-      reviews[index].review_interaction = postBody
     }else{
       if(review.review_interaction.review_flagged===false)
       {
@@ -143,11 +145,18 @@ const ReviewListPage = ({setReplyReviewId,refresh, setRefresh, reviews, setRevie
       {
         (refresh || !refresh) && accDetails.length===reviews.length && reviews.map((review,index)=>{
           return (
+            
           <Card key={index} style={{margin:'20px'}} elevation={3}>
+            
             <CardHeader
                   avatar={
                     <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
-                      {accDetails[index]['account_name'].toUpperCase()[0]}
+                      {accDetails.map((accDetail ) => {
+                        if (accDetail.account_id === review.reviewer_account_id){
+                          return accDetail.account_name.toUpperCase()[0]
+                        }
+                      })
+                    }
                     </Avatar>
 
                   }
@@ -159,7 +168,12 @@ const ReviewListPage = ({setReplyReviewId,refresh, setRefresh, reviews, setRevie
                       spacing={2}
                     >
                       <Typography>
-                          {accDetails[index]['account_name']}
+                      {accDetails.map((accDetail) => {
+                        if (accDetail.account_id === review.reviewer_account_id){
+                          return accDetail.account_name
+                        }
+                      })
+                    }
                       </Typography>   
                       
                       <Item>

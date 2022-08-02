@@ -18,6 +18,10 @@ from swagger_server.models.review_interaction import ReviewInteraction
 from swagger_server.models.review_interaction_not_found_error import ReviewInteractionNotFoundError
 from swagger_server.models.review_list import ReviewList
 from swagger_server.models.review_not_found_error import ReviewNotFoundError
+from swagger_server.models.reward_points import RewardPoints
+from swagger_server.models.reward_points_list import RewardPointsList
+from swagger_server.models.reward_points_not_found_error import RewardPointsNotFoundError
+from swagger_server.models.reward_points_status_update import RewardPointsStatusUpdate
 from swagger_server.models.seating import Seating
 from swagger_server.models.tag import Tag
 from swagger_server.models.ticket import Ticket

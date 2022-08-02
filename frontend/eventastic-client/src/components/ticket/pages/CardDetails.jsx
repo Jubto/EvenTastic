@@ -38,7 +38,7 @@ const SeatsBox = styled('div')`
   margin-top: 20px;
 `;
 
-const CardDetails = ({ open, setOpen, setPage, setSuccessModal, totalCost, eventID, generalSeats, frontSeats, middleSeats, backSeats }) => {
+const CardDetails = ({ open, setOpen, setPage, setSuccessModal, totalCost, eventID, generalSeats, frontSeats, middleSeats, backSeats, setPurchaseQRCode, eventDetails, setBookingPoints }) => {
 
   const context = useContext(StoreContext);
   const [account, setAccount] = context.account;
@@ -58,7 +58,7 @@ const CardDetails = ({ open, setOpen, setPage, setSuccessModal, totalCost, event
     try {
       const cardDetails = await accountAPI.getAccountCard(account_id)
       //console.log(cardDetails.data)
-      if (cardDetails.data.card_number != undefined) {
+      if (cardDetails.data.card_number !== undefined) {
         setCardName(cardDetails.data.card_name)
         setCardNumber(cardDetails.data.card_number)
         setCardType(cardDetails.data.card_type)
@@ -78,7 +78,7 @@ const CardDetails = ({ open, setOpen, setPage, setSuccessModal, totalCost, event
   const isNumbers = (str) => /^[0-9]*$/.test(str);
   
   const changeCardName = (e) => {
-    if (isLetters(e.target.value)) {
+    if (isLetters(e.target.value.slice(-1)) || e.target.value.slice(-1) === ' ') {
       setCardName(e.target.value);
       setFormErrors(prevState => { return { ...prevState, cardName: false } })
     }
@@ -104,13 +104,13 @@ const CardDetails = ({ open, setOpen, setPage, setSuccessModal, totalCost, event
 
   const submitBooking = async () => {
     try {
-      if (cardName.length == 0){
+      if (cardName.length === 0){
         setFormErrors(prevState => { return { ...prevState, cardName: true } })
-      } else if (cardNumber.length != 16){
+      } else if (cardNumber.length !== 16){
         setFormErrors(prevState => { return { ...prevState, cardNumber: true } })
-      } else if (cardType.length == 0){
+      } else if (cardType.length === 0){
         setFormErrors(prevState => { return { ...prevState, cardType: true } })
-      } else if (cardExpiry.length != 4){
+      } else if (cardExpiry.length !== 4){
         setFormErrors(prevState => { return { ...prevState, cardExpiry: true } })
       } else if (parseInt(cardExpiry.substring(2, 4)) < 22){
         setFormErrors(prevState => { return { ...prevState, cardExpiry: true } })
@@ -126,14 +126,30 @@ const CardDetails = ({ open, setOpen, setPage, setSuccessModal, totalCost, event
             Middle: middleSeats,
             Back: backSeats,
           },
-          total_cost: parseFloat(totalCost)
+          total_cost: parseFloat(totalCost),
+          card_name: cardName,
+          card_number: cardNumber
         }
         
         const makeBooking = await eventAPI.addBooking(bookingParams)
+        setBookingPoints(parseFloat(totalCost/10.0).toFixed(2))
+        setPurchaseQRCode(makeBooking.data.qr_code)
         setOpen(false)
         setPage('selection')
         setSuccessModal(true)
+        
+        // to add reward points
+        const rewardPointsParams = {
+          account_id: parseInt(account.account_id),
+          booking_id: parseInt(makeBooking.data.booking_id),
+          event_id: parseInt(eventID),
+          reward_points_amount: parseFloat((totalCost/10.0).toFixed(2)),
+          reward_points_status: "Pending"
+        }
+        
+        const addRewardPoints = await eventAPI.postRewardPoints(rewardPointsParams)
 
+        // to get the list of seats
         const bookedParams = {
           booking_id: makeBooking.data.booking_id
         }
@@ -143,15 +159,14 @@ const CardDetails = ({ open, setOpen, setPage, setSuccessModal, totalCost, event
           seats += ticketList.data[i].ticket_ref
           if (i < ticketList.data.length-2)
             seats += ', '
-          if (i == ticketList.data.length-2)
+          if (i === ticketList.data.length-2)
             seats += ' and '
         }
   
-        const message = "Your seats for this booking are "+seats+"."
         const emailTo = [{email_address : account.email}]
           const sendTicketsEmail = {
-            email_subject: 'EvenTastic Booking tickets',
-            email_content: message,
+            email_subject: 'EvenTastic Booking Tickets',
+            email_content: emailAPI.send_bookings_email(makeBooking.data.qr_code, seats, eventDetails.event_title, eventDetails.event_short_desc, eventDetails.event_desc, eventDetails.event_location, eventDetails.event_start_datetime, eventDetails.event_end_datetime),
             email_from: {
               email_address: evenTasticEmail,
               name: "EvenTastic"

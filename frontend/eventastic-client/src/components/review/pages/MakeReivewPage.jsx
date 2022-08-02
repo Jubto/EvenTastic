@@ -19,7 +19,7 @@ const ContentBox = styled('div')`
   min-height: 350px;
 `;
 
-const MakeReivewPage = ({setMadeReview,refresh, setRefresh ,reviews , setPage, setReviews, eventDetails, account }) => {
+const MakeReivewPage = ({setMadeReview,refresh, setRefresh ,reviews , setPage, setReviews, eventDetails, account, setReviewSuccessModal }) => {
 
   
 
@@ -38,7 +38,7 @@ const handleSubmit = (event) => {
               "review_timestamp":current_datetime, "review_status":"Active","reply_text":"",
               "flag_count":0
             }
-  //console.log(data)
+  // console.log(data)
 
     review_api
         .postReview(data)
@@ -54,25 +54,24 @@ const handleSubmit = (event) => {
               })
               setReviews(revs)
               setMadeReview(revs.filter((rev)=>rev.reviewer_account_id===account.account_id).length !== 0)
+              setReviewSuccessModal(true)
               setRefresh(!refresh)
             })
             .catch((err)=>console.log(err));
 
-          
-          //alert("Review has been posted successfully")
         })
         .catch((err) => console.log(err));
           
 }
 
 
-const [rating, setRating] = React.useState(0);
+const [rating, setRating] = React.useState(3);
 const [reviewText, setReviewText] = React.useState('');
 
 return (
     <ScrollContainer hide height='100%' sx={{ width: '100%' }}>
       <MainBox>
-      <Box id='form' component="form" noValidate onSubmit={handleSubmit}>
+      <Box id='form' component="form" onSubmit={handleSubmit}>
         <ContentBox >
           <div style={{  marginBottom: '50px'}}>
             <h2>My Review:</h2>
@@ -105,7 +104,6 @@ return (
             fullWidth
             inputProps={{ maxLength: 1000 }}
             id="reviewText"
-            // label="Review Text"
             InputLabelProps={{ shrink: true }}
             multiline
             rows={10}

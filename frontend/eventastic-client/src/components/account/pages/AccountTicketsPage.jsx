@@ -111,8 +111,8 @@ const Ticket = ({ booking, handleCancelBooking, handleSendTicketsModal }) => {
           </div>
         </div>
         <SaveButtonBox  width="15%">
-          <Button sx={{ height: '50%' }} variant="contained" value={booking.booking_id} onClick={(e) => handleSendTicketsModal(e.target.value)} >Send Tickets</Button> 
-          <Button sx={{ height: '50%' }} variant="contained" color="error" value={booking.booking_id} onClick={(e) => handleCancelBooking(e.target.value)} >Cancel Booking</Button>
+          <Button sx={{ height: '50%' }} variant="contained" value={booking.booking_id} onClick={(e) => handleSendTicketsModal(e.target.value, booking.qr_code, booking.event_title, booking.event_short_desc, booking.event_desc, booking.event_location, booking.event_start_datetime, booking.event_end_datetime)} >Send Tickets</Button> 
+          <Button sx={{ height: '50%' }} variant="contained" color="error" id={booking.booking_id} onClick={(e) => handleCancelBooking(e.target.id, booking.card_number, booking.total_cost, booking.reward_points_id, booking.qr_code, booking.event_title, booking.event_short_desc, booking.event_desc, booking.event_location, booking.event_start_datetime, booking.event_end_datetime)} >Cancel Booking</Button>
         </SaveButtonBox>
       </MainBox>
     </FlexBox>
@@ -180,7 +180,20 @@ const AccountTicketsPage = ({ toggle }) => {
   const [openModal, setOpenModal] = useState(false)
   const [sendTicketsModal, setSendTicketsModal] = useState(false)
   const [cancelBooking, setCancelBooking] = useState(null)
+
+  const [sendTicketQRCode, setSendTicketQRCode] = useState(null)
   const [toCancel, setToCancel] = useState(null)
+  const [toCancelCard, setToCancelCard] = useState(null)
+  const [toCancelPoints, setToCancelPoints] = useState(null)
+  const [toCancelPointsID, setToCancelPointsID] = useState(null)
+  const [toCancelQRCode, setToCancelQRCode] = useState(null)
+
+  const [eventTitle, setEventTitle] = useState('')
+  const [shortDesc, setShortDesc] = useState('')
+  const [fullDesc, setFullDesc] = useState('')
+  const [eventLocation, setEventLocation] = useState('')
+  const [eventStartTime, setEventStartTime] = useState('')
+  const [eventEndTime, setEventEndTime] = useState('')
 
   const getBookings = async () => {
     try {
@@ -202,12 +215,21 @@ const AccountTicketsPage = ({ toggle }) => {
           event_id: booking.event_id,
           total_cost: booking.total_cost,
           ticket_details: booking.ticket_details,
+          card_number: booking.card_number,
+          qr_code: booking.qr_code,
+          reward_points_id: parseInt(booking.reward_points_id),
+          reward_points: parseFloat(booking.reward_points),
           event_title: bookedEventsRes[idx].event_title,
           event_img: bookedEventsRes[idx].event_img,
           event_location: bookedEventsRes[idx].event_location,
-          event_start_datetime: bookedEventsRes[idx].event_start_datetime
+          event_desc: bookedEventsRes[idx].event_desc,
+          event_short_desc: bookedEventsRes[idx].event_short_desc,
+          event_start_datetime: bookedEventsRes[idx].event_start_datetime,
+          event_end_datetime: bookedEventsRes[idx].event_end_datetime
         }
       ))
+
+      //console.log(bookingMapping)
 
       setUpComingBookings(bookingMapping)
 
@@ -245,14 +267,27 @@ const AccountTicketsPage = ({ toggle }) => {
     }
   }
 
-  const handleCancelBooking = (booking_id) => {
+  const handleCancelBooking = (booking_id, card_number, total_cost, reward_points_id, qr_code, event_title, event_short_desc, event_desc, event_location, event_start_datetime, event_end_datetime) => {
     setToCancel(booking_id)
+    setToCancelCard(card_number)
+    setToCancelPoints(parseFloat(total_cost).toFixed(2))
+    setToCancelPointsID(reward_points_id)
+    setToCancelQRCode(qr_code)
+
+    setEventTitle(event_title)
+    setShortDesc(event_short_desc)
+    setFullDesc(event_desc)
+    setEventLocation(event_location)
+    setEventStartTime(event_start_datetime)
+    setEventEndTime(event_end_datetime)
+
     setOpenModal(true)
   }
 
-  const handleSendTicketsModal = async (booking_id) => {
+  const handleSendTicketsModal = async (booking_id, qr_code, event_title, event_short_desc, event_desc, event_location, event_start_datetime, event_end_datetime) => {
     try {
       setSendTicketsModal(true)
+      setSendTicketQRCode(qr_code)
 
       const bookingParams = {
         booking_id: booking_id
@@ -263,16 +298,16 @@ const AccountTicketsPage = ({ toggle }) => {
         seats += ticketList.data[i].ticket_ref
         if (i < ticketList.data.length-2)
           seats += ', '
-        if (i == ticketList.data.length-2)
+        if (i === ticketList.data.length-2)
           seats += ' and '
       }
       setTicketString(seats)
 
-      const message = "Your seats for this booking are "+seats+"."
+      //const message = "Your seats for this booking (booking code: "+qr_code+") are "+seats+"."
       const emailTo = [{email_address : account.email}]
         const sendTicketsEmail = {
-          email_subject: 'EvenTastic Booking tickets',
-          email_content: message,
+          email_subject: 'EvenTastic Booking Tickets',
+          email_content: emailAPI.send_bookings_email(qr_code, seats, event_title, event_short_desc, event_desc, event_location, event_start_datetime, event_end_datetime),
           email_from: {
             email_address: evenTasticEmail,
             name: "EvenTastic"
@@ -291,7 +326,7 @@ const AccountTicketsPage = ({ toggle }) => {
   }, [])
 
   useEffect(() => {
-    setUpComingBookings(UpComingBookings.filter((booking) => booking.booking_id != toCancel))
+    setUpComingBookings(UpComingBookings.filter((booking) => parseInt(booking.booking_id) !== parseInt(toCancel)))
   }, [cancelBooking])
 
   return (
@@ -310,8 +345,11 @@ const AccountTicketsPage = ({ toggle }) => {
         </div>
       }
       <div style={{ height:'50px' }}></div>
-      <CancelTicketModal open={openModal} setOpen={setOpenModal} toCancel={toCancel} setCancelBooking={setCancelBooking} />
-      <SendTicketsModal open={sendTicketsModal} setOpen={setSendTicketsModal} ticketString={ticketString} />
+      <CancelTicketModal open={openModal} setOpen={setOpenModal} toCancel={toCancel} setCancelBooking={setCancelBooking}
+      toCancelCard={toCancelCard} toCancelPoints={toCancelPoints} toCancelPointsID={toCancelPointsID}
+      toCancelQRCode={toCancelQRCode} eventTitle={eventTitle} shortDesc={shortDesc} fullDesc={fullDesc}
+      eventLocation={eventLocation} eventStartTime={eventStartTime} eventEndTime={eventEndTime} />
+      <SendTicketsModal open={sendTicketsModal} setOpen={setSendTicketsModal} ticketString={ticketString} sendTicketQRCode={sendTicketQRCode} />
     </ScrollContainer>
   )
 }

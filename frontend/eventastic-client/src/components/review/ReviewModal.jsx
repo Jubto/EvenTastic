@@ -9,6 +9,7 @@ import { Button, Divider, IconButton, Typography, Menu, MenuItem } from '@mui/ma
 import CloseIcon from '@mui/icons-material/Close';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import ReviewAPI from '../../utils/ReviewAPIHelper';
+import ReviewSuccessModal from './pages/ReviewSuccessModal';
 
 const review_api = new ReviewAPI();
 
@@ -21,15 +22,15 @@ const options = [
 const ReviewModal = ({ open, setOpen, eventDetails }) => {
   const context = useContext(StoreContext);
   const [account, setAccount] = context.account;
-  const [hostDetails, setHostDetails] = context.host;
-  const [page, setPage] = useState('listReviews')
+  const [page, setPage] = useState('listReviews');
   const [madeReview, setMadeReview] = useState(false)
   const [reviews, setReviews] = useState([])
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const openMenu = Boolean(anchorEl);
-  const [refresh, setRefresh] = useState(false)
+  const [refresh, setRefresh] = useState(false);
   const [replyReviewId, setReplyReviewId] = useState(1);
+  const [reviewSuccessModal, setReviewSuccessModal] = useState(false);
 
   const handleClickListItem = (event) => {
     setAnchorEl(event.currentTarget);
@@ -50,9 +51,9 @@ const ReviewModal = ({ open, setOpen, eventDetails }) => {
   }
 
   useEffect(() => {
-    if(eventDetails.length !== 0)
+    if(Object.keys(eventDetails).length !== 0)
     {
-      console.log({event_id:parseInt(eventDetails.event_id),interaction_acount_id:account.account_id})
+      // console.log({event_id:parseInt(eventDetails.event_id),interaction_acount_id:account.account_id})
       review_api
       .getReviewList({event_id:parseInt(eventDetails.event_id),interaction_acount_id:account.account_id})
       .then((response)=>{
@@ -138,7 +139,7 @@ const ReviewModal = ({ open, setOpen, eventDetails }) => {
           }
           else if (page === 'makeReivew') {
             return (
-              <MakeReivewPage setMadeReview={setMadeReview} refresh={refresh} setRefresh={setRefresh} reviews={reviews} setPage={setPage} setReviews={setReviews} eventDetails={eventDetails} account={account}/>
+              <MakeReivewPage setMadeReview={setMadeReview} refresh={refresh} setRefresh={setRefresh} reviews={reviews} setPage={setPage} setReviews={setReviews} eventDetails={eventDetails} account={account} setReviewSuccessModal={setReviewSuccessModal}/>
             )
           }
           else if (page === 'makeResponse') {
@@ -147,8 +148,13 @@ const ReviewModal = ({ open, setOpen, eventDetails }) => {
             )
           }
         })()}
+        <ReviewSuccessModal
+        open={reviewSuccessModal}
+        setOpen={setReviewSuccessModal}
+        />
       </ModalBodyLarge>
     </LargeModal>
+  
   )
 }
 

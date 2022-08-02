@@ -69,6 +69,21 @@ export default class EventAPI {
   putReviews = (reviewId, body) => {
     return this.init().put(`/reviews/${reviewId}`, body);
   };
+
+  getRewardPoints = (param) => {
+    return this.init().get("/reward_points", { params: param });
+  };
+
+  postRewardPoints = (body) => {
+    return this.init().post("/reward_points", body);
+  };
+
+  patchRewardPoints = (reward_points_id, body) => {
+    return this.init().patch(`/reward_points/${reward_points_id}`, body);
+  };
   
+  getRecommendations = (accountID, params) => {
+    return this.init().get(`/recommendations/${accountID}`, { params: params });
+  };  
   // Add additional API call here as needed ...
 }

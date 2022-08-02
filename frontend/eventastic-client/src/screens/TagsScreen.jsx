@@ -34,7 +34,7 @@ const TagContainer = ({ categoryAndTags, savedTags, setSavedTags }) => {
 
   const handleSelect = (event) => {
     const tagNode = event.currentTarget
-    const tagName = tagNode.children[0].innerHTML
+    const tagName = tagNode.children[0].innerHTML.replace('&amp;', '&')
     if (savedTags.find((tag) => tag === tagName)) {
       tagNode.style.backgroundColor = unselected
       const newState = savedTags.filter((tag) => tag !== tagName)
@@ -62,16 +62,14 @@ const TagContainer = ({ categoryAndTags, savedTags, setSavedTags }) => {
   )
 }
 
-
 const TagsScreen = () => {
   const navigate = useNavigate()
   const location = useLocation();
   const context = useContext(StoreContext);
   const [account, setAccount] = context.account;
-  const [savedTags, setSavedTags] = useState(account.tags.map((item) => item.name))
+  const [savedTags, setSavedTags] = useState(() => account.tags.map((item) => item.name))
 
   const handleSubmit = () => {
-    // TODO FIX BACKEND
     const body = {
       ...account,
       'tags': savedTags.map((tag) => ({ 'name': tag }))

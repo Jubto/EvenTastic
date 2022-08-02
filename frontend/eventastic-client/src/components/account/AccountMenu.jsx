@@ -1,10 +1,18 @@
 import { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { StoreContext } from '../../utils/context';
+import HomeIcon from '@mui/icons-material/Home';
+import EventIcon from '@mui/icons-material/Event';
+import AccountBoxIcon from '@mui/icons-material/AccountBox';
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
+import LoginIcon from '@mui/icons-material/Login';
+import LogoutIcon from '@mui/icons-material/Logout';
 import {
   IconButton,
   Avatar,
   Tooltip,
+  ListItemIcon,
+  ListItemText,
   Menu,
   MenuItem,
 } from '@mui/material';
@@ -46,8 +54,8 @@ const AccountMenu = () => {
   return (
     <>
       <Tooltip title="Open account menu" enterDelay={10}>
-        <IconButton onClick={handleOpenMenu} sx={{ p: 0, mr:{ xs:'0.25rem', md:'1rem' } }}>
-          <Avatar 
+        <IconButton onClick={handleOpenMenu} sx={{ p: 0, mr: { xs: '0.25rem', md: '1rem' } }}>
+          <Avatar
             src={account.profile_pic}
           />
         </IconButton>
@@ -68,19 +76,31 @@ const AccountMenu = () => {
             return (
               <div>
                 <MenuItem id='logIn' onClick={() => handleLogInModal(false)}>
-                  Log in
+                  <ListItemIcon>
+                    <LoginIcon fontSize="small" />
+                  </ListItemIcon>
+                  <ListItemText>Log In</ListItemText>
                 </MenuItem>
                 <MenuItem component={Link} to={'/register'} onClick={handleCloseMenu}>
-                  Sign Up
+                  <ListItemIcon>
+                    <PersonAddIcon fontSize="small" />
+                  </ListItemIcon>
+                  <ListItemText>Sign Up</ListItemText>
                 </MenuItem>
                 <Tooltip title="log in to create event" placement="left">
                   <MenuItem id='createEvent' onClick={() => handleLogInModal('/create-event')}>
-                    Create an Event
+                    <ListItemIcon>
+                      <EventIcon fontSize="small" />
+                    </ListItemIcon>
+                    <ListItemText>Create an Event</ListItemText>
                   </MenuItem>
                 </Tooltip>
                 <Tooltip title="log in to access account" placement="left">
                   <MenuItem id='myAccount' onClick={() => handleLogInModal('/account')}>
-                    My Account
+                    <ListItemIcon>
+                      <AccountBoxIcon fontSize="small" />
+                    </ListItemIcon>
+                    <ListItemText>My Account</ListItemText>
                   </MenuItem>
                 </Tooltip>
               </div>
@@ -90,7 +110,10 @@ const AccountMenu = () => {
             return (
               <div>
                 <MenuItem component={Link} to={'/'} onClick={handleLogout}>
-                  Admin logout
+                  <ListItemIcon>
+                    <LogoutIcon fontSize="small" />
+                  </ListItemIcon>
+                  <ListItemText>Admin logout</ListItemText>
                 </MenuItem>
               </div>
             )
@@ -99,16 +122,28 @@ const AccountMenu = () => {
             return (
               <div>
                 <MenuItem component={Link} to={'/'} onClick={handleCloseMenu}>
-                  Home Page
+                  <ListItemIcon>
+                    <HomeIcon fontSize="small" />
+                  </ListItemIcon>
+                  <ListItemText>Home Page</ListItemText>
                 </MenuItem>
                 <MenuItem component={Link} to={'/create-event'} onClick={handleCloseMenu}>
-                  Create an Event
+                  <ListItemIcon>
+                    <EventIcon fontSize="small" />
+                  </ListItemIcon>
+                  <ListItemText>Create an Event</ListItemText>
                 </MenuItem>
                 <MenuItem component={Link} to={'/account'} onClick={handleCloseMenu}>
-                  My Account
+                  <ListItemIcon>
+                    <AccountBoxIcon fontSize="small" />
+                  </ListItemIcon>
+                  <ListItemText>My Account</ListItemText>
                 </MenuItem>
                 <MenuItem component={Link} to={'/'} onClick={handleLogout}>
-                  Logout
+                  <ListItemIcon>
+                    <LogoutIcon fontSize="small" />
+                  </ListItemIcon>
+                  <ListItemText>Logout</ListItemText>
                 </MenuItem>
               </div>
             )

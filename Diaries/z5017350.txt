@@ -18,3 +18,47 @@ Week4:
 	• Made foundation code structure for react frontend client
 	• Implemented account menu drop down
 	• Implemented login modal
+
+Week5:
+	• Implemented account page interface
+	• Implemented account details page
+	• Implemented account side bar
+	• Participated in Demo1
+	• Contributed to group service API design
+
+Week6:
+	• Implemented reuseable scroll container
+	• Implemented tag page
+	• Completed host related flow
+	• Made templates for tickets UI
+	• Updated admin flow filestructure, degbugged
+	• debug and help find solution to make sendgrid viable
+	• Broadcast modal US
+
+Week7:
+	• Contributed to review API design
+	• Made templates for review story
+	• Changed image uploading method for frontend
+	• Implemented group listing
+	• Implemented group requests
+	• Implemented group create
+	• Implemented redirects if not logged in
+	• Implemented group page, in-coming requests, members, edit
+	• Implemented groups listed on account page
+
+Week8:
+	• Participated in demo B
+	• Fixed minor issues on frontend
+
+Week9:
+	• Add reward points related UI to account page
+	• Fixed more issues
+	• Added UI to group chat interface
+
+
+Week10:
+        • Fixed and improved various textfield validation
+        • UI/UX for email database integrty error
+        • Improved UI/UX of search bar and homepage
+        • Various bug fixes and preventing warnings
+        • Several meetings with team

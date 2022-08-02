@@ -42,8 +42,8 @@ const GroupInfoPage = ({ groupDetails, setGroupDetails, eventDetails, accountID 
   const [accountGroups, setAccountGroups] = context.groups;
   const [open, setOpen] = useState(false);
   const [edit, setEdit] = useState(false)
-  const [editButton, setEditButton] = useState(false)
   const [imgUpload, setImageUpload] = useState(false);
+  const [isGroupAdmin, setGroupAdmin] = useState(false)
   const [formErrors, setFormErrors] = useState({
     error: false,
     groupName: false,
@@ -96,7 +96,7 @@ const GroupInfoPage = ({ groupDetails, setGroupDetails, eventDetails, accountID 
   }
 
   useEffect(() => {
-    groupDetails.group_host_id === accountID && setEditButton(true)
+    groupDetails.group_host_id === accountID && setGroupAdmin(true)
   }, [])
 
   return (
@@ -118,55 +118,65 @@ const GroupInfoPage = ({ groupDetails, setGroupDetails, eventDetails, accountID 
         }
 
         <FlexBox direction='column' sx={{ maxWidth: '900px', width: { sm: '100%', md: '55vw' } }} >
-          {editButton
+          {isGroupAdmin
             ? edit
               ? <FlexBox justify='space-between'>
                 <Button variant="contained" color='warning'
-                  startIcon={<SettingsIcon />} sx={{ width: '180px', mb: 2, mt:2 }}
+                  startIcon={<SettingsIcon />} sx={{ width: '180px', mb: 3, mt: 2 }}
                   onClick={() => setEdit(false)}
                 >
                   Cancel Edit
                 </Button>
-                <Button type='submit' variant="contained" color='success' sx={{ mb: 2, mt:2 }}>
+                <Button type='submit' variant="contained" color='success' sx={{ mb: 2, mt: 2 }}>
                   Confirm Changes
                 </Button>
               </FlexBox>
 
               : <Button variant="contained" color='info'
-                startIcon={<SettingsIcon />} sx={{ width: '150px', mb: 2, mt:2 }}
+                startIcon={<SettingsIcon />} sx={{ width: '150px', mb: 2, mt: 2 }}
                 onClick={() => setEdit(true)}
               >
                 Edit Group
               </Button>
             : ''
           }
-          <InfoHeader title='Group name' />
-          {edit
-            ? <TextField
-              name="groupName"
-              required
-              fullWidth
-              id="groupName"
-              label="Group Name"
-              placeholder='Cool group name'
-              defaultValue={groupDetails.group_name}
-              onChange={() => {
-                formErrors.groupName && setFormErrors(prevState => { return { ...prevState, groupName: false } })
-              }}
-              error={formErrors.groupName}
-              helperText={formErrors.groupName ? 'Must have a group name.' : ''}
-              sx={{ maxWidth: { sm: '100%', md: '400px' } }}
-            />
-            : <Typography variant='h4' sx={{ fontWeight: 1000, mb: 2, mr: 1 }}>
-              {groupDetails.group_name}
+          <FlexBox>
+            <Typography variant='subtitle1' sx={{ color: 'evenTastic.grey', fontWeight: 1000, mt:0.25, mr:2 }}>
+              Group Name:
             </Typography>
-          }
-          <InfoHeader title='Members' />
+            {edit
+              ? <TextField
+                name="groupName"
+                required
+                fullWidth
+                id="groupName"
+                label="Group Name"
+                placeholder='Cool group name'
+                defaultValue={groupDetails.group_name}
+                onChange={() => {
+                  formErrors.groupName && setFormErrors(prevState => { return { ...prevState, groupName: false } })
+                }}
+                error={formErrors.groupName}
+                helperText={formErrors.groupName ? 'Must have a group name.' : ''}
+                sx={{ maxWidth: { sm: '100%', md: '400px' } }}
+              />
+              : <Typography variant='h5' sx={{ fontWeight: 1000, mb: 2, mr: 1 }}>
+                {groupDetails.group_name}
+              </Typography>
+            }
+          </FlexBox>
+          <FlexBox sx={{mt:2, mb:1}}>
+          <Typography variant='subtitle1' sx={{ color: 'evenTastic.grey', fontWeight: 1000, mr:2 }}>
+            Members:
+          </Typography>
           <Chip icon={<PeopleAltIcon />} sx={{ maxWidth: '80px', mb: 2 }}
             label={groupDetails.group_members.reduce(
               (total, member) => (total + (member.join_status === 'Accepted' ? 1 : 0)), 0
             )}
           />
+          </FlexBox>
+
+
           <InfoHeader title='Group description' />
           {edit
             ? <TextField
@@ -174,7 +184,7 @@ const GroupInfoPage = ({ groupDetails, setGroupDetails, eventDetails, accountID 
               required
               fullWidth
               multiline
-              rows={11}
+              rows={6}
               id="groupDesc"
               label="Group Description"
               placeholder='Enticing group description'
@@ -206,7 +216,7 @@ const GroupInfoPage = ({ groupDetails, setGroupDetails, eventDetails, accountID 
           {eventDetails.event_location}
         </Typography>
       </FlexBox>
-      <GroupEditedModal open={open} setOpen={setOpen}/>
+      <GroupEditedModal open={open} setOpen={setOpen} />
     </ScrollContainer>
   )
 }

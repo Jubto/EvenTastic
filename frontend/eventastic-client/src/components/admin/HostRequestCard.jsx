@@ -27,12 +27,9 @@ const HostRequestCard = ({ hostRequest, setRequests }) => {
       host_status: 'Approved'
     }
     api.putHost(account_id, body)
-      .then((res) => {
-        console.log(res)
-      })
-      .catch((err) => {
-        console.log(err)
-      })
+      .then()
+      .catch((err) => {console.log(err)})
+
     setRequests(prevState => prevState.filter((request) =>
       request.account_id !== account_id)
     )
@@ -43,7 +40,9 @@ const HostRequestCard = ({ hostRequest, setRequests }) => {
       is_verified: false,
       host_status: 'Declined'
     }
-    api.putHost(account_id, body);
+    api.putHost(account_id, body)
+    .then()
+    .catch((err) => {console.log(err)})
     setRequests(prevState => prevState.filter((request) =>
       request.account_id !== account_id )
     )

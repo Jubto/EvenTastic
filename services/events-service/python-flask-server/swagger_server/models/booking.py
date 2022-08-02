@@ -15,7 +15,7 @@ class Booking(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, booking_id: int=None, account_id: int=None, event_id: int=None, booking_status: str=None, booking_email: str=None, total_cost: float=None, ticket_details: object=None):  # noqa: E501
+    def __init__(self, booking_id: int=None, account_id: int=None, event_id: int=None, booking_status: str=None, booking_email: str=None, total_cost: float=None, card_name: str=None, card_number: str=None, qr_code: str=None, ticket_details: object=None):  # noqa: E501
         """Booking - a model defined in Swagger
 
         :param booking_id: The booking_id of this Booking.  # noqa: E501
@@ -30,6 +30,12 @@ class Booking(Model):
         :type booking_email: str
         :param total_cost: The total_cost of this Booking.  # noqa: E501
         :type total_cost: float
+        :param card_name: The card_name of this Booking.  # noqa: E501
+        :type card_name: str
+        :param card_number: The card_number of this Booking.  # noqa: E501
+        :type card_number: str
+        :param qr_code: The qr_code of this Booking.  # noqa: E501
+        :type qr_code: str
         :param ticket_details: The ticket_details of this Booking.  # noqa: E501
         :type ticket_details: object
         """
@@ -40,6 +46,9 @@ class Booking(Model):
             'booking_status': str,
             'booking_email': str,
             'total_cost': float,
+            'card_name': str,
+            'card_number': str,
+            'qr_code': str,
             'ticket_details': object
         }
 
@@ -50,6 +59,9 @@ class Booking(Model):
             'booking_status': 'booking_status',
             'booking_email': 'booking_email',
             'total_cost': 'total_cost',
+            'card_name': 'card_name',
+            'card_number': 'card_number',
+            'qr_code': 'qr_code',
             'ticket_details': 'ticket_details'
         }
 
@@ -59,6 +71,9 @@ class Booking(Model):
         self._booking_status = booking_status
         self._booking_email = booking_email
         self._total_cost = total_cost
+        self._card_name = card_name
+        self._card_number = card_number
+        self._qr_code = qr_code
         self._ticket_details = ticket_details
 
     @classmethod
@@ -203,6 +218,69 @@ class Booking(Model):
         """
 
         self._total_cost = total_cost
+
+    @property
+    def card_name(self) -> str:
+        """Gets the card_name of this Booking.
+
+
+        :return: The card_name of this Booking.
+        :rtype: str
+        """
+        return self._card_name
+
+    @card_name.setter
+    def card_name(self, card_name: str):
+        """Sets the card_name of this Booking.
+
+
+        :param card_name: The card_name of this Booking.
+        :type card_name: str
+        """
+
+        self._card_name = card_name
+
+    @property
+    def card_number(self) -> str:
+        """Gets the card_number of this Booking.
+
+
+        :return: The card_number of this Booking.
+        :rtype: str
+        """
+        return self._card_number
+
+    @card_number.setter
+    def card_number(self, card_number: str):
+        """Sets the card_number of this Booking.
+
+
+        :param card_number: The card_number of this Booking.
+        :type card_number: str
+        """
+
+        self._card_number = card_number
+
+    @property
+    def qr_code(self) -> str:
+        """Gets the qr_code of this Booking.
+
+
+        :return: The qr_code of this Booking.
+        :rtype: str
+        """
+        return self._qr_code
+
+    @qr_code.setter
+    def qr_code(self, qr_code: str):
+        """Sets the qr_code of this Booking.
+
+
+        :param qr_code: The qr_code of this Booking.
+        :type qr_code: str
+        """
+
+        self._qr_code = qr_code
 
     @property
     def ticket_details(self) -> object:

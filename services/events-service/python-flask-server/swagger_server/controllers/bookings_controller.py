@@ -2,6 +2,7 @@ import connexion
 import six
 import psycopg2
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT 
+from datetime import datetime
 
 from swagger_server.models.booking import Booking  # noqa: E501
 from swagger_server.models.booking_list import BookingList  # noqa: E501
@@ -12,7 +13,8 @@ from swagger_server.models.unexpected_service_error import UnexpectedServiceErro
 from swagger_server import util
 
 port=5432 # update port of postgres running in Docker here
-host='localhost'
+#host='localhost'
+host='eventastic-db'
 
 def create_booking(body):  # noqa: E501
     """Used to create a Booking.
@@ -53,8 +55,6 @@ def create_booking(body):  # noqa: E501
         con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
         cur = con.cursor()
 
-        ### could add database calls to check if account id or event id exists ###
-
         # to check that tickets table has enough number of seats available
         for key in body.ticket_details:
             cur.execute(f"SELECT count(ticket_id) FROM tickets WHERE ticket_status = 'Available' and \
@@ -64,9 +64,15 @@ def create_booking(body):  # noqa: E501
                 error = InvalidInputError(code=403, type="InvalidInputError", 
                         message=f"Not enough available seats for the selected type: {key}")
                 return error, 400, {'Access-Control-Allow-Origin': '*'}
+        
+        date_string = datetime.now().strftime("%d%m%y%H%M%S")
+        qr_code = str(body.account_id) + "_" + str(body.event_id) + "_" + date_string
+        body.qr_code = qr_code
+        body.card_name = body.card_name.replace("'", "''")
 
         # inserting into bookings table
-        cur.execute(f"INSERT INTO bookings values (default, {body.account_id}, {body.event_id}, 'Booked', {body.total_cost})\
+        cur.execute(f"INSERT INTO bookings values (default, {body.account_id}, {body.event_id}, 'Booked', {body.total_cost}, \
+            '{body.card_name}', '{body.card_number}', '{qr_code}' )\
                     RETURNING booking_id;")
         body.booking_id = cur.fetchone()[0]
         # updating corresponding ticket seats in tickets table
@@ -112,8 +118,10 @@ def get_booking_details(booking_id):  # noqa: E501
         con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
         cur = con.cursor()
 
-        cur.execute(f"SELECT b.booking_id, b.account_id, b.event_id, b.booking_status, a.email, b.total_cost \
-                    FROM bookings b join accounts a on a.account_id = b.account_id where booking_id = {booking_id}")
+        cur.execute(f"SELECT b.booking_id, b.account_id, b.event_id, b.booking_status, a.email, b.total_cost ,\
+            b.card_name, b.card_number, b.qr_code, rp.reward_points_id, rp.reward_points_amount \
+            FROM bookings b join accounts a on a.account_id = b.account_id \
+            left join rewardpoints rp on b.booking_id = rp.booking_id where b.booking_id = {booking_id}")
         record = cur.fetchone()
         if record == None:
             error = BookingNotFoundError(code=404, type="BookingNotFoundError", 
@@ -130,6 +138,20 @@ def get_booking_details(booking_id):  # noqa: E501
         booking['booking_status'] = str(record[3])
         booking['booking_email'] = str(record[4])
         booking['total_cost'] = float(record[5])
+        booking['card_name'] = str(record[6])
+        booking['card_number'] = str(record[7])
+        booking['qr_code'] = str(record[8])
+
+        if record[9] == None:
+            booking['reward_points_id'] = -1
+            booking['reward_points'] = -1
+        else:
+            booking['reward_points_id'] = int(record[9])
+            booking['reward_points'] = float(record[10])
+
+        for item in booking.keys():
+                if booking[item] == "None":
+                    booking[item] = ""
             
         cur.execute(f"SELECT ticket_type, count(ticket_type) from tickets \
                     where booking_id = {b_id} group by booking_id, ticket_type")
@@ -174,8 +196,10 @@ def list_bookings(account_id=None, booking_status=None, event_id=None):  # noqa:
         con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
         cur = con.cursor()
 
-        select_string = "SELECT b.booking_id, b.account_id, b.event_id, b.booking_status, a.email, b.total_cost \
-            FROM bookings b join accounts a on a.account_id = b.account_id join events e on e.event_id = b.event_id where "
+        select_string = "SELECT b.booking_id, b.account_id, b.event_id, b.booking_status, a.email, b.total_cost, \
+            b.card_name, b.card_number, b.qr_code, rp.reward_points_id, rp.reward_points_amount \
+            FROM bookings b join accounts a on a.account_id = b.account_id \
+            join events e on e.event_id = b.event_id left join rewardpoints rp on b.booking_id = rp.booking_id where "
         if account_id != None: select_string += f" b.account_id = {account_id} and "
         if event_id != None: select_string += f" b.event_id = {event_id} and "
         if booking_status != None: select_string += f" b.booking_status = '{booking_status}' and "
@@ -195,6 +219,20 @@ def list_bookings(account_id=None, booking_status=None, event_id=None):  # noqa:
             booking['booking_status'] = str(record[3])
             booking['booking_email'] = str(record[4])
             booking['total_cost'] = float(record[5])
+            booking['card_name'] = str(record[6])
+            booking['card_number'] = str(record[7])
+            booking['qr_code'] = str(record[8])
+            
+            if record[9] == None:
+                booking['reward_points_id'] = -1
+                booking['reward_points'] = -1
+            else:
+                booking['reward_points_id'] = int(record[9])
+                booking['reward_points'] = float(record[10])
+
+            for item in booking.keys():
+                    if booking[item] == "None":
+                        booking[item] = ""
             
             cur.execute(f"SELECT ticket_type, count(ticket_type) from tickets \
                     where booking_id = {b_id} group by booking_id, ticket_type")

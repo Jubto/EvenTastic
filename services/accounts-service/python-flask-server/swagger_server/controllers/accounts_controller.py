@@ -1,3 +1,4 @@
+from pickle import FALSE
 import connexion
 import six
 import psycopg2
@@ -7,13 +8,15 @@ from swagger_server.models.account import Account  # noqa: E501
 from swagger_server.models.account_list import AccountList  # noqa: E501
 from swagger_server.models.account_not_found_error import AccountNotFoundError  # noqa: E501
 from swagger_server.models.credit_card import CreditCard  # noqa: E501
+from swagger_server.models.reward_points_update import RewardPointsUpdate  # noqa: E501
 from swagger_server.models.host_details import HostDetails  # noqa: E501
 from swagger_server.models.invalid_input_error import InvalidInputError  # noqa: E501
 from swagger_server.models.unexpected_service_error import UnexpectedServiceError  # noqa: E501
 from swagger_server import util
 
 port=5432 # update port of postgres running in Docker here
-host='localhost'
+#host='localhost'
+host='eventastic-db'
 
 def create_account(body):  # noqa: E501
     """Used to create an Account.
@@ -52,7 +55,8 @@ def create_account(body):  # noqa: E501
         con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
         cur = con.cursor()
 
-        cur.execute("SELECT * FROM accounts where email = '"+str(body.email)+"';")
+        cur.execute("SELECT * FROM accounts where email = '"+str(body.email.replace("'", "''"))+"';")
+
         record = cur.fetchone()
         if record != None:
             error = InvalidInputError(code=409, type="InvalidInputError", 
@@ -60,10 +64,11 @@ def create_account(body):  # noqa: E501
             cur.close()
             con.close()
             return error, 400, {'Access-Control-Allow-Origin': '*'}
-        
+        body.reward_points = str(0.0) #New users will have 0 reward points
         insert_string = "INSERT INTO accounts VALUES (default, %s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) RETURNING account_id;"
-        cur.execute(insert_string, (body.email, body.first_name, body.last_name, body.age, body.mobile, \
-            body.location, body.password, body.account_type, body.profile_pic, body.reward_points, tags_string, body.user_desc))
+        cur.execute(insert_string, (body.email, body.first_name, body.last_name,\
+            body.age, body.mobile, body.location, body.password, body.account_type, \
+            body.profile_pic, body.reward_points, tags_string, body.user_desc))        
         body.account_id = cur.fetchone()[0]
 
         cur.close()
@@ -74,23 +79,6 @@ def create_account(body):  # noqa: E501
         # catch any unexpected runtime error and return as 500 error 
         error = UnexpectedServiceError(code="500", type="UnexpectedServiceError", message=str(e))
         return error, 500, {'Access-Control-Allow-Origin': '*'}
-
-
-def create_account_options():
-    """Used to respond to browser with Access-Control-Allow-Methods header. Required for POST.
-
-     # noqa: E501
-
-
-    :rtype: None
-    """
-    response_headers = {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': '*',
-        'Access-Control-Allow-Headers': '*',
-        'Access-Control-Max-Age': 86400 
-    }
-    return None, 200, response_headers
 
 
 def get_account_details(account_id):
@@ -328,8 +316,7 @@ def list_accounts(email=None, first_name=None, last_name=None):  # noqa: E501
             con.close()
             return acc_list, 200, {'Access-Control-Allow-Origin': '*'}
 
-
-        cur.execute("SELECT * FROM accounts where email = '"+str(email)+"';")
+        cur.execute("SELECT * FROM accounts where email = '"+str(email.replace("'", "''"))+"';")
         record = cur.fetchone()
         if record != None:
             account = dict()
@@ -408,6 +395,17 @@ def update_account(account_id, body):  # noqa: E501
             con.close()
             return error, 404, {'Access-Control-Allow-Origin': '*'}
 
+        if body.email != None:
+            cur.execute("SELECT * FROM accounts where email = '"+str(body.email.replace("'", "''"))+"' and account_id !="+str(account_id)+";")
+
+            record = cur.fetchone()
+            if record != None:
+                error = InvalidInputError(code=409, type="InvalidInputError", 
+                        message="The provided email address already exists in database.")
+                cur.close()
+                con.close()
+                return error, 400, {'Access-Control-Allow-Origin': '*'}
+
         if body.tags is None: tags_string = ""
         else:
             tags_string = ""
@@ -421,24 +419,55 @@ def update_account(account_id, body):  # noqa: E501
                 i+=1
 
         update_string = "UPDATE accounts set "
-        if body.email != None: update_string += f" email='{body.email}',"
-        if body.first_name != None: update_string += f" first_name='{body.first_name}',"
-        if body.last_name != None: update_string += f" last_name='{body.last_name}',"
-        if body.age != None: update_string += f" age={body.age},"
-        if body.mobile != None: update_string += f" mobile_no='{body.mobile}',"
-        if body.location != None: update_string += f" location='{body.location}',"
-        if body.password != None: update_string += f" password='{body.password}',"
-        if body.account_type != None: update_string += f" account_type='{body.account_type}',"
-        if body.profile_pic != None: update_string += f" profile_pic='{body.profile_pic}',"
-        if body.reward_points != None: update_string += f" reward_points='{body.reward_points}',"
+        update_list = list()
+
+        if body.email != None: 
+            update_string += " email=%s,"
+            update_list.append(body.email)
+
+        if body.first_name != None: 
+            update_string += " first_name=%s,"
+            update_list.append(body.first_name)
+
+        if body.last_name != None: 
+            update_string += " last_name=%s,"
+            update_list.append(body.last_name)
+
+        if body.age != None: 
+            update_string += f" age={body.age},"
+
+        if body.mobile != None: 
+            update_string += " mobile_no=%s,"
+            update_list.append(body.mobile)
+
+        if body.location != None: 
+            update_string += " location=%s,"
+            update_list.append(body.location)
+
+        if body.password != None: 
+            update_string += " password=%s,"
+            update_list.append(body.password)
+
+        if body.account_type != None: 
+            update_string += f" account_type='{body.account_type}',"
+
+        if body.profile_pic != None: 
+            update_string += f" profile_pic='{body.profile_pic}',"
+
+        if body.reward_points != None: 
+            update_string += f" reward_points='{body.reward_points}',"
+
         if tags_string != "": update_string += f" tags='{tags_string}',"
-        if body.user_desc != None: update_string += f" user_desc='{body.user_desc}',"
+
+        if body.user_desc != None: 
+            update_string += " user_desc=%s,"
+            update_list.append(body.user_desc)
 
         if update_string != "UPDATE accounts set ":
             update_string = update_string[:-1]
             update_string += f" where account_id = {account_id} RETURNING account_id;"
                 
-            cur.execute(update_string)
+            cur.execute(update_string, update_list)
             acc_id = cur.fetchone()[0]
 
         cur.close()
@@ -446,28 +475,10 @@ def update_account(account_id, body):  # noqa: E501
         return body, 200, {'Access-Control-Allow-Origin': '*'}
 
     except Exception as e:
+        print(str(e))
         # catch any unexpected runtime error and return as 500 error 
         error = UnexpectedServiceError(code="500", type="UnexpectedServiceError", message=str(e))
         return error, 500, {'Access-Control-Allow-Origin': '*'}
-
-
-def update_account_options(account_id):  # noqa: E501
-    """Used to respond to browser with Access-Control-Allow-Methods header. Required for PUT.
-
-     # noqa: E501
-
-    :param account_id: ID of the Account to be updated.
-    :type account_id: int
-
-    :rtype: None
-    """
-    response_headers = {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': '*',
-        'Access-Control-Allow-Headers': '*',
-        'Access-Control-Max-Age': 86400 
-    }
-    return None, 200, response_headers
 
 
 def update_credit_card(account_id, body):  # noqa: E501
@@ -529,25 +540,6 @@ def update_credit_card(account_id, body):  # noqa: E501
         return error, 500, {'Access-Control-Allow-Origin': '*'}
 
 
-def update_credit_card_options(account_id):  # noqa: E501
-    """Used to respond to browser with Access-Control-Allow-Methods header. Required for PUT.
-
-     # noqa: E501
-
-    :param account_id: ID of the Account to be updated.
-    :type account_id: int
-
-    :rtype: None
-    """
-    response_headers = {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': '*',
-        'Access-Control-Allow-Headers': '*',
-        'Access-Control-Max-Age': 86400 
-    }
-    return None, 200, response_headers
-
-
 def update_host_details(account_id, body):  # noqa: E501
     """Used to update the host details for an Account.
 
@@ -564,11 +556,6 @@ def update_host_details(account_id, body):  # noqa: E501
     try: 
         if connexion.request.is_json:
             body = HostDetails.from_dict(connexion.request.get_json())  # noqa: E501
-
-        #if (len(body.org_name) == 0 or len(body.host_contact_no) == 0 or len(body.job_title) == 0 or len(body.qualification) == 0):
-        #    error = InvalidInputError(code=400, type="InvalidInputError", 
-        #            message="The following mandatory fields were not provided: organisation name or contact number or title or qualification")
-        #    return error, 400, {'Access-Control-Allow-Origin': '*'}
 
         con = psycopg2.connect(database= 'eventastic', user='postgres', password='postgrespw', host=host, port=port)
         con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
@@ -587,29 +574,50 @@ def update_host_details(account_id, body):  # noqa: E501
         cur.execute('SELECT * FROM hosts where account_id = ' + str(account_id))
         record = cur.fetchone()
         if record == None: # to add the host details if it doesn't exists
+            body.is_verified = False
             insert_string = "INSERT INTO hosts VALUES (default, %s,%s,%s,%s,%s,%s,%s,%s,%s) RETURNING id;"
             cur.execute(insert_string, (account_id, body.org_name, body.org_desc, body.host_contact_no, body.job_title, \
                         body.qualification, body.is_verified, body.host_status, body.org_email))
             host_id = cur.fetchone()[0]
         else: # to update the host details if it already  exists
             update_string = "UPDATE hosts set "
-            if body.org_name != None: update_string += f" organisation_name='{body.org_name}',"
-            if body.org_desc != None: update_string += f" organisation_desc='{body.org_desc}',"
-            if body.host_contact_no != None: update_string += f" host_contact_no='{body.host_contact_no}',"
-            if body.job_title != None: update_string += f" job_title='{body.job_title}',"
-            if body.qualification != None: update_string += f" qualification='{body.qualification}',"
-            if body.is_verified != None: update_string += f" is_verified={body.is_verified},"
-            if body.host_status != None: update_string += f" host_status='{body.host_status}',"
-            if body.org_email != None: update_string += f" org_email='{body.org_email}',"
+            update_list = list()
 
-            update_string = list(update_string)
-            update_string[-1] = " "
-            update_string = "".join(update_string)
+            if body.org_name != None: 
+                update_string += " organisation_name=%s,"
+                update_list.append(body.org_name)        
 
-            update_string += f" where account_id = {account_id} RETURNING account_id;"
-            
-            cur.execute(update_string)
-            acc_id = cur.fetchone()[0]
+            if body.org_desc != None: 
+                update_string += " organisation_desc=%s,"
+                update_list.append(body.org_desc)        
+                
+            if body.host_contact_no != None: 
+                update_string += " host_contact_no=%s,"
+                update_list.append(body.host_contact_no)        
+
+            if body.job_title != None: 
+                update_string += " job_title=%s,"
+                update_list.append(body.job_title)        
+
+            if body.qualification != None: 
+                update_string += " qualification=%s,"
+                update_list.append(body.qualification)        
+
+            if body.is_verified != None: 
+                update_string += f" is_verified={body.is_verified},"
+
+            if body.host_status != None: 
+                update_string += f" host_status='{body.host_status}',"
+
+            if body.org_email != None: 
+                update_string += " org_email=%s,"
+                update_list.append(body.org_email)  
+
+            if update_string != "UPDATE hosts set ":
+                update_string = update_string[:-1]
+                update_string += f" where account_id = {account_id} RETURNING account_id;"            
+                cur.execute(update_string, update_list)
+                acc_id = cur.fetchone()[0]
 
         cur.close()
         con.close()
@@ -620,26 +628,6 @@ def update_host_details(account_id, body):  # noqa: E501
         error = UnexpectedServiceError(code="500", type="UnexpectedServiceError", message=str(e))
         print(str(e))
         return error, 500, {'Access-Control-Allow-Origin': '*'}
-
-
-def update_host_details_options(account_id):  # noqa: E501
-    """Used to respond to browser with Access-Control-Allow-Methods header. Required for PUT.
-
-     # noqa: E501
-
-    :param account_id: ID of the Account to be updated.
-    :type account_id: int
-
-    :rtype: None
-    """
-    response_headers = {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': '*',
-        'Access-Control-Allow-Headers': '*',
-        'Access-Control-Max-Age': 86400 
-    }
-    return None, 200, response_headers
-
 
 
 def list_host_details(host_status=None):  # noqa: E501
@@ -653,7 +641,6 @@ def list_host_details(host_status=None):  # noqa: E501
     :rtype: HostDetails
     """
     try:
-        print('host_status:', host_status)
         con = psycopg2.connect(database= 'eventastic', user='postgres', password='postgrespw', host=host, port=port)
         con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
         cur = con.cursor()
@@ -682,6 +669,51 @@ def list_host_details(host_status=None):  # noqa: E501
         con.close()   
         return host_list, 200, {'Access-Control-Allow-Origin': '*'}
 
+
+    except Exception as e:
+        # catch any unexpected runtime error and return as 500 error 
+        error = UnexpectedServiceError(code="500", type="UnexpectedServiceError", message=str(e))
+        cur.close()
+        con.close()
+        return error, 500, {'Access-Control-Allow-Origin': '*'}
+
+
+def update_reward_points(account_id, body):  # noqa: E501
+    """Used to update the Reward Points total for an account.
+
+     # noqa: E501
+
+    :param account_id: ID of the Account to be updated.
+    :type account_id: int
+    :param body: The patch operation to perform. Only Reward Points update is supported.
+    :type body: dict | bytes
+
+    :rtype: Account
+    """
+    try:
+        if connexion.request.is_json:
+            body = RewardPointsUpdate.from_dict(connexion.request.get_json())  # noqa: E501
+
+        con = psycopg2.connect(database= 'eventastic', user='postgres', password='postgrespw', host=host, port=port)
+        con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+        cur = con.cursor()
+
+        # to check if the account id exists or not
+        cur.execute('SELECT * FROM accounts where account_id = ' + str(account_id))
+        record = cur.fetchone()
+        if record == None:
+            error = AccountNotFoundError(code=404, type="AccountNotFoundError", 
+                    message="The following Account ID does not exist: " + str(account_id))
+            cur.close()
+            con.close()
+            return error, 404, {'Access-Control-Allow-Origin': '*'}
+        
+        if body.path == '/reward_points':
+            cur.execute(f"UPDATE accounts set reward_points = {body.value} where account_id = {account_id}")    
+            
+        cur.close()
+        con.close()
+        return {"message": "Rewards points have been updated successfully."}, 200, {'Access-Control-Allow-Origin': '*'}
 
     except Exception as e:
         # catch any unexpected runtime error and return as 500 error 

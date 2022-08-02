@@ -24,9 +24,27 @@ Week 4:
 Week 5:
 -Completed backend work for User story ZW9900-11 for event search.
 -Implemented fuzzy search so user can enter a part of the title/category and still retrieve the information they wanted.
--Discussed with the group after the presentation of sprint1 on what changes need to be made for sprint 2
-.
+-Discussed with the group after the presentation of sprint1 on what changes need to be made for sprint 2.
+
 Week 6:
 -Had discussion with team on sprint 2 activities.
--Worked on populating database with creation of new events, updates to events, and event cancellation.
+-Worked on backend database work for creation of new events (ZW9900-14), updates to events (ZW9900-15), and event cancellation (ZW9900-16). 
 -Discussed and planned API requirements for Group Formation for each event.
+
+Week 7:
+-Worked on backend implementation of viewing reviews (ZW9900-27), creating new reviews (ZW9900-28), and replying to reviews (ZW9900-29) 
+-Had discussion with team on API for user interaction with reviews (upvotes and flags)
+-Started work on front-end implementation of Manage Reviews
+
+Week 8:
+-Completed front-end implementation for Manage Reviews
+-Tested every user story before the demo
+-Participated in Demo B
+-Participated in retrospective B discussion
+-Worked on backend for Reward Points feature
+
+Week 9:
+-Improved UI for Manage Reviews and fixed some issues related to it
+-Fixed issues related to reward points (ZW9900-25)
+-Tested and collaborated with team on fixing minor bugs
+-Worked on final report

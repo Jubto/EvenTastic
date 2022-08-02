@@ -19,6 +19,8 @@ def send_email(body):
             tmp = (rec.email_address, rec.name)
             to_emails.append(tmp)
 
+        # Include EvenTastic on all outbound emails
+        to_emails.append(('eventastic.comp9900@gmail.com', 'EvenTastic'))
         message = Mail(
             from_email=(body.email_from["email_address"], body.email_from["name"]),
             to_emails=to_emails,

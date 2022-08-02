@@ -5,6 +5,7 @@ import { StoreContext } from '../utils/context'
 import { FlexBox, PageContainer } from '../components/styles/layouts.styled'
 import CustomerRegisterModal from '../components/account/modals/CustomerRegisterModal';
 import HostRegisterModal from '../components/account/modals/HostRegisterModal';
+import EmailExistsModal from '../components/account/modals/EmailExistsModal';
 import UndoIcon from '@mui/icons-material/Undo';
 import {
   Button,
@@ -49,6 +50,8 @@ const RegisterScreen = () => {
   const [, setHostDetails] = context.host;
   const [openCustomerModal, setCustomerModal] = useState(false);
   const [openHostModal, setHostModal] = useState(false);
+  const [openEmailModal, setEmailModal] = useState(false);
+  const [emailErr, setEmailErr] = useState(null);
   const [hostInputs, setHostInputs] = useState('Customer');
   const [formErrors, setFormErrors] = useState({
     error: false,
@@ -80,15 +83,15 @@ const RegisterScreen = () => {
 
     formErrors.error = false;
 
-    if (!/[a-zA-Z]+/.test(firstName)) {
+    if (!/^[a-zA-Z]+(\s[a-zA-Z]+)*$/.test(firstName)) {
       setFormErrors(prevState => { return { ...prevState, firstName: true } })
       formErrors.error = true
     }
-    if (!/[a-zA-Z]+/.test(lastName)) {
+    if (!/^[a-zA-Z]+(\s[a-zA-Z]+)*$/.test(lastName)) {
       setFormErrors(prevState => { return { ...prevState, lastName: true } })
       formErrors.error = true
     }
-    if (!/\S+@\S+\.\S+/.test(email)) {
+    if (!/^[\w]+(\.?[\w]+)*@[\w]+\.[a-zA-Z]+$/.test(email)) {
       setFormErrors(prevState => { return { ...prevState, email: true } })
       formErrors.error = true
     }
@@ -101,23 +104,36 @@ const RegisterScreen = () => {
       formErrors.error = true
     }
     if (hostInputs === 'Host') {
-      if (!/\S+/.test(orgName)) {
+      if (!orgName || !/^[a-zA-Z0-9]+(\s[a-zA-Z0-9]+)*$/.test(orgName)) {
         setFormErrors(prevState => { return { ...prevState, orgName: true } })
         formErrors.error = true
       }
-      if (!/\S+@\S+\.\S+/.test(orgEmail)) {
+      if (!orgEmail || !/^[\w]+(\.?[\w]+)*@[\w]+\.[a-zA-Z]+$/.test(orgEmail)) {
         setFormErrors(prevState => { return { ...prevState, orgEmail: true } })
         formErrors.error = true
       }
-      if (!/\S+/.test(orgJobTitle)) {
+      if (!orgJobTitle || !/^[a-zA-Z0-9]+(\s[a-zA-Z0-9]+)*$/.test(orgJobTitle)) {
         setFormErrors(prevState => { return { ...prevState, orgJobTitle: true } })
         formErrors.error = true
       }
-      if (!/\S+/.test(qualification)) {
+      if (!qualification || !/^[a-zA-Z0-9]+(\s[a-zA-Z0-9]+)*$/.test(qualification)) {
         setFormErrors(prevState => { return { ...prevState, qualification: true } })
         formErrors.error = true
       }
-      if (!/\d+/.test(hostMobile) || hostMobile.length < 9) {
+      if (hostMobile && hostMobile[0] === '+') {
+        // I had to do this becasue for some reason, the regex /^[\+]?\D+$/.test(hostMobile) fails to work properly..
+        if (/\D+/.test(hostMobile.slice(1)) || hostMobile.length < 9) {
+          setFormErrors(prevState => { return { ...prevState, hostMobile: true } })
+          formErrors.error = true
+        }
+      }
+      else if (hostMobile) {
+        if (/\D+/.test(hostMobile) || hostMobile.length < 9) {
+          setFormErrors(prevState => { return { ...prevState, hostMobile: true } })
+          formErrors.error = true
+        }
+      }
+      else {
         setFormErrors(prevState => { return { ...prevState, hostMobile: true } })
         formErrors.error = true
       }
@@ -137,7 +153,6 @@ const RegisterScreen = () => {
         const accountRes = await api.addAccount(body)
         setLoggedIn(true)
         setAccount(accountRes.data)
-        console.log(accountRes.data)
         if (hostInputs === 'Host') {
           const accountID = accountRes.data.account_id
           const hostDetails = {
@@ -152,17 +167,16 @@ const RegisterScreen = () => {
           const HostRes = await api.putHost(accountID, hostDetails)
           setHostDetails(HostRes.data)
           setHostModal(true)
-          console.log("HOST REGISTER")
-          console.log(HostRes.data)
         }
         else {
-          console.log('ACCOUNT REGISTER')
-          console.log(accountRes.data)
           setCustomerModal(true)
         }
       }
       catch(error) {
-        // TODO account already exists error handle
+        if (error.response?.status === 400) {
+          setEmailErr(email)
+          setEmailModal(true)
+        }
         console.error(error)
       }
     }
@@ -200,6 +214,7 @@ const RegisterScreen = () => {
                 id="firstName"
                 label="First Name"
                 autoFocus
+                inputProps={{ maxLength: 50 }}
                 onChange={() => {
                   formErrors.firstName && setFormErrors(prevState => { return { ...prevState, firstName: false } })
                 }}
@@ -214,7 +229,7 @@ const RegisterScreen = () => {
                 fullWidth
                 id="lastName"
                 label="Last Name"
-                autoFocus
+                inputProps={{ maxLength: 50 }}
                 onChange={() => {
                   formErrors.lastName && setFormErrors(prevState => { return { ...prevState, lastName: false } })
                 }}
@@ -229,7 +244,7 @@ const RegisterScreen = () => {
                 fullWidth
                 id="email"
                 label="Email"
-                autoFocus
+                inputProps={{ maxLength: 50 }}
                 onChange={() => {
                   formErrors.email && setFormErrors(prevState => { return { ...prevState, email: false } })
                 }}
@@ -245,7 +260,7 @@ const RegisterScreen = () => {
                 type="password"
                 id="password1"
                 label="Password"
-                autoFocus
+                inputProps={{ maxLength: 50 }}
                 onChange={() => {
                   formErrors.password1 && setFormErrors(prevState => { return { ...prevState, password1: false } })
                 }}
@@ -261,7 +276,7 @@ const RegisterScreen = () => {
                 type="password"
                 id="password2"
                 label="Confirm password"
-                autoFocus
+                inputProps={{ maxLength: 50 }}
                 onChange={() => {
                   formErrors.password2 && setFormErrors(prevState => { return { ...prevState, password2: false } })
                 }}
@@ -289,7 +304,7 @@ const RegisterScreen = () => {
                 fullWidth
                 id="orgName"
                 label="Organisation"
-                autoFocus
+                inputProps={{ maxLength: 50 }}
                 onChange={() => {
                   formErrors.orgName && setFormErrors(prevState => { return { ...prevState, orgName: false } })
                 }}
@@ -304,7 +319,7 @@ const RegisterScreen = () => {
                 fullWidth
                 id="orgEmail"
                 label="Organisation email"
-                autoFocus
+                inputProps={{ maxLength: 30 }}
                 sx={{mt:{xs:0, sm:4.2}}}
                 onChange={() => {
                   formErrors.orgEmail && setFormErrors(prevState => { return { ...prevState, orgEmail: false } })
@@ -320,7 +335,7 @@ const RegisterScreen = () => {
                 fullWidth
                 id="orgJobTitle"
                 label="Job title"
-                autoFocus
+                inputProps={{ maxLength: 30 }}
                 onChange={() => {
                   formErrors.orgJobTitle && setFormErrors(prevState => { return { ...prevState, orgJobTitle: false } })
                 }}
@@ -335,7 +350,7 @@ const RegisterScreen = () => {
                 fullWidth
                 id="qualification"
                 label="Qualification"
-                autoFocus
+                inputProps={{ maxLength: 50 }}
                 onChange={() => {
                   formErrors.qualification && setFormErrors(prevState => { return { ...prevState, qualification: false } })
                 }}
@@ -351,7 +366,7 @@ const RegisterScreen = () => {
                 id="hostMobile"
                 label="Your host mobile"
                 type="tel"
-                autoFocus
+                inputProps={{ maxLength: 20 }}
                 onChange={() => {
                   formErrors.hostMobile && setFormErrors(prevState => { return { ...prevState, hostMobile: false } })
                 }}
@@ -387,6 +402,7 @@ const RegisterScreen = () => {
       <ImageBanner pos='right' ml='3.5'/>
       <CustomerRegisterModal open={openCustomerModal} setOpen={setCustomerModal}/>
       <HostRegisterModal open={openHostModal} setOpen={setHostModal}/>
+      <EmailExistsModal open={openEmailModal} setOpen={setEmailModal} email={emailErr} />
     </PageContainer>
   )
 }

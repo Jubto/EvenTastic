@@ -12,7 +12,8 @@ from swagger_server.models.invalid_input_error import InvalidInputError  # noqa:
 from swagger_server import util
 
 port = 5432  # Change according to port in Docker
-host = 'localhost'
+#host = 'localhost'
+host = 'eventastic-db'
 
 _update_allow_list = ["event_title", "event_category",
                       "event_short_desc", "event_desc", "event_img", "tags", "event_location"]
@@ -147,7 +148,7 @@ def get_event_details(event_id):  # noqa: E501
 
     try:
         con = psycopg2.connect(database='eventastic', user='postgres',
-                               password='postgrespw', host='localhost', port=port)
+                               password='postgrespw', host=host, port=port)
         con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
         cur = con.cursor()
         cur.execute('SELECT * FROM events where event_id = ' + str(event_id))
@@ -211,7 +212,7 @@ def list_events(event_title=None, event_category=None, event_desc=None, host_id=
 
     try:
         con = psycopg2.connect(database='eventastic', user='postgres',
-                               password='postgrespw', host='localhost', port=port)
+                               password='postgrespw', host=host, port=port)
         con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
         cur = con.cursor()
         if (event_title != None and event_desc != None and event_category != None):
@@ -391,15 +392,26 @@ def update_event_status(event_id, body):  # noqa: E501
             return error, 404, {'Access-Control-Allow-Origin': '*'}
 
         # Perform Update
-        cur.execute(f"UPDATE events set event_status='{body.value}' where event_id = {event_id} RETURNING event_id; ")
+        cur.execute(
+            f"UPDATE events set event_status='{body.value}' where event_id = {event_id} RETURNING event_id; ")
         event_id = cur.fetchone()[0]
 
-        if body.value == 'Cancelled': 
-            cur.execute(f"SELECT booking_id FROM bookings where event_id = {event_id} and booking_status= 'Booked' ")
+        if body.value == 'Cancelled':
+            cur.execute(
+                f"SELECT booking_id FROM bookings where event_id = {event_id} and booking_status= 'Booked' ")
             records = cur.fetchall()
             if len(records) > 0:
                 for booking in records:
-                    cur.execute(f"UPDATE bookings set booking_status = 'Cancelled' where booking_id = {booking[0]}") 
+                    cur.execute(
+                        f"UPDATE bookings set booking_status = 'Cancelled' where booking_id = {booking[0]}")
+
+            cur.execute(
+                f"SELECT booking_id FROM rewardpoints where event_id = {event_id} and reward_points_status= 'Pending' ")
+            records = cur.fetchall()
+            if len(records) > 0:
+                for booking in records:
+                    cur.execute(
+                        f"UPDATE rewardpoints set reward_points_status = 'Cancelled' where booking_id = {booking[0]}")
 
         cur.close()
         con.close()

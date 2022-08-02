@@ -9,7 +9,8 @@ from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 from werkzeug.utils import secure_filename
 
 port = 5432
-
+#host='localhost'
+host='eventastic-db'
 
 def create_venue(body):  # noqa: E501
     """Used to create a Venue.
@@ -26,7 +27,7 @@ def create_venue(body):  # noqa: E501
             body = Venue.from_dict(connexion.request.get_json())  # noqa: E501
 
         con = psycopg2.connect(database='eventastic', user='postgres',
-                               password='postgrespw', host="localhost", port=port)
+                               password='postgrespw', host=host, port=port)
         con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
         cur = con.cursor()
         # print(body)
@@ -61,7 +62,7 @@ def get_venue_details(venue_id):  # noqa: E501
     try:
         # attempt to get Venue from the store/database
         con = psycopg2.connect(database='eventastic', user='postgres',
-                               password='postgrespw', host="localhost", port=port)
+                               password='postgrespw', host=host, port=port)
         con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
         cur = con.cursor()
         cur.execute(f"select * from venues where venue_id={venue_id}")
@@ -111,7 +112,7 @@ def list_venues(venue_name=None):  # noqa: E501
     """
     try:
         con = psycopg2.connect(database='eventastic', user='postgres',
-                               password='postgrespw', host="localhost", port=port)
+                               password='postgrespw', host=host, port=port)
         con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
         cur = con.cursor()
 
