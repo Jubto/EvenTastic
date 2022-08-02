@@ -43,3 +43,13 @@ Week 7:
 Week 8:
 - Completed front-end implementation for User Story ZW9900-17, host event cancellation.
 - Implemented real time chat service capability
+
+Week 9:
+- Completed front-end and back-end implementation for ZW9900-13, View Event Recommendations.
+- Completed Swagger changes and codegen for Reward Points API.
+- Dockerised all components and created deploy scripts.
+
+Week 10:
+- Testing and preparation for final demo.
+- Testing on Linux VM. Documented install instructions.
+- Demo and Report.
