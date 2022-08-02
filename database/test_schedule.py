@@ -38,8 +38,7 @@ for row in records:
             cur.execute(
                 f"Select * from rewardpoints where event_id={event_id};")
             rewards = cur.fetchall()
-            if len(rewards) != 0:
-                print(f"Event:{event_name} is completed")
+            print(f"Event:{event_name} is completed")
             for reward in rewards:
                 reward_id = reward[0]
                 account_id = reward[1]
