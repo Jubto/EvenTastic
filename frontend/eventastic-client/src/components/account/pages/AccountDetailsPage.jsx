@@ -128,7 +128,7 @@ const AccountDetailsPage = ({ change, setChange }) => {
         formErrors.error = true
       }
     }
-    if (changeEmail && !/^[\w]+@[\w]+\.[\w]+$/.test(email)) {
+    if (changeEmail && !/^[\w]+(\.?[\w]+)*@[\w]+\.[\w]+$/.test(email)) {
       setFormErrors(prevState => { return { ...prevState, email: true } })
       formErrors.error = true
     }
@@ -478,7 +478,7 @@ const AccountDetailsPage = ({ change, setChange }) => {
               helperText={formErrors.cardName ? 'Must be a valid card holder name.' : ''}
               sx={{ display: addCard ? 'inherit' : 'none', mt: 2 }}
             />
-            : <Box sx={{mt: 2, display: changeCard ? 'initial' : 'none' }}>
+            : <Box sx={{mt: 2, display: card.card_name ? 'inherit' : 'none' }}>
               <Typography variant="subtitle1" color="text.secondary">
                 Card name
               </Typography>
