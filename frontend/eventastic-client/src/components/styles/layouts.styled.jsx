@@ -40,7 +40,7 @@ export const ScrollContainer = styled(Box)`
   overflow-y: auto;
   width: 100%;
   height: ${({ height }) => height ? height : '93%'};
-  display: ${({ flex }) => flex ? 'flex' : 'inherit'};
+  display: ${({ flex }) => flex ? 'flex' : 'initial'};
   flex-wrap: ${({ wrap }) => wrap};
   align-items: ${({ align }) => align};
   padding-right: ${({ pr }) => pr ? pr : 0};
@@ -58,6 +58,36 @@ export const ScrollContainer = styled(Box)`
         ::-webkit-scrollbar {
         width: 0.5vw;
         height: 0.5vh;
+      }
+
+      ::-webkit-scrollbar-thumb {
+        background: #7775;
+        -webkit-border-radius: 1ex;
+        
+      }
+
+      ::-webkit-scrollbar-thumb:hover {
+        background: #777;
+      }
+
+      ::-webkit-scrollbar-track {
+        background: #5555551f;
+      }
+
+      ::-webkit-scrollbar-track:hover {
+        background: #55555547;
+      }
+      `
+    }
+  }};
+
+
+${({ main }) => {
+    if (main) {
+      return `
+        ::-webkit-scrollbar {
+        width: 1vw;
+        height: 1vh;
       }
 
       ::-webkit-scrollbar-thumb {
