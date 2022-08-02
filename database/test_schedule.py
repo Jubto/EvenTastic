@@ -38,20 +38,19 @@ for row in records:
             cur.execute(
                 f"Select * from rewardpoints where event_id={event_id};")
             rewards = cur.fetchall()
-            if len(rewards) != 0:
-                print(f"Event:{event_name} is completed")
+            print(f"Event:{event_name} is completed")
             for reward in rewards:
                 reward_id = reward[0]
                 account_id = reward[1]
                 cur.execute(
                     f"Select reward_points from accounts where account_id={account_id}")
-                prev_reward_point = float(cur.fetchall()[0])
+                prev_reward_point = float(cur.fetchall()[0][0])
                 cur.execute(
                     f"Update rewardpoints SET reward_points_status='Approved' where reward_points_id={reward_id}")
                 cur.execute(
                     f"Select reward_points_amount from rewardpoints where reward_points_id={reward_id}")
                 new_reward_points = prev_reward_point + \
-                    float(cur.fetchall()[0])
+                    float(cur.fetchall()[0][0])
                 cur.execute(
                     f"Update accounts SET reward_points={new_reward_points} where account_id={account_id}")
                 print(

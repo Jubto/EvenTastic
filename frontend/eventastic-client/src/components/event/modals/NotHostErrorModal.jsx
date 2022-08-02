@@ -7,6 +7,7 @@ const NotHostErrorModal = ({ open, setOpen }) => {
   const navigate = useNavigate()
 
   const handleClose = () => {
+    navigate('/')
     setOpen(false);
   }
 

@@ -1,3 +1,8 @@
+/*
+NOTE: The code in the file was cloned from the code in the following GitHub Repository:
+https://github.com/divofred/ChatTutorial
+It was then customised for the EvenTastic Project.
+*/
 let users = [];
 
 exports.addUser = ({ id, name, room }) => {
