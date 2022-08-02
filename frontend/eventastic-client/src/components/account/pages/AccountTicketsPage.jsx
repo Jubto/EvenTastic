@@ -298,7 +298,7 @@ const AccountTicketsPage = ({ toggle }) => {
         seats += ticketList.data[i].ticket_ref
         if (i < ticketList.data.length-2)
           seats += ', '
-        if (i == ticketList.data.length-2)
+        if (i === ticketList.data.length-2)
           seats += ' and '
       }
       setTicketString(seats)
@@ -326,7 +326,7 @@ const AccountTicketsPage = ({ toggle }) => {
   }, [])
 
   useEffect(() => {
-    setUpComingBookings(UpComingBookings.filter((booking) => booking.booking_id != toCancel))
+    setUpComingBookings(UpComingBookings.filter((booking) => parseInt(booking.booking_id) !== parseInt(toCancel)))
   }, [cancelBooking])
 
   return (

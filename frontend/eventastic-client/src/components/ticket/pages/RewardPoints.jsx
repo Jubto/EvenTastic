@@ -93,7 +93,7 @@ const RewardPoints = ({ open, setOpen, setPage, setSuccessModal, totalCost, even
         seats += ticketList.data[i].ticket_ref
         if (i < ticketList.data.length-2)
           seats += ', '
-        if (i == ticketList.data.length-2)
+        if (i === ticketList.data.length-2)
           seats += ' and '
       }
   

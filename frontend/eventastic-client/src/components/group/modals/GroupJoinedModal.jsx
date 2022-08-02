@@ -12,7 +12,7 @@ const GroupJoinedModal = ({ open, setOpen }) => {
     <StandardModal open={open} onClose={handleClose} aria-labelledby="Group Joined!" maxWidth='lg'>
       <ModalTitle title='Group Joined!' close={handleClose} />
       <ModalBody>
-        Congraduations you have joined a group! Click 'View Your Group' to view and interact with your new friends!
+        Congratulations you have joined a group! Click 'View Your Group' to view and interact with your new friends!
       </ModalBody>
       <FlexBox justify='space-between'>
         <Button

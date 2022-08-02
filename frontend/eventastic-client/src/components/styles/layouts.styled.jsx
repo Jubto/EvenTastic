@@ -80,4 +80,34 @@ export const ScrollContainer = styled(Box)`
       `
     }
   }};
+
+
+${({ main }) => {
+    if (main) {
+      return `
+        ::-webkit-scrollbar {
+        width: 1vw;
+        height: 1vh;
+      }
+
+      ::-webkit-scrollbar-thumb {
+        background: #7775;
+        -webkit-border-radius: 1ex;
+        
+      }
+
+      ::-webkit-scrollbar-thumb:hover {
+        background: #777;
+      }
+
+      ::-webkit-scrollbar-track {
+        background: #5555551f;
+      }
+
+      ::-webkit-scrollbar-track:hover {
+        background: #55555547;
+      }
+      `
+    }
+  }};
 `

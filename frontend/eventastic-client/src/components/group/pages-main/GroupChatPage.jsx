@@ -81,7 +81,7 @@ const GroupChatPage = ({ groupDetails, account, groupMemberDetails }) => {
 
       socket.emit("sendMessage", { message });
       setMessage("");
-    } else alert("empty input");
+    }
   };
 
   useEffect(() => {

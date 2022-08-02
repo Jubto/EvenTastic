@@ -58,7 +58,7 @@ const CardDetails = ({ open, setOpen, setPage, setSuccessModal, totalCost, event
     try {
       const cardDetails = await accountAPI.getAccountCard(account_id)
       //console.log(cardDetails.data)
-      if (cardDetails.data.card_number != undefined) {
+      if (cardDetails.data.card_number !== undefined) {
         setCardName(cardDetails.data.card_name)
         setCardNumber(cardDetails.data.card_number)
         setCardType(cardDetails.data.card_type)
@@ -78,7 +78,7 @@ const CardDetails = ({ open, setOpen, setPage, setSuccessModal, totalCost, event
   const isNumbers = (str) => /^[0-9]*$/.test(str);
   
   const changeCardName = (e) => {
-    if (isLetters(e.target.value)) {
+    if (isLetters(e.target.value.slice(-1)) || e.target.value.slice(-1) === ' ') {
       setCardName(e.target.value);
       setFormErrors(prevState => { return { ...prevState, cardName: false } })
     }
@@ -104,13 +104,13 @@ const CardDetails = ({ open, setOpen, setPage, setSuccessModal, totalCost, event
 
   const submitBooking = async () => {
     try {
-      if (cardName.length == 0){
+      if (cardName.length === 0){
         setFormErrors(prevState => { return { ...prevState, cardName: true } })
-      } else if (cardNumber.length != 16){
+      } else if (cardNumber.length !== 16){
         setFormErrors(prevState => { return { ...prevState, cardNumber: true } })
-      } else if (cardType.length == 0){
+      } else if (cardType.length === 0){
         setFormErrors(prevState => { return { ...prevState, cardType: true } })
-      } else if (cardExpiry.length != 4){
+      } else if (cardExpiry.length !== 4){
         setFormErrors(prevState => { return { ...prevState, cardExpiry: true } })
       } else if (parseInt(cardExpiry.substring(2, 4)) < 22){
         setFormErrors(prevState => { return { ...prevState, cardExpiry: true } })
@@ -159,7 +159,7 @@ const CardDetails = ({ open, setOpen, setPage, setSuccessModal, totalCost, event
           seats += ticketList.data[i].ticket_ref
           if (i < ticketList.data.length-2)
             seats += ', '
-          if (i == ticketList.data.length-2)
+          if (i === ticketList.data.length-2)
             seats += ' and '
         }
   

@@ -34,7 +34,7 @@ const TagContainer = ({ categoryAndTags, savedTags, setSavedTags }) => {
 
   const handleSelect = (event) => {
     const tagNode = event.currentTarget
-    const tagName = tagNode.children[0].innerHTML
+    const tagName = tagNode.children[0].innerHTML.replace('&amp;', '&')
     if (savedTags.find((tag) => tag === tagName)) {
       tagNode.style.backgroundColor = unselected
       const newState = savedTags.filter((tag) => tag !== tagName)
