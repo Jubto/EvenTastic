@@ -40,7 +40,7 @@ export const ScrollContainer = styled(Box)`
   overflow-y: auto;
   width: 100%;
   height: ${({ height }) => height ? height : '93%'};
-  display: ${({ flex }) => flex ? 'flex' : 'initial'};
+  display: ${({ flex }) => flex ? 'flex' : 'inherit'};
   flex-wrap: ${({ wrap }) => wrap};
   align-items: ${({ align }) => align};
   padding-right: ${({ pr }) => pr ? pr : 0};
