@@ -116,8 +116,7 @@ const HostDetailsPage = ({ change, setChange }) => {
         setChangeEmail(false)
         setChange('')
         setSubmit(true)
-        if (changeOrgName || changeEmail) {
-          body = { ...body, host_status: 'Pending', isVerified: false }
+        if (hostRes.data.host_status === 'Pending') {
           setOpenModal(true)
         }
       }

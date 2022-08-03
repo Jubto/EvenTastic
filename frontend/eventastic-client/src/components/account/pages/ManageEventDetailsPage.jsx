@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { ScrollContainer } from '../../../components/styles/layouts.styled'
 import BroadcastModal from '../../event/modals/BroadcastModal';
 import BroadcastSentModal from '../../event/modals/BroadcastSentModal';
@@ -51,6 +52,7 @@ function formatEventPrice(gen, front, mid, back) {
 }
 
 const ManageEventDetailsPage = ({ managedEventDetails, setManagedEventDetails, changePage }) => {
+  const navigate = useNavigate();
   const [openSentModal, setSentModal] = useState(false)
   const [openFailModal, setFailModal] = useState(false)
   const [openBroadcast, setOpenBroadcast] = useState(false)
@@ -118,8 +120,11 @@ const ManageEventDetailsPage = ({ managedEventDetails, setManagedEventDetails, c
                     </Button>
                   </Grid>
                   <Grid item xs={6}>
-                    <Button variant="contained" href="#contained-buttons" color="warning" fullWidth>
-                      Event Reviews
+                    <Button 
+                      variant="contained" href="#contained-buttons" color="warning" fullWidth
+                      onClick={() => navigate(`/event/${managedEventDetails.event_id}`, { state: { redirect: 'reviews' } })}
+                    >
+                      Event Reviews 
                     </Button>
                   </Grid>
                   <Grid item xs={6}>
