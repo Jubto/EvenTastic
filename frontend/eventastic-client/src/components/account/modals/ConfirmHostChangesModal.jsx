@@ -10,7 +10,7 @@ const ConfirmHostChangesModal = ({ open, setOpen }) => {
   }
 
   return (
-    <StandardModal open={open} onClose={handleClose} aria-labelledby="login modal" maxWidth='lg'>
+    <StandardModal open={open} onClose={handleClose} aria-labelledby="Confirm Host Change modal" maxWidth='lg'>
       <ModalTitle title='Account registered!' close={handleClose} />
       <ModalBody>
         Are you sure you want to 

@@ -7,7 +7,7 @@ const AccountUpdatedModal = ({ open, setOpen }) => {
     setOpen(false);
   }
   return (
-    <StandardModal open={open} onClose={handleClose} aria-labelledby="login modal" maxWidth='lg'>
+    <StandardModal open={open} onClose={handleClose} aria-labelledby="Account update modal" maxWidth='lg'>
       <ModalTitle title='Account updated!' close={handleClose} />
       <ModalBody>
         Your account has been updated!

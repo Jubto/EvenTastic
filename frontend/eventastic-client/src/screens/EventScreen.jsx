@@ -147,7 +147,7 @@ const EventScreen = () => {
       if (account && accountGroups[eventID]) {
         // user is logged in + already member of group
         setGroupDetails(accountGroups[eventID])
-        if (location.state?.redirect === 'groups') {
+        if (location?.state?.redirect === 'groups') {
           setGroupMainModal(true)
         }
       }
@@ -202,7 +202,8 @@ const EventScreen = () => {
 
   useEffect(() => {
     if (!LogInModal && !openGroupListModal && account) {
-      redirect === 'tickets' && setTicketModal(true) // redirect to ticket model after login modal
+      redirect === 'tickets' && setTicketModal(true) // redirect to ticket modal after login modal
+      redirect === 'reviews' && setReviewModal(true) // redirect to review modal after login modal
       setRedirect(false)
     }
   }, [LogInModal])
@@ -210,6 +211,13 @@ const EventScreen = () => {
   useEffect(() => {
     initApiCalls()
   }, [openGroupListModal])
+
+
+  useEffect(() => {
+    if (location?.state?.redirect === 'reviews') {
+      setReviewModal(true) // redirect to review modal if person came to page with redirect === 'reviews'
+    }
+  }, [])
 
 
   return (

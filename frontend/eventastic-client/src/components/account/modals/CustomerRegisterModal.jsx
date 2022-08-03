@@ -10,7 +10,7 @@ const CustomerRegisterModal = ({ open, setOpen }) => {
   }
 
   return (
-    <StandardModal open={open} onClose={handleClose} aria-labelledby="login modal" maxWidth='lg'>
+    <StandardModal open={open} onClose={handleClose} aria-labelledby="Customer register modal" maxWidth='lg'>
       <ModalTitle title='Account registered!' close={handleClose} />
       <ModalBody>
         Welcome! You are now a registered EvenTastic user!

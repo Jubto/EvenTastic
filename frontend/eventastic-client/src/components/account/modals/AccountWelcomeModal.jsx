@@ -10,7 +10,7 @@ const AccountWelcomeModal = ({ open, setOpen }) => {
   }
 
   return (
-    <StandardModal open={open} onClose={handleClose} aria-labelledby="login modal" maxWidth='lg'>
+    <StandardModal open={open} onClose={handleClose} aria-labelledby="Account welcome modal" maxWidth='lg'>
       <ModalTitle title='Welcome to your account page!' close={handleClose} />
       <ModalBody>
         Welcome to your account management page! Try add a profile picture and more details so others

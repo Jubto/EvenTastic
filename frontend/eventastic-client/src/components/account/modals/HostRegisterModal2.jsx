@@ -7,7 +7,7 @@ const HostRegisterModal2 = ({ open, setOpen }) => {
     setOpen(false);
   }
   return (
-    <StandardModal open={open} onClose={handleClose} aria-labelledby="login modal" maxWidth='lg'>
+    <StandardModal open={open} onClose={handleClose} aria-labelledby="Host register modal" maxWidth='lg'>
       <ModalTitle title='Host registration requested' close={handleClose} />
       <ModalBody>
         Thank you for registering as a host with us! Host verification will be pending
