@@ -9,7 +9,7 @@ const BroadcastSentModal = ({ open, setOpen, managedEventDetails }) => {
   }
 
   return (
-    <StandardModal open={open} onClose={handleClose} aria-labelledby="login modal" maxWidth='lg'>
+    <StandardModal open={open} onClose={handleClose} aria-labelledby="Broadcast modal" maxWidth='lg'>
       <ModalTitle title='Broadcast sent!' close={handleClose} />
       <ModalBody>
         Your broadcast has been sent to everybody who has a booking with <b>{managedEventDetails.event_title}</b>

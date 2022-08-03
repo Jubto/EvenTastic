@@ -10,7 +10,7 @@ const HostRegisterModal = ({ open, setOpen }) => {
   }
 
   return (
-    <StandardModal open={open} onClose={handleClose} aria-labelledby="login modal" maxWidth='lg'>
+    <StandardModal open={open} onClose={handleClose} aria-labelledby="Host register modal" maxWidth='lg'>
       <ModalTitle title='Account registered!' close={handleClose} />
       <ModalBody>
         <Box sx={{ mb: '1rem' }}>
