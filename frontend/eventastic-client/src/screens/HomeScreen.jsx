@@ -20,7 +20,7 @@ const MainScreenTitle = styled(Typography)`
 `
 
 const createCard = (event) => {
-  if (event.event_status !== "Cancelled") {
+  if (event.event_status.toLowerCase() === "upcoming") {
     return (
       <EventCard
         key={event.event_id}

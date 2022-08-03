@@ -221,7 +221,7 @@ cur.execute("INSERT INTO accounts values(default, 'vishalsingh6475@gmail.com', '
 cur.execute("INSERT INTO accounts values(default, 'James@bond.com', 'James', 'Bond', 77, \
             '777777777', 'Sydney', 'JB', 'Customer', 'uuid', '3000', 'Movies,Adventure,Sports', 'Actor for James Bond movies' \
             );")
-cur.execute("INSERT INTO accounts values(default, 'vish@gmail.com', 'Vishal', 'S', 80, \
+cur.execute("INSERT INTO accounts values(default, 'vish@gmail.com', 'John', 'Robinson', 80, \
             '469077369', 'Sydney', 'Vish', 'Customer', 'uuid', '3000', 'Movies,Adventure,Sports,Beaches', 'Just studying' \
             );")
 cur.execute("INSERT INTO accounts values(default, 'neo@matrix.com', 'Keanu', 'Reeves', 57, \
@@ -279,12 +279,12 @@ cur.execute("INSERT INTO venue_seating values (default, 6,'front',20);")
 cur.execute("INSERT INTO venue_seating values (default, 6,'middle',20);")
 cur.execute("INSERT INTO venue_seating values (default, 6,'back',20);")
 
-cur.execute("INSERT INTO  events values(default, 1, 1, 1, 20.00, 100.00, 80.00, 60.00, 'Sydney KPOP Party', 'Music','Sydney KPOP Party BTS Special!','STRICTLY KPOP & K-HIPHOP! KPOP ALBUM GIVEAWAYS! LIVE DJS!','2022-08-25T19:00:00+10:00','2022-08-25T21:00:00+10:00','Shark Hotel Sydney, NSW','1603dfd6-efb6-11ec-8ea0-0242ac120002.jpeg','UPCOMING','Pop Music');")
-cur.execute("INSERT INTO  events values(default, 1, 1, 2, 20.00, 120.00, 70.00, 50.00, 'Red Hot Chili Peppers Live', 'Music','RHCP Live ! Don''t miss out !', 'Catch Red Hot Chili Peppers live for the tour of their new album Unlimited Love ...', '2022-07-20T20:00:00+10:00', '2022-08-25T21:00:00+10:00','Sydney Entertainment Centre','1603dfd6-efb6-11ec-8ea0-0242ac120003.jpeg','UPCOMING','Rock,Funk');")
+cur.execute("INSERT INTO  events values(default, 1, 1, 1, 20.00, 100.00, 80.00, 60.00, 'Sydney KPOP Party', 'Music','Sydney KPOP Party BTS Special!','STRICTLY KPOP & K-HIPHOP! KPOP ALBUM GIVEAWAYS! LIVE DJS!','2022-08-25T19:00:00+10:00','2022-08-25T21:00:00+10:00','Shark Hotel Sydney, NSW','1603dfd6-efb6-11ec-8ea0-0242ac120002.jpeg','UPCOMING','Pop');")
+cur.execute("INSERT INTO  events values(default, 1, 1, 2, 20.00, 120.00, 70.00, 50.00, 'Red Hot Chili Peppers Live', 'Music','RHCP Live ! Don''t miss out !', 'Catch Red Hot Chili Peppers live for the tour of their new album Unlimited Love ...', '2022-08-03T20:00:00+10:00', '2022-08-03T21:00:00+10:00','Sydney Entertainment Centre','1603dfd6-efb6-11ec-8ea0-0242ac120003.jpeg','UPCOMING','Rock,Metal');")
 cur.execute("INSERT INTO  events values(default, 2, 2, 3, 10.00, 100.00, 90.00, 80.00, 'Improv Comedy Night','Arts','Lots of laughs ! Don''t miss out !','Four of Sydney''s best improv comedy teams will battle for glory. You - the audience - will decide who wins on the night!','2022-10-10T20:00:00+10:00','2022-10-10T21:00:00+10:00','Potts Point Hotel, Potts Point, NSW','1603dfd6-efb6-11ec-8ea0-0242ac120004.jpeg','UPCOMING', 'Dance,Comedy');")
-cur.execute("INSERT INTO  events values(default, 2, 2, 4, 15.00, 110.00, 85.00, 55.00, 'Whisky Live Sydney 2022','Food','Sydney''s Premier Whisky Event.','WHISKY LIVE is Sydney''s premiere whisky sampling event, featuring high quality whiskies and spirits, all open under one roof for your tasting pleasure. Come along and learn while you taste.','2022-09-11T20:00:00+10:00','2022-09-11T22:00:00+10:00','Sydney Cove Passenger Terminal','b51a5319-f9ae-4191-aa95-fdf9a808e0fb.jpeg','UPCOMING','Spirits');")
-cur.execute("INSERT INTO  events values(default, 3, 3, 5, 20.00, 80.00, 70.00, 50.00, 'Jump for Joy','Kids Entertainment','Australia''s biggest inflatable park!','Jump for Joy will be back in town at Centennial Park with Australia''s biggest inflatable play-park!','2022-11-01T20:00:00+10:00','2022-11-01T22:00:00+10:00','Centennial Park Brazilian Fields','50407a37-7fce-4a17-97ba-2dbc68446db6.jpeg','UPCOMING', 'Family Friendly');")
-cur.execute("INSERT INTO  events values(default, 3, 3, 6, 20.00, 12.00, 100.00, 90.00, 'Venture & Capital 2022','Business','Come and be bored!','Everything we do is about connecting ventures with capital—this is why Wholesale Investor exists. In line with this, our 2022 Venture & Capital Conference focuses on empowering innovation, ambition, and capital.','2022-12-02T20:00:00+10:00','2022-12-02T22:00:00+10:00', 'The Venue Alexandria','39061bdb-9ace-45ed-9ddf-8b40223fc1b2.jpeg','UPCOMING','Startups Small Business,Investment');")
+cur.execute("INSERT INTO  events values(default, 2, 2, 4, 15.00, 110.00, 85.00, 55.00, 'Whisky Live Sydney 2022','Food & Drink','Sydney''s Premier Whisky Event.','WHISKY LIVE is Sydney''s premiere whisky sampling event, featuring high quality whiskies and spirits, all open under one roof for your tasting pleasure. Come along and learn while you taste.','2022-09-11T20:00:00+10:00','2022-09-11T22:00:00+10:00','Sydney Cove Passenger Terminal','b51a5319-f9ae-4191-aa95-fdf9a808e0fb.jpeg','UPCOMING','Spirits');")
+cur.execute("INSERT INTO  events values(default, 3, 3, 5, 20.00, 80.00, 70.00, 50.00, 'Jump for Joy','Family & Education','Australia''s biggest inflatable park!','Jump for Joy will be back in town at Centennial Park with Australia''s biggest inflatable play-park!','2022-11-01T20:00:00+10:00','2022-11-01T22:00:00+10:00','Centennial Park Brazilian Fields','50407a37-7fce-4a17-97ba-2dbc68446db6.jpeg','UPCOMING', 'Other Family & Education');")
+cur.execute("INSERT INTO  events values(default, 3, 3, 6, 20.00, 12.00, 100.00, 90.00, 'Venture & Capital 2022','Business','Come and be bored!','Everything we do is about connecting ventures with capital—this is why Wholesale Investor exists. In line with this, our 2022 Venture & Capital Conference focuses on empowering innovation, ambition, and capital.','2022-12-02T20:00:00+10:00','2022-12-02T22:00:00+10:00', 'The Venue Alexandria','39061bdb-9ace-45ed-9ddf-8b40223fc1b2.jpeg','UPCOMING','Startups & Small Business,Investment');")
 
 # Update the event table with base64 images
 for filename in os.listdir(event_img_dir):
@@ -309,8 +309,8 @@ for filename in os.listdir(account_img_dir):
         cur.execute(sql)
 
 
-cur.execute("INSERT INTO bookings values (default, 1, 1, 'Booked', 500.0, 'Vishal', '9999333366668888', '1_1_230722011820');")
-cur.execute("INSERT INTO bookings values (default, 1, 1, 'Booked', 200.0, 'Vishal', '9999333366668888', '1_1_230722011846');")
+cur.execute("INSERT INTO bookings values (default, 1, 2, 'Booked', 500.0, 'Vishal', '9999333366668888', '1_1_230722011820');")
+cur.execute("INSERT INTO bookings values (default, 1, 2, 'Booked', 200.0, 'Vishal', '9999333366668888', '1_1_230722011846');")
 
 # QR-code : (Venueid-Eventid-accountid-type&number)
 for t_id in range(1, 31):
@@ -365,7 +365,7 @@ for v_id, e_id in [(2, 2), (3, 3), (4, 4), (5, 5), (6, 6)]:
 
 
 cur.execute("INSERT INTO reviews values (default, 1, 3, 0, 4, 'Amazing Event. Highly Recommend it', '2022-08-25T21:00:00+10:00', 0, 'Active', 'Thanks for the feedback!');")
-cur.execute("INSERT INTO reviews values (default, 2, 1, 0, 1, 'Poorly organised', '2022-08-26T21:00:00+10:00', 0, 'Active', '');")
+cur.execute("INSERT INTO reviews values (default, 2, 2, 0, 1, 'Poorly organised', '2022-08-26T21:00:00+10:00', 0, 'Active', '');")
 cur.execute("INSERT INTO reviews values (default, 3, 3, 3, 5, 'Best event ever.', '2022-08-26T21:00:00+10:00', 0, 'Active', 'Thanks for the feedback!');")
 
 cur.execute("INSERT INTO reviews values (default, 1, 2, 12, 4, 'Amazing Event. Highly Recommend it. I loved the event from start to finish. \
