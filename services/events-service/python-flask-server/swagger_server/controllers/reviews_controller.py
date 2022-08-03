@@ -17,6 +17,8 @@ port = 5432  # Change according to port in Docker
 #host = 'localhost'
 host='eventastic-db'
 
+_review_update_allow_list = ["upvote_count", "flag_count", "reply_text", "review_status"]
+
 def create_review(body):  # noqa: E501
     """Used to create a Review.
 
@@ -240,18 +242,18 @@ def update_review(review_id, body):  # noqa: E501
             return error, 404, {'Access-Control-Allow-Origin': '*'}
         reviewer_account_id = str(record[0])
 
-        update_string = "UPDATE reviews set "
-        if body.upvotes != None: update_string += f" upvote_count={int(body.upvotes)},"
-        if body.flag_count != None: update_string += f" flag_count={int(body.flag_count)},"
-        if body.reply_text != None: update_string += f" reply_text='{body.reply_text}',"
-        if body.review_status != None: update_string += f" review_status='{body.review_status}',"
+        sql = "UPDATE reviews SET"
+        value_list = []
+        for attr, value in body.__dict__.items():
+            tmp_attr = attr[1:]
+            if tmp_attr in _review_update_allow_list and value:
+                sql = sql + " {}=%s,".format(tmp_attr)
+                value_list.append(value)
+        sql = sql[:-1] + " WHERE review_id = {}".format(review_id)
 
-        update_string = update_string[:-1]
+        # print(sql)
+        cur.execute(sql, value_list)  
 
-        update_string += f" where review_id = {review_id} RETURNING review_id;"
-            
-        cur.execute(update_string)
-        body.review_id = cur.fetchone()[0]   
         if body.review_status == 'Removed':
             cur.execute('SELECT reward_points FROM accounts where account_id = ' + (reviewer_account_id))
             record = cur.fetchone()

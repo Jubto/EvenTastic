@@ -176,7 +176,7 @@ cur.execute('CREATE TABLE reviews(\
             FOREIGN KEY (event_id) REFERENCES events (event_id),\
             reviewer_account_id INT NOT NULL,\
             FOREIGN KEY (reviewer_account_id) REFERENCES accounts (account_id),\
-            upvote_count INT,\
+            upvotes INT,\
             rating INT,\
             review_text TEXT,\
             review_timestamp TEXT,\
