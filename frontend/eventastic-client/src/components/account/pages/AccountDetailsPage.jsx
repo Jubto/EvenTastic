@@ -152,7 +152,7 @@ const AccountDetailsPage = ({ change, setChange }) => {
       }
       const month = parseInt(cardExpiry.slice(0, 2))
       const year = parseInt(cardExpiry.slice(2, 4))
-      if (/\D+/.test(cardExpiry) || cardExpiry.length !== 4 || month > 12 || year < 22 || (year === 22 && month < 8)) {
+      if (/\D+/.test(cardExpiry) || cardExpiry.length !== 4 || month < 1 || month > 12 || year < 22 || (year === 22 && month < 8)) {
         setFormErrors(prevState => { return { ...prevState, cardExpiry: true } })
         formErrors.error = true
       }
