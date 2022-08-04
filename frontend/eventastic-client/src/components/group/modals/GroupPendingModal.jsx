@@ -12,8 +12,8 @@ const GroupPendingModal = ({ open, setOpen }) => {
     <StandardModal open={open} onClose={handleClose} aria-labelledby="Group Pending" maxWidth='lg'>
       <ModalTitle title='Join request pending!' close={handleClose} />
       <ModalBody>
-        The group owner is in the process of reviewing your request, if successful, you will see an 'Accepted Join Now'
-        button next to the group card which will let you join in!
+        The group owner is in the process of reviewing your request, if successful, you will be added to
+        the group!
       </ModalBody>
       <FlexBox justify='space-between'>
         <Button
