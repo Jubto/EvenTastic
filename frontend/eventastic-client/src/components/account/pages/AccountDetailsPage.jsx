@@ -298,7 +298,7 @@ const AccountDetailsPage = ({ change, setChange }) => {
             label="Age"
             type='number'
             inputProps={{ min: 1, max: 120 }}
-            defaultValue={account.age}
+            defaultValue={account.age ? account.age : ''}
             onChange={() => {
               formErrors.age && setFormErrors(prevState => { return { ...prevState, age: false } })
             }}
