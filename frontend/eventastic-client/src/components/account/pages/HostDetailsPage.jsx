@@ -325,6 +325,7 @@ const HostDetailsPage = ({ change, setChange }) => {
           <InfoHeader title='Host details' />
           <TextField
             name="orgJobTitle"
+            required
             fullWidth
             type="tel"
             id="orgJobTitle"
@@ -342,6 +343,7 @@ const HostDetailsPage = ({ change, setChange }) => {
         <Grid item sm={12} md={6}>
           <TextField
             name="qualification"
+            required
             fullWidth
             type="tel"
             id="qualification"
@@ -360,6 +362,7 @@ const HostDetailsPage = ({ change, setChange }) => {
         <Grid item sm={12} md={6}>
           <TextField
             name="hostMobile"
+            required
             fullWidth
             type="tel"
             id="hostMobile"
