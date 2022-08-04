@@ -121,7 +121,6 @@ const RegisterScreen = () => {
         formErrors.error = true
       }
       if (hostMobile && hostMobile[0] === '+') {
-        // I had to do this becasue for some reason, the regex /^[\+]?\D+$/.test(hostMobile) fails to work properly..
         if (/\D+/.test(hostMobile.slice(1)) || hostMobile.length < 9) {
           setFormErrors(prevState => { return { ...prevState, hostMobile: true } })
           formErrors.error = true
@@ -187,8 +186,6 @@ const RegisterScreen = () => {
       navigate('/'); // send user to home if they close modal without selecting 'tags' or 'skip'
     }
   }, [openCustomerModal, openHostModal])
-
-  console.log(hostInputs)
 
   return (
     <PageContainer direction='row' justify='center' maxWidth='xl'>

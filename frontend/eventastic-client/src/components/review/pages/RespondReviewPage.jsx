@@ -33,7 +33,6 @@ const [replyText, setReplyText] = React.useState('');
           setRefresh(!refresh)
           })
         .catch((err) => console.log(err));
-    console.log(review_id,data)
   }
 
   return (

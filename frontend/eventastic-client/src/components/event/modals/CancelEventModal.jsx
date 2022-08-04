@@ -38,7 +38,6 @@ const CancelEventModal = ({ open, setOpen, managedEventDetails, setManagedEventD
           email_to: emailsToBroadcast
         }
         const emailRes = await emailAPI.postEmails(sendgridBroadcast)
-        console.log(emailRes)
       }
 
       const updateStatus = {
@@ -51,7 +50,6 @@ const CancelEventModal = ({ open, setOpen, managedEventDetails, setManagedEventD
       managedEventDetails.event_status = "Cancelled"
       const response = await eventAPI.patchEvent(managedEventDetails.event_id, updateStatus)
       setManagedEventDetails(prevState => { return { ...prevState, ...managedEventDetails } })
-      console.log(response)
       handleClose(true)
       setSuccessModal(true)
     }

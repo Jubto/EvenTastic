@@ -33,7 +33,6 @@ const RequestJoinPage = ({ setOpen, setPage, setGroupList, group, account }) => 
 
 
   const handleSubmit = async (event) => {
-    console.log('FORM')
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const joinRequest = data.get('joinRequest')
@@ -54,16 +53,11 @@ const RequestJoinPage = ({ setOpen, setPage, setGroupList, group, account }) => 
           join_status: "Pending"
         }
         const requestRes = await api.postGroupMember(group.group_id, request)
-        // const groupMembers = [...group.group_members, requestRes.data]
-        console.log('group was:')
-        console.log(group)
         const prevMembers = group.group_members
         group = {
           ...group,
           group_members: [...prevMembers, requestRes.data]
         }
-        console.log('now')
-        console.log(group)
         setGroupList(prevState => { return [group, ...prevState.filter((prevGroup) => prevGroup.group_id !== group.group_id)] })
         setPage('listGroups')
         setOpen(true)

@@ -53,7 +53,6 @@ const ReviewModal = ({ open, setOpen, eventDetails }) => {
   useEffect(() => {
     if(Object.keys(eventDetails).length !== 0)
     {
-      // console.log({event_id:parseInt(eventDetails.event_id),interaction_acount_id:account.account_id})
       review_api
       .getReviewList({event_id:parseInt(eventDetails.event_id),interaction_acount_id:account.account_id})
       .then((response)=>{

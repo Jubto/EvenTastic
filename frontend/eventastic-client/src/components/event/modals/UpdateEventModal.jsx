@@ -36,8 +36,6 @@ const UpdateEventModal = ({ open, setOpen, managedEventDetails, setManagedEventD
   const handleImage = async (event) => {
     const imageFile = event.target.files[0]
     const imageBlob = await fileToDataUrl(imageFile)
-    console.log(imageBlob)
-    console.log(URL.createObjectURL(imageFile))
     setImageUpload(imageBlob)
   }
 
@@ -93,7 +91,6 @@ const UpdateEventModal = ({ open, setOpen, managedEventDetails, setManagedEventD
         }
         const eventResponse = await eventAPI.putEvent(managedEventDetails.event_id, updatedEvent)
         setManagedEventDetails(prevState => { return { ...prevState, ...updatedEvent } })
-        console.log(eventResponse)
         handleClose(true)
         setSuccessModal(true)
 
@@ -116,7 +113,6 @@ const UpdateEventModal = ({ open, setOpen, managedEventDetails, setManagedEventD
             email_to: emailsToBroadcast
           }
           const emailRes = await emailAPI.postEmails(sendgridBroadcast)
-          console.log(emailRes)
         }
       }
       catch (err) {

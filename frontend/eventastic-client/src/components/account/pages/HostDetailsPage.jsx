@@ -59,7 +59,6 @@ const HostDetailsPage = ({ change, setChange }) => {
     const qualification = data.get('qualification')
     const hostMobile = data.get('hostMobile')
     formErrors.error = false;
-    console.log(orgName)
 
     if ((!hostDetails && !orgName) || !/^[a-zA-Z0-9]+(\s[a-zA-Z0-9]+)*$/.test(orgName) || (changeOrgName && !orgName)) {
       setFormErrors(prevState => { return { ...prevState, orgName: true } })
@@ -95,7 +94,6 @@ const HostDetailsPage = ({ change, setChange }) => {
       formErrors.error = true
     }
     if (!formErrors.error) {
-      console.log('test')
       let body = {
         host_contact_no: hostMobile,
         host_status: hostDetails ? hostDetails.host_status : 'Pending',

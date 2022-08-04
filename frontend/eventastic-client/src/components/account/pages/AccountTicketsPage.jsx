@@ -229,8 +229,6 @@ const AccountTicketsPage = ({ toggle }) => {
         }
       ))
 
-      //console.log(bookingMapping)
-
       setUpComingBookings(bookingMapping)
 
       // get past bookings data
