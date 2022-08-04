@@ -17,7 +17,7 @@ port = 5432  # Change according to port in Docker
 #host = 'localhost'
 host='eventastic-db'
 
-_review_update_allow_list = ["upvote_count", "flag_count", "reply_text", "review_status"]
+_review_update_allow_list = ["upvotes", "flag_count", "reply_text", "review_status"]
 
 def create_review(body):  # noqa: E501
     """Used to create a Review.
