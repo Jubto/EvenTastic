@@ -36,7 +36,7 @@ const Message = ({ self, user, text, userDetails, groupMemberDetails }) => {
             <MsgBody sx={{ ml: 1.5, bgcolor: 'evenTastic.layout' }}>
               {Number.isInteger(parseInt(text[0]))
                 ? <Typography sx={{ ml: 1, mt: 1 }}>
-                  {groupMemberDetails[parseInt(text[0])].first_name} {text.slice(1)}
+                  {groupMemberDetails[parseInt(text.split(' ')[0])].first_name} {text.slice((text.split(' ')[0]).length)}
                 </Typography>
                 : <Typography sx={{ ml: 1, mt: 1 }}>
                   {text}
