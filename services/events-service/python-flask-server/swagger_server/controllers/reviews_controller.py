@@ -17,7 +17,7 @@ port = 5432  # Change according to port in Docker
 #host = 'localhost'
 host='eventastic-db'
 
-_review_update_allow_list = ["upvote_count", "flag_count", "reply_text", "review_status"]
+_review_update_allow_list = ["upvotes", "flag_count", "reply_text", "review_status"]
 
 def create_review(body):  # noqa: E501
     """Used to create a Review.
@@ -242,7 +242,7 @@ def update_review(review_id, body):  # noqa: E501
             return error, 404, {'Access-Control-Allow-Origin': '*'}
         reviewer_account_id = str(record[0])
 
-        sql = "UPDATE reviews SET"
+        sql = "UPDATE reviews SET "
         value_list = []
         for attr, value in body.__dict__.items():
             tmp_attr = attr[1:]
@@ -251,8 +251,9 @@ def update_review(review_id, body):  # noqa: E501
                 value_list.append(value)
         sql = sql[:-1] + " WHERE review_id = {}".format(review_id)
 
-        # print(sql)
-        cur.execute(sql, value_list)  
+        if len(value_list) > 0:
+            print(sql)
+            cur.execute(sql, value_list)
 
         if body.review_status == 'Removed':
             cur.execute('SELECT reward_points FROM accounts where account_id = ' + (reviewer_account_id))
