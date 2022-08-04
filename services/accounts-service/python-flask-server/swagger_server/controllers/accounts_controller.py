@@ -105,7 +105,8 @@ def get_account_details(account_id):
 
             if record[4] is None: account['age'] = ''
             else:
-                account['age'] = int(record[4])
+                if int(record[4]) == 0: account['age'] = ''
+                else: account['age'] = int(record[4])
 
             account['email'] = str(record[1])
             account['first_name'] = str(record[2])
@@ -286,7 +287,9 @@ def list_accounts(email=None, first_name=None, last_name=None):  # noqa: E501
                 account['account_type'] = str(record[8])
 
                 if record[4] is None: account['age'] = ''
-                else: account['age'] = int(record[4])
+                else:                    
+                    if int(record[4]) == 0: account['age'] = ''
+                    else: account['age'] = int(record[4])
 
                 account['email'] = str(record[1])
                 account['first_name'] = str(record[2])
