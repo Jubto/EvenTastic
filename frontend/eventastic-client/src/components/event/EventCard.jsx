@@ -13,6 +13,9 @@ export const StyledEventCard = styled(Card)`
 `;
 
 const CardTitle = styled('h3')`
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   margin-top: 4px;
   margin-bottom: -10px;
   margin-left: 1rem;
