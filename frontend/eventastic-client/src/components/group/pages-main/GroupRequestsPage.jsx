@@ -46,8 +46,8 @@ const MemberCard = ({ groupDetails, setGroupDetails, eventID, member, groupMembe
     }}
     >
       <CardMedia component="img"
-        image={groupMemberDetails[member.account_id].profile_pic 
-          ? groupMemberDetails[member.account_id].profile_pic
+        image={groupMemberDetails[member.account_id]?.profile_pic 
+          ? groupMemberDetails[member.account_id]?.profile_pic
           : '/img/stock/user.jpg'
         }
         alt="User profile picture"
@@ -60,7 +60,7 @@ const MemberCard = ({ groupDetails, setGroupDetails, eventID, member, groupMembe
               Name
             </Typography>
             <Typography>
-              {groupMemberDetails[member.account_id].first_name} {groupMemberDetails[member.account_id].last_name}
+              {groupMemberDetails[member.account_id]?.first_name} {groupMemberDetails[member.account_id]?.last_name}
             </Typography>
           </FlexBox>
           <FlexBox direction='column' sx={{ width: '60%', ml:3 }}>
@@ -95,7 +95,7 @@ const MemberCard = ({ groupDetails, setGroupDetails, eventID, member, groupMembe
               My bio
             </Typography>
             <Typography>
-              {groupMemberDetails[member.account_id].user_desc}
+              {groupMemberDetails[member.account_id]?.user_desc}
             </Typography>
           </FlexBox>
           <FlexBox direction='column' sx={{ mr: 2 }}>
