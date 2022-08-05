@@ -48,3 +48,11 @@ Week 9:
 -Fixed issues related to reward points (ZW9900-25)
 -Tested and collaborated with team on fixing minor bugs
 -Worked on final report
+
+Week 10:
+- Testing and preparation for final demo
+- Tested Code on Linux VM
+- Participated in review meetings to identify defects
+- Fixed some bugs on review page
+- Finished working on report
+- Worked on Demo and Report
