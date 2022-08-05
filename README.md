@@ -14,6 +14,7 @@ The following students contributed to this project:
 
 
 ## Directory Structure
+```
 ├── database
 │   ├── test_img
 │   ├── scheduler.py
@@ -26,6 +27,7 @@ The following students contributed to this project:
 │   ├── email-service
 │   ├── events-service
 │   ├── groups-service
+```
 
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
