@@ -1,7 +1,7 @@
 Project repository for team ZeroWing, COMP9900, T2 2022
 
 ## Installation
-Please refer to the Installation Guide provided in the report for detailed installation instrictions.
+Please refer to the Installation Guide provided in the report for detailed installation instructions.
 
 ## Contributors
 The following students contributed to this project:
