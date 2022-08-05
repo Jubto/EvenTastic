@@ -27,6 +27,7 @@ The following students contributed to this project:
 │   ├── email-service
 │   ├── events-service
 │   ├── groups-service
+├── Diaries
 ```
 
 ## License
